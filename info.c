@@ -45,6 +45,7 @@ extern char *_iodbcdm_getinifile (char *buf, int size);
 
 #define SECT1			"[ODBC Data Sources]"
 #define SECT2			"Default"
+#define SECT3			"ODBC Data Sources"
 #define MAX_ENTRIES		1024
 
 static int
@@ -227,10 +228,15 @@ SQLDataSources (
 
 
   /*
-   *  And find the description that goes with this entry
+   *  And find the type description that goes with this entry
    */
+#if 0
   _iodbcdm_getkeyvalbydsn (sect[cur_entry], strlen (sect[cur_entry]),
       "Description", szDesc, cbDescMax);
+#else
+  _iodbcdm_getkeyvalbydsn (SECT3, strlen (SECT3),
+      sect[cur_entry], szDesc, cbDescMax);
+#endif
 
   if (pcbDesc)
     *pcbDesc = strlen(szDesc);
