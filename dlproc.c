@@ -24,20 +24,20 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include	<config.h>
+#include <config.h>
 
-#include	<isql.h>
-#include	<isqlext.h>
+#include <isql.h>
+#include <isqlext.h>
 
-#include        <dlproc.h>
+#include <dlproc.h>
 
-#include	<herr.h>
-#include	<henv.h>
-#include	<hdbc.h>
+#include <herr.h>
+#include <henv.h>
+#include <hdbc.h>
 
-#include	<itrace.h>
+#include <itrace.h>
 
-#include	"henv.ci"
+#include "henv.ci"
 
 HPROC 
 _iodbcdm_getproc (HDBC hdbc, int idx)

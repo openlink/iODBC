@@ -26,17 +26,17 @@
 #ifndef	_DLPROC_H
 #define	_DLPROC_H
 
-#include	<dlf.h>
+#include <dlf.h>
 
 typedef SQLRETURN (FAR * HPROC) ();
 
 #ifdef	DLDAPI_SVR4_DLFCN
-#include	<dlfcn.h>
+#include <dlfcn.h>
 typedef void *HDLL;
 #endif
 
 #ifdef DLDAPI_HP_SHL
-#include	<dl.h>
+#include <dl.h>
 typedef shl_t HDLL;
 #endif
 

@@ -24,20 +24,20 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include	<config.h>
+#include <config.h>
 
-#include	<isql.h>
-#include	<isqlext.h>
+#include <isql.h>
+#include <isqlext.h>
 
-#include        <dlproc.h>
+#include <dlproc.h>
 
-#include	<itrace.h>
+#include <itrace.h>
 
-#include	<herr.h>
-#include	<henv.h>
-#include	"henv.ci"
+#include <herr.h>
+#include <henv.h>
+#include "henv.ci"
 
-#include	<stdio.h>
+#include <stdio.h>
 
 static int 
 printreturn (void FAR * istm, int ret)

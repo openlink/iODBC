@@ -24,8 +24,8 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include	<dlf.h>
-#include	<errno.h>
+#include <dlf.h>
+#include <errno.h>
 
 #ifdef	DLDAPI_DEFINED
 #undef DLDAPI_DEFINED
@@ -44,7 +44,8 @@ static char sccsid[] = "@(#)dynamic load interface -- SVR4 dlfcn";
 
 #ifdef	DLDAPI_HP_SHL
 #define	DLDAPI_DEFINED
-#include	<dl.h>
+
+#include <dl.h>
 
 static char sccsid[] = "@(#)dynamic load interface -- HP/UX dl(shl)";
 
@@ -103,10 +104,11 @@ dlclose (void *hdll)
 
 #ifdef	DLDAPI_AIX_LOAD
 #define	DLDAPI_DEFINED
-#include 	<sys/types.h>
-#include	<sys/ldr.h>
-#include	<sys/stat.h>
-#include	<nlist.h>
+
+#include <sys/types.h>
+#include <sys/ldr.h>
+#include <sys/stat.h>
+#include <nlist.h>
 
 #ifndef	HTAB_SIZE
 #define	HTAB_SIZE	256
@@ -531,7 +533,8 @@ dlsym (void *hdl, char *sym)
 
 #ifdef	DLDAPI_WINDOWS
 #define	DLDAPI_DEFINED
-#include	<windows.h>
+
+#include <windows.h>
 
 void FAR *
 dlopen (char FAR * dll, int mode)
@@ -585,6 +588,7 @@ dlclose (void FAR * hdll)
 #ifdef VMS
 #define	DLDAPI_DEFINED
 #ifdef DLDAPI_VMS_IODBC
+
 #include <stdio.h>
 #include <descrip.h>
 #include <starlet.h>

@@ -25,7 +25,7 @@
  */
 #ifndef	_DLF_H
 #define _DLF_H
-#include	<config.h>
+#include <config.h>
 
 #if defined(HAVE_LIBDL)
 #define DLDAPI_SVR4_DLFCN
@@ -34,9 +34,9 @@
 #endif
 
 #if defined(DLDAPI_SVR4_DLFCN)
-#include	<dlfcn.h>
+#include <dlfcn.h>
 #elif defined(DLDAPI_AIX_LOAD)
-#include	<dlfcn.h>
+#include <dlfcn.h>
 #elif defined(DLDAPI_VMS_IODBC)
 extern void FAR *iodbc_dlopen (char FAR * path, int mode);
 extern void FAR *iodbc_dlsym (void FAR * hdll, char FAR * sym);

@@ -24,12 +24,12 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include	<config.h>
+#include <config.h>
 
-#include	<isql.h>
-#include	<isqlext.h>
+#include <isql.h>
+#include <isqlext.h>
 
-#include	<stdio.h>
+#include <stdio.h>
 
 static int
 upper_strneq (
@@ -114,7 +114,7 @@ readtoken (
 }
 
 #if	!defined(WINDOWS) && !defined(WIN32) && !defined(OS2)
-# include	<pwd.h>
+# include <pwd.h>
 # define	UNIX_PWD
 #endif
 
