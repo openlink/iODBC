@@ -6,14 +6,14 @@
  *  Sample ODBC program
  *
  *  The iODBC driver manager.
- *  
- *  Copyright (C) 1999-2003 by OpenLink Software <iodbc@openlinksw.com>
+ *
+ *  Copyright (C) 1999-2004 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -72,16 +72,82 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <wchar.h>
+#include <locale.h>
 
 #include <sql.h>
 #include <sqlext.h>
+#include <sqlucode.h>
+#include <iodbcext.h>
+
+/*
+ *  Prototypes
+ */
+int ODBC_Connect (char *connStr);
+int ODBC_Disconnect (void);
+int ODBC_Errors (char *where);
+int ODBC_Test (void);
 
 #define MAXCOLS		32
 
-SQLHENV henv;
-SQLHDBC hdbc;
-SQLHSTMT hstmt;
-int connected;
+
+#ifdef UNICODE
+
+#define TEXT(x)   	(SQLWCHAR *) L##x
+#define TEXTC(x)   	(SQLWCHAR) L##x
+#define TXTLEN(x) 	wcslen((wchar_t *) x)
+#define TXTCMP(x1,x2) 	wcscmp((wchar_t *) x1, (wchar_t *) x2)
+
+# ifdef WIN32
+#define OPL_A2W(a, w, cb)     \
+	MultiByteToWideChar(CP_ACP, 0, a, -1, w, cb)
+# else
+#define OPL_A2W(XA, XW, SIZE)      mbstowcs(XW, XA, SIZE)
+# endif /* WIN32 */
+
+#else
+
+#define TEXT(x)   	(SQLCHAR *) x
+#define TEXTC(x)	(SQLCHAR) x
+#define TXTLEN(x) 	strlen((char *) x)
+#define TXTCMP(x1,x2) 	strcmp((char *) x1, (char *) x2)
+
+#endif /* UNICODE */
+
+#define NUMTCHAR(X)	(sizeof (X) / sizeof (SQLTCHAR))
+
+
+/*
+ *  Global variables
+ */
+HENV henv;
+HDBC hdbc;
+HSTMT hstmt;
+
+int connected = 0;
+
+
+/*
+ *  Unicode conversion routines
+ */
+#ifdef UNICODE
+static SQLWCHAR *
+strcpy_A2W (SQLWCHAR * destStr, char *sourStr)
+{
+  size_t length;
+
+  if (!sourStr || !destStr)
+    return destStr;
+
+  length = strlen (sourStr);
+  if (length > 0)
+    OPL_A2W (sourStr, destStr, length);
+  destStr[length] = L'\0';
+
+  return destStr;
+}
+#endif
+
 
 
 /*
@@ -102,21 +168,24 @@ int connected;
  *
  *   Examples:
  *
- *	HOST=star;SVT=Informix 5;UID=demo;PWD=demo;DATABASE=stores5
+ *	HOST=star;SVT=SQLServer 2000;UID=demo;PWD=demo;DATABASE=pubs
  *
- *	DSN=stores5_informix;PWD=demo
+ *	DSN=pubs_sqlserver;PWD=demo
  */
 int
 ODBC_Connect (char *connStr)
 {
   short buflen;
-  char buf[1024];
   SQLCHAR dataSource[1024];
-  SQLCHAR dsn[33];
-  SQLCHAR desc[255];
-  SQLCHAR driverInfo[255];
+  SQLTCHAR dsn[33];
+  SQLTCHAR desc[255];
+  SQLTCHAR driverInfo[255];
+  SQLTCHAR outdsn[255];
   SWORD len1, len2;
   int status;
+#ifdef UNICODE
+  SQLWCHAR wdataSource[1024];
+#endif
 
 #if (ODBCVER < 0x0300)
   if (SQLAllocEnv (&henv) != SQL_SUCCESS)
@@ -135,13 +204,27 @@ ODBC_Connect (char *connStr)
     return -1;
 #endif
 
+
   /*
-   *  Show the version number of the driver manager 
+   *  Set the application name
    */
-  status = SQLGetInfo (hdbc, SQL_DM_VER, 
-	driverInfo, sizeof (driverInfo), &len1);
+  SQLSetConnectOption (hdbc, SQL_APPLICATION_NAME,
+	(SQLUINTEGER) TEXT ("odbctest"));
+
+
+  /*
+   *  Show the version number of the driver manager
+   */
+  status = SQLGetInfo (hdbc, SQL_DM_VER,
+      driverInfo, sizeof (driverInfo), &len1);
   if (status == SQL_SUCCESS)
-    printf ("Driver Manager: %s\n", driverInfo);
+    {
+#ifdef UNICODE
+      printf ("Driver Manager: %S\n", driverInfo);
+#else
+      printf ("Driver Manager: %s\n", driverInfo);
+#endif
+    }
 
 
   /*
@@ -183,14 +266,16 @@ ODBC_Connect (char *connStr)
 	/*
 	 *  Print headers
 	 */
-	fprintf (stderr, "\n%-30s | %-30s\n", "DSN", "Description");
-	fprintf (stderr, "---------------------------------------------------------------\n");
+	fprintf (stderr, "\n%-32s | %-40s\n", "DSN", "Driver");
+	fprintf (stderr,
+	    "------------------------------------------------------------------------------\n");
 
 	/*
 	 *  Goto the first record
 	 */
 	if (SQLDataSources (henv, SQL_FETCH_FIRST,
-		dsn, 33, &len1, desc, 255, &len2) != SQL_SUCCESS)
+		dsn, NUMTCHAR (dsn), &len1,
+		desc, NUMTCHAR (desc), &len2) != SQL_SUCCESS)
 	  continue;
 
 	/*
@@ -198,24 +283,61 @@ ODBC_Connect (char *connStr)
 	 */
 	do
 	  {
-	    fprintf (stderr, "%-30s | %-30s\n", dsn, desc);
+#ifdef UNICODE
+	    fprintf (stderr, "%-32S | %-40S\n", dsn, desc);
+#else
+	    fprintf (stderr, "%-32s | %-40s\n", dsn, desc);
+#endif
 	  }
 	while (SQLDataSources (henv, SQL_FETCH_NEXT,
-		dsn, 33, &len1, desc, 255, &len2) == SQL_SUCCESS);
+		dsn, NUMTCHAR (dsn), &len1,
+		desc, NUMTCHAR (desc), &len2) == SQL_SUCCESS);
       }
 
-  status = SQLDriverConnect (hdbc, 0, (UCHAR *) dataSource, SQL_NTS,
-      (UCHAR *) buf, sizeof (buf), &buflen, SQL_DRIVER_COMPLETE);
+#ifdef UNICODE
+  strcpy_A2W (wdataSource, dataSource);
+  status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
+      (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
+  if (status != SQL_SUCCESS)
+    ODBC_Errors ("SQLDriverConnectW");
+#else
+  status = SQLDriverConnect (hdbc, 0, (SQLCHAR *) dataSource, SQL_NTS,
+      (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
+  if (status != SQL_SUCCESS)
+    ODBC_Errors ("SQLDriverConnect");
+#endif
 
   if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     return -1;
 
   connected = 1;
 
-  status = SQLGetInfo (hdbc, SQL_DRIVER_VER, 
-	driverInfo, sizeof (driverInfo), &len1);
+  /*
+   *  Print out the version number and the name of the connected driver
+   */
+  status = SQLGetInfo (hdbc, SQL_DRIVER_VER,
+      driverInfo, NUMTCHAR (driverInfo), &len1);
   if (status == SQL_SUCCESS)
-    printf ("Driver: %s\n", driverInfo);
+    {
+#ifdef UNICODE
+      printf ("Driver: %S", driverInfo);
+#else
+      printf ("Driver: %s", driverInfo);
+#endif
+
+      status = SQLGetInfo (hdbc, SQL_DRIVER_NAME,
+	  driverInfo, NUMTCHAR (driverInfo), &len1);
+      if (status == SQL_SUCCESS)
+	{
+#ifdef UNICODE
+	  printf (" (%S)", driverInfo);
+#else
+	  printf (" (%s)", driverInfo);
+#endif
+	}
+      printf ("\n");
+    }
+
 
 #if (ODBCVER < 0x0300)
   if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
@@ -250,8 +372,8 @@ ODBC_Disconnect (void)
 #else
   if (hstmt)
     {
-       SQLCloseCursor (hstmt);
-       SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
+      SQLCloseCursor (hstmt);
+      SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
     }
 
   if (connected)
@@ -274,41 +396,78 @@ ODBC_Disconnect (void)
 int
 ODBC_Errors (char *where)
 {
-  SQLCHAR buf[250];
-  SQLCHAR sqlstate[15];
+  SQLTCHAR buf[250];
+  SQLTCHAR sqlstate[15];
   SQLINTEGER native_error = 0;
+  int force_exit = 0;
 
 #if (ODBCVER < 0x0300)
   /*
    *  Get statement errors
    */
   while (SQLError (henv, hdbc, hstmt, sqlstate, &native_error,
-	  buf, sizeof (buf), NULL) == SQL_SUCCESS)
+	  buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%s (%ld), SQLSTATE=%s\n",
-	  buf, (long) native_error, sqlstate);
+#ifdef UNICODE
+      fprintf (stderr, "%s = %S (%ld) SQLSTATE=%S\n",
+	  where, buf, (long) native_error, sqlstate);
+#else
+      fprintf (stderr, "%s = %s (%ld) SQLSTATE=%s\n",
+	  where, buf, (long) native_error, sqlstate);
+#endif
+
+      /*
+       *  If the driver could not be loaded, there is no point in
+       *  continuing, after reading all the error messages
+       */
+      if (!TXTCMP (sqlstate, TEXT ("IM003")))
+	force_exit = 1;
     }
 
   /*
    *  Get connection errors
    */
   while (SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
-	  buf, sizeof (buf), NULL) == SQL_SUCCESS)
+	  buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%s (%ld), SQLSTATE=%s\n",
-	  buf, (long) native_error, sqlstate);
+#ifdef UNICODE
+      fprintf (stderr, "%s = %S (%ld) SQLSTATE=%S\n",
+	  where, buf, (long) native_error, sqlstate);
+#else
+      fprintf (stderr, "%s = %s (%ld) SQLSTATE=%s\n",
+	  where, buf, (long) native_error, sqlstate);
+#endif
+
+      /*
+       *  If the driver could not be loaded, there is no point in
+       *  continuing, after reading all the error messages
+       */
+      if (!TXTCMP (sqlstate, TEXT ("IM003")))
+	force_exit = 1;
     }
 
   /*
-   *  Get environmen errors
+   *  Get environment errors
    */
   while (SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
-	  &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+	  &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%s (%ld), SQLSTATE=%s\n",
-	  buf, (long) native_error, sqlstate);
-    }
+#ifdef UNICODE
+      fprintf (stderr, "%s = %S (%ld) SQLSTATE=%S\n",
+	  where, buf, (long) native_error, sqlstate);
 #else
+      fprintf (stderr, "%s = %s (%ld) SQLSTATE=%s\n",
+	  where, buf, (long) native_error, sqlstate);
+#endif
+
+      /*
+       *  If the driver could not be loaded, there is no point in
+       *  continuing, after reading all the error messages
+       */
+      if (!TXTCMP (sqlstate, TEXT ("IM003")))
+	force_exit = 1;
+    }
+#else /* ODBCVER */
   int i;
 
   /*
@@ -316,10 +475,22 @@ ODBC_Errors (char *where)
    */
   i = 0;
   while (i < 5 && SQLGetDiagRec (SQL_HANDLE_STMT, hstmt, ++i,
-	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s\n",
-	  i, buf, (long) native_error, sqlstate);
+#ifdef UNICODE
+      fprintf (stderr, "%d: %s = %S (%ld) SQLSTATE=%S\n",
+	  i, where, buf, (long) native_error, sqlstate);
+#else
+      fprintf (stderr, "%d: %s = %s (%ld) SQLSTATE=%s\n",
+	  i, where, buf, (long) native_error, sqlstate);
+#endif
+
+      /*
+       *  If the driver could not be loaded, there is no point in
+       *  continuing, after reading all the error messages
+       */
+      if (!TXTCMP (sqlstate, TEXT ("IM003")))
+	force_exit = 1;
     }
 
   /*
@@ -327,23 +498,53 @@ ODBC_Errors (char *where)
    */
   i = 0;
   while (i < 5 && SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
-	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s\n",
-	  i, buf, (long) native_error, sqlstate);
+#ifdef UNICODE
+      fprintf (stderr, "%d: %s = %S (%ld) SQLSTATE=%S\n",
+	  i, where, buf, (long) native_error, sqlstate);
+#else
+      fprintf (stderr, "%d: %s = %s (%ld) SQLSTATE=%s\n",
+	  i, where, buf, (long) native_error, sqlstate);
+#endif
+
+      /*
+       *  If the driver could not be loaded, there is no point in
+       *  continuing, after reading all the error messages
+       */
+      if (!TXTCMP (sqlstate, TEXT ("IM003")))
+	force_exit = 1;
     }
 
   /*
-   *  Get environmen errors
+   *  Get environment errors
    */
   i = 0;
   while (i < 5 && SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
-	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s\n",
-	  i, buf, (long) native_error, sqlstate);
-    }
+#ifdef UNICODE
+      fprintf (stderr, "%d: %s = %S (%ld) SQLSTATE=%S\n",
+	  i, where, buf, (long) native_error, sqlstate);
+#else
+      fprintf (stderr, "%d: %s = %s (%ld) SQLSTATE=%s\n",
+	  i, where, buf, (long) native_error, sqlstate);
 #endif
+
+      /*
+       *  If the driver could not be loaded, there is no point in
+       *  continuing, after reading all the error messages
+       */
+      if (!TXTCMP (sqlstate, TEXT ("IM003")))
+	force_exit = 1;
+    }
+#endif /* ODBCVER */
+
+  /*
+   *  Force an exit status
+   */
+  if (force_exit)
+    exit (-1);
 
   return -1;
 }
@@ -355,21 +556,23 @@ ODBC_Errors (char *where)
 int
 ODBC_Test ()
 {
-  char request[4096];
-  char fetchBuffer[1000];
-  short displayWidths[MAXCOLS];
-  short displayWidth;
+  SQLTCHAR request[4096];
+  SQLTCHAR fetchBuffer[1024];
+  char buf[4096];
+  size_t displayWidths[MAXCOLS];
+  size_t displayWidth;
   short numCols;
   short colNum;
-  char colName[50];
-  short colType;
-  UDWORD colPrecision;
-  SDWORD colIndicator;
-  short colScale;
-  short colNullable;
-  UDWORD totalRows;
-  UDWORD totalSets;
+  SQLTCHAR colName[50];
+  SQLSMALLINT colType;
+  SQLUINTEGER colPrecision;
+  SQLINTEGER colIndicator;
+  SQLSMALLINT colScale;
+  SQLSMALLINT colNullable;
+  unsigned long totalRows;
+  unsigned long totalSets;
   int i;
+  SQLRETURN sts;
 
   while (1)
     {
@@ -377,41 +580,111 @@ ODBC_Test ()
        *  Ask the user for a dynamic SQL statement
        */
       printf ("\nSQL>");
-      if (fgets (request, sizeof (request), stdin) == NULL)
+      if (fgets (buf, sizeof (buf), stdin) == NULL)
 	break;
 
-      request[strlen (request) - 1] = '\0';
-      if (request[0] == '\0')
+#ifndef UNICODE
+      strcpy ((char *) request, (char *) buf);
+#else
+      strcpy_A2W (request, buf);
+#endif
+
+      request[TXTLEN (request) - 1] = TEXTC ('\0');
+
+      if (request[0] == TEXTC ('\0'))
 	continue;
 
       /*
        *  If the user just types tables, give him a list
        */
-      if (!strcmp (request, "tables"))
+      if (!TXTCMP (request, TEXT ("tables")))
 	{
-	  if (SQLTables (hstmt, NULL, SQL_NTS, NULL, SQL_NTS, NULL, SQL_NTS,
-		  NULL, SQL_NTS) != SQL_SUCCESS)
+	  if (SQLTables (hstmt, NULL, 0, NULL, 0, NULL, 0,
+		  NULL, 0) != SQL_SUCCESS)
 	    {
-	      ODBC_Errors ("SQLTables");
+	      ODBC_Errors ("SQLTables(tables)");
 	      continue;
 	    }
 	}
-      else if (!strcmp (request, "quit") || !strcmp (request, "exit"))
+      /*
+       *  If the user just types qualifiers, give him a list
+       */
+      else if (!TXTCMP (request, TEXT ("qualifiers")))
+	{
+	  if (SQLTables (hstmt, TEXT ("%"), SQL_NTS, TEXT (""), 0,
+		  TEXT (""), 0, TEXT (""), 0) != SQL_SUCCESS)
+	    {
+	      ODBC_Errors ("SQLTables(qualifiers)");
+	      continue;
+	    }
+	}
+      /*
+       *  If the user just types owners, give him a list
+       */
+      else if (!TXTCMP (request, TEXT ("owners")))
+	{
+	  if (SQLTables (hstmt, TEXT (""), 0, TEXT ("%"), SQL_NTS,
+		  TEXT (""), 0, TEXT (""), 0) != SQL_SUCCESS)
+	    {
+	      ODBC_Errors ("SQLTables(owners)");
+	      continue;
+	    }
+	}
+      /*
+       *  If the user just types "types", give him a list
+       */
+      else if (!TXTCMP (request, TEXT ("types")))
+	{
+	  if (SQLTables (hstmt, TEXT (""), 0, TEXT (""), 0,
+		  TEXT (""), 0, TEXT ("%"), SQL_NTS) != SQL_SUCCESS)
+	    {
+	      ODBC_Errors ("SQLTables(types)");
+	      continue;
+	    }
+	}
+      /*
+       *  If the user just types "datatypes", give him a list
+       */
+      else if (!TXTCMP (request, TEXT ("datatypes")))
+	{
+	  if (SQLGetTypeInfo (hstmt, 0) != SQL_SUCCESS)
+	    {
+	      ODBC_Errors ("SQLGetTypeInfo");
+	      continue;
+	    }
+	}
+#if defined (unix)
+      else if (!TXTCMP (request, TEXT ("environment")))
+	{
+	  extern char **environ;
+	  int i;
+
+	  for (i = 0; environ[i]; i++)
+	    fprintf (stderr, "%03d: [%s]\n", i, environ[i]);
+
+	  continue;
+	}
+#endif
+      else if (!TXTCMP (request, TEXT ("quit"))
+	  || !TXTCMP (request, TEXT ("exit")))
 	break;			/* If you want to quit, just say so */
       else
 	{
 	  /*
 	   *  Prepare & Execute the statement
 	   */
-	  if (SQLPrepare (hstmt, (UCHAR *) request, SQL_NTS) != SQL_SUCCESS)
+	  if (SQLPrepare (hstmt, (SQLTCHAR *) request,
+		  SQL_NTS) != SQL_SUCCESS)
 	    {
 	      ODBC_Errors ("SQLPrepare");
 	      continue;
 	    }
-	  if (SQLExecute (hstmt) != SQL_SUCCESS)
+	  if ((sts = SQLExecute (hstmt)) != SQL_SUCCESS)
 	    {
 	      ODBC_Errors ("SQLExec");
-	      continue;
+
+	      if (sts != SQL_SUCCESS_WITH_INFO)
+		continue;
 	    }
 	}
 
@@ -433,13 +706,19 @@ ODBC_Test ()
 	  if (numCols == 0)
 	    {
 	      SQLINTEGER nrows = 0;
-	      SQLRowCount(hstmt, &nrows);
-	      printf ("Statement executed. %ld rows affected\n", nrows > 0 ? nrows : 0);
+
+	      SQLRowCount (hstmt, &nrows);
+	      printf ("Statement executed. %ld rows affected.\n",
+		  nrows > 0 ? nrows : 0);
 	      goto endCursor;
 	    }
 
 	  if (numCols > MAXCOLS)
-	    numCols = MAXCOLS;
+	    {
+	      numCols = MAXCOLS;
+	      fprintf (stderr,
+		  "NOTE: Resultset truncated to %d columns.\n", MAXCOLS);
+	    }
 
 	  /*
 	   *  Get the names for the columns
@@ -450,9 +729,10 @@ ODBC_Test ()
 	      /*
 	       *  Get the name and other type information
 	       */
-	      if (SQLDescribeCol (hstmt, colNum, (UCHAR *) colName,
-		      sizeof (colName), NULL, &colType, &colPrecision,
-		      &colScale, &colNullable) != SQL_SUCCESS)
+	      if (SQLDescribeCol (hstmt, colNum,
+		      (SQLTCHAR *) colName, NUMTCHAR (colName), NULL,
+		      &colType, &colPrecision, &colScale,
+		      &colNullable) != SQL_SUCCESS)
 		{
 		  ODBC_Errors ("SQLDescribeCol");
 		  goto endCursor;
@@ -465,17 +745,29 @@ ODBC_Test ()
 		{
 		case SQL_VARCHAR:
 		case SQL_CHAR:
-		  displayWidth = (short) colPrecision;
+		case SQL_WVARCHAR:
+		case SQL_WCHAR:
+		case SQL_GUID:
+		  displayWidth = colPrecision;
 		  break;
+
+		case SQL_LONGVARCHAR:
+		case SQL_WLONGVARCHAR:
+		case SQL_LONGVARBINARY:
+		  displayWidth = 30;	/* show only first 30 */
+		  break;
+
 		case SQL_BIT:
 		  displayWidth = 1;
 		  break;
+
 		case SQL_TINYINT:
 		case SQL_SMALLINT:
 		case SQL_INTEGER:
 		case SQL_BIGINT:
 		  displayWidth = colPrecision + 1;	/* sign */
 		  break;
+
 		case SQL_DOUBLE:
 		case SQL_DECIMAL:
 		case SQL_NUMERIC:
@@ -483,31 +775,50 @@ ODBC_Test ()
 		case SQL_REAL:
 		  displayWidth = colPrecision + 2;	/* sign, comma */
 		  break;
+
+#ifdef SQL_TYPE_DATE
+		case SQL_TYPE_DATE:
+#endif
 		case SQL_DATE:
 		  displayWidth = 10;
 		  break;
+
+#ifdef SQL_TYPE_TIME
+		case SQL_TYPE_TIME:
+#endif
 		case SQL_TIME:
 		  displayWidth = 8;
 		  break;
+
+#ifdef SQL_TYPE_TIMESTAMP
+		case SQL_TYPE_TIMESTAMP:
+#endif
 		case SQL_TIMESTAMP:
 		  displayWidth = 19;
+		  if (colScale > 0)
+		    displayWidth = displayWidth + colScale + 1;
 		  break;
+
 		default:
-		  displayWidths[colNum - 1] = 0;     /* skip other data types */
+		  displayWidths[colNum - 1] = 0;	/* skip other data types */
 		  continue;
 		}
 
-	      if (displayWidth < strlen (colName))
-		displayWidth = strlen (colName);
-	      if (displayWidth > sizeof (fetchBuffer) - 1)
-		displayWidth = sizeof (fetchBuffer) - 1;
+	      if (displayWidth < TXTLEN (colName))
+		displayWidth = TXTLEN (colName);
+	      if (displayWidth > NUMTCHAR (fetchBuffer) - 1)
+		displayWidth = NUMTCHAR (fetchBuffer) - 1;
 
 	      displayWidths[colNum - 1] = displayWidth;
 
 	      /*
 	       *  Print header field
 	       */
+#ifdef UNICODE
+	      printf ("%-*.*S", displayWidth, displayWidth, colName);
+#else
 	      printf ("%-*.*s", displayWidth, displayWidth, colName);
+#endif
 	      if (colNum < numCols)
 		putchar ('|');
 	    }
@@ -546,8 +857,14 @@ ODBC_Test ()
 		  /*
 		   *  Fetch this column as character
 		   */
-		  if (SQLGetData (hstmt, colNum, SQL_CHAR, fetchBuffer,
-			  sizeof (fetchBuffer), &colIndicator) != SQL_SUCCESS)
+#ifdef UNICODE
+		  sts = SQLGetData (hstmt, colNum, SQL_C_WCHAR, fetchBuffer,
+		      NUMTCHAR (fetchBuffer), &colIndicator);
+#else
+		  sts = SQLGetData (hstmt, colNum, SQL_C_CHAR, fetchBuffer,
+		      NUMTCHAR (fetchBuffer), &colIndicator);
+#endif
+		  if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS)
 		    {
 		      ODBC_Errors ("SQLGetData");
 		      goto endCursor;
@@ -559,12 +876,17 @@ ODBC_Test ()
 		  if (colIndicator == SQL_NULL_DATA)
 		    {
 		      for (i = 0; i < displayWidths[colNum - 1]; i++)
-			fetchBuffer[i] = '*';
-		      fetchBuffer[i] = '\0';
+			fetchBuffer[i] = TEXTC ('*');
+		      fetchBuffer[i] = TEXTC ('\0');
 		    }
 
+#ifdef UNICODE
+		  printf ("%-*.*S", displayWidths[colNum - 1],
+		      displayWidths[colNum - 1], fetchBuffer);
+#else
 		  printf ("%-*.*s", displayWidths[colNum - 1],
 		      displayWidths[colNum - 1], fetchBuffer);
+#endif
 		  if (colNum < numCols)
 		    putchar ('|');
 		}
@@ -576,7 +898,10 @@ ODBC_Test ()
 	      totalSets, totalRows);
 	  totalSets++;
 	}
-      while (SQLMoreResults (hstmt) == SQL_SUCCESS);
+      while ((sts = SQLMoreResults (hstmt)) == SQL_SUCCESS);
+
+      if (sts == SQL_ERROR)
+	ODBC_Errors ("SQLMoreResults");
 
     endCursor:
 #if (ODBCVER < 0x0300)
@@ -593,7 +918,19 @@ ODBC_Test ()
 int
 main (int argc, char **argv)
 {
+  /*
+   *  Set locale based on environment variables
+   */
+  setlocale (LC_ALL, "");
+
+  /*
+   *  Show welcome message
+   */
+#ifdef UNICODE
+  printf ("iODBC Unicode Demonstration program\n");
+#else
   printf ("iODBC Demonstration program\n");
+#endif
   printf ("This program shows an interactive SQL processor\n");
 
   /*
@@ -601,8 +938,9 @@ main (int argc, char **argv)
    */
   if (argc > 2 || (argc == 2 && argv[1][0] == '-'))
     {
-      fprintf (stderr, "\nUsage:\n  iodbctest [\"DSN=xxxx;UID=xxxx;PWD=xxxx\"]\n");
-      exit(0);
+      fprintf (stderr,
+	  "\nUsage:\n  iodbctest [\"DSN=xxxx;UID=xxxx;PWD=xxxx\"]\n");
+      exit (0);
     }
 
   /*
