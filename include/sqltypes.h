@@ -123,12 +123,6 @@ typedef unsigned char		SQLVARCHAR;
 #endif	/* ODBCVER >= 0x0300 */
 
 
-#if !defined(WIN32) && !defined(_WIN64)
-typedef unsigned long long	UINT64;
-typedef signed long long	INT64;
-#endif
-
-
 /*
  *  New Win64 datatypes
  */
