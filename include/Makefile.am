@@ -25,4 +25,5 @@ include_HEADERS         = \
 	isqltypes.h \
 	sql.h \
 	sqlext.h \
-	sqltypes.h
+	sqltypes.h \
+	iodbcinst.h

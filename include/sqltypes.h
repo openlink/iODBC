@@ -61,6 +61,25 @@ extern "C" {
 
 
 /*
+ *  Boolean support
+ */
+#ifndef TRUE
+#define TRUE	1
+#endif
+
+#ifndef FALSE
+#define FALSE	0
+#endif
+
+#if !defined(__MWERKS__) && \
+    !defined(bool) && \
+    !defined(__cplusplus) && \
+    !defined(__APPLE__)
+enum bool { false, true };
+#endif!
+
+
+/*
  * Windows style typedefs for UNIX machines
  */
 #ifndef WIN32
@@ -71,6 +90,8 @@ typedef unsigned long DWORD;
 typedef DWORD * LPDWORD;
 typedef char * LPSTR;
 typedef const char * LPCSTR;
+typedef	WORD WPARAM;
+typedef	DWORD LPARAM;
 #ifndef BOOL
 typedef int BOOL;
 #endif
@@ -146,6 +167,9 @@ typedef SQLHANDLE		SQLHDESC;
  */
 #if defined(WIN32) || defined(OS2)
 typedef HWND			SQLHWND;
+#elif defined(macintosh)
+typedef WindowPtr		HWND;
+typedef HWND	 		SQLHWND;
 #else
 typedef SQLPOINTER		HWND;
 typedef SQLPOINTER		SQLHWND;
