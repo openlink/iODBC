@@ -1,4 +1,4 @@
-AC_PREREQ(2.52)
+AC_PREREQ(2.53)
 AC_REVISION($Id$)
 #
 #  configure.in
@@ -150,12 +150,11 @@ AC_ARG_ENABLE(gui,
 [  --enable-gui            build GUI applications (default),
   --disable-gui           build GUI applications],
 [ case "${enableval}" in
-    yes) gui=true ;;
-    no) gui=false ;;
+    yes) USE_GUI=true ;;
+    no)  USE_GUI=false ;;
     *) AC_MSG_ERROR(bad value ${enableval} for --enable-gui) ;;
   esac
-],[gui=true]) 
-AM_CONDITIONAL(GUI, [test x$gui = xtrue])
+],[USE_GUI=true]) 
 
 
 ##########################################################################
@@ -163,8 +162,29 @@ AM_CONDITIONAL(GUI, [test x$gui = xtrue])
 ##  Check for GTK library functions					##
 ##									##
 ##########################################################################
-AM_PATH_GTK(1.2.3)
-AM_CONDITIONAL(GTK, [test x$no_gtk = x])
+USE_GTK=false
+if test x$USE_GUI = xtrue
+then
+  AM_PATH_GTK(1.2.3)
+  if test x$no_gtk = x
+  then
+    USE_GTK=true
+  fi
+fi
+
+
+##########################################################################
+##									##
+##  Now make the final checks whether we can use GUI extentions		##
+##									##
+##########################################################################
+if test x$USE_GTK = xfalse
+then
+  USE_GUI=false
+fi
+
+AM_CONDITIONAL(GUI, [test x$USE_GUI = xtrue])
+AM_CONDITIONAL(GTK, [test x$USE_GTK = xtrue])
 
 
 ##########################################################################
@@ -293,10 +313,11 @@ fi
 ##  Check if the dl library has the dladdr function                     ##
 ##                                                                      ##
 ##########################################################################
-AC_CHECK_FUNC(dladdr, AC_DEFINE(HAVE_DLADDR, 1, [x]),
-[AC_CHECK_LIB(dl, dladdr, [AC_DEFINE(HAVE_DLADDR, 1, [x]) LIBADD_DL="-ldl"],[])]
+AC_CHECK_FUNC(dladdr, AC_DEFINE(HAVE_DLADDR, 1, [Define to 1 if you have the `dladdr' function.]),
+[AC_CHECK_LIB(dl, dladdr, [AC_DEFINE(HAVE_DLADDR, 1, [Define to 1 if you have the `dladdr' function]) LIBADD_DL="-ldl"],[])]
 )
  
+AC_CHECK_TYPES([Dl_info])
 
 
 ##########################################################################
@@ -322,7 +343,7 @@ AC_ARG_ENABLE(odbc3,
 
 if test "x$odbcmode" = "x3"
 then
-	lib_version=3:5:1
+	lib_version=3:6:1
 	CFLAGS="$CFLAGS -DODBCVER=0x0350" 
 	AC_MSG_RESULT(ODBC 3.x compatible mode)
 else
