@@ -26,36 +26,33 @@
 #ifndef _ISQL_H
 #define _ISQL_H
 
-#ifdef WIN32
-#define SQL_API				__stdcall
-#else
-#define FAR
-#define EXPORT
-#define CALLBACK
-#define SQL_API				EXPORT CALLBACK
-
-typedef void *HWND;
+/*
+ *  Set default specification to ODBC 2.50
+ */
+#ifndef ODBCVER
+#define ODBCVER				0x0250
 #endif
 
-typedef unsigned char UCHAR;
-typedef long int SDWORD;
-typedef short int SWORD;
-typedef unsigned long int UDWORD;
-typedef unsigned short int UWORD;
+#ifndef _ISQLTYPES_H
+#include "isqltypes.h"
+#endif
 
-typedef void FAR *PTR;
-typedef void FAR *HENV;
-typedef void FAR *HDBC;
-typedef void FAR *HSTMT;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef signed short RETCODE;
-#define SQLRETURN	RETCODE
+/*
+ *  Useful Constants
+ */
+#define SQL_SPEC_MAJOR			2
+#define SQL_SPEC_MINOR			50
+#define SQL_SPEC_STRING			"02.50"
 
-
-#define ODBCVER				0x0250
-
+#define SQL_SQLSTATE_SIZE		5
 #define SQL_MAX_MESSAGE_LENGTH		512
 #define SQL_MAX_DSN_LENGTH		32
+#define SQL_MAX_OPTION_STRING_LENGTH	256
+
 
 /*
  *  Function return codes
@@ -66,9 +63,11 @@ typedef signed short RETCODE;
 #define SQL_SUCCESS_WITH_INFO		1
 #define SQL_NO_DATA_FOUND		100
 
+
 /*
  *  Standard SQL datatypes, using ANSI type numbering
  */
+#define SQL_UNKNOWN_TYPE		0
 #define SQL_CHAR			1
 #define SQL_NUMERIC 			2
 #define SQL_DECIMAL 			3
@@ -79,9 +78,10 @@ typedef signed short RETCODE;
 #define SQL_DOUBLE			8
 #define SQL_VARCHAR 			12
 
-#define SQL_TYPE_MIN			SQL_CHAR
 #define SQL_TYPE_NULL			0
+#define SQL_TYPE_MIN			SQL_CHAR
 #define SQL_TYPE_MAX			SQL_VARCHAR
+
 
 /*
  *  C datatype to SQL datatype mapping
@@ -93,6 +93,7 @@ typedef signed short RETCODE;
 #define SQL_C_DOUBLE			SQL_DOUBLE
 #define SQL_C_DEFAULT 			99
 
+
 /*
  *  NULL status constants.
  */
@@ -100,12 +101,14 @@ typedef signed short RETCODE;
 #define SQL_NULLABLE			1
 #define SQL_NULLABLE_UNKNOWN		2
 
+
 /*
  *  Special length values
  */
 #define SQL_NULL_DATA			(-1)
 #define SQL_DATA_AT_EXEC		(-2)
 #define SQL_NTS 			(-3)
+
 
 /*
  *  SQLFreeStmt
@@ -115,11 +118,13 @@ typedef signed short RETCODE;
 #define SQL_UNBIND			2
 #define SQL_RESET_PARAMS		3
 
+
 /*
  *  SQLTransact
  */
 #define SQL_COMMIT			0
 #define SQL_ROLLBACK			1
+
 
 /*
  *  SQLColAttributes
@@ -148,12 +153,14 @@ typedef signed short RETCODE;
 #define	SQL_COLATT_OPT_MIN		SQL_COLUMN_COUNT
 #define SQL_COLUMN_DRIVER_START		1000
 
+
 /*
  *  SQLColAttributes : SQL_COLUMN_UPDATABLE
  */
 #define SQL_ATTR_READONLY		0
 #define SQL_ATTR_WRITE			1
 #define SQL_ATTR_READWRITE_UNKNOWN	2
+
 
 /*
  *  SQLColAttributes : SQL_COLUMN_SEARCHABLE
@@ -162,6 +169,7 @@ typedef signed short RETCODE;
 #define SQL_LIKE_ONLY			1
 #define SQL_ALL_EXCEPT_LIKE 		2
 #define SQL_SEARCHABLE			3
+
 
 /*
  *  NULL Handles
@@ -174,52 +182,133 @@ typedef signed short RETCODE;
 /*
  *  Function Prototypes
  */
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
-  RETCODE SQL_API SQLAllocConnect (HENV henv, HDBC FAR * phdbc);
-  RETCODE SQL_API SQLAllocEnv (HENV FAR * phenv);
-  RETCODE SQL_API SQLAllocStmt (HDBC hdbc, HSTMT FAR * phstmt);
-  RETCODE SQL_API SQLBindCol (HSTMT hstmt, UWORD icol, SWORD fCType,
-      PTR rgbValue, SDWORD cbValueMax, SDWORD FAR * pcbValue);
-  RETCODE SQL_API SQLCancel (HSTMT hstmt);
-  RETCODE SQL_API SQLColAttributes (HSTMT hstmt, UWORD icol, UWORD fDescType,
-      PTR rgbDesc, SWORD cbDescMax, SWORD FAR * pcbDesc, SDWORD FAR * pfDesc);
-  RETCODE SQL_API SQLConnect (HDBC hdbc, UCHAR FAR * szDSN, SWORD cbDSN,
-      UCHAR FAR * szUID, SWORD cbUID, UCHAR FAR * szAuthStr, SWORD cbAuthStr);
-  RETCODE SQL_API SQLDescribeCol (HSTMT hstmt, UWORD icol,
-      UCHAR FAR * szColName, SWORD cbColNameMax, SWORD FAR * pcbColName,
-      SWORD FAR * pfSqlType, UDWORD FAR * pcbColDef, SWORD FAR * pibScale,
-      SWORD FAR * pfNullable);
-  RETCODE SQL_API SQLDisconnect (HDBC hdbc);
-  RETCODE SQL_API SQLError (HENV henv, HDBC hdbc, HSTMT hstmt,
-      UCHAR FAR * szSqlState, SDWORD FAR * pfNativeError, UCHAR FAR * szErrorMsg,
-      SWORD cbErrorMsgMax, SWORD FAR * pcbErrorMsg);
-  RETCODE SQL_API SQLExecDirect (HSTMT hstmt, UCHAR FAR * szSqlStr,
-      SDWORD cbSqlStr);
-  RETCODE SQL_API SQLExecute (HSTMT hstmt);
-  RETCODE SQL_API SQLFetch (HSTMT hstmt);
-  RETCODE SQL_API SQLFreeConnect (HDBC hdbc);
-  RETCODE SQL_API SQLFreeEnv (HENV henv);
-  RETCODE SQL_API SQLFreeStmt (HSTMT hstmt, UWORD fOption);
-  RETCODE SQL_API SQLGetCursorName (HSTMT hstmt, UCHAR FAR * szCursor,
-      SWORD cbCursorMax, SWORD FAR * pcbCursor);
-  RETCODE SQL_API SQLNumResultCols (HSTMT hstmt, SWORD FAR * pccol);
-  RETCODE SQL_API SQLPrepare (HSTMT hstmt, UCHAR FAR * szSqlStr,
-      SDWORD cbSqlStr);
-  RETCODE SQL_API SQLRowCount (HSTMT hstmt, SDWORD FAR * pcrow);
-  RETCODE SQL_API SQLSetCursorName (HSTMT hstmt, UCHAR FAR * szCursor,
-      SWORD cbCursor);
-  RETCODE SQL_API SQLTransact (HENV henv, HDBC hdbc, UWORD fType);
+SQLRETURN SQL_API SQLAllocConnect (
+    SQLHENV henv,
+    SQLHDBC FAR * phdbc);
+
+SQLRETURN SQL_API SQLAllocEnv (
+    SQLHENV FAR * phenv);
+
+SQLRETURN SQL_API SQLAllocStmt (
+    SQLHDBC hdbc,
+    SQLHSTMT FAR * phstmt);
+
+SQLRETURN SQL_API SQLBindCol (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLSMALLINT fCType,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue);
+
+SQLRETURN SQL_API SQLCancel (
+    SQLHSTMT hstmt);
+
+SQLRETURN SQL_API SQLColAttributes (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLUSMALLINT fDescType,
+    SQLPOINTER rgbDesc,
+    SQLSMALLINT cbDescMax,
+    SQLSMALLINT FAR * pcbDesc,
+    SQLINTEGER FAR * pfDesc);
+
+SQLRETURN SQL_API SQLConnect (
+    SQLHDBC hdbc,
+    SQLCHAR FAR * szDSN,
+    SQLSMALLINT cbDSN,
+    SQLCHAR FAR * szUID,
+    SQLSMALLINT cbUID,
+    SQLCHAR FAR * szAuthStr,
+    SQLSMALLINT cbAuthStr);
+
+SQLRETURN SQL_API SQLDescribeCol (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLCHAR FAR * szColName,
+    SQLSMALLINT cbColNameMax,
+    SQLSMALLINT FAR * pcbColName,
+    SQLSMALLINT FAR * pfSqlType,
+    SQLUINTEGER FAR * pcbColDef,
+    SQLSMALLINT FAR * pibScale,
+    SQLSMALLINT FAR * pfNullable);
+
+SQLRETURN SQL_API SQLDisconnect (
+    SQLHDBC hdbc);
+
+SQLRETURN SQL_API SQLError (
+    SQLHENV henv,
+    SQLHDBC hdbc,
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlState,
+    SQLINTEGER FAR * pfNativeError,
+    SQLCHAR FAR * szErrorMsg,
+    SQLSMALLINT cbErrorMsgMax,
+    SQLSMALLINT FAR * pcbErrorMsg);
+
+SQLRETURN SQL_API SQLExecDirect (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlStr,
+    SQLINTEGER cbSqlStr);
+
+SQLRETURN SQL_API SQLExecute (
+    SQLHSTMT hstmt);
+
+SQLRETURN SQL_API SQLFetch (
+    SQLHSTMT hstmt);
+
+SQLRETURN SQL_API SQLFreeConnect (
+    SQLHDBC hdbc);
+
+SQLRETURN SQL_API SQLFreeEnv (
+    SQLHENV henv);
+
+SQLRETURN SQL_API SQLFreeStmt (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fOption);
+
+SQLRETURN SQL_API SQLGetCursorName (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCursor,
+    SQLSMALLINT cbCursorMax,
+    SQLSMALLINT FAR * pcbCursor);
+
+SQLRETURN SQL_API SQLNumResultCols (
+    SQLHSTMT hstmt,
+    SQLSMALLINT FAR * pccol);
+
+SQLRETURN SQL_API SQLPrepare (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlStr,
+    SQLINTEGER cbSqlStr);
+
+SQLRETURN SQL_API SQLRowCount (
+    SQLHSTMT hstmt,
+    SQLINTEGER FAR * pcrow);
+
+SQLRETURN SQL_API SQLSetCursorName (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCursor,
+    SQLSMALLINT cbCursor);
+
+SQLRETURN SQL_API SQLTransact (
+    SQLHENV henv,
+    SQLHDBC hdbc,
+    SQLUSMALLINT fType);
 
 /*
  *  Depreciated ODBC 1.0 function - Use SQLBindParameter
  */
-  RETCODE SQL_API SQLSetParam (HSTMT hstmt, UWORD ipar, SWORD fCType,
-      SWORD fSqlType, UDWORD cbColDef, SWORD ibScale, PTR rgbValue,
-      SDWORD FAR * pcbValue);
+SQLRETURN SQL_API SQLSetParam (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT ipar,
+    SQLSMALLINT fCType,
+    SQLSMALLINT fSqlType,
+    SQLUINTEGER cbParamDef,
+    SQLSMALLINT ibScale,
+    SQLPOINTER rgbValue,
+    SQLINTEGER FAR * pcbValue);
 
 #ifdef __cplusplus
 }

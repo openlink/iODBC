@@ -25,20 +25,22 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 #ifndef	_ISQLEXT_H
-# define _ISQLEXT_H
+#define _ISQLEXT_H
 
+#ifndef _ISQL_H
 #include <isql.h>
+#endif
 
-/*
- *  Generic constants
- */
-#define SQL_MAX_OPTION_STRING_LENGTH	256
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  *  Additional return codes
  */
 #define SQL_STILL_EXECUTING 		2
 #define SQL_NEED_DATA			99
+
 
 /*
  *  SQL extended datatypes
@@ -68,12 +70,16 @@
 #define SQL_INTERVAL_HOUR_TO_SECOND	(-91)
 #define SQL_INTERVAL_MINUTE_TO_SECOND	(-92)
 #define SQL_UNICODE			(-95)
+#define SQL_UNICODE_VARCHAR		(-96)
+#define SQL_UNICODE_LONGVARCHAR		(-97)
+#define SQL_UNICODE_CHAR		SQL_UNICODE
 
 #define SQL_TYPE_DRIVER_START		SQL_INTERVAL_YEAR
-#define SQL_TYPE_DRIVER_END		SQL_UNICODE
+#define SQL_TYPE_DRIVER_END		SQL_UNICODE_LONGVARCHAR
 
 #define SQL_SIGNED_OFFSET		(-20)
 #define SQL_UNSIGNED_OFFSET		(-22)
+
 
 /*
  *  C datatype to SQL datatype mapping
@@ -92,6 +98,7 @@
 #define SQL_C_UTINYINT			SQL_TINYINT+SQL_UNSIGNED_OFFSET
 #define SQL_C_BOOKMARK			SQL_C_ULONG
 
+
 /*
  *  Extended data types override sql.h defined
  */
@@ -99,38 +106,6 @@
 #define SQL_TYPE_MIN		SQL_BIT
 #define SQL_ALL_TYPES		0
 
-/*
- *  SQL portable types for C - DATE, TIME, TIMESTAMP
- */
-typedef struct _DATE_STRUCT
-  {
-    SWORD year;
-    UWORD month;
-    UWORD day;
-  }
-DATE_STRUCT;
-
-typedef struct _TIME_STRUCT
-  {
-    UWORD hour;
-    UWORD minute;
-    UWORD second;
-  }
-TIME_STRUCT;
-
-typedef struct _TIMESTAMP_STRUCT
-  {
-    SWORD year;
-    UWORD month;
-    UWORD day;
-    UWORD hour;
-    UWORD minute;
-    UWORD second;
-    UDWORD fraction;
-  }
-TIMESTAMP_STRUCT;
-
-typedef unsigned long int	BOOKMARK;
 
 /*
  * ----------------------------------------------------------------------
@@ -146,10 +121,12 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_DRIVER_PROMPT		2
 #define SQL_DRIVER_COMPLETE_REQUIRED	3
 
+
 /*
  *  SQLGetData
  */
 #define SQL_NO_TOTAL			(-4)
+
 
 /*
  *  SQLBindParameter
@@ -157,7 +134,8 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_DEFAULT_PARAM		(-5)
 #define SQL_IGNORE			(-6)
 #define SQL_LEN_DATA_AT_EXEC_OFFSET	(-100)
-#define SQL_LEN_DATA_AT_EXEC(length) 	(-length+SQL_LEN_DATA_AT_EXEC_OFFSET)
+#define SQL_LEN_DATA_AT_EXEC(length) 	(-(length)+SQL_LEN_DATA_AT_EXEC_OFFSET)
+
 
 /*
  *  SQLGetFunctions
@@ -230,6 +208,9 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_API_ALL_FUNCTIONS		0
 
 #define SQL_NUM_EXTENSIONS (SQL_EXT_API_LAST-SQL_EXT_API_START+1)
+
+#define SQL_API_LOADBYORDINAL		199
+
 
 /*
  *  SQLGetInfo
@@ -390,10 +371,12 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_CVT_TIMESTAMP		0x00020000L
 #define SQL_CVT_LONGVARBINARY		0x00040000L
 
+
 /*
  *  SQL_CONVERT_FUNCTIONS
  */
 #define SQL_FN_CVT_CONVERT		0x00000001L
+
 
 /*
  *  SQL_STRING_FUNCTIONS
@@ -417,6 +400,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_FN_STR_LOCATE_2 		0x00010000L
 #define SQL_FN_STR_SOUNDEX		0x00020000L
 #define SQL_FN_STR_SPACE		0x00040000L
+
 
 /*
  *  SQL_NUMERIC_FUNCTIONS
@@ -446,6 +430,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_FN_NUM_ROUND		0x00400000L
 #define SQL_FN_NUM_TRUNCATE 		0x00800000L
 
+
 /*
  *  SQL_TIMEDATE_FUNCTIONS
  */
@@ -467,12 +452,14 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_FN_TD_DAYNAME		0x00008000L
 #define SQL_FN_TD_MONTHNAME 		0x00010000L
 
+
 /*
  *  SQL_SYSTEM_FUNCTIONS
  */
 #define SQL_FN_SYS_USERNAME 		0x00000001L
 #define SQL_FN_SYS_DBNAME		0x00000002L
 #define SQL_FN_SYS_IFNULL		0x00000004L
+
 
 /*
  *  SQL_TIMEDATE_ADD_INTERVALS
@@ -488,6 +475,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_FN_TSI_QUARTER		0x00000080L
 #define SQL_FN_TSI_YEAR 		0x00000100L
 
+
 /*
  *  SQL_ODBC_API_CONFORMANCE
  */
@@ -495,11 +483,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_OAC_LEVEL1			0x0001
 #define SQL_OAC_LEVEL2			0x0002
 
+
 /*
  * SQL_ODBC_SAG_CLI_CONFORMANCE
  */
 #define SQL_OSCC_NOT_COMPLIANT		0x0000
 #define SQL_OSCC_COMPLIANT		0x0001
+
 
 /*
  *  SQL_ODBC_SQL_CONFORMANCE
@@ -508,11 +498,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_OSC_CORE			0x0001
 #define SQL_OSC_EXTENDED		0x0002
 
+
 /*
  *  SQL_CONCAT_NULL_BEHAVIOR
  */
 #define SQL_CB_NULL 			0x0000
 #define SQL_CB_NON_NULL		 	0x0001
+
 
 /*
  *  SQL_CURSOR_COMMIT_BEHAVIOR
@@ -522,6 +514,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_CB_CLOSE			0x0001
 #define SQL_CB_PRESERVE			0x0002
 
+
 /*
  *  SQL_IDENTIFIER_CASE
  */
@@ -529,6 +522,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_IC_LOWER			0x0002
 #define SQL_IC_SENSITIVE		0x0003
 #define SQL_IC_MIXED			0x0004
+
 
 /*
  *  SQL_TXN_CAPABLE
@@ -539,6 +533,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_TC_DDL_COMMIT		0x0003
 #define SQL_TC_DDL_IGNORE		0x0004
 
+
 /*
  *  SQL_SCROLL_OPTIONS
  */
@@ -548,6 +543,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SO_MIXED			0x00000008L
 #define SQL_SO_STATIC			0x00000010L
 
+
 /*
  * SQL_SCROLL_CONCURRENCY
  */
@@ -555,6 +551,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SCCO_LOCK			0x00000002L
 #define SQL_SCCO_OPT_ROWVER 		0x00000004L
 #define SQL_SCCO_OPT_VALUES 		0x00000008L
+
 
 /*
  *  SQL_FETCH_DIRECTION
@@ -568,6 +565,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_FD_FETCH_RESUME 		0x00000040L
 #define SQL_FD_FETCH_BOOKMARK		0x00000080L
 
+
 /*
  *  SQL_TXN_ISOLATION_OPTION
  */
@@ -577,6 +575,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_TXN_SERIALIZABLE		0x00000008L
 #define SQL_TXN_VERSIONING		0x00000010L
 
+
 /*
  *  SQL_CORRELATION_NAME
  */
@@ -584,11 +583,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_CN_DIFFERENT		0x0001
 #define SQL_CN_ANY			0x0002
 
+
 /*
  * SQL_NON_NULLABLE_COLUMNS
  */
 #define SQL_NNC_NULL			0x0000
 #define SQL_NNC_NON_NULL		0x0001
+
 
 /*
  *  SQL_NULL_COLLATION
@@ -598,12 +599,14 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_NC_START			0x0002
 #define SQL_NC_END			0x0004
 
+
 /*
  * SQL_FILE_USAGE
  */
 #define SQL_FILE_NOT_SUPPORTED		0x0000
 #define SQL_FILE_TABLE			0x0001
 #define SQL_FILE_QUALIFIER		0x0002
+
 
 /*
  *  SQL_GETDATA_EXTENSIONS
@@ -613,11 +616,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_GD_BLOCK			0x00000004L
 #define SQL_GD_BOUND			0x00000008L
 
+
 /*
  * SQL_ALTER_TABLE
  */
 #define SQL_AT_ADD_COLUMN		0x00000001L
 #define SQL_AT_DROP_COLUMN		0x00000002L
+
 
 /*
  *  SQL_POSITIONED_STATEMENTS
@@ -626,6 +631,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_PS_POSITIONED_UPDATE	0x00000002L
 #define SQL_PS_SELECT_FOR_UPDATE	0x00000004L
 
+
 /*
  *  SQL_GROUP_BY
  */
@@ -633,6 +639,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_GB_GROUP_BY_EQUALS_SELECT	0x0001
 #define SQL_GB_GROUP_BY_CONTAINS_SELECT	0x0002
 #define SQL_GB_NO_RELATION		0x0003
+
 
 /*
  *  SQL_OWNER_USAGE
@@ -643,6 +650,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_OU_INDEX_DEFINITION 	0x00000008L
 #define SQL_OU_PRIVILEGE_DEFINITION	0x00000010L
 
+
 /*
  * SQL_QUALIFIER_USAGE
  */
@@ -651,6 +659,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_QU_TABLE_DEFINITION 	0x00000004L
 #define SQL_QU_INDEX_DEFINITION 	0x00000008L
 #define SQL_QU_PRIVILEGE_DEFINITION 	0x00000010L
+
 
 /*
  *  SQL_SUBQUERIES
@@ -661,11 +670,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SQ_QUANTIFIED		0x00000008L
 #define SQL_SQ_CORRELATED_SUBQUERIES	0x00000010L
 
+
 /*
  *  SQL_UNION
  */
 #define SQL_U_UNION			0x00000001L
 #define SQL_U_UNION_ALL			0x00000002L
+
 
 /*
  *  SQL_BOOKMARK_PERSISTENCE
@@ -678,6 +689,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_BP_OTHER_HSTMT		0x00000020L
 #define SQL_BP_SCROLL			0x00000040L
 
+
 /*
  * SQL_STATIC_SENSITIVITY
  */
@@ -685,12 +697,14 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SS_DELETIONS		0x00000002L
 #define SQL_SS_UPDATES			0x00000004L
 
+
 /*
  *  SQL_LOCK_TYPES
  */
 #define SQL_LCK_NO_CHANGE		0x00000001L
 #define SQL_LCK_EXCLUSIVE		0x00000002L
 #define SQL_LCK_UNLOCK			0x00000004L
+
 
 /*
  *  SQL_POS_OPERATIONS
@@ -701,11 +715,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_POS_DELETE			0x00000008L
 #define SQL_POS_ADD			0x00000010L
 
+
 /*
  *  SQL_QUALIFIER_LOCATION
  */
 #define SQL_QL_START			0x0001L
 #define SQL_QL_END			0x0002L
+
 
 /*
  *  SQL_OJ_CAPABILITIES
@@ -717,6 +733,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_OJ_NOT_ORDERED		0x00000010L
 #define SQL_OJ_INNER			0x00000020L
 #define SQL_OJ_ALL_COMPARISON_OPS	0x00000040L
+
 
 /*
  *  SQLGetStmtOption/SQLSetStmtOption
@@ -746,10 +763,12 @@ typedef unsigned long int	BOOKMARK;
  */
 #define SQL_QUERY_TIMEOUT_DEFAULT	0UL
 
+
 /*
  *  SQL_MAX_ROWS
  */
 #define SQL_MAX_ROWS_DEFAULT		0UL
+
 
 /*
  *  SQL_NOSCAN
@@ -758,10 +777,12 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_NOSCAN_ON			1UL	/* 1.0 TRUE */
 #define SQL_NOSCAN_DEFAULT		SQL_NOSCAN_OFF
 
+
 /*
  *  SQL_MAX_LENGTH
  */
 #define SQL_MAX_LENGTH_DEFAULT		0UL
+
 
 /*
  *  SQL_ASYNC_ENABLE
@@ -770,11 +791,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_ASYNC_ENABLE_ON		1UL
 #define SQL_ASYNC_ENABLE_DEFAULT	SQL_ASYNC_ENABLE_OFF
 
+
 /*
  *  SQL_BIND_TYPE
  */
 #define SQL_BIND_BY_COLUMN		0UL
 #define SQL_BIND_TYPE_DEFAULT		SQL_BIND_BY_COLUMN
+
 
 /*
  *  SQL_CONCURRENCY
@@ -785,6 +808,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_CONCUR_VALUES		4
 #define SQL_CONCUR_DEFAULT		SQL_CONCUR_READ_ONLY
 
+
 /*
  *  SQL_CURSOR_TYPE
  */
@@ -794,15 +818,18 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_CURSOR_STATIC		3UL
 #define SQL_CURSOR_TYPE_DEFAULT		SQL_CURSOR_FORWARD_ONLY
 
+
 /*
  *  SQL_ROWSET_SIZE
  */
 #define SQL_ROWSET_SIZE_DEFAULT 	1UL
 
+
 /*
  *  SQL_KEYSET_SIZE
  */
 #define SQL_KEYSET_SIZE_DEFAULT		0UL
+
 
 /*
  *  SQL_SIMULATE_CURSOR
@@ -811,6 +838,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SC_TRY_UNIQUE		1UL
 #define SQL_SC_UNIQUE			2UL
 
+
 /*
  *  SQL_RETRIEVE_DATA
  */
@@ -818,12 +846,14 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_RD_ON			1UL
 #define SQL_RD_DEFAULT			SQL_RD_ON
 
+
 /*
  *  SQL_USE_BOOKMARKS
  */
 #define SQL_UB_OFF			0UL
 #define SQL_UB_ON			1UL
 #define SQL_UB_DEFAULT			SQL_UB_OFF
+
 
 /*
  *  SQLSetConnectOption/SQLGetConnectOption
@@ -853,6 +883,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_MODE_READ_ONLY		1UL
 #define SQL_MODE_DEFAULT		SQL_MODE_READ_WRITE
 
+
 /*
  *  SQL_AUTOCOMMIT
  */
@@ -860,10 +891,12 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_AUTOCOMMIT_ON		1UL
 #define SQL_AUTOCOMMIT_DEFAULT		SQL_AUTOCOMMIT_ON
 
+
 /*
  *  SQL_LOGIN_TIMEOUT
  */
 #define SQL_LOGIN_TIMEOUT_DEFAULT	15UL
+
 
 /*
  *  SQL_OPT_TRACE
@@ -873,6 +906,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_OPT_TRACE_DEFAULT		SQL_OPT_TRACE_OFF
 #define SQL_OPT_TRACE_FILE_DEFAULT	"odbc.log"
 
+
 /*
  *  SQL_ODBC_CURSORS
  */
@@ -880,6 +914,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_CUR_USE_ODBC		1UL
 #define SQL_CUR_USE_DRIVER		2UL
 #define SQL_CUR_DEFAULT 		SQL_CUR_USE_DRIVER
+
 
 /*
  *  SQLSpecialColumns - Column types and scopes
@@ -891,10 +926,12 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SCOPE_TRANSACTION		1
 #define SQL_SCOPE_SESSION		2
 
+
 /*
  *  SQLSetPos
  */
 #define SQL_ENTIRE_ROWSET		0
+
 
 /*
  *  SQLSetPos
@@ -905,12 +942,14 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_DELETE			3
 #define SQL_ADD				4
 
+
 /*
  *  SQLSetPos
  */
 #define SQL_LOCK_NO_CHANGE		0
 #define SQL_LOCK_EXCLUSIVE		1
 #define SQL_LOCK_UNLOCK 		2
+
 
 /*
  *  SQLSetPos
@@ -927,6 +966,7 @@ typedef unsigned long int	BOOKMARK;
     SQLSetPos(hstmt,irow,SQL_DELETE,SQL_LOCK_NO_CHANGE)
 #define SQL_ADD_RECORD(hstmt,irow) \
     SQLSetPos(hstmt,irow,SQL_ADD,SQL_LOCK_NO_CHANGE)
+
 
 /*
  *  All the ODBC keywords
@@ -961,7 +1001,8 @@ typedef unsigned long int	BOOKMARK;
 "TABLE,TEMPORARY,THEN,TIME,TIMESTAMP,TIMEZONE_HOUR,TIMEZONE_MINUTE,"\
 "TO,TRAILING,TRANSACTION,TRANSLATE,TRANSLATION,TRIM,TRUE,"\
 "UNION,UNIQUE,UNKNOWN,UPDATE,UPPER,USAGE,USER,USING,"\
-"VALUE,,VARCHAR,VARYING,VIEW,WHEN,WHENEVER,WHERE,WITH,WORK,YEAR"
+"VALUE,VALUES,VARCHAR,VARYING,VIEW,WHEN,WHENEVER,WHERE,WITH,WORK,YEAR"
+
 
 /*
  * ----------------------------------------------------------------------
@@ -980,6 +1021,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_FETCH_RELATIVE		6
 #define SQL_FETCH_BOOKMARK		8
 
+
 /*
  *  SQLExtendedFetch - rgfRowStatus
  */
@@ -990,12 +1032,16 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_ROW_ADDED			4
 #define SQL_ROW_ERROR			5
 
+
 /*
  *  SQLForeignKeys - UPDATE_RULE/DELETE_RULE
  */
 #define SQL_CASCADE 			0
 #define SQL_RESTRICT			1
 #define SQL_SET_NULL			2
+#define SQL_NO_ACTION			3
+#define SQL_SET_DEFAULT			4
+
 
 /*
  *  SQLBindParameter - fParamType
@@ -1008,11 +1054,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_PARAM_OUTPUT		4
 #define SQL_RETURN_VALUE		5
 
+
 /*
  *  SQLSetParam to SQLBindParameter conversion
  */
 #define SQL_PARAM_TYPE_DEFAULT		SQL_PARAM_INPUT_OUTPUT
 #define SQL_SETPARAM_VALUE_MAX		(-1L)
+
 
 /*
  *  SQLStatistics - fUnique
@@ -1020,11 +1068,13 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_INDEX_UNIQUE		0
 #define SQL_INDEX_ALL			1
 
+
 /*
  *  SQLStatistics - fAccuracy
  */
 #define SQL_QUICK			0
 #define SQL_ENSURE			1
+
 
 /*
  *  SQLStatistics - TYPE
@@ -1034,6 +1084,7 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_INDEX_HASHED		2
 #define SQL_INDEX_OTHER 		3
 
+
 /*
  *  SQLProcedures - PROCEDURE_TYPE
  */
@@ -1041,12 +1092,14 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_PT_PROCEDURE		1
 #define SQL_PT_FUNCTION 		2
 
+
 /*
  *  SQLSpecialColumns - PSEUDO_COLUMN
  */
 #define SQL_PC_UNKNOWN			0
 #define SQL_PC_NOT_PSEUDO		1
 #define SQL_PC_PSEUDO			2
+
 
 /*
  *  Deprecated defines from prior versions of ODBC
@@ -1069,106 +1122,282 @@ typedef unsigned long int	BOOKMARK;
 #define SQL_SCROLL_STATIC		(-3L)
 #define SQL_PC_NON_PSEUDO		SQL_PC_NOT_PSEUDO
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 /*
  *  Level 1 function rototypes
  */
-RETCODE SQL_API SQLColumns (HSTMT hstmt, UCHAR FAR * szTableQualifier,
-    SWORD cbTableQualifier, UCHAR FAR * szTableOwner, SWORD cbTableOwner,
-    UCHAR FAR * szTableName, SWORD cbTableName, UCHAR FAR * szColumnName,
-    SWORD cbColumnName);
-RETCODE SQL_API SQLDriverConnect (HDBC hdbc, HWND hwnd,
-    UCHAR FAR * szConnStrIn, SWORD cbConnStrIn, UCHAR FAR * szConnStrOut,
-    SWORD cbConnStrOutMax, SWORD FAR * pcbConnStrOut, UWORD fDriverCompletion);
-RETCODE SQL_API SQLGetConnectOption (HDBC hdbc, UWORD fOption, PTR pvParam);
-RETCODE SQL_API SQLGetData (HSTMT hstmt, UWORD icol, SWORD fCType,
-    PTR rgbValue, SDWORD cbValueMax, SDWORD FAR * pcbValue);
-RETCODE SQL_API SQLGetFunctions (HDBC hdbc, UWORD fFunction,
-    UWORD FAR * pfExists);
-RETCODE SQL_API SQLGetInfo (HDBC hdbc, UWORD fInfoType, PTR rgbInfoValue,
-    SWORD cbInfoValueMax, SWORD FAR * pcbInfoValue);
-RETCODE SQL_API SQLGetStmtOption (HSTMT hstmt, UWORD fOption, PTR pvParam);
-RETCODE SQL_API SQLGetTypeInfo (HSTMT hstmt, SWORD fSqlType);
-RETCODE SQL_API SQLParamData (HSTMT hstmt, PTR FAR * prgbValue);
-RETCODE SQL_API SQLPutData (HSTMT hstmt, PTR rgbValue, SDWORD cbValue);
-RETCODE SQL_API SQLSetConnectOption (HDBC hdbc, UWORD fOption, UDWORD vParam);
-RETCODE SQL_API SQLSetStmtOption (HSTMT hstmt, UWORD fOption, UDWORD vParam);
-RETCODE SQL_API SQLSpecialColumns (HSTMT hstmt, UWORD fColType,
-    UCHAR FAR * szTableQualifier, SWORD cbTableQualifier,
-    UCHAR FAR * szTableOwner, SWORD cbTableOwner, UCHAR FAR * szTableName,
-    SWORD cbTableName, UWORD fScope, UWORD fNullable);
-RETCODE SQL_API SQLStatistics (HSTMT hstmt, UCHAR FAR * szTableQualifier,
-    SWORD cbTableQualifier, UCHAR FAR * szTableOwner, SWORD cbTableOwner,
-    UCHAR FAR * szTableName, SWORD cbTableName, UWORD fUnique, UWORD fAccuracy);
-RETCODE SQL_API SQLTables (HSTMT hstmt, UCHAR FAR * szTableQualifier,
-    SWORD cbTableQualifier, UCHAR FAR * szTableOwner, SWORD cbTableOwner,
-    UCHAR FAR * szTableName, SWORD cbTableName, UCHAR FAR * szTableType,
-    SWORD cbTableType);
+
+SQLRETURN SQL_API SQLColumns (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName,
+    SQLCHAR FAR * szColumnName,
+    SQLSMALLINT cbColumnName);
+
+SQLRETURN SQL_API SQLGetConnectOption (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption,
+    SQLPOINTER pvParam);
+
+SQLRETURN SQL_API SQLGetData (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLSMALLINT fCType,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue);
+
+SQLRETURN SQL_API SQLGetFunctions (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fFunction,
+    SQLUSMALLINT FAR * pfExists);
+
+SQLRETURN SQL_API SQLGetInfo (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fInfoType,
+    SQLPOINTER rgbInfoValue,
+    SQLSMALLINT cbInfoValueMax,
+    SQLSMALLINT FAR * pcbInfoValue);
+
+SQLRETURN SQL_API SQLGetStmtOption (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fOption,
+    SQLPOINTER pvParam);
+
+SQLRETURN SQL_API SQLGetTypeInfo (
+    SQLHSTMT hstmt,
+    SQLSMALLINT fSqlType);
+
+SQLRETURN SQL_API SQLParamData (
+    SQLHSTMT hstmt,
+    SQLPOINTER FAR * prgbValue);
+
+SQLRETURN SQL_API SQLPutData (
+    SQLHSTMT hstmt,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValue);
+
+SQLRETURN SQL_API SQLSetConnectOption (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption,
+    SQLUINTEGER vParam);
+
+SQLRETURN SQL_API SQLSetStmtOption (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fOption,
+    SQLUINTEGER vParam);
+
+SQLRETURN SQL_API SQLSpecialColumns (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fColType,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName,
+    SQLUSMALLINT fScope,
+    SQLUSMALLINT fNullable);
+
+SQLRETURN SQL_API SQLStatistics (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName,
+    SQLUSMALLINT fUnique,
+    SQLUSMALLINT fAccuracy);
+
+SQLRETURN SQL_API SQLTables (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName,
+    SQLCHAR FAR * szTableType,
+    SQLSMALLINT cbTableType);
+
+
+SQLRETURN SQL_API SQLDriverConnect(
+    SQLHDBC            hdbc,
+    SQLHWND            hwnd,
+    SQLCHAR FAR       *szConnStrIn,
+    SQLSMALLINT        cbConnStrIn,
+    SQLCHAR FAR       *szConnStrOut,
+    SQLSMALLINT        cbConnStrOutMax,
+    SQLSMALLINT FAR   *pcbConnStrOut,
+    SQLUSMALLINT       fDriverCompletion);
 
 /*
  *  Level 2 function prototypes
  */
-RETCODE SQL_API SQLBrowseConnect (HDBC hdbc, 
-    UCHAR FAR * szConnStrIn, SWORD cbConnStrIn, UCHAR FAR * szConnStrOut, 
-    SWORD cbConnStrOutMax, SWORD FAR * pcbConnStrOut);
-RETCODE SQL_API SQLColumnPrivileges (HSTMT hstmt,
-    UCHAR FAR * szTableQualifier, SWORD cbTableQualifier,
-    UCHAR FAR * szTableOwner, SWORD cbTableOwner, UCHAR FAR * szTableName,
-    SWORD cbTableName, UCHAR FAR * szColumnName, SWORD cbColumnName);
-RETCODE SQL_API SQLDataSources (HENV henv, UWORD fDirection,
-    UCHAR FAR * szDSN, SWORD cbDSNMax, SWORD FAR * pcbDSN,
-    UCHAR FAR * szDescription, SWORD cbDescriptionMax,
-    SWORD FAR * pcbDescription);
-RETCODE SQL_API SQLDescribeParam (HSTMT hstmt, UWORD ipar,
-    SWORD FAR * pfSqlType, UDWORD FAR * pcbColDef, SWORD FAR * pibScale,
-    SWORD FAR * pfNullable);
-RETCODE SQL_API SQLExtendedFetch (HSTMT hstmt, UWORD fFetchType, SDWORD irow,
-    UDWORD FAR * pcrow, UWORD FAR * rgfRowStatus);
-RETCODE SQL_API SQLForeignKeys (HSTMT hstmt, UCHAR FAR * szPkTableQualifier,
-    SWORD cbPkTableQualifier, UCHAR FAR * szPkTableOwner, SWORD cbPkTableOwner,
-    UCHAR FAR * szPkTableName, SWORD cbPkTableName,
-    UCHAR FAR * szFkTableQualifier, SWORD cbFkTableQualifier,
-    UCHAR FAR * szFkTableOwner, SWORD cbFkTableOwner, UCHAR FAR * szFkTableName,
-    SWORD cbFkTableName);
-RETCODE SQL_API SQLMoreResults (HSTMT hstmt);
-RETCODE SQL_API SQLNativeSql (HDBC hdbc, UCHAR FAR * szSqlStrIn,
-    SDWORD cbSqlStrIn, UCHAR FAR * szSqlStr, SDWORD cbSqlStrMax,
-    SDWORD FAR * pcbSqlStr);
-RETCODE SQL_API SQLNumParams (HSTMT hstmt, SWORD FAR * pcpar);
-RETCODE SQL_API SQLParamOptions (HSTMT hstmt, UDWORD crow, UDWORD FAR * pirow);
-RETCODE SQL_API SQLPrimaryKeys (HSTMT hstmt, UCHAR FAR * szTableQualifier,
-    SWORD cbTableQualifier, UCHAR FAR * szTableOwner, SWORD cbTableOwner,
-    UCHAR FAR * szTableName, SWORD cbTableName);
-RETCODE SQL_API SQLProcedureColumns (HSTMT hstmt, UCHAR FAR * szProcQualifier,
-    SWORD cbProcQualifier, UCHAR FAR * szProcOwner, SWORD cbProcOwner,
-    UCHAR FAR * szProcName, SWORD cbProcName, UCHAR FAR * szColumnName,
-    SWORD cbColumnName);
-RETCODE SQL_API SQLProcedures (HSTMT hstmt, UCHAR FAR * szProcQualifier,
-    SWORD cbProcQualifier, UCHAR FAR * szProcOwner, SWORD cbProcOwner,
-    UCHAR FAR * szProcName, SWORD cbProcName);
-RETCODE SQL_API SQLSetPos (HSTMT hstmt, UWORD irow, UWORD fOption, UWORD fLock);
-RETCODE SQL_API SQLTablePrivileges (HSTMT hstmt, UCHAR FAR * szTableQualifier,
-    SWORD cbTableQualifier, UCHAR FAR * szTableOwner, SWORD cbTableOwner,
-    UCHAR FAR * szTableName, SWORD cbTableName);
+SQLRETURN SQL_API SQLBrowseConnect (
+    SQLHDBC hdbc,
+    SQLCHAR FAR * szConnStrIn,
+    SQLSMALLINT cbConnStrIn,
+    SQLCHAR FAR * szConnStrOut,
+    SQLSMALLINT cbConnStrOutMax,
+    SQLSMALLINT FAR * pcbConnStrOut);
+
+SQLRETURN SQL_API SQLColumnPrivileges (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName,
+    SQLCHAR FAR * szColumnName,
+    SQLSMALLINT cbColumnName);
+
+SQLRETURN SQL_API SQLDataSources (
+    SQLHENV henv,
+    SQLUSMALLINT fDirection,
+    SQLCHAR FAR * szDSN,
+    SQLSMALLINT cbDSNMax,
+    SQLSMALLINT FAR * pcbDSN,
+    SQLCHAR FAR * szDescription,
+    SQLSMALLINT cbDescriptionMax,
+    SQLSMALLINT FAR * pcbDescription);
+
+SQLRETURN SQL_API SQLDescribeParam (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT ipar,
+    SQLSMALLINT FAR * pfSqlType,
+    SQLUINTEGER FAR * pcbParamDef,
+    SQLSMALLINT FAR * pibScale,
+    SQLSMALLINT FAR * pfNullable);
+
+SQLRETURN SQL_API SQLExtendedFetch (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fFetchType,
+    SQLINTEGER irow,
+    SQLUINTEGER FAR * pcrow,
+    SQLUSMALLINT FAR * rgfRowStatus);
+
+SQLRETURN SQL_API SQLForeignKeys (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szPkCatalogName,
+    SQLSMALLINT cbPkCatalogName,
+    SQLCHAR FAR * szPkSchemaName,
+    SQLSMALLINT cbPkSchemaName,
+    SQLCHAR FAR * szPkTableName,
+    SQLSMALLINT cbPkTableName,
+    SQLCHAR FAR * szFkCatalogName,
+    SQLSMALLINT cbFkCatalogName,
+    SQLCHAR FAR * szFkSchemaName,
+    SQLSMALLINT cbFkSchemaName,
+    SQLCHAR FAR * szFkTableName,
+    SQLSMALLINT cbFkTableName);
+
+SQLRETURN SQL_API SQLMoreResults (
+    SQLHSTMT hstmt);
+
+SQLRETURN SQL_API SQLNativeSql (
+    SQLHDBC hdbc,
+    SQLCHAR FAR * szSqlStrIn,
+    SQLINTEGER cbSqlStrIn,
+    SQLCHAR FAR * szSqlStr,
+    SQLINTEGER cbSqlStrMax,
+    SQLINTEGER FAR * pcbSqlStr);
+
+SQLRETURN SQL_API SQLNumParams (
+    SQLHSTMT hstmt,
+    SQLSMALLINT FAR * pcpar);
+
+SQLRETURN SQL_API SQLParamOptions (
+    SQLHSTMT hstmt,
+    SQLUINTEGER crow,
+    SQLUINTEGER FAR * pirow);
+
+SQLRETURN SQL_API SQLPrimaryKeys (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName);
+
+SQLRETURN SQL_API SQLProcedureColumns (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szProcName,
+    SQLSMALLINT cbProcName,
+    SQLCHAR FAR * szColumnName,
+    SQLSMALLINT cbColumnName);
+
+SQLRETURN SQL_API SQLProcedures (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szProcName,
+    SQLSMALLINT cbProcName);
+
+SQLRETURN SQL_API SQLSetPos (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT irow,
+    SQLUSMALLINT fOption,
+    SQLUSMALLINT fLock);
+
+SQLRETURN SQL_API SQLTablePrivileges (
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCatalogName,
+    SQLSMALLINT cbCatalogName,
+    SQLCHAR FAR * szSchemaName,
+    SQLSMALLINT cbSchemaName,
+    SQLCHAR FAR * szTableName,
+    SQLSMALLINT cbTableName);
+
 
 /*
  *  SDK 2.0 Additional function prototypes
  */
-RETCODE SQL_API SQLDrivers (HENV henv, UWORD fDirection,
-    UCHAR FAR * szDriverDesc, SWORD cbDriverDescMax, SWORD FAR * pcbDriverDesc,
-    UCHAR FAR * szDriverAttributes, SWORD cbDrvrAttrMax,
-    SWORD FAR * pcbDrvrAttr);
-RETCODE SQL_API SQLBindParameter (HSTMT hstmt, UWORD ipar, SWORD fParamType,
-    SWORD fCType, SWORD fSqlType, UDWORD cbColDef, SWORD ibScale, PTR rgbValue,
-    SDWORD cbValueMax, SDWORD FAR * pcbValue);
+SQLRETURN SQL_API SQLDrivers (
+    SQLHENV henv,
+    SQLUSMALLINT fDirection,
+    SQLCHAR FAR * szDriverDesc,
+    SQLSMALLINT cbDriverDescMax,
+    SQLSMALLINT FAR * pcbDriverDesc,
+    SQLCHAR FAR * szDriverAttributes,
+    SQLSMALLINT cbDrvrAttrMax,
+    SQLSMALLINT FAR * pcbDrvrAttr);
+
+SQLRETURN SQL_API SQLBindParameter (
+    SQLHSTMT hstmt,
+    SQLUSMALLINT ipar,
+    SQLSMALLINT fParamType,
+    SQLSMALLINT fCType,
+    SQLSMALLINT fSqlType,
+    SQLUINTEGER cbColDef,
+    SQLSMALLINT ibScale,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue);
+
 
 /*
  *  Depreciated - use SQLSetStmtOptions
  */
-RETCODE SQL_API SQLSetScrollOptions (HSTMT hstmt, UWORD fConcurrency,
-    SDWORD crowKeyset, UWORD crowRowset);
+SQLRETURN SQL_API SQLSetScrollOptions (		/* Use SQLSetStmtOptions */
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fConcurrency,
+    SQLINTEGER crowKeyset,
+    SQLUSMALLINT crowRowset);
+
 
 #ifdef __cplusplus
 }
