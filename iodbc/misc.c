@@ -83,7 +83,8 @@ upper_strneq (
 static char *			/* return new position in input str */
 readtoken (
     char *istr,			/* old position in input buf */
-    char *obuf)			/* token string ( if "\0", then finished ) */
+    char *obuf,
+    int skipcomment)
 {
   char *start = obuf;
 
@@ -100,7 +101,14 @@ readtoken (
 
       if (c == ';')
 	{
-	  for (; *istr && *istr != '\n'; istr++);
+	  if (skipcomment)
+	    for (; *istr && *istr != '\n'; istr++);
+	  else
+	    {
+	      *obuf = c;
+	      obuf++;
+	      istr++;
+	    }
 	  break;
 	}
       *obuf = c;
@@ -307,7 +315,7 @@ _iodbcdm_getinifile (char *buf, int size)
 # endif	/* _MACX */
 
   /*
-   *  No ini file found or accessable
+   *  No ini file found or accessible
    */
   return NULL;
 #endif /* UNIX_PWD */
@@ -426,7 +434,7 @@ _iodbcdm_getkeyvalbydsn (
 	  continue;
 	}
 
-      str = readtoken (str, token);
+      str = readtoken (str, token, 1);
 
       if (token)
 	nTokenLength = STRLEN (token);
@@ -435,7 +443,7 @@ _iodbcdm_getkeyvalbydsn (
 
       if (upper_strneq (keywd, token, nTokenLength > nKeyWordLength ? nTokenLength : nKeyWordLength))
 	{
-	  str = readtoken (str, token);
+	  str = readtoken (str, token, 1);
 
 	  if (!STREQ (token, "="))
 	    /* something other than = */
@@ -443,7 +451,7 @@ _iodbcdm_getkeyvalbydsn (
 	      continue;
 	    }
 
-	  str = readtoken (str, token);
+	  str = readtoken (str, token, 1);
 
 	  if (STRLEN (token) > size - 1)
 	    {
@@ -477,8 +485,7 @@ _iodbcdm_getkeyvalinstr (
   char token[1024] = {'\0'};
   int flag = 0;
 
-  if (cnstr == NULL || value == NULL
-      || keywd == NULL || size < 1)
+  if (cnstr == NULL || value == NULL || keywd == NULL || size < 1)
     {
       return NULL;
     }
@@ -495,7 +502,7 @@ _iodbcdm_getkeyvalinstr (
 
   for (;;)
     {
-      cnstr = readtoken (cnstr, token);
+      cnstr = readtoken (cnstr, token, 0);
 
       if (*token == '\0')
 	  break;
@@ -531,7 +538,6 @@ _iodbcdm_getkeyvalinstr (
 
   return NULL;
 }
-
 
 #if 0
 int
