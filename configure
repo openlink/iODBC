@@ -830,7 +830,7 @@ fi
 
 PACKAGE=libiodbc
 
-VERSION=2.50.2
+VERSION=2.50.3
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -2687,7 +2687,7 @@ NONE*)
        sysinidir=/etc
        ;;
 *)
-       sysinidir=$sysconfdir
+       sysinidir=`eval echo $sysconfdir`
        ;;
 esac
 echo "$ac_t""$sysinidir" 1>&6
