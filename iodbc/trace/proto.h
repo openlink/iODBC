@@ -33,8 +33,8 @@ void trace_SQLCloseCursor (int trace_leave, int retcode, SQLHSTMT StatementHandl
 /* ColAttribute.c */
 void _trace_colattr2_type (SQLUSMALLINT type);
 void _trace_colattr3_type (SQLUSMALLINT type);
-void trace_SQLColAttribute (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLLEN * NumericAttributePtr);
-void trace_SQLColAttributeW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLLEN * NumericAttributePtr);
+void trace_SQLColAttribute (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLLEN *NumericAttributePtr);
+void trace_SQLColAttributeW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLLEN *NumericAttributePtr);
 void trace_SQLColAttributes (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT icol, SQLUSMALLINT fDescType, SQLPOINTER rgbDesc, SQLSMALLINT cbDescMax, SQLSMALLINT *pcbDesc, SQLLEN *pfDesc);
 void trace_SQLColAttributesW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT icol, SQLUSMALLINT fDescType, SQLPOINTER rgbDesc, SQLSMALLINT cbDescMax, SQLSMALLINT *pcbDesc, SQLLEN *pfDesc);
 
@@ -237,7 +237,7 @@ void trace_SQLSetDescField (int trace_leave, int retcode, SQLHDESC DescriptorHan
 void trace_SQLSetDescFieldW (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT FieldIdentifier, SQLPOINTER ValuePtr, SQLINTEGER BufferLength);
 
 /* SetDescRec.c */
-void trace_SQLSetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type, SQLSMALLINT SubType, SQLLEN Length, SQLSMALLINT Precision, SQLSMALLINT Scale, SQLPOINTER Data, SQLLEN *StringLength, SQLLEN *Indicator);
+void trace_SQLSetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type, SQLSMALLINT SubType, SQLINTEGER Length, SQLSMALLINT Precision, SQLSMALLINT Scale, SQLPOINTER Data, SQLINTEGER *StringLength, SQLINTEGER *Indicator);
 
 /* SetEnvAttr.c */
 void trace_SQLSetEnvAttr (int trace_leave, int retcode, SQLHENV EnvironmentHandle, SQLINTEGER Attribute, SQLPOINTER ValuePtr, SQLINTEGER StringLength);
