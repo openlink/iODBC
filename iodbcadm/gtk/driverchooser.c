@@ -323,7 +323,7 @@ driverchooser_ok_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 	  gtk_clist_get_text (GTK_CLIST (choose_t->driverlist),
 	      GPOINTER_TO_INT (GTK_CLIST (choose_t->driverlist)->selection->
 		  data), 0, &szDriver);
-	  choose_t->driver = strdup (szDriver);
+	  choose_t->driver = dm_SQL_A2W(szDriver, SQL_NTS);
 	}
       else
 	choose_t->driver = NULL;

@@ -756,7 +756,8 @@ admin_ok_clicked (GtkWidget *widget, void **inparams)
       dsnchoose_t->file_list = dsnchoose_t->file_entry =
 	  dsnchoose_t->dir_combo = NULL;
       dsnchoose_t->type_dsn = -1;
-      dsnchoose_t->curr_dir = dsnchoose_t->dsn = NULL;
+      dsnchoose_t->curr_dir = NULL;
+      dsnchoose_t->dsn = NULL;
     }
 
   if (driverchoose_t)
@@ -828,7 +829,8 @@ admin_cancel_clicked (GtkWidget *widget, void **inparams)
       dsnchoose_t->file_list = dsnchoose_t->file_entry =
 	  dsnchoose_t->dir_combo = NULL;
       dsnchoose_t->type_dsn = -1;
-      dsnchoose_t->curr_dir = dsnchoose_t->dsn = NULL;
+      dsnchoose_t->curr_dir = NULL;
+      dsnchoose_t->dsn = NULL;
     }
 
   if (driverchoose_t)

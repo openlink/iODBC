@@ -416,8 +416,8 @@ dsnchooser_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
 void
 userdsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
-  char connstr[4096] = { 0 };
-  char drv[1024] = { 0 };
+  char connstr[4096] = { "" };
+  char drv[1024] = { ""};
   int sqlstat;
   DWORD error;
 
@@ -425,15 +425,15 @@ userdsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
     {
       /* Try first to get the driver name */
       SQLSetConfigMode (ODBC_USER_DSN);
-      if (_iodbcdm_drvchoose_dialbox (choose_t->mainwnd, drv, sizeof (drv),
-	      &sqlstat) == SQL_SUCCESS)
+      if (_iodbcdm_drvchoose_dialbox (choose_t->mainwnd, drv, 
+      	sizeof (drv), &sqlstat) == SQL_SUCCESS)
 	{
 	  SQLSetConfigMode (ODBC_USER_DSN);
 	  if (!SQLConfigDataSource (choose_t->mainwnd, ODBC_ADD_DSN,
 		  drv + STRLEN ("DRIVER="), connstr))
 	    {
-	      if (SQLInstallerError (1, &error, connstr, sizeof (connstr),
-		      NULL) != SQL_NO_DATA)
+	      if (SQLInstallerError (1, &error, connstr, 
+	         sizeof (connstr), NULL) != SQL_NO_DATA)
 		_iodbcdm_errorbox (choose_t->mainwnd, NULL,
 		    "An error occured when trying to add the DSN : ");
 	      goto done;
@@ -461,7 +461,7 @@ userdsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 void
 userdsn_remove_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
-  char dsn[1024] = { 0 };
+  char dsn[1024] = { "\0" };
   char *szDSN = NULL, *szDriver = NULL;
 
   if (choose_t)
@@ -1252,7 +1252,7 @@ dsnchooser_ok_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	      gtk_clist_get_text (GTK_CLIST (choose_t->udsnlist),
 		  GPOINTER_TO_INT (GTK_CLIST (choose_t->udsnlist)->selection->
 		      data), 0, &szDSN);
-	      choose_t->dsn = strdup (szDSN);
+	      choose_t->dsn = dm_SQL_A2W(szDSN, SQL_NTS);
 	    }
 	  else
 	    choose_t->dsn = NULL;
@@ -1264,7 +1264,7 @@ dsnchooser_ok_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	      gtk_clist_get_text (GTK_CLIST (choose_t->sdsnlist),
 		  GPOINTER_TO_INT (GTK_CLIST (choose_t->sdsnlist)->selection->
 		      data), 0, &szDSN);
-	      choose_t->dsn = strdup (szDSN);
+	      choose_t->dsn = dm_SQL_A2W (szDSN, SQL_NTS);
 	    }
 	  else
 	    choose_t->dsn = NULL;

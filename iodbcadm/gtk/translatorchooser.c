@@ -108,7 +108,7 @@ translatorchooser_ok_clicked (GtkWidget *widget,
 	  gtk_clist_get_text (GTK_CLIST (choose_t->translatorlist),
 	      GPOINTER_TO_INT (GTK_CLIST (choose_t->translatorlist)->
 		  selection->data), 0, &szTranslator);
-	  choose_t->translator = strdup (szTranslator);
+	  choose_t->translator = dm_SQL_A2W (szTranslator, SQL_NTS);
 	}
       else
 	choose_t->translator = NULL;

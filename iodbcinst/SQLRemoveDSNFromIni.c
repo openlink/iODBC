@@ -146,7 +146,8 @@ done:
   _iodbcdm_cfg_done (pCfg);
 
 quit:
-  MEM_FREE (_dsn_u8);
+  if (_dsn_u8 != lpszDSN)
+    MEM_FREE (_dsn_u8);
 
   return retcode;
 }

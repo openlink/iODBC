@@ -252,7 +252,7 @@ dm_SQL_W2A (SQLWCHAR * inStr, ssize_t size)
   if (len < 0)
     return NULL;
 
-  if ((outStr = (SQLCHAR *) malloc (len + 1)) != NULL)
+  if ((outStr = (SQLCHAR *) malloc (len * UTF8_MAX_CHAR_LEN + 1)) != NULL)
     {
       if (len > 0)
 	OPL_W2A (inStr, outStr, len);

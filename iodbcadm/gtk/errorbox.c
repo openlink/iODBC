@@ -209,8 +209,25 @@ create_error (HWND hwnd, LPCSTR dsn, LPCSTR text, LPCSTR errmsg)
   gtk_main ();
 }
 
+
 void
 create_errorw (HWND hwnd, LPCWSTR dsn, LPCWSTR text, LPCWSTR errmsg)
 {
-/* TODO */
+  LPSTR _dsn = NULL;
+  LPSTR _text = NULL;
+  LPSTR _errmsg = NULL;
+
+  _dsn = dm_SQL_WtoU8(dsn, SQL_NTS);
+  _text = dm_SQL_WtoU8(text, SQL_NTS);
+  _errmsg = dm_SQL_WtoU8(errmsg, SQL_NTS);
+
+  create_error(hwnd, _dsn, _text, _errmsg);
+
+  if (_dsn)
+    free(_dsn);
+  if (_text)
+    free(_text);
+  if (_errmsg)
+    free(_errmsg);
 }
+

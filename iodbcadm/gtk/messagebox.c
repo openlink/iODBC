@@ -187,5 +187,16 @@ create_message (HWND hwnd, LPCSTR dsn, LPCSTR text)
 void
 create_messagew (HWND hwnd, LPCWSTR dsn, LPCWSTR text)
 {
-/* TODO */
+  LPSTR _dsn = NULL;
+  LPSTR _text = NULL;
+
+  _dsn = dm_SQL_WtoU8(dsn, SQL_NTS);
+  _text = dm_SQL_WtoU8(text, SQL_NTS);
+
+  create_message(hwnd, _dsn, _text);
+
+  if (_dsn)
+    free(_dsn);
+  if (_text)
+    free(_text);
 }

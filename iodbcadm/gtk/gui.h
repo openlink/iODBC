@@ -71,6 +71,7 @@
 #include <iodbc.h>
 #include <iodbcinst.h>
 #include <gtk/gtk.h>
+#include <unicode.h>
 
 #ifndef	_GTKGUI_H
 #define	_GTKGUI_H
@@ -80,11 +81,6 @@ extern char* szTabNames[];
 extern char* szDSNButtons[];
 extern char* szDriverColumnNames[];
 
-typedef struct TLOGIN
-{
-  GtkWidget *username, *password, *mainwnd;
-  char *user, *pwd;
-} TLOGIN;
 
 typedef struct TFILEDSN
 {
@@ -99,14 +95,15 @@ typedef struct TDSNCHOOSER
   GtkWidget *sadd, *sremove, *stest, *sconfigure;
   GtkWidget *fadd, *fremove, *ftest, *fconfigure;
   GtkWidget *dir_list, *file_list, *file_entry, *dir_combo;
-  char *dsn, *curr_dir;
+  wchar_t *dsn;
+  char *curr_dir;
   int type_dsn;
 } TDSNCHOOSER;
 
 typedef struct TDRIVERCHOOSER
 {
   GtkWidget *driverlist, *mainwnd, *b_add, *b_remove, *b_configure, *b_finish;
-  char *driver;
+  wchar_t *driver;
 } TDRIVERCHOOSER;
 
 typedef struct TCONNECTIONPOOLING
@@ -120,7 +117,7 @@ typedef struct TCONNECTIONPOOLING
 typedef struct TTRANSLATORCHOOSER
 {
   GtkWidget *translatorlist, *mainwnd, *b_finish;
-  char *translator;
+  wchar_t *translator;
 } TTRANSLATORCHOOSER;
 
 typedef struct TCOMPONENT
