@@ -66,25 +66,31 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-all: iODBC iODBCinst iODBCtest
+all: iODBCinst iODBC iODBCtest
 
+#
+# ascertain whether to use pbxbuild (jaguar) or xcodebuild (panther)
+#
+
+PROJBUILD:=$(shell (ls -1 /usr/bin/{pbxbuild,xcodebuild}|head -1)2>/dev/null)
 
 #
 #  Build the libraries 
 #
-.PHONY: iODBC iODBCinst
-iODBC: include
-	cd iODBC; pbxbuild build -buildstyle Deployment
+.PHONY: iODBCinst iODBC
+iODBC: include iODBCinst
+	cd iODBC; $(PROJBUILD) build -buildstyle Deployment
 
-iODBCinst: include
-	cd iODBCinst; pbxbuild build -buildstyle Deployment
+iODBCinst: include 
+	echo "Projbuild is [$(PROJBUILD)]"
+	cd iODBCinst; $(PROJBUILD) build -buildstyle Deployment
 
 #
 #  Build the test program
 #
 .PHONY: iODBCtest
 iODBCtest:
-	cd iODBCtest; pbxbuild build -buildstyle Deployment
+	cd iODBCtest; $(PROJBUILD) build -buildstyle Deployment
 
 
 #
@@ -98,8 +104,8 @@ include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sq
 #  Install libraries in /Library/Frameworks
 #
 install:
-	cd iODBC;     sudo pbxbuild install -buildstyle Deployment DSTROOT=/
-	cd iODBCinst; sudo pbxbuild install -buildstyle Deployment DSTROOT=/
+	cd iODBC;     sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
+	cd iODBCinst; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
 
 
 #
@@ -107,6 +113,6 @@ install:
 #
 clean:
 	rm -rf include
-	cd iODBC;     pbxbuild clean
-	cd iODBCinst; pbxbuild clean
-	cd iODBCtest; pbxbuild clean
+	cd iODBC;     $(PROJBUILD) clean
+	cd iODBCinst; $(PROJBUILD) clean
+	cd iODBCtest; $(PROJBUILD) clean
