@@ -1,3 +1,11 @@
+January 18, 1999, V2.50:
+	* Added autoconf/automake/libtool support
+	* Licensing moved to LGPL 
+	* Added OpenLink code enhancements and bug fixes
+
+------------------------------------------------------------------------
+Original Changelog from Ke Jin
+------------------------------------------------------------------------
 July 30, 1995, v2.00.beta: 
 	0. the first release and beta version. 
 
@@ -56,3 +64,4 @@ Nov. 12, 1995, v2.12
 		dld.h	-> dlf.h
 		confg.h -> config.h
 	16. Fix a bug on setting tracing options.
+
