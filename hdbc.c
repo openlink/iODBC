@@ -579,7 +579,7 @@ SQLGetConnectOption (
     {
       STRCPY (pvParam, pdbc->tfile);
 
-      return SQL_ERROR;
+      return SQL_SUCCESS;
     }
 
   if (pdbc->state != en_dbc_allocated)
