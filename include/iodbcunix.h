@@ -123,6 +123,23 @@ typedef DWORD *			LPDWORD;
 typedef int			BOOL;
 #endif
 
+
+/*
+ *  Determine sizeof(long) in case it is not determined by configure/config.h
+ */
+#ifndef SIZEOF_LONG
+#if defined (_LP64)	|| \
+    defined (__LP64__)	|| \
+    defined (__64BIT__)	|| \
+    defined (__alpha)	|| \
+    defined (__sparcv9)	|| \
+    defined (__arch64__)
+#define SIZEOF_LONG	8		/* 64 bit operating systems */
+#else
+#define SIZEOF_LONG	4		/* 32 bit operating systems */
+#endif
+#endif /* SIZEOF_LONG */
+
 #ifdef __cplusplus
 }
 #endif
