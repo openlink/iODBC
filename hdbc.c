@@ -47,8 +47,10 @@ SQLAllocConnect (
   GENV (genv, henv);
   DBC_t FAR *pdbc;
 
+  ODBC_LOCK ();
   if (!IS_VALID_HENV (genv))
     {
+      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
   CLEAR_ERRORS (genv);
@@ -56,7 +58,7 @@ SQLAllocConnect (
   if (phdbc == NULL)
     {
       PUSHSQLERR (genv->herr, en_S1009);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -67,7 +69,7 @@ SQLAllocConnect (
       *phdbc = SQL_NULL_HDBC;
 
       PUSHSQLERR (genv->herr, en_S1001);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
   pdbc->rc = 0;
@@ -110,6 +112,7 @@ SQLAllocConnect (
 
   *phdbc = (SQLHDBC) pdbc;
 
+  ODBC_UNLOCK ();
   return SQL_SUCCESS;
 }
 
@@ -121,8 +124,10 @@ SQLFreeConnect (SQLHDBC hdbc)
   CONN (pdbc, hdbc);
   DBC_t FAR *tpdbc;
 
+  ODBC_LOCK ();
   if (!IS_VALID_HDBC (pdbc))
     {
+      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
   CLEAR_ERRORS (pdbc);
@@ -131,7 +136,7 @@ SQLFreeConnect (SQLHDBC hdbc)
   if (pdbc->state != en_dbc_allocated)
     {
       PUSHSQLERR (pdbc->herr, en_S1010);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -160,7 +165,7 @@ SQLFreeConnect (SQLHDBC hdbc)
       MEM_FREE (pdbc->tfile);
     }
 
-  SQLSetConnectOption ((SQLHDBC) pdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF);
+  _iodbcdm_SetConnectOption (hdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF);
 
   /*
    *  Invalidate this handle
@@ -169,12 +174,13 @@ SQLFreeConnect (SQLHDBC hdbc)
 
   MEM_FREE (pdbc);
 
+  ODBC_UNLOCK ();
   return SQL_SUCCESS;
 }
 
 
 SQLRETURN SQL_API
-SQLSetConnectOption (
+_iodbcdm_SetConnectOption (
     SQLHDBC hdbc,
     SQLUSMALLINT fOption,
     SQLUINTEGER vParam)
@@ -184,12 +190,6 @@ SQLSetConnectOption (
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
-
-  if (!IS_VALID_HDBC (pdbc))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pdbc);
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -557,9 +557,25 @@ SQLSetConnectOption (
   return retcode;
 }
 
+SQLRETURN SQL_API
+SQLSetConnectOption (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption,
+    SQLUINTEGER vParam)
+{
+  CONN (pdbc, hdbc);
+  SQLRETURN retcode;
+
+  ENTER_HDBC (pdbc);
+
+  retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam);
+
+  LEAVE_HDBC (pdbc, retcode);
+}
+
 
 SQLRETURN SQL_API
-SQLGetConnectOption (
+_iodbcdm_GetConnectOption (
     SQLHDBC hdbc,
     SQLUSMALLINT fOption,
     SQLPOINTER pvParam)
@@ -568,12 +584,6 @@ SQLGetConnectOption (
   int sqlstat = en_00000;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
-
-  if (!IS_VALID_HDBC (pdbc))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pdbc);
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -736,6 +746,22 @@ SQLGetConnectOption (
   return SQL_SUCCESS;
 }
 
+SQLRETURN SQL_API
+SQLGetConnectOption (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption,
+    SQLPOINTER pvParam)
+{
+  CONN (pdbc, hdbc);
+  SQLRETURN retcode;
+
+  ENTER_HDBC (pdbc);
+
+  retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam);
+
+  LEAVE_HDBC (pdbc, retcode);
+}
+
 
 static SQLRETURN
 _iodbcdm_transact (
@@ -884,6 +910,7 @@ SQLTransact (
   HERR herr;
   SQLRETURN retcode = SQL_SUCCESS;
 
+  ODBC_LOCK ();
   if (IS_VALID_HDBC (pdbc))
     {
       CLEAR_ERRORS (pdbc);
@@ -896,6 +923,7 @@ SQLTransact (
     }
   else
     {
+      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
 
@@ -904,7 +932,7 @@ SQLTransact (
     {
       SQLHENV handle = IS_VALID_HDBC (pdbc) ? ((SQLHENV) pdbc) : genv;
       PUSHSQLERR (herr, en_S1012);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -914,9 +942,7 @@ SQLTransact (
     }
   else
     {
-      for (pdbc = (DBC_t FAR *) (genv->hdbc);
-	  pdbc != NULL;
-	  pdbc = pdbc->next)
+      for (pdbc = (DBC_t FAR *) (genv->hdbc); pdbc != NULL; pdbc = pdbc->next)
 	{
 	  retcode |= _iodbcdm_transact (pdbc, fType);
 	}
@@ -924,9 +950,11 @@ SQLTransact (
 
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
+      ODBC_UNLOCK ();
       /* fail on one of the connection */
       return SQL_ERROR;
     }
 
+  ODBC_UNLOCK ();
   return retcode;
 }

@@ -92,8 +92,10 @@ SQLDataSources (
   static int num_entries = 0;
   static char **sect = NULL;
 
+  ODBC_LOCK ();
   if (!IS_VALID_HENV (genv))
     {
+      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
   CLEAR_ERRORS (genv);
@@ -102,14 +104,14 @@ SQLDataSources (
   if (cbDSNMax < 0 || cbDescMax < 0)
     {
       PUSHSQLERR (genv->herr, en_S1090);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
   if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -118,13 +120,13 @@ SQLDataSources (
       cur_entry = 0;
       num_entries = 0;
 
-
       /* 
        *  Open the odbc.ini file
        */
       path = (char *) _iodbcdm_getinifile (buf, sizeof (buf));
       if ((fp = fopen (path, "r")) == NULL)
 	{
+	  ODBC_UNLOCK ();
 	  return SQL_NO_DATA_FOUND;
 	}
       /*
@@ -139,9 +141,9 @@ SQLDataSources (
 	}
       if ((sect = (char **) calloc (MAX_ENTRIES, sizeof (char *))) == NULL)
 	{
-	  PUSHSQLERR (genv->herr, en_S1011);
 	  fclose (fp);
-
+	  PUSHSQLERR (genv->herr, en_S1011);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
@@ -168,7 +170,7 @@ SQLDataSources (
 
 	  str = fgets (buf, sizeof (buf), fp);
 
-	  if (*str == '[' || str == NULL)
+	  if (str == NULL || *str == '[')
 	    break;
 
 	  if (*str == '\n')
@@ -177,16 +179,16 @@ SQLDataSources (
 	  for (p = str; *p; p++)
 	    {
 	      if (*p == '=' || *p == '\n')
-	        {
+		{
 		  *p = '\0';
 
 		  /*
 		   *  Trim whitespace from the right
 		   */
 		  for (; p > str && (*(p - 1) == ' ' || *(p - 1) == '\t');)
-		      *--p = '\0';
+		    *--p = '\0';
 		  break;
-	        }
+		}
 	    }
 
 	  /* Add this section to the comma separated list */
@@ -211,6 +213,7 @@ SQLDataSources (
   if (cur_entry >= num_entries)
     {
       cur_entry = 0;		/* Next time, start all over again */
+      ODBC_UNLOCK ();
       return SQL_NO_DATA_FOUND;
     }
 
@@ -230,6 +233,7 @@ SQLDataSources (
    */
   cur_entry++;
 
+  ODBC_UNLOCK ();
   return SQL_SUCCESS;
 }
 
@@ -247,8 +251,10 @@ SQLDrivers (
 {
   GENV (genv, henv);
 
+  ODBC_LOCK ();
   if (!IS_VALID_HENV (genv))
     {
+      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
   CLEAR_ERRORS (genv);
@@ -256,23 +262,25 @@ SQLDrivers (
   if (cbDrvDescMax < 0 || cbDrvAttrMax < 0 || cbDrvAttrMax == 1)
     {
       PUSHSQLERR (genv->herr, en_S1090);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
   if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
   if (!szDrvDesc || !szDrvAttr || !cbDrvDescMax || !cbDrvAttrMax)
     {
       PUSHSQLERR (genv->herr, en_01004);
+      ODBC_UNLOCK ();
       return SQL_SUCCESS_WITH_INFO;
     }
 
 /*********************/
+  ODBC_UNLOCK ();
   return SQL_NO_DATA_FOUND;
 }
 
@@ -297,17 +305,13 @@ SQLGetInfo (
   char buf[16] =
   {'\0'};
 
-  if (!IS_VALID_HDBC (pdbc) || pdbc->henv == SQL_NULL_HENV)
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pdbc);
+  ENTER_HDBC(pdbc);
 
   if (cbInfoValueMax < 0)
     {
       PUSHSQLERR (pdbc->herr, en_S1090);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 
 #if (ODBCVER < 0x0300)
@@ -317,7 +321,7 @@ SQLGetInfo (
     {
       PUSHSQLERR (pdbc->herr, en_S1096);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 #endif
   if (fInfoType == SQL_ODBC_VER)
@@ -348,14 +352,14 @@ SQLGetInfo (
 	  *pcbInfoValue = (SWORD) len;
 	}
 
-      return retcode;
+      LEAVE_HDBC (pdbc, retcode);
     }
 
   if (pdbc->state == en_dbc_allocated || pdbc->state == en_dbc_needdata)
     {
       PUSHSQLERR (pdbc->herr, en_08003);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 
   switch (fInfoType)
@@ -397,7 +401,7 @@ SQLGetInfo (
 	{
 	  PUSHSQLERR (pdbc->herr, en_S1009);
 
-	  return SQL_ERROR;
+	  LEAVE_HDBC (pdbc, SQL_ERROR);
 	}
 
       dword = (DWORD) (pstmt->dhstmt);
@@ -420,7 +424,7 @@ SQLGetInfo (
 	  *(pcbInfoValue) = (SWORD) size;
 	}
 
-      return SQL_SUCCESS;
+      LEAVE_HDBC (pdbc, SQL_SUCCESS);
     }
 
   /*
@@ -436,7 +440,7 @@ SQLGetInfo (
     {
       PUSHSQLERR (pdbc->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 
   CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetInfo,
@@ -470,7 +474,7 @@ SQLGetInfo (
       /* what should we return in this case ???? */
     }
 
-  return retcode;
+  LEAVE_HDBC (pdbc, retcode);
 }
 
 static int FunctionNumbers[] =
@@ -507,24 +511,19 @@ SQLGetFunctions (
 #endif
 
 
-  if (!IS_VALID_HDBC (pdbc))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pdbc);
-
+  ENTER_HDBC (pdbc);
 
   if (pdbc->state == en_dbc_allocated
       || pdbc->state == en_dbc_needdata)
     {
       PUSHSQLERR (pdbc->herr, en_S1010);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 
   if (pfExists == NULL)
     {
-      return SQL_SUCCESS;
+      LEAVE_HDBC (pdbc, SQL_SUCCESS);
     }
 
   /*
@@ -539,7 +538,7 @@ SQLGetFunctions (
       )
     {
       *pfExists = (UWORD) 1;
-      return SQL_SUCCESS;
+      LEAVE_HDBC (pdbc, SQL_SUCCESS);
     }
 
   /*
@@ -550,7 +549,7 @@ SQLGetFunctions (
     {
       PUSHSQLERR (pdbc->herr, en_S1095);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 #endif
 
@@ -581,7 +580,7 @@ SQLGetFunctions (
 	case SQL_API_SQLGETDIAGREC:
 	case SQL_API_SQLGETDIAGFIELD:
 	  *pfExists = SQL_TRUE;
-	  return SQL_SUCCESS;
+	  LEAVE_HDBC (pdbc, SQL_SUCCESS);
 
 	case SQL_API_SQLBINDPARAM:
 	  fFunc = SQL_API_SQLBINDPARAMETER;
@@ -592,7 +591,7 @@ SQLGetFunctions (
 	    {
 	      *pfExists = SQL_FALSE;
 
-	      return SQL_SUCCESS;
+	      LEAVE_HDBC (pdbc, SQL_SUCCESS);
 	    }
 	  break;
 	}
@@ -610,7 +609,7 @@ SQLGetFunctions (
       CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetFunctions,
 	  (pdbc->dhdbc, fFunc, pfExists));
 
-      return retcode;
+      LEAVE_HDBC (pdbc, retcode);
     }
 
   /*
@@ -671,5 +670,5 @@ SQLGetFunctions (
     }
 #endif
 
-  return SQL_SUCCESS;
+  LEAVE_HDBC (pdbc, SQL_SUCCESS);
 }

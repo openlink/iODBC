@@ -62,17 +62,13 @@ SQLAllocStmt (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (!IS_VALID_HDBC (pdbc))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS(pdbc);
+  ENTER_HDBC (pdbc);
 
   if (phstmt == NULL)
     {
       PUSHSQLERR (pdbc->herr, en_S1009);
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
 
   /* check state */
@@ -86,10 +82,10 @@ SQLAllocStmt (
      case en_dbc_needdata:
        PUSHSQLERR (pdbc->herr, en_08003);
        *phstmt = SQL_NULL_HSTMT;
-       return SQL_ERROR;
+       LEAVE_HDBC (pdbc, SQL_ERROR);
 
      default:
-       return SQL_INVALID_HANDLE;
+       LEAVE_HDBC (pdbc, SQL_INVALID_HANDLE);
      }
 
   pstmt = (STMT_t FAR *) MEM_ALLOC (sizeof (STMT_t));
@@ -99,7 +95,7 @@ SQLAllocStmt (
       PUSHSQLERR (pdbc->herr, en_S1001);
       *phstmt = SQL_NULL_HSTMT;
 
-      return SQL_ERROR;
+      LEAVE_HDBC (pdbc, SQL_ERROR);
     }
   pstmt->rc = 0;
 
@@ -116,6 +112,7 @@ SQLAllocStmt (
   pstmt->prep_state = 0;
   pstmt->asyn_on = en_NullProc;
   pstmt->need_on = en_NullProc;
+  pstmt->stmt_cip = 0;
 
   /* call driver's function */
 
@@ -136,7 +133,7 @@ SQLAllocStmt (
 	  *phstmt = SQL_NULL_HSTMT;
 	  pstmt->type = 0;
 	  MEM_FREE (pstmt);
-	  return SQL_ERROR;
+	  LEAVE_HDBC (pdbc, SQL_ERROR);
 	}
       pstmt->row_status_allocated = SQL_TRUE;
     }
@@ -166,7 +163,7 @@ SQLAllocStmt (
 	  pstmt->type = 0;
 	  MEM_FREE (pstmt);
 
-	  return SQL_ERROR;
+	  LEAVE_HDBC (pdbc, SQL_ERROR);
 	}
 
       CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_AllocStmt, 
@@ -179,7 +176,7 @@ SQLAllocStmt (
       pstmt->type = 0;
       MEM_FREE (pstmt);
 
-      return retcode;
+      LEAVE_HDBC (pdbc, retcode);
     }
 
 #if (ODBCVER >= 0x0300)  
@@ -205,7 +202,7 @@ SQLAllocStmt (
 	      PUSHSQLERR(pdbc->herr, en_HY001);
 	      pstmt->type = 0;
 	      MEM_FREE(pstmt);
-	      return SQL_ERROR;
+	      LEAVE_HDBC (pdbc, SQL_ERROR);
 	    }
 	  pstmt->imp_desc[i]->type = SQL_HANDLE_DESC;
 	  pstmt->imp_desc[i]->hstmt = pstmt;
@@ -223,7 +220,7 @@ SQLAllocStmt (
 	  PUSHSQLERR(pdbc->herr, en_HYC00);
 	  pstmt->type = 0;
 	  MEM_FREE(pstmt);
-	  return SQL_ERROR;
+	  LEAVE_HDBC (pdbc, SQL_ERROR);
 	}
       else
 	{ /* get the implicit descriptors */
@@ -244,7 +241,7 @@ SQLAllocStmt (
 		    }
 		  pstmt->type = 0;
 		  MEM_FREE(pstmt);
-		  return SQL_ERROR;
+		  LEAVE_HDBC (pdbc, SQL_ERROR);
 		}
 	      pstmt->imp_desc[i]->type = SQL_HANDLE_DESC;
 	      pstmt->imp_desc[i]->hdbc = hdbc;
@@ -264,7 +261,7 @@ SQLAllocStmt (
 		  pstmt->type = 0;
 		  MEM_FREE(pstmt);
 		  pdbc->rc = SQL_ERROR;
-		  return SQL_ERROR;
+		  LEAVE_HDBC (pdbc, SQL_ERROR);
 		}
 	    }
 	}
@@ -280,7 +277,7 @@ SQLAllocStmt (
   /* state transition */
   pdbc->state = en_dbc_hstmt;
 
-  return SQL_SUCCESS;
+  LEAVE_HDBC (pdbc, SQL_SUCCESS);
 }
 
 
@@ -360,33 +357,36 @@ SQLFreeStmt (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
+  ODBC_LOCK ();
   if (!IS_VALID_HSTMT (pstmt))
     {
+      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
-  CLEAR_ERRORS(pstmt);
+  CLEAR_ERRORS (pstmt);
 
   pdbc = (DBC_t FAR *) (pstmt->hdbc);
 
   /* check option */
   switch (fOption)
-     {
-     case SQL_DROP:
-     case SQL_CLOSE:
-     case SQL_UNBIND:
-     case SQL_RESET_PARAMS:
-       break;
+    {
+    case SQL_DROP:
+    case SQL_CLOSE:
+    case SQL_UNBIND:
+    case SQL_RESET_PARAMS:
+      break;
 
-     default:
-       PUSHSQLERR (pstmt->herr, en_S1092);
-       return SQL_ERROR;
-     }
+    default:
+      PUSHSQLERR (pstmt->herr, en_S1092);
+      ODBC_UNLOCK ();
+      return SQL_ERROR;
+    }
 
   /* check state */
   if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
-
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -399,8 +399,8 @@ SQLFreeStmt (
 
       if (hproc)
 	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeHandle, 
-	    (SQL_HANDLE_STMT, pstmt->dhstmt));
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeHandle,
+	      (SQL_HANDLE_STMT, pstmt->dhstmt));
 	}
     }
 #endif
@@ -412,68 +412,67 @@ SQLFreeStmt (
       if (hproc == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
-
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt, 
-	(pstmt->dhstmt, fOption));
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt,
+	  (pstmt->dhstmt, fOption));
     }
 
-  if (retcode != SQL_SUCCESS
-      && retcode != SQL_SUCCESS_WITH_INFO)
+  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
+      ODBC_UNLOCK ();
       return retcode;
     }
 
   /* state transition */
   switch (fOption)
-     {
-     case SQL_DROP:
-       /* delet this object (ignore return) */
-       _iodbcdm_dropstmt (pstmt);
-       break;
+    {
+    case SQL_DROP:
+      /* delet this object (ignore return) */
+      _iodbcdm_dropstmt (pstmt);
+      break;
 
-     case SQL_CLOSE:
-       pstmt->cursor_state = en_stmt_cursor_no;
-       /* This means cursor name set by
-        * SQLSetCursorName() call will also 
-        * be erased.
-        */
+    case SQL_CLOSE:
+      pstmt->cursor_state = en_stmt_cursor_no;
+      /* This means cursor name set by
+       * SQLSetCursorName() call will also 
+       * be erased.
+       */
 
-       switch (pstmt->state)
-	  {
-	  case en_stmt_allocated:
-	  case en_stmt_prepared:
-	    break;
+      switch (pstmt->state)
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	  break;
 
-	  case en_stmt_executed:
-	  case en_stmt_cursoropen:
-	  case en_stmt_fetched:
-	  case en_stmt_xfetched:
-	    if (pstmt->prep_state)
-	      {
-		pstmt->state =
-		    en_stmt_prepared;
-	      }
-	    else
-	      {
-		pstmt->state =
-		    en_stmt_allocated;
-	      }
-	    break;
+	case en_stmt_executed:
+	case en_stmt_cursoropen:
+	case en_stmt_fetched:
+	case en_stmt_xfetched:
+	  if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
+	  else
+	    {
+	      pstmt->state = en_stmt_allocated;
+	    }
+	  break;
 
-	  default:
-	    break;
-	  }
-       break;
+	default:
+	  break;
+	}
+      break;
 
-     case SQL_UNBIND:
-     case SQL_RESET_PARAMS:
-     default:
-       break;
-     }
+    case SQL_UNBIND:
+    case SQL_RESET_PARAMS:
+    default:
+      break;
+    }
 
+  ODBC_UNLOCK ();
   return retcode;
 }
 
@@ -489,11 +488,7 @@ SQLSetStmtOption (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS(pstmt);
+  ENTER_STMT (pstmt);
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -502,7 +497,7 @@ SQLSetStmtOption (
     {
       PUSHSQLERR (pstmt->herr, en_S1092);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 #endif	/* ODBCVER < 0x0300 */
 
@@ -569,7 +564,7 @@ SQLSetStmtOption (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 #if (ODBCVER >= 0x0300)
 
@@ -617,8 +612,8 @@ SQLSetStmtOption (
 	  case SQL_ATTR_ROW_OPERATION_PTR:
 	  case SQL_ATTR_ROW_STATUS_PTR:
 	  case SQL_ATTR_ROWS_FETCHED_PTR:
-	      PUSHSQLERR(pstmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      PUSHSQLERR (pstmt->herr, en_IM001);
+	      LEAVE_STMT (pstmt, SQL_ERROR);
 
 	  default:
 	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
@@ -634,14 +629,14 @@ SQLSetStmtOption (
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
 
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtOption,
 	  (pstmt->dhstmt, fOption, vParam));
     }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -656,11 +651,7 @@ SQLGetStmtOption (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS(pstmt);
+  ENTER_STMT (pstmt);
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -669,40 +660,39 @@ SQLGetStmtOption (
     {
       PUSHSQLERR (pstmt->herr, en_S1092);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
-#endif	/* ODBCVER < 0x0300 */
+#endif /* ODBCVER < 0x0300 */
 
   /* check state */
-  if (pstmt->state >= en_stmt_needdata
-      || pstmt->asyn_on != en_NullProc)
+  if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
     {
       sqlstat = en_S1010;
     }
   else
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_allocated:
-	 case en_stmt_prepared:
-	 case en_stmt_executed:
-	 case en_stmt_cursoropen:
-	   if (fOption == SQL_ROW_NUMBER || fOption == SQL_GET_BOOKMARK)
-	     {
-	       sqlstat = en_24000;
-	     }
-	   break;
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	case en_stmt_executed:
+	case en_stmt_cursoropen:
+	  if (fOption == SQL_ROW_NUMBER || fOption == SQL_GET_BOOKMARK)
+	    {
+	      sqlstat = en_24000;
+	    }
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
 
   if (sqlstat != en_00000)
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
 #if (ODBCVER >= 0x0300)
@@ -713,51 +703,52 @@ SQLGetStmtOption (
     {
       switch (fOption)
 	{
-	/* ODBC integer attributes */   
-	  case SQL_ATTR_ASYNC_ENABLE:
-	  case SQL_ATTR_CONCURRENCY:
-	  case SQL_ATTR_CURSOR_TYPE:
-	  case SQL_ATTR_KEYSET_SIZE:
-	  case SQL_ATTR_MAX_LENGTH:
-	  case SQL_ATTR_MAX_ROWS:
-	  case SQL_ATTR_NOSCAN:
-	  case SQL_ATTR_QUERY_TIMEOUT:
-	  case SQL_ATTR_RETRIEVE_DATA:
-	  case SQL_ATTR_ROW_BIND_TYPE:
-	  case SQL_ATTR_ROW_NUMBER:
-	  case SQL_ATTR_SIMULATE_CURSOR:
-	  case SQL_ATTR_USE_BOOKMARKS:
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtAttr,
-		  (pstmt->dhstmt, fOption, pvParam, 0, NULL));
-	      break;	  
+	  /* ODBC integer attributes */
+	case SQL_ATTR_ASYNC_ENABLE:
+	case SQL_ATTR_CONCURRENCY:
+	case SQL_ATTR_CURSOR_TYPE:
+	case SQL_ATTR_KEYSET_SIZE:
+	case SQL_ATTR_MAX_LENGTH:
+	case SQL_ATTR_MAX_ROWS:
+	case SQL_ATTR_NOSCAN:
+	case SQL_ATTR_QUERY_TIMEOUT:
+	case SQL_ATTR_RETRIEVE_DATA:
+	case SQL_ATTR_ROW_BIND_TYPE:
+	case SQL_ATTR_ROW_NUMBER:
+	case SQL_ATTR_SIMULATE_CURSOR:
+	case SQL_ATTR_USE_BOOKMARKS:
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtAttr,
+	      (pstmt->dhstmt, fOption, pvParam, 0, NULL));
+	  break;
 
-	/* ODBC3 attributes */   
-	  case SQL_ATTR_APP_PARAM_DESC:
-	  case SQL_ATTR_APP_ROW_DESC:
-	  case SQL_ATTR_CURSOR_SCROLLABLE:
-	  case SQL_ATTR_CURSOR_SENSITIVITY:
-	  case SQL_ATTR_ENABLE_AUTO_IPD:
-	  case SQL_ATTR_FETCH_BOOKMARK_PTR:
-	  case SQL_ATTR_IMP_PARAM_DESC:
-	  case SQL_ATTR_IMP_ROW_DESC:
-	  case SQL_ATTR_METADATA_ID:
-	  case SQL_ATTR_PARAM_BIND_OFFSET_PTR:
-	  case SQL_ATTR_PARAM_BIND_TYPE:
-	  case SQL_ATTR_PARAM_STATUS_PTR:
-	  case SQL_ATTR_PARAMS_PROCESSED_PTR:
-	  case SQL_ATTR_PARAMSET_SIZE:
-	  case SQL_ATTR_ROW_ARRAY_SIZE:
-	  case SQL_ATTR_ROW_BIND_OFFSET_PTR:
-	  case SQL_ATTR_ROW_OPERATION_PTR:
-	  case SQL_ATTR_ROW_STATUS_PTR:
-	  case SQL_ATTR_ROWS_FETCHED_PTR:
-	      PUSHSQLERR(pstmt->herr, en_IM001);
-	      return SQL_ERROR;
+	  /* ODBC3 attributes */
+	case SQL_ATTR_APP_PARAM_DESC:
+	case SQL_ATTR_APP_ROW_DESC:
+	case SQL_ATTR_CURSOR_SCROLLABLE:
+	case SQL_ATTR_CURSOR_SENSITIVITY:
+	case SQL_ATTR_ENABLE_AUTO_IPD:
+	case SQL_ATTR_FETCH_BOOKMARK_PTR:
+	case SQL_ATTR_IMP_PARAM_DESC:
+	case SQL_ATTR_IMP_ROW_DESC:
+	case SQL_ATTR_METADATA_ID:
+	case SQL_ATTR_PARAM_BIND_OFFSET_PTR:
+	case SQL_ATTR_PARAM_BIND_TYPE:
+	case SQL_ATTR_PARAM_STATUS_PTR:
+	case SQL_ATTR_PARAMS_PROCESSED_PTR:
+	case SQL_ATTR_PARAMSET_SIZE:
+	case SQL_ATTR_ROW_ARRAY_SIZE:
+	case SQL_ATTR_ROW_BIND_OFFSET_PTR:
+	case SQL_ATTR_ROW_OPERATION_PTR:
+	case SQL_ATTR_ROW_STATUS_PTR:
+	case SQL_ATTR_ROWS_FETCHED_PTR:
+	  PUSHSQLERR (pstmt->herr, en_IM001);
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 
-	  default:
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtAttr,
-		  (pstmt->dhstmt, fOption, pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL));
-	      break;
+	default:
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtAttr,
+	      (pstmt->dhstmt, fOption, pvParam, SQL_MAX_OPTION_STRING_LENGTH,
+		  NULL));
+	  break;
 	}
     }
   else
@@ -768,14 +759,14 @@ SQLGetStmtOption (
       if (hproc == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtOption,
 	  (pstmt->dhstmt, fOption, pvParam));
     }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -786,11 +777,8 @@ SQLCancel (SQLHSTMT hstmt)
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS(pstmt);
+
+  ENTER_STMT (pstmt);
 
   /* check argument */
   /* check state */
@@ -802,74 +790,74 @@ SQLCancel (SQLHSTMT hstmt)
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Cancel, 
-    (pstmt->dhstmt));
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Cancel,
+      (pstmt->dhstmt));
 
   /* state transition */
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
-      return retcode;
+      LEAVE_STMT (pstmt, retcode);
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_allocated:
-     case en_stmt_prepared:
-       break;
+    {
+    case en_stmt_allocated:
+    case en_stmt_prepared:
+      break;
 
-     case en_stmt_executed:
-       if (pstmt->prep_state)
-	 {
-	   pstmt->state = en_stmt_prepared;
-	 }
-       else
-	 {
-	   pstmt->state = en_stmt_allocated;
-	 }
-       break;
+    case en_stmt_executed:
+      if (pstmt->prep_state)
+	{
+	  pstmt->state = en_stmt_prepared;
+	}
+      else
+	{
+	  pstmt->state = en_stmt_allocated;
+	}
+      break;
 
-     case en_stmt_cursoropen:
-     case en_stmt_fetched:
-     case en_stmt_xfetched:
-       if (pstmt->prep_state)
-	 {
-	   pstmt->state = en_stmt_prepared;
-	 }
-       else
-	 {
-	   pstmt->state = en_stmt_allocated;
-	 }
-       break;
+    case en_stmt_cursoropen:
+    case en_stmt_fetched:
+    case en_stmt_xfetched:
+      if (pstmt->prep_state)
+	{
+	  pstmt->state = en_stmt_prepared;
+	}
+      else
+	{
+	  pstmt->state = en_stmt_allocated;
+	}
+      break;
 
-     case en_stmt_needdata:
-     case en_stmt_mustput:
-     case en_stmt_canput:
-       switch (pstmt->need_on)
-	  {
-	  case en_ExecDirect:
-	    pstmt->state = en_stmt_allocated;
-	    break;
+    case en_stmt_needdata:
+    case en_stmt_mustput:
+    case en_stmt_canput:
+      switch (pstmt->need_on)
+	{
+	case en_ExecDirect:
+	  pstmt->state = en_stmt_allocated;
+	  break;
 
-	  case en_Execute:
-	    pstmt->state = en_stmt_prepared;
-	    break;
+	case en_Execute:
+	  pstmt->state = en_stmt_prepared;
+	  break;
 
-	  case en_SetPos:
-	    pstmt->state = en_stmt_xfetched;
-	    break;
+	case en_SetPos:
+	  pstmt->state = en_stmt_xfetched;
+	  break;
 
-	  default:
-	    break;
-	  }
-       pstmt->need_on = en_NullProc;
-       break;
+	default:
+	  break;
+	}
+      pstmt->need_on = en_NullProc;
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }

@@ -94,8 +94,12 @@ _iodbcdm_gettrproc (void FAR * istm, int procid, int type)
 
   if (type == TRACE_TYPE_DM2DRV)
     {
-
+#if defined (THREAD_IDENT)
+      fprintf (stm, "\n[%08lX]: %s ( ... )\n", 
+	THREAD_IDENT, odbcapi_symtab[procid]);
+#else
       fprintf (stm, "\n%s ( ... )\n", odbcapi_symtab[procid]);
+#endif
 
       fflush (stm);
     }

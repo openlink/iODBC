@@ -54,17 +54,21 @@ SQLAllocHandle (SQLSMALLINT handleType,
     case SQL_HANDLE_DBC:
       {
 	GENV (genv, inputHandle);
-	if (IS_VALID_HENV (genv))
+
+	ODBC_LOCK ();
+	if (!IS_VALID_HENV (genv))
 	  {
-	    CLEAR_ERRORS (genv);
-	    if (genv->odbc_ver == 0)
-	      {
-		PUSHSQLERR (genv->herr, en_HY010);
-		return SQL_ERROR;
-	      }
+	    ODBC_UNLOCK ();
+	    return SQL_INVALID_HANDLE;
 	  }
-	else
-	  return SQL_INVALID_HANDLE;
+	CLEAR_ERRORS (genv);
+	if (genv->odbc_ver == 0)
+	  {
+	    PUSHSQLERR (genv->herr, en_HY010);
+	    ODBC_UNLOCK ();
+	    return SQL_ERROR;
+	  }
+	ODBC_UNLOCK ();
 
 	return SQLAllocConnect (inputHandle, outputHandlePtr);
       }
@@ -79,29 +83,25 @@ SQLAllocHandle (SQLSMALLINT handleType,
 	RETCODE retcode;
 	DESC_t FAR *new_desc;
 
-	if (IS_VALID_HDBC (con))
+	ENTER_HDBC (con);
+
+	if (((ENV_t *)(con->henv))->dodbc_ver == SQL_OV_ODBC2)
 	  {
-	    ENVR (env, con->henv);
-	    CLEAR_ERRORS (con);
-	    if (env->dodbc_ver == SQL_OV_ODBC2)
-	      {
-		PUSHSQLERR (con->herr, en_HYC00);
-		return SQL_ERROR;
-	      }
-	    if (!outputHandlePtr)
-	      {
-		PUSHSQLERR (con->herr, en_HY009);
-		return SQL_ERROR;
-	      }
+	    PUSHSQLERR (con->herr, en_HYC00);
+	    LEAVE_HDBC (con, SQL_ERROR);
 	  }
-	else
-	  return SQL_INVALID_HANDLE;
+	if (!outputHandlePtr)
+	  {
+	    PUSHSQLERR (con->herr, en_HY009);
+	    LEAVE_HDBC (con, SQL_ERROR);
+	  }
+
 	hproc = _iodbcdm_getproc (con, en_AllocHandle);
 
 	if (hproc == SQL_NULL_HPROC)
 	  {
 	    PUSHSQLERR (con->herr, en_IM001);
-	    return SQL_ERROR;
+	    LEAVE_HDBC (con, SQL_ERROR);
 	  }
 
 	new_desc = (DESC_t FAR *) MEM_ALLOC (sizeof (DESC_t));
@@ -109,7 +109,7 @@ SQLAllocHandle (SQLSMALLINT handleType,
 	if (!new_desc)
 	  {
 	    PUSHSQLERR (con->herr, en_HY001);
-	    return SQL_ERROR;
+	    LEAVE_HDBC (con, SQL_ERROR);
 	  }
 	CALL_DRIVER (con, con, retcode, hproc, en_AllocHandle,
 	    (handleType, con->dhdbc, &new_desc->dhdesc));
@@ -117,7 +117,7 @@ SQLAllocHandle (SQLSMALLINT handleType,
 	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	  {
 	    MEM_FREE (new_desc);
-	    return SQL_ERROR;
+	    LEAVE_HDBC (con, SQL_ERROR);
 	  }
 
 	new_desc->type = SQL_HANDLE_DESC;
@@ -129,24 +129,27 @@ SQLAllocHandle (SQLSMALLINT handleType,
 	new_desc->next = con->hdesc;
 	con->hdesc = new_desc;
 
-	return SQL_SUCCESS;
+	LEAVE_HDBC (con, SQL_SUCCESS);
       }
 
     default:
+      ODBC_LOCK ();
       if (IS_VALID_HDBC (inputHandle))
 	{
 	  CONN (con, inputHandle);
 	  PUSHSQLERR (con->herr, en_HY092);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
       else if (IS_VALID_HENV (inputHandle))
 	{
 	  GENV (genv, inputHandle);
 	  PUSHSQLERR (genv->herr, en_HY092);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
-      else
-	return SQL_INVALID_HANDLE;
+      ODBC_UNLOCK ();
+      return SQL_INVALID_HANDLE;
     }
 }
 
@@ -160,25 +163,13 @@ SQLFreeHandle (SQLSMALLINT handleType,
   switch (handleType)
     {
     case SQL_HANDLE_ENV:
-      {
-	GENV (genv, handle);
-
-	return SQLFreeEnv (genv);
-      }
+	return SQLFreeEnv ((SQLHENV) handle);
 
     case SQL_HANDLE_DBC:
-      {
-	CONN (pconn, handle);
-
-	return SQLFreeConnect (pconn);
-      }
+	return SQLFreeConnect ((SQLHDBC) handle);
 
     case SQL_HANDLE_STMT:
-      {
-	STMT (pstmt, handle);
-
-	return SQLFreeStmt (pstmt, SQL_DROP);
-      }
+	return SQLFreeStmt ((SQLHSTMT) handle, SQL_DROP);
 
     case SQL_HANDLE_DESC:
 
@@ -243,20 +234,23 @@ SQLFreeHandle (SQLSMALLINT handleType,
 	return SQL_INVALID_HANDLE;
 
     default:
+      ODBC_LOCK ();
       if (IS_VALID_HDBC (handle))
 	{
 	  CONN (con, handle);
 	  PUSHSQLERR (con->herr, en_HY092);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
       else if (IS_VALID_HENV (handle))
 	{
 	  GENV (genv, handle);
 	  PUSHSQLERR (genv->herr, en_HY092);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
-      else
-	return SQL_INVALID_HANDLE;
+      ODBC_UNLOCK ();
+      return SQL_INVALID_HANDLE;
     }
 }
 
@@ -271,13 +265,18 @@ SQLSetEnvAttr (SQLHENV environmentHandle,
 {
   GENV (genv, environmentHandle);
 
+  ODBC_LOCK ();
   if (!IS_VALID_HENV (genv))
-    return (SQL_INVALID_HANDLE);
+    {
+      ODBC_UNLOCK ();
+      return (SQL_INVALID_HANDLE);
+    }
   CLEAR_ERRORS (genv);
 
   if (genv->hdbc)
     {
       PUSHSQLERR (genv->herr, en_HY010);
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -289,9 +288,12 @@ SQLSetEnvAttr (SQLHENV environmentHandle,
 	case SQL_CP_OFF:
 	case SQL_CP_ONE_PER_DRIVER:
 	case SQL_CP_ONE_PER_HENV:
+	  ODBC_UNLOCK ();
 	  return SQL_SUCCESS;	/* not implemented yet */
+
 	default:
 	  PUSHSQLERR (genv->herr, en_HY024);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
@@ -300,9 +302,12 @@ SQLSetEnvAttr (SQLHENV environmentHandle,
 	{
 	case SQL_CP_STRICT_MATCH:
 	case SQL_CP_RELAXED_MATCH:
+	  ODBC_UNLOCK ();
 	  return SQL_SUCCESS;	/* not implemented yet */
+
 	default:
 	  PUSHSQLERR (genv->herr, en_HY024);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
@@ -312,9 +317,12 @@ SQLSetEnvAttr (SQLHENV environmentHandle,
 	case SQL_OV_ODBC2:
 	case SQL_OV_ODBC3:
 	  genv->odbc_ver = (SQLINTEGER) ValuePtr;
+	  ODBC_UNLOCK ();
 	  return (SQL_SUCCESS);
+
 	default:
 	  PUSHSQLERR (genv->herr, en_HY024);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
@@ -322,19 +330,23 @@ SQLSetEnvAttr (SQLHENV environmentHandle,
       switch ((SQLINTEGER) ValuePtr)
 	{
 	case SQL_TRUE:
+	  ODBC_UNLOCK ();
 	  return SQL_SUCCESS;
 
 	case SQL_FALSE:
 	  PUSHSQLERR (genv->herr, en_HYC00);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 
 	default:
 	  PUSHSQLERR (genv->herr, en_HY024);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
     default:
       PUSHSQLERR (genv->herr, en_HY092);
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 }
@@ -351,17 +363,21 @@ SQLGetEnvAttr (SQLHENV environmentHandle,
   HDBC con;
   RETCODE retcode;
 
+  ODBC_LOCK ();
   if (!IS_VALID_HENV (genv))
-    return (SQL_INVALID_HANDLE);
+    {
+      ODBC_UNLOCK ();
+      return (SQL_INVALID_HANDLE);
+    }
   CLEAR_ERRORS (genv);
-
 
   if (Attribute != SQL_ATTR_CONNECTION_POOLING &&
       Attribute != SQL_ATTR_CP_MATCH &&
-      Attribute != SQL_ATTR_ODBC_VERSION &&
+      Attribute != SQL_ATTR_ODBC_VERSION && 
       Attribute != SQL_ATTR_OUTPUT_NTS)
     {
       PUSHSQLERR (genv->herr, en_HY092);
+      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -370,24 +386,28 @@ SQLGetEnvAttr (SQLHENV environmentHandle,
     {
       if (ValuePtr)
 	*((SQLINTEGER *) ValuePtr) = genv->odbc_ver;
+      ODBC_UNLOCK ();
       return SQL_SUCCESS;
     }
   if (Attribute == SQL_ATTR_CONNECTION_POOLING)
     {
       if (ValuePtr)
 	*((SQLUINTEGER *) ValuePtr) = SQL_CP_OFF;
+      ODBC_UNLOCK ();
       return SQL_SUCCESS;
     }
   if (Attribute == SQL_ATTR_CP_MATCH)
     {
       if (ValuePtr)
 	*((SQLUINTEGER *) ValuePtr) = SQL_CP_STRICT_MATCH;
+      ODBC_UNLOCK ();
       return SQL_SUCCESS;
     }
   if (Attribute == SQL_ATTR_OUTPUT_NTS)
     {
       if (ValuePtr)
 	*((SQLINTEGER *) ValuePtr) = SQL_TRUE;
+      ODBC_UNLOCK ();
       return SQL_SUCCESS;
     }
 
@@ -400,12 +420,15 @@ SQLGetEnvAttr (SQLHENV environmentHandle,
 	{
 	  ENVR (env, con->henv);
 	  CALL_DRIVER (con, genv, retcode, hproc, en_GetEnvAttr,
-	      (env->dhenv, Attribute, ValuePtr, BufferLength, StringLengthPtr));
+	      (env->dhenv, Attribute, ValuePtr, BufferLength,
+		  StringLengthPtr));
+	  ODBC_UNLOCK ();
 	  return retcode;
 	}
       else
 	{			/* possibly an ODBC2 driver */
 	  PUSHSQLERR (genv->herr, en_IM001);
+	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
     }
@@ -428,8 +451,9 @@ SQLGetEnvAttr (SQLHENV environmentHandle,
 	    *((SQLINTEGER *) ValuePtr) = genv->odbc_ver;
 	  break;
 	}
-      return SQL_SUCCESS;
     }
+  ODBC_UNLOCK ();
+  return SQL_SUCCESS;
 }
 
 
@@ -444,9 +468,7 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HSTMT (statementHandle) || !stmt)
-    return (SQL_INVALID_HANDLE);
-  CLEAR_ERRORS (stmt);
+  ENTER_STMT (stmt);
 
   switch (Attribute)
     {
@@ -461,12 +483,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       if (StringLengthPtr)
 	*StringLengthPtr = SQL_IS_POINTER;
-      return SQL_SUCCESS;
+      LEAVE_STMT (stmt, SQL_SUCCESS);
 
     case SQL_ATTR_APP_PARAM_DESC:
 
@@ -479,12 +501,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       if (StringLengthPtr)
 	*StringLengthPtr = SQL_IS_POINTER;
-      return SQL_SUCCESS;
+      LEAVE_STMT (stmt, SQL_SUCCESS);
 
     case SQL_ATTR_IMP_ROW_DESC:
 
@@ -497,12 +519,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       if (StringLengthPtr)
 	*StringLengthPtr = SQL_IS_POINTER;
-      return SQL_SUCCESS;
+      LEAVE_STMT (stmt, SQL_SUCCESS);
 
     case SQL_ATTR_APP_ROW_DESC:
 
@@ -515,12 +537,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       if (StringLengthPtr)
 	*StringLengthPtr = SQL_IS_POINTER;
-      return SQL_SUCCESS;
+      LEAVE_STMT (stmt, SQL_SUCCESS);
 
     case SQL_ATTR_ROW_ARRAY_SIZE:
 
@@ -531,19 +553,19 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLUINTEGER *) ValuePtr) = stmt->row_array_size;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ENABLE_AUTO_IPD:
@@ -560,13 +582,13 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
       if (!hproc)
 	{
 	  PUSHSQLERR (stmt->herr, en_IM001);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       else
 	{
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 	      (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	  return retcode;
+	  LEAVE_STMT (stmt, retcode);
 	}
 
     case SQL_ATTR_FETCH_BOOKMARK_PTR:
@@ -578,19 +600,19 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLPOINTER *) ValuePtr) = stmt->fetch_bookmark_ptr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ROWS_FETCHED_PTR:
@@ -602,19 +624,19 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLPOINTER *) ValuePtr) = stmt->rows_fetched_ptr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_METADATA_ID:
@@ -626,19 +648,19 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLUINTEGER *) ValuePtr) = SQL_FALSE;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_PARAMS_PROCESSED_PTR:
@@ -650,19 +672,19 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLUINTEGER **) ValuePtr) = stmt->params_processed_ptr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_PARAMSET_SIZE:
@@ -674,19 +696,19 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLUINTEGER *) ValuePtr) = stmt->paramset_size;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ROW_STATUS_PTR:
@@ -698,12 +720,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
@@ -712,7 +734,7 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    *((SQLUINTEGER **) ValuePtr) = stmt->row_status_allocated == SQL_FALSE ?
 		stmt->row_status_ptr :
 		NULL;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ASYNC_ENABLE:
@@ -737,12 +759,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
@@ -752,12 +774,12 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtOption,
 		  (stmt->dhstmt, Attribute, ValuePtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
     default:
@@ -766,15 +788,15 @@ SQLGetStmtAttr (SQLHSTMT statementHandle,
 	{
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_GetStmtAttr,
 	      (stmt->dhstmt, Attribute, ValuePtr, BufferLength, StringLengthPtr));
-	  return retcode;
+	  LEAVE_STMT (stmt, retcode);
 	}
       else
 	{
 	  PUSHSQLERR (stmt->herr, en_IM001);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
     }
-  return (SQL_SUCCESS);
+  LEAVE_STMT (stmt, SQL_SUCCESS);
 }
 
 
@@ -790,14 +812,12 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HSTMT (stmt))
-    return (SQL_INVALID_HANDLE);
-  CLEAR_ERRORS (stmt);
+  ENTER_STMT (stmt);
 
   if (stmt->state == en_stmt_needdata)
     {
       PUSHSQLERR (stmt->herr, en_HY010);
-      return SQL_ERROR;
+      LEAVE_STMT (stmt, SQL_ERROR);
     }
 
   switch (Attribute)
@@ -812,21 +832,21 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	  if (!hproc)
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 	      (stmt->dhstmt, Attribute, hdesc, StringLength));
 	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
-	    return SQL_ERROR;
+	    LEAVE_STMT (stmt, SQL_ERROR);
 	  stmt->desc[APP_PARAM_DESC] = SQL_NULL_HDESC;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
       if (!IS_VALID_HDESC (ValuePtr))
 	{
 	  PUSHSQLERR (stmt->herr, en_HY024);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       else
 	{
@@ -834,23 +854,23 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	  if (pdesc->hdbc != stmt->hdbc || IS_VALID_HSTMT (pdesc->hstmt))
 	    {
 	      PUSHSQLERR (stmt->herr, en_HY017);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
 	  hproc = _iodbcdm_getproc (stmt->hdbc, en_SetStmtAttr);
 	  if (!hproc)
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 	      (stmt->dhstmt, Attribute, pdesc->dhdesc, StringLength));
 	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
-	    return SQL_ERROR;
+	    LEAVE_STMT (stmt, SQL_ERROR);
 
 	  stmt->desc[APP_PARAM_DESC] = ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_APP_ROW_DESC:
@@ -862,21 +882,21 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	  if (!hproc)
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 	      (stmt->dhstmt, Attribute, hdesc, StringLength));
 	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
-	    return SQL_ERROR;
+	    LEAVE_STMT (stmt, SQL_ERROR);
 	  stmt->desc[APP_ROW_DESC] = SQL_NULL_HDESC;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
       if (!IS_VALID_HDESC (ValuePtr))
 	{
 	  PUSHSQLERR (stmt->herr, en_HY024);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       else
 	{
@@ -884,23 +904,23 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	  if (pdesc->hdbc != stmt->hdbc || IS_VALID_HSTMT (pdesc->hstmt))
 	    {
 	      PUSHSQLERR (stmt->herr, en_HY017);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
 	  hproc = _iodbcdm_getproc (stmt->hdbc, en_SetStmtAttr);
 	  if (!hproc)
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 	      (stmt->dhstmt, Attribute, pdesc->dhdesc, StringLength));
 	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
-	    return SQL_ERROR;
+	    LEAVE_STMT (stmt, SQL_ERROR);
 
 	  stmt->desc[APP_ROW_DESC] = ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_CURSOR_SCROLLABLE:
@@ -918,13 +938,13 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
       if (!hproc)
 	{
 	  PUSHSQLERR (stmt->herr, en_IM001);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       else
 	{
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 	      (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	  return retcode;
+	  LEAVE_STMT (stmt, retcode);
 	}
 
     case SQL_ATTR_ROWS_FETCHED_PTR:
@@ -936,18 +956,18 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  stmt->rows_fetched_ptr = ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_FETCH_BOOKMARK_PTR:
@@ -959,18 +979,18 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  stmt->fetch_bookmark_ptr = ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_PARAMS_PROCESSED_PTR:
@@ -982,18 +1002,18 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  stmt->params_processed_ptr = ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_PARAMSET_SIZE:
@@ -1005,18 +1025,18 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
 	{			/* an ODBC2 driver */
 	  stmt->paramset_size = (SQLUINTEGER) ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ROW_ARRAY_SIZE:
@@ -1028,12 +1048,12 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
@@ -1041,7 +1061,7 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	  if ((SQLUINTEGER) ValuePtr < 1)
 	    {
 	      PUSHSQLERR (stmt->herr, en_HY024);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	  stmt->row_array_size = (SQLUINTEGER) ValuePtr;
 
@@ -1055,7 +1075,7 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	  if (!stmt->row_status_ptr)
 	    {
 	      PUSHSQLERR (stmt->herr, en_HY001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	  stmt->row_status_allocated = SQL_TRUE;
 
@@ -1067,15 +1087,15 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtOption,
 		  (stmt->dhstmt, SQL_ROWSET_SIZE, stmt->row_array_size));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ROW_STATUS_PTR:
@@ -1087,12 +1107,12 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
@@ -1104,7 +1124,7 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	      stmt->row_status_allocated = SQL_FALSE;
 	    }
 	  stmt->row_status_ptr = ValuePtr;
-	  return SQL_SUCCESS;
+	  LEAVE_STMT (stmt, SQL_SUCCESS);
 	}
 
     case SQL_ATTR_ASYNC_ENABLE:
@@ -1129,12 +1149,12 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtAttr,
 		  (stmt->dhstmt, Attribute, ValuePtr, StringLength));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
       else
@@ -1144,12 +1164,12 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtOption,
 		  (stmt->dhstmt, Attribute, ValuePtr));
-	      return retcode;
+	      LEAVE_STMT (stmt, retcode);
 	    }
 	  else
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	}
     default:
@@ -1158,15 +1178,15 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	{
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtOption,
 	      (stmt->dhstmt, Attribute, ValuePtr));
-	  return retcode;
+	  LEAVE_STMT (stmt, retcode);
 	}
       else
 	{
 	  PUSHSQLERR (stmt->herr, en_IM001);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
     }
-  return (SQL_SUCCESS);
+  LEAVE_STMT (stmt, (SQL_SUCCESS));
 }
 
 
@@ -1180,14 +1200,12 @@ SQLSetConnectAttr (SQLHDBC connectionHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDBC (con))
-    return (SQL_INVALID_HANDLE);
-  CLEAR_ERRORS (con);
+  ENTER_HDBC (con);
 
   if (con->state == en_dbc_needdata)
     {
       PUSHSQLERR (con->herr, en_HY010);
-      return SQL_ERROR;
+      LEAVE_HDBC (con, SQL_ERROR);
     }
 
   hproc = _iodbcdm_getproc (con, en_SetConnectAttr);
@@ -1195,7 +1213,7 @@ SQLSetConnectAttr (SQLHDBC connectionHandle,
     {
       CALL_DRIVER (con, con, retcode, hproc, en_SetConnectAttr,
 	  (con->dhdbc, Attribute, ValuePtr, StringLength));
-      return retcode;
+      LEAVE_HDBC (con, retcode);
     }
 
   switch (Attribute)
@@ -1203,10 +1221,12 @@ SQLSetConnectAttr (SQLHDBC connectionHandle,
 
     case SQL_ATTR_AUTO_IPD:
       PUSHSQLERR (con->herr, en_HY092);
-      return SQL_ERROR;
+      LEAVE_HDBC (con, SQL_ERROR);
 
     default:
-      return SQLSetConnectOption (connectionHandle, Attribute, (SQLUINTEGER) ValuePtr);
+      retcode = 
+	_iodbcdm_SetConnectOption (con, Attribute, (SQLUINTEGER) ValuePtr);
+      LEAVE_HDBC (con, retcode);
     }
 }
 
@@ -1222,14 +1242,12 @@ SQLGetConnectAttr (SQLHDBC connectionHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDBC (con))
-    return (SQL_INVALID_HANDLE);
-  CLEAR_ERRORS (con);
+  ENTER_HDBC (con);
 
   if (con->state == en_dbc_needdata)
     {
       PUSHSQLERR (con->herr, en_HY010);
-      return SQL_ERROR;
+      LEAVE_HDBC (con, SQL_ERROR);
     }
 
   hproc = _iodbcdm_getproc (con, en_GetConnectAttr);
@@ -1237,12 +1255,12 @@ SQLGetConnectAttr (SQLHDBC connectionHandle,
     {
       CALL_DRIVER (con, con, retcode, hproc, en_GetConnectAttr,
 	  (con->dhdbc, Attribute, ValuePtr, StringLength, StringLengthPtr));
-      return retcode;
+      LEAVE_HDBC (con, retcode);
     }
 
-  retcode = SQLGetConnectOption (connectionHandle, Attribute, ValuePtr);
+  retcode = _iodbcdm_GetConnectOption (con, Attribute, ValuePtr);
   if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
-    return retcode;
+    LEAVE_HDBC (con, retcode);
 
   if (StringLengthPtr)
     {
@@ -1256,7 +1274,7 @@ SQLGetConnectAttr (SQLHDBC connectionHandle,
 	    *StringLengthPtr = strlen (ValuePtr);
 	  }
     }
-  return retcode;
+  LEAVE_HDBC (con, retcode);
 }
 
 
@@ -1272,19 +1290,20 @@ SQLGetDescField (SQLHDESC descriptorHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDESC (desc))
-    return SQL_INVALID_HANDLE;
-  CLEAR_ERRORS (desc);
+  ENTER_HDESC (desc);
 
   hproc = _iodbcdm_getproc (desc->hdbc, en_GetDescField);
   if (!hproc)
     {
       PUSHSQLERR (desc->herr, en_IM001);
-      return SQL_ERROR;
+      LEAVE_HDESC (desc, SQL_ERROR);
     }
+
   CALL_DRIVER (desc->hdbc, desc, retcode, hproc, en_GetDescField,
-      (desc->dhdesc, RecNumber, FieldIdentifier, ValuePtr, BufferLength, StringLengthPtr));
-  return retcode;
+      (desc->dhdesc, RecNumber, FieldIdentifier, ValuePtr, BufferLength,
+	  StringLengthPtr));
+
+  LEAVE_HDESC (desc, retcode);
 }
 
 
@@ -1299,19 +1318,19 @@ SQLSetDescField (SQLHDESC descriptorHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDESC (desc))
-    return SQL_INVALID_HANDLE;
-  CLEAR_ERRORS (desc);
+  ENTER_HDESC (desc);
 
   hproc = _iodbcdm_getproc (desc->hdbc, en_SetDescField);
   if (!hproc)
     {
       PUSHSQLERR (desc->herr, en_IM001);
-      return SQL_ERROR;
+      LEAVE_HDESC (desc, SQL_ERROR);
     }
+
   CALL_DRIVER (desc->hdbc, desc, retcode, hproc, en_SetDescField,
       (desc->dhdesc, RecNumber, FieldIdentifier, ValuePtr, BufferLength));
-  return retcode;
+
+  LEAVE_HDESC (desc, retcode);
 }
 
 
@@ -1332,19 +1351,19 @@ SQLGetDescRec (SQLHDESC descriptorHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDESC (desc))
-    return SQL_INVALID_HANDLE;
-  CLEAR_ERRORS (desc);
+  ENTER_HDESC (desc);
 
   hproc = _iodbcdm_getproc (desc->hdbc, en_GetDescRec);
   if (!hproc)
     {
       PUSHSQLERR (desc->herr, en_IM001);
-      return SQL_ERROR;
+      LEAVE_HDESC (desc, SQL_ERROR);
     }
+
   CALL_DRIVER (desc->hdbc, desc, retcode, hproc, en_GetDescRec,
       (desc->dhdesc, RecNumber, Name, BufferLength, StringLengthPtr, TypePtr, SubTypePtr, LengthPtr, PrecisionPtr, ScalePtr, NullablePtr));
-  return retcode;
+
+  LEAVE_HDESC (desc, retcode);
 }
 
 
@@ -1364,24 +1383,25 @@ SQLSetDescRec (SQLHDESC arg0,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDESC (desc))
-    return SQL_INVALID_HANDLE;
-  CLEAR_ERRORS (desc);
+  ENTER_HDESC (desc);
 
   hproc = _iodbcdm_getproc (desc->hdbc, en_SetDescRec);
   if (!hproc)
     {
       PUSHSQLERR (desc->herr, en_IM001);
-      return SQL_ERROR;
+      LEAVE_HDESC (desc, SQL_ERROR);
     }
+
   CALL_DRIVER (desc->hdbc, desc, retcode, hproc, en_SetDescRec,
       (desc->dhdesc, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9));
-  return retcode;
+
+  LEAVE_HDESC (desc, retcode);
 }
 
 
 RETCODE SQL_API
-SQLCopyDesc (SQLHDESC arg0,
+SQLCopyDesc (
+    SQLHDESC arg0,
     SQLHDESC arg1)
 {
 
@@ -1390,25 +1410,34 @@ SQLCopyDesc (SQLHDESC arg0,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HDESC (desc) || !IS_VALID_HDESC (desc1))
-    return SQL_INVALID_HANDLE;
-  CLEAR_ERRORS (desc);
+  ENTER_HDESC (desc);
+
+  ODBC_LOCK ();
+  if (!IS_VALID_HDESC (desc1))
+    {
+      ODBC_UNLOCK ();
+      LEAVE_HDESC (desc, SQL_INVALID_HANDLE);
+    }
   CLEAR_ERRORS (desc1);
+  ODBC_UNLOCK ();
 
   hproc = _iodbcdm_getproc (desc->hdbc, en_CopyDesc);
   if (!hproc)
     {
       PUSHSQLERR (desc->herr, en_IM001);
-      return SQL_ERROR;
+      LEAVE_HDESC (desc, SQL_ERROR);
     }
+
   CALL_DRIVER (desc->hdbc, desc, retcode, hproc, en_CopyDesc,
       (desc->dhdesc, desc1->dhdesc));
-  return retcode;
+
+  LEAVE_HDESC (desc, retcode);
 }
 
 
 RETCODE SQL_API
-SQLColAttribute (SQLHSTMT statementHandle,
+SQLColAttribute (
+    SQLHSTMT statementHandle,
     SQLUSMALLINT ColumnNumber,
     SQLUSMALLINT FieldIdentifier,
     SQLPOINTER CharacterAttributePtr,
@@ -1420,16 +1449,14 @@ SQLColAttribute (SQLHSTMT statementHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HSTMT (stmt))
-    return SQL_INVALID_HANDLE;
-  CLEAR_ERRORS (stmt);
+  ENTER_STMT (stmt);
 
   hproc = _iodbcdm_getproc (stmt->hdbc, en_ColAttribute);
   if (hproc)
     {
       CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_ColAttribute,
 	  (stmt->dhstmt, ColumnNumber, FieldIdentifier, CharacterAttributePtr, BufferLength, StringLengthPtr, NumericAttributePtr));
-      return retcode;
+      LEAVE_STMT (stmt, retcode);
     }
 
   if (ColumnNumber == 0)
@@ -1469,11 +1496,11 @@ SQLColAttribute (SQLHSTMT statementHandle,
 	  if (!hproc)
 	    {
 	      PUSHSQLERR (stmt->herr, en_IM001);
-	      return SQL_ERROR;
+	      LEAVE_STMT (stmt, SQL_ERROR);
 	    }
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_NumResultCols,
 	      (stmt->dhstmt, NumericAttributePtr));
-	  return retcode;
+	  LEAVE_STMT (stmt, retcode);
 
 	case SQL_DESC_LENGTH:
 	case SQL_DESC_DATETIME_INTERVAL_CODE:
@@ -1508,7 +1535,7 @@ SQLColAttribute (SQLHSTMT statementHandle,
 
 	default:
 	  PUSHSQLERR (stmt->herr, en_HYC00);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       if (isSz)
 	{
@@ -1527,7 +1554,7 @@ SQLColAttribute (SQLHSTMT statementHandle,
 	  if (NumericAttributePtr)
 	    *((SQLINTEGER *) NumericAttributePtr) = val;
 	}
-      return SQL_SUCCESS;
+      LEAVE_STMT (stmt, SQL_SUCCESS);
     }
   else
     {				/* all other */
@@ -1570,7 +1597,7 @@ SQLColAttribute (SQLHSTMT statementHandle,
 	case SQL_DESC_OCTET_LENGTH:
 	case SQL_DESC_UNNAMED:
 	  PUSHSQLERR (stmt->herr, en_HY091);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       hproc = _iodbcdm_getproc (stmt->hdbc, en_ColAttributes);
       if (hproc)
@@ -1578,12 +1605,12 @@ SQLColAttribute (SQLHSTMT statementHandle,
 
 	  CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_ColAttribute,
 	      (stmt->dhstmt, ColumnNumber, FieldIdentifier, CharacterAttributePtr, BufferLength, StringLengthPtr, NumericAttributePtr));
-	  return retcode;
+	  LEAVE_STMT (stmt, retcode);
 	}
       else
 	{
 	  PUSHSQLERR (stmt->herr, en_IM001);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
     }
 }
@@ -1594,7 +1621,6 @@ SQLEndTran (SQLSMALLINT handleType,
     SQLHANDLE Handle,
     SQLSMALLINT completionType)
 {
-
   switch (handleType)
     {
     case SQL_HANDLE_DBC:
@@ -1610,6 +1636,7 @@ SQLEndTran (SQLSMALLINT handleType,
       completionType);
 }
 
+
 RETCODE SQL_API
 SQLBulkOperations (SQLHSTMT statementHandle,
     SQLSMALLINT Operation)
@@ -1618,9 +1645,7 @@ SQLBulkOperations (SQLHSTMT statementHandle,
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HSTMT (stmt))
-    return (SQL_INVALID_HANDLE);
-  CLEAR_ERRORS (stmt);
+  ENTER_STMT (stmt);
 
   switch (Operation)
     {
@@ -1631,26 +1656,27 @@ SQLBulkOperations (SQLHSTMT statementHandle,
       break;
     default:
       PUSHSQLERR (stmt->herr, en_HY092);
-      return SQL_ERROR;
+      LEAVE_STMT (stmt, SQL_ERROR);
     }
-
 
   hproc = _iodbcdm_getproc (stmt->hdbc, en_BulkOperations);
   if (hproc)
     {
       CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_BulkOperations,
 	  (stmt->dhstmt, Operation));
-      return retcode;
+      LEAVE_STMT (stmt, retcode);
     }
 
   switch (Operation)
     {
     case SQL_ADD:
-      return SQLSetPos (statementHandle, 0, SQL_ADD, SQL_LOCK_NO_CHANGE);
+      retcode = _iodbcdm_SetPos (statementHandle, 
+		0, SQL_ADD, SQL_LOCK_NO_CHANGE);
+      LEAVE_STMT (stmt, retcode);
 
     default:
       PUSHSQLERR (stmt->herr, en_HYC00);
-      return SQL_ERROR;
+      LEAVE_STMT (stmt, SQL_ERROR);
     }
 }
 
@@ -1660,14 +1686,11 @@ SQLFetchScroll (SQLHSTMT statementHandle,
     SQLSMALLINT fetchOrientation,
     SQLINTEGER fetchOffset)
 {
-
   STMT (stmt, statementHandle);
   HPROC hproc;
   RETCODE retcode;
 
-  if (!IS_VALID_HSTMT (stmt))
-    return (SQL_INVALID_HANDLE);
-  CLEAR_ERRORS (stmt);
+  ENTER_STMT (stmt);
 
   switch (fetchOrientation)
     {
@@ -1681,22 +1704,21 @@ SQLFetchScroll (SQLHSTMT statementHandle,
       break;
     default:
       PUSHSQLERR (stmt->herr, en_HY092);
-      return SQL_ERROR;
+      LEAVE_STMT (stmt, SQL_ERROR);
     }
-
 
   hproc = _iodbcdm_getproc (stmt->hdbc, en_FetchScroll);
   if (hproc)
     {
       CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_FetchScroll,
 	  (stmt->dhstmt, fetchOrientation, fetchOffset));
-      return retcode;
+      LEAVE_STMT (stmt, retcode);
     }
 
   if (!stmt->row_status_ptr)
     {
       PUSHSQLERR (stmt->herr, en_HYC00);
-      return SQL_ERROR;
+      LEAVE_STMT (stmt, SQL_ERROR);
     }
 
   if (fetchOrientation == SQL_FETCH_BOOKMARK)
@@ -1704,19 +1726,18 @@ SQLFetchScroll (SQLHSTMT statementHandle,
       if (fetchOffset)
 	{
 	  PUSHSQLERR (stmt->herr, en_HYC00);
-	  return SQL_ERROR;
+	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
-      return SQLExtendedFetch (
-	  statementHandle, fetchOrientation,
+      retcode = _iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
 	  stmt->fetch_bookmark_ptr ? *((SQLINTEGER *) stmt->fetch_bookmark_ptr) : 0,
-	  stmt->rows_fetched_ptr,
-	  stmt->row_status_ptr);
+	  stmt->rows_fetched_ptr, stmt->row_status_ptr);
     }
   else
-    return SQLExtendedFetch (
-	statementHandle, fetchOrientation, fetchOffset,
-	stmt->rows_fetched_ptr,
-	stmt->row_status_ptr);
+    retcode =
+	_iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
+	fetchOffset, stmt->rows_fetched_ptr, stmt->row_status_ptr);
+
+  LEAVE_STMT (stmt, retcode);
 }
 
 
@@ -1743,11 +1764,7 @@ SQLCloseCursor (SQLHSTMT hstmt)
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   pdbc = (DBC_t FAR *) (pstmt->hdbc);
 
@@ -1756,13 +1773,13 @@ SQLCloseCursor (SQLHSTMT hstmt)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
   else if (pstmt->state < en_stmt_cursoropen)
     {
       PUSHSQLERR (pstmt->herr, en_24000);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   hproc = _iodbcdm_getproc (pstmt->hdbc, en_CloseCursor);
@@ -1781,7 +1798,7 @@ SQLCloseCursor (SQLHSTMT hstmt)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
 
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt,
@@ -1791,7 +1808,7 @@ SQLCloseCursor (SQLHSTMT hstmt)
   if (retcode != SQL_SUCCESS
       && retcode != SQL_SUCCESS_WITH_INFO)
     {
-      return retcode;
+      LEAVE_STMT (pstmt, retcode);
     }
 
   /*
@@ -1819,7 +1836,7 @@ SQLCloseCursor (SQLHSTMT hstmt)
       break;
     }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 #endif	/* ODBCVER >= 0x0300 */

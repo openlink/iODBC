@@ -36,10 +36,32 @@
 
 #include <itrace.h>
 
+
+
+/*
+ *  Use static initializer where possible
+ */
+#if defined (PTHREAD_MUTEX_INITIALIZER)
+SPINLOCK_DECLARE (iodbcdm_global_lock) = PTHREAD_MUTEX_INITIALIZER;
+#else
+SPINLOCK_DECLARE (iodbcdm_global_lock);
+#endif
+
+static int _iodbcdm_initialized = 0;
+static void Init_iODBC();
+static void Done_iODBC();
+
+
 SQLRETURN SQL_API
 SQLAllocEnv (SQLHENV FAR * phenv)
 {
   GENV_t FAR *genv;
+
+  /* 
+   *  One time initialization
+   */
+  if (!_iodbcdm_initialized)
+      Init_iODBC();
 
   genv = (GENV_t *) MEM_ALLOC (sizeof (GENV_t));
 
@@ -73,8 +95,12 @@ SQLFreeEnv (SQLHENV henv)
 {
   GENV (genv, henv);
 
+  ODBC_LOCK();
+
   if (!IS_VALID_HENV (genv))
     {
+      ODBC_UNLOCK();
+
       return SQL_INVALID_HANDLE;
     }
   CLEAR_ERRORS (genv);
@@ -82,6 +108,8 @@ SQLFreeEnv (SQLHENV henv)
   if (genv->hdbc != SQL_NULL_HDBC)
     {
       PUSHSQLERR (genv->herr, en_S1010);
+
+      ODBC_UNLOCK();
 
       return SQL_ERROR;
     }
@@ -93,5 +121,81 @@ SQLFreeEnv (SQLHENV henv)
 
   MEM_FREE (genv);
 
+  ODBC_UNLOCK();
+
   return SQL_SUCCESS;
 }
+
+
+/*
+ *  Initialize the system and let everyone wait until we have done so
+ *  properly
+ */
+static void
+Init_iODBC ()
+{
+#if !defined (PTHREAD_MUTEX_INITIALIZER) || defined (WINDOWS)
+  SPINLOCK_INIT (iodbcdm_global_lock);
+#endif
+
+  SPINLOCK_LOCK (iodbcdm_global_lock);
+  if (!_iodbcdm_initialized)
+    {
+      /*
+       *  Other one time initializations can be performed here
+       */
+
+      /*
+       *  OK, now flag we are not callable anymore and return
+       */
+      _iodbcdm_initialized = 1;
+    }
+  SPINLOCK_UNLOCK (iodbcdm_global_lock);
+
+  return;
+}
+
+
+static void 
+Done_iODBC()
+{
+    SPINLOCK_DONE (iodbcdm_global_lock);
+}
+
+
+/*
+ *  DLL Entry points for Windows
+ */
+#if defined (WINDOWS)
+STATIC int
+DLLInit (HINSTANCE hModule)
+{
+  Init_iODBC ();
+
+  return TRUE;
+}
+
+
+STATIC void
+DLLExit (void)
+{
+  Done_iODBC ();
+}
+
+
+#pragma argused
+BOOL WINAPI
+DllMain (HINSTANCE hModule, DWORD fdReason, LPVOID lpvReserved)
+{
+  switch (fdReason)
+    {
+    case DLL_PROCESS_ATTACH:
+      if (!DLLInit (hModule))
+	return FALSE;
+      break;
+    case DLL_PROCESS_DETACH:
+      DLLExit ();
+    }
+  return TRUE;
+}
+#endif

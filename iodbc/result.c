@@ -51,10 +51,7 @@ SQLBindCol (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
+  ENTER_STMT (pstmt);
 
   /* check argument */
   switch (fCType)
@@ -81,21 +78,21 @@ SQLBindCol (
 
     default:
       PUSHSQLERR (pstmt->herr, en_S1003);
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   if (cbValueMax < 0)
     {
       PUSHSQLERR (pstmt->herr, en_S1090);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* check state */
   if (pstmt->state > en_stmt_needdata || pstmt->asyn_on != en_NullProc)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* call driver's function */
@@ -105,13 +102,13 @@ SQLBindCol (
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindCol,
       (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue));
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -126,18 +123,14 @@ SQLGetCursorName (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   /* check argument */
   if (cbCursorMax < (SWORD) 0)
     {
       PUSHSQLERR (pstmt->herr, en_S1090);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* check state */
@@ -145,7 +138,7 @@ SQLGetCursorName (
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   if (pstmt->state < en_stmt_cursoropen
@@ -153,7 +146,7 @@ SQLGetCursorName (
     {
       PUSHSQLERR (pstmt->herr, en_S1015);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* call driver's function */
@@ -163,13 +156,13 @@ SQLGetCursorName (
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetCursorName,
       (pstmt->dhstmt, szCursor, cbCursorMax, pcbCursor));
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -182,11 +175,7 @@ SQLRowCount (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   /* check state */
   if (pstmt->state >= en_stmt_needdata
@@ -195,7 +184,7 @@ SQLRowCount (
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* call driver */
@@ -205,13 +194,13 @@ SQLRowCount (
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_RowCount,
       (pstmt->dhstmt, pcrow));
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -225,11 +214,7 @@ SQLNumResultCols (
   SQLRETURN retcode;
   SWORD ccol;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -238,14 +223,14 @@ SQLNumResultCols (
 	  || pstmt->state >= en_stmt_needdata)
 	{
 	  PUSHSQLERR (pstmt->herr, en_S1010);
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
     }
   else if (pstmt->asyn_on != en_NumResultCols)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* call driver */
@@ -255,7 +240,7 @@ SQLNumResultCols (
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_NumResultCols,
@@ -298,7 +283,7 @@ SQLNumResultCols (
       *pccol = ccol;
     }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -319,11 +304,7 @@ SQLDescribeCol (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   /* check arguments */
   if (icol == 0)
@@ -339,7 +320,7 @@ SQLDescribeCol (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 #if (ODBCVER < 0x0300)
   /* check state */
@@ -361,7 +342,7 @@ SQLDescribeCol (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* call driver */
@@ -371,7 +352,7 @@ SQLDescribeCol (
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_DescribeCol,
@@ -390,7 +371,7 @@ SQLDescribeCol (
 	  break;
 
 	default:
-	  return retcode;
+	   LEAVE_STMT (pstmt, retcode);
 	}
     }
 
@@ -410,7 +391,7 @@ SQLDescribeCol (
       break;
     }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -429,11 +410,7 @@ SQLColAttributes (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   /* check arguments */
   if (icol == 0 && fDescType != SQL_COLUMN_COUNT)
@@ -457,7 +434,7 @@ SQLColAttributes (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* check state */
@@ -478,7 +455,7 @@ SQLColAttributes (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   /* call driver */
@@ -514,7 +491,7 @@ SQLColAttributes (
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
 
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ColAttributes,
@@ -533,7 +510,7 @@ SQLColAttributes (
 	  break;
 
 	default:
-	  return retcode;
+	   LEAVE_STMT (pstmt, retcode);
 	}
     }
 
@@ -553,5 +530,5 @@ SQLColAttributes (
       break;
     }
 
-  return retcode;
+  LEAVE_STMT (pstmt, retcode);
 }

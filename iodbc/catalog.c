@@ -29,15 +29,14 @@
 #include <sql.h>
 #include <sqlext.h>
 
-#include <dlproc.h>
 
 #include <herr.h>
 #include <henv.h>
 #include <hdbc.h>
 #include <hstmt.h>
 
+#include <dlproc.h>
 #include <itrace.h>
-
 
 /* 
  *  Check state for executing catalog functions 
@@ -148,11 +147,7 @@ SQLGetTypeInfo (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -175,7 +170,7 @@ SQLGetTypeInfo (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_GetTypeInfo);
@@ -195,13 +190,14 @@ SQLGetTypeInfo (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetTypeInfo,
       (pstmt->dhstmt, fSqlType));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_GetTypeInfo, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_GetTypeInfo, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -223,11 +219,7 @@ SQLSpecialColumns (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -263,7 +255,7 @@ SQLSpecialColumns (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_SpecialColumns);
@@ -283,7 +275,7 @@ SQLSpecialColumns (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SpecialColumns, (
@@ -298,7 +290,8 @@ SQLSpecialColumns (
 	  fScope,
 	  fNullable));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_SpecialColumns, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_SpecialColumns, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -319,11 +312,7 @@ SQLStatistics (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -351,7 +340,7 @@ SQLStatistics (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_Statistics);
@@ -372,7 +361,7 @@ SQLStatistics (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Statistics, (
@@ -386,7 +375,8 @@ SQLStatistics (
 	  fUnique,
 	  fAccuracy));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_Statistics, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_Statistics, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -407,11 +397,7 @@ SQLTables (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -428,7 +414,7 @@ SQLTables (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_Tables);
@@ -449,7 +435,7 @@ SQLTables (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Tables, (
@@ -463,7 +449,8 @@ SQLTables (
 	  szTableType,
 	  cbTableType));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_Tables, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_Tables, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -484,11 +471,7 @@ SQLColumnPrivileges (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -505,7 +488,7 @@ SQLColumnPrivileges (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_ColumnPrivileges);
@@ -526,7 +509,7 @@ SQLColumnPrivileges (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ColumnPrivileges, (
@@ -540,7 +523,8 @@ SQLColumnPrivileges (
 	  szColumnName,
 	  cbColumnName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_ColumnPrivileges, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_ColumnPrivileges, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -561,11 +545,7 @@ SQLColumns (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -582,7 +562,7 @@ SQLColumns (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_Columns);
@@ -603,7 +583,7 @@ SQLColumns (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Columns, (
@@ -617,7 +597,8 @@ SQLColumns (
 	  szColumnName,
 	  cbColumnName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_Columns, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_Columns, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -642,11 +623,7 @@ SQLForeignKeys (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -665,7 +642,7 @@ SQLForeignKeys (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_ForeignKeys);
@@ -686,7 +663,7 @@ SQLForeignKeys (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ForeignKeys, (
@@ -704,7 +681,8 @@ SQLForeignKeys (
 	  szFkTableName,
 	  cbFkTableName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_ForeignKeys, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_ForeignKeys, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -723,11 +701,7 @@ SQLPrimaryKeys (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -743,7 +717,7 @@ SQLPrimaryKeys (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_PrimaryKeys);
@@ -764,7 +738,7 @@ SQLPrimaryKeys (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_PrimaryKeys, (
@@ -776,7 +750,8 @@ SQLPrimaryKeys (
 	  szTableName,
 	  cbTableName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_PrimaryKeys, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_PrimaryKeys, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -797,11 +772,7 @@ SQLProcedureColumns (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -818,7 +789,7 @@ SQLProcedureColumns (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_ProcedureColumns);
@@ -839,7 +810,7 @@ SQLProcedureColumns (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ProcedureColumns, (
@@ -853,7 +824,8 @@ SQLProcedureColumns (
 	  szColumnName,
 	  cbColumnName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_ProcedureColumns, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_ProcedureColumns, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -872,11 +844,7 @@ SQLProcedures (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -892,7 +860,7 @@ SQLProcedures (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_Procedures);
@@ -913,7 +881,7 @@ SQLProcedures (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Procedures, (
@@ -925,7 +893,8 @@ SQLProcedures (
 	  szProcName,
 	  cbProcName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_Procedures, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_Procedures, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
 
 
@@ -944,11 +913,7 @@ SQLTablePrivileges (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (!IS_VALID_HSTMT (pstmt))
-    {
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pstmt);
+  ENTER_STMT (pstmt);
 
   for (;;)
     {
@@ -964,7 +929,7 @@ SQLTablePrivileges (
 
       if (retcode != SQL_SUCCESS)
 	{
-	  return SQL_ERROR;
+	  LEAVE_STMT (pstmt, SQL_ERROR);
 	}
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_TablePrivileges);
@@ -985,12 +950,13 @@ SQLTablePrivileges (
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      return SQL_ERROR;
+      LEAVE_STMT (pstmt, SQL_ERROR);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_TablePrivileges,
       (pstmt->dhstmt, szTableQualifier, cbTableQualifier, szTableOwner,
 	  cbTableOwner, szTableName, cbTableName));
 
-  return _iodbcdm_cata_state_tr (pstmt, en_TablePrivileges, retcode);
+  retcode = _iodbcdm_cata_state_tr (pstmt, en_TablePrivileges, retcode);
+  LEAVE_STMT (pstmt, retcode);
 }
