@@ -1031,7 +1031,7 @@ NSMakePrivateModulePublic (NSModule module)
  * dlopen() the MacOS X version of the FreeBSD dlopen() interface.
  */
 void *
-dlopen (char * path, int mode)
+iodbc_dlopen (char * path, int mode)
 {
   void *retval;
   struct stat stat_buf;
@@ -1214,7 +1214,7 @@ dlopen (char * path, int mode)
  * dlsym() the MacOS X version of the FreeBSD dlopen() interface.
  */
 void *
-dlsym (void * handle, char * symbol)
+iodbc_dlsym (void * handle, char * symbol)
 {
   struct dlopen_handle *dlopen_handle, *p;
   char symbol2[1024];
@@ -1278,7 +1278,7 @@ dlsym (void * handle, char * symbol)
  * dlerror() the MacOS X version of the FreeBSD dlopen() interface.
  */
 char *
-dlerror (void)
+iodbc_dlerror (void)
 {
   const char *p;
 
@@ -1292,7 +1292,7 @@ dlerror (void)
  * dlclose() the MacOS X version of the FreeBSD dlopen() interface.
  */
 int
-dlclose (void * handle)
+iodbc_dlclose (void * handle)
 {
   struct dlopen_handle *p, *q;
   unsigned long options;

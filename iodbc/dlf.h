@@ -86,7 +86,7 @@
 #include <dlfcn.h>
 #elif defined(DLDAPI_AIX_LOAD)
 #include <dlfcn.h>
-#elif defined(DLDAPI_VMS_IODBC)
+#elif defined(DLDAPI_VMS_IODBC) || defined(DLDAPI_MACX)
 extern void *iodbc_dlopen (char * path, int mode);
 extern void *iodbc_dlsym (void * hdll, char * sym);
 extern char *iodbc_dlerror ();
@@ -235,7 +235,7 @@ struct dlopen_handle
 #define OPL_DL_MODE	(RTLD_LAZY | RTLD_LOCAL)
 #endif
 
-#if defined(DLDAPI_VMS_IODBC)
+#if defined(DLDAPI_VMS_IODBC) || defined(DLDAPI_MACX)
 #define	DLL_OPEN(dll)		(void*)iodbc_dlopen((char*)(dll), OPL_DL_MODE)
 #define	DLL_PROC(hdll, sym)	(void*)iodbc_dlsym((void*)(hdll), (char*)sym)
 #define	DLL_ERROR()		(char*)iodbc_dlerror()
