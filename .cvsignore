@@ -1,0 +1,12 @@
+Makefile
+libtool
+*.swp
+*.o
+*.lo
+*.la
+*.tar.gz
+config.log
+config.cache
+config.status
+.libs
+.deps
