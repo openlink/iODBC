@@ -84,15 +84,14 @@ AS = @AS@
 CC = @CC@
 CPP = @CPP@
 DLLTOOL = @DLLTOOL@
-LD = @LD@
 LIBADD_DL = @LIBADD_DL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
+OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
-USE_SYMBOL_UNDERSCORE = @USE_SYMBOL_UNDERSCORE@
 VERSION = @VERSION@
 lib_version = @lib_version@
 
@@ -104,10 +103,10 @@ lib_LTLIBRARIES = libiodbc.la
 libiodbc_la_LDFLAGS = -version-info @lib_version@ 	                  -export-symbols $(srcdir)/iodbc.exp
 
 libiodbc_la_LIBADD = $(LIBADD_DL)
-libiodbc_la_SOURCES = catalog.c connect.c dlf.c dlproc.c execute.c 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c 			  itrace.c misc.c prepare.c result.c
+libiodbc_la_SOURCES = catalog.c connect.c dlf.c dlproc.c execute.c 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c 			  itrace.c misc.c prepare.c result.c odbc3.c 
 
 
-noinst_HEADERS = config.h dlf.h dlproc.h hdbc.h henv.h herr.h 			  hstmt.h itrace.h henv.ci herr.ci
+noinst_HEADERS = config.h dlf.h dlproc.h hdbc.h henv.h herr.h 			  hstmt.h itrace.h henv.ci herr.ci hdesc.h
 
 include_HEADERS = isql.h isqlext.h isqltypes.h 			  sql.h sqlext.h sqltypes.h
 
@@ -117,6 +116,14 @@ noinst_SCRIPTS = config.guess config.sub configure 			  install-sh ltconfig ltma
 
 EXTRA_DIST = IAFA-PACKAGE odbc.ini.sample vmscompile.com 			  iodbc.def iodbc.exp libiodbc.spec main.c
 
+
+# ----------------------------------------------------------------------
+#
+#  Maintainers only
+# 
+# ----------------------------------------------------------------------
+
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
@@ -130,7 +137,7 @@ LIBS = @LIBS@
 libiodbc_la_DEPENDENCIES = 
 libiodbc_la_OBJECTS =  catalog.lo connect.lo dlf.lo dlproc.lo execute.lo \
 fetch.lo hdbc.lo henv.lo herr.lo hstmt.lo info.lo itrace.lo misc.lo \
-prepare.lo result.lo
+prepare.lo result.lo odbc3.lo
 SCRIPTS =  $(noinst_SCRIPTS)
 
 CFLAGS = @CFLAGS@
@@ -151,27 +158,27 @@ TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/catalog.P .deps/connect.P .deps/dlf.P .deps/dlproc.P \
 .deps/execute.P .deps/fetch.P .deps/hdbc.P .deps/henv.P .deps/herr.P \
-.deps/hstmt.P .deps/info.P .deps/itrace.P .deps/misc.P .deps/prepare.P \
-.deps/result.P
+.deps/hstmt.P .deps/info.P .deps/itrace.P .deps/misc.P .deps/odbc3.P \
+.deps/prepare.P .deps/result.P
 SOURCES = $(libiodbc_la_SOURCES)
 OBJECTS = $(libiodbc_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4):  configure.in 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
 	cd $(srcdir) && $(ACLOCAL)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+$(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
 mostlyclean-libLTLIBRARIES:
@@ -470,6 +477,7 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
@@ -524,20 +532,32 @@ mostlyclean distclean maintainer-clean
 #
 #  Create Linux RPM's
 #
-linux-rpm:
-	make dist VERSION=2.50
-	cp libiodbc-2.50.tar.gz /usr/src/redhat/SOURCES
-	rpm -ba libiodbc.spec
+@MAINTAINER_MODE_TRUE@linux-rpm:
+@MAINTAINER_MODE_TRUE@	make dist
+@MAINTAINER_MODE_TRUE@	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
+@MAINTAINER_MODE_TRUE@	rpm -ba libiodbc.spec
 
 #
 #  Create a tar file containing the library and include files
 #
-binary-tar:
-	mkdir @build@
-	make install prefix=`pwd`/@build@
-	tar cvf @build@.tar @build@
-	gzip -9v @build@.tar
-	rm -rf @build@
+@MAINTAINER_MODE_TRUE@binary-tar:
+@MAINTAINER_MODE_TRUE@	mkdir @build@
+@MAINTAINER_MODE_TRUE@	make install prefix=`pwd`/@build@
+@MAINTAINER_MODE_TRUE@	tar cvf @build@.tar @build@
+@MAINTAINER_MODE_TRUE@	gzip -9v @build@.tar
+@MAINTAINER_MODE_TRUE@	rm -rf @build@
+
+#
+#  Create a source snapshot package
+#
+@MAINTAINER_MODE_TRUE@snapshot:
+@MAINTAINER_MODE_TRUE@	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
+
+#
+#  Create an official release package
+#
+@MAINTAINER_MODE_TRUE@release:
+@MAINTAINER_MODE_TRUE@	$(MAKE) distcheck
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
