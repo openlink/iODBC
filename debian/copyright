@@ -1,5 +1,12 @@
-#
-#  Makefile.am
+This package was debianized by Christian Hammers <ch@debian.org> on
+Sat,  2 Oct 1999 15:44:05 +0200.
+
+It was downloaded from http://www.iodbc.org/dist/
+
+Upstream Author(s): OpenLink Software Inc.
+Contact           : iODBC Maintainer <iodbc@openlinksw.com>
+
+Copyright:
 #
 #  The iODBC driver manager.
 #  
@@ -66,75 +73,3 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
-SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
-
-EXTRA_DIST             = \
-	IAFA-PACKAGE \
-	LICENSE LICENSE.LGPL LICENSE.BSD \
-	README.MACOSX \
-	mac/Makefile \
-	mac/iODBC/English.lproj/InfoPlist.strings \
-	mac/iODBC/iODBC.pbproj/project.pbxproj \
-	mac/iODBCinst/English.lproj/InfoPlist.strings \
-	mac/iODBCinst/iODBCinst.pbproj/project.pbxproj \
-	mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
-	mac/iodbc.exp \
-	mac/iodbcinst.exp \
-	debian/changelog \
-	debian/control \
-	debian/copyright \
-	debian/iodbc.files \
-	debian/iodbc.undocumented \
-	debian/libiodbc2-dev.examples \
-	debian/libiodbc2-dev.files \
-	debian/libiodbc2.docs \
-	debian/libiodbc2.examples \
-	debian/libiodbc2.files \
-	debian/libiodbc2.undocumented \
-	debian/rules
-
-
-# ----------------------------------------------------------------------
-#
-#  Maintainers only
-# 
-# ----------------------------------------------------------------------
-
-MAINTAINERCLEANFILES	= Makefile.in aclocal.m4 configure
-
-
-if MAINTAINER_MODE
-
-#
-#  Create Linux RPM's
-#
-linux-rpm:
-	$(MAKE) dist
-	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
-	rpm -ba admin/libiodbc.spec
-
-#
-#  Create a tar file containing the library and include files
-#
-binary-tar:
-	-mkdir @build@
-	$(MAKE) install prefix=`pwd`/@build@
-	tar cvf @build@.tar @build@
-	gzip -9vf @build@.tar
-	rm -rf @build@
-
-#
-#  Create a source snapshot package
-#
-snapshot:
-	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
-
-
-#
-#  Create an official release package
-#
-release:
-	$(MAKE) distcheck
-
-endif

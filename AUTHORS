@@ -28,6 +28,9 @@ Emmanuel Poitier <epoitier@openlinksw.co.uk>				(ep)
   - Added iodbcinst support
   - Added iodbcadm-gtk
 
+Christian Hammers <ch@debian.org>					(ch)
+  - Maintainer of iODBC packaging for the Debian project
+
 
 This list is not complete. If you have contributed to this project and
 want to appear on this list, please email the current maintainer.
