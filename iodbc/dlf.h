@@ -74,10 +74,10 @@
 #define _DLF_H
 #include <iodbc.h>
 
-#if defined(HAVE_LIBDL)
-#define DLDAPI_SVR4_DLFCN
-#elif defined(HAVE_SHL_LOAD)
+#if defined(HAVE_SHL_LOAD)
 #define DLDAPI_HP_SHL
+#elif defined(HAVE_LIBDL)
+#define DLDAPI_SVR4_DLFCN
 #elif defined(HAVE_DYLD)
 #define DLDAPI_MACX
 #endif
