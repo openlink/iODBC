@@ -144,7 +144,6 @@ SQLFetch (SQLHSTMT hstmt)
 	    }
 	  else
 	    {
-
 	      pstmt->state = en_stmt_allocated;
 	    }
 	  pstmt->cursor_state = en_stmt_cursor_no;
@@ -480,9 +479,11 @@ SQLMoreResults (SQLHSTMT hstmt)
     {
       switch (pstmt->state)
 	{
+#if 0
 	case en_stmt_allocated:
 	case en_stmt_prepared:
 	  LEAVE_STMT (pstmt, SQL_NO_DATA_FOUND);
+#endif
 
 	case en_stmt_needdata:
 	case en_stmt_mustput:
@@ -537,6 +538,14 @@ SQLMoreResults (SQLHSTMT hstmt)
     case en_stmt_allocated:
     case en_stmt_prepared:
       /* driver should LEAVE_STMT (pstmt, SQL_NO_DATA_FOUND); */
+	  if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_cursoropen;
+	    }
+	  else
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
       break;
 
     case en_stmt_executed:
@@ -548,7 +557,7 @@ SQLMoreResults (SQLHSTMT hstmt)
 	    }
 	  else
 	    {
-	      pstmt->state = en_stmt_allocated;
+	      pstmt->state = en_stmt_cursoropen;
 	    }
 	}
       else if (retcode == SQL_STILL_EXECUTING)
