@@ -1,3 +1,355 @@
+2004-02-20 17:14  source
+
+	* Added --with-layout to simplify installation layouts for different
+	  distributions like Debian, Gentoo, FreeBSD etc
+	  (pvk)
+	
+2004-02-20 17:13  source
+
+	* Added missing file in distcheck (pvk)
+	
+2004-02-20 16:41  source
+
+	* Small documentation enhancements and clarifications (pvk)
+	
+2004-02-20 16:39  source
+
+	* Renewed build utilities (pvk)
+	
+2004-02-20 11:17  source
+
+	* Fixed license explaination
+	* Fixed URL to source code on www.iodbc.org site
+	  (pvk)
+	
+2004-02-19 12:21  source
+
+	* Fixed problem with finding install_libodbc.sh shell script (pvk)
+	
+2004-02-19 11:24  source
+
+	* If the allocation of the statement handle in the drivermanager fails,
+	  also release the statement handle in the driver
+	  (pvk)
+	
+2004-02-19 11:21  source
+
+	* Fixed prototype problem on Linux (pvk)
+	
+2004-02-18 16:12  source
+
+	* Fixed typo in fprintf format (pvk)
+	
+2004-02-18 16:05  source
+
+	* Initialise native_error to 0 as some drivers do not set this field (pvk)
+	
+2004-02-18 16:04  source
+
+	* Increased size of local variables to accommodate larger input
+	* Added SQLRowCount to display number of affected rows on DDL/DML
+	  statements
+	  (ep)
+	
+2004-02-18 15:59  source
+
+	* Removed compiler warning (ep)
+	
+2004-02-18 15:58  source
+
+	* Added missing prototype (ep)
+	
+2004-02-18 15:57  source
+
+	* Initialise some local variables (ep)
+	
+2004-02-18 15:55  source
+
+	* Updated Mac OS X build project (ep)
+	
+2004-02-18 12:33  source
+
+	* Added support for displaying NativeError number
+	* Added support for SQLDiagRec when compiling for ODBC 3.x
+	  (pvk)
+	
+2004-02-18 12:11  source
+
+	* Fixed problem with SQLCloseCursor
+	* Replaced call to SQLFreeStmt (hstmt, SQL_CLOSE) with SQLCloseCursor
+	  when compiling for ODBC 3.x
+	  (pvk)
+	
+2004-02-18 12:07  source
+
+	* Removed call to SQLSetConnectOption(SQL_OPT_TRACEFILE) (pvk)
+	
+2004-02-18 11:06  source
+
+	* SQLCloseCursor should not return SQLState 24000 as this is up to the
+	  Driver not the DriverManager (pvk)
+	
+2004-02-17 19:58  source
+
+	* Fixed compiler warnings
+	* Fixed size calculation for variable length string and binary fields
+	  (pvk)
+	
+2004-02-17 19:56  source
+
+	* Fixed small compiler warnings
+	* Use snprintf when available to guard against buffer overruns
+	* Fixed problem with empty strings
+	  (pvk)
+	
+2004-02-17 19:53  source
+
+	* Added missing trace function for SQLSetDescRec (pvk)
+	
+2004-02-17 19:38  source
+
+	* Removed stale message handler (pvk)
+	
+2004-02-17 19:37  source
+
+	* Added support for asprintf and snprintf to guard against buffer overflows
+	  (pvk)
+	
+2004-02-17 19:35  source
+
+	* Create symbolic links for libodbc.a and libodbc.so for applications that
+	  need it (pvk)
+	
+2004-02-17 19:34  source
+
+	* Added support for snprintf (pvk)
+	
+2004-02-17 19:34  source
+
+	* Increased size of buf to fix potential stack overwrite (pvk)
+	
+2004-02-17 19:31  source
+
+	* Removed duplicate call to MEM_FREE (pvk)
+	
+2004-02-17 19:17  source
+
+	* Changed command line arguments for cvs2cl (pvk)
+	
+2004-02-17 19:10  source
+
+	* Added Tim (pvk)
+	
+2004-02-17 19:08  source
+
+	* Small text clarifications (th)
+	
+2004-02-17 19:04  source
+
+	* Added check for asnprintf and snprintf (pvk)
+	
+2004-02-17 19:03  source
+
+	* Added tracing to SQLSetDescRec (pvk)
+	
+2004-02-17 12:56  source
+
+	* Fixed double call to free (pvk)
+	
+2004-02-04 16:33  source
+
+	* Added missing function names (pvk)
+	
+2004-02-04 16:28  source
+
+	* Fixed length calculation SQL_C_BINARY, SQL_C_CHAR and SQL_C_WCHAR 
+	  fields (pvk)
+	
+2004-02-04 16:28  source
+
+	* Do not trace zero length binary strings (pvk)
+	
+2004-02-04 16:02  source
+
+	* Added missing sqlunix.h
+	* Rewrote comment to include BSD license option
+	  (pvk)
+	
+2004-02-04 16:00  source
+
+	* Added new file that automake says we need (pvk)
+	
+2004-02-04 16:00  source
+
+	file compile was initially added on branch iODBC-3_51_1-DEVEL.
+	
+2004-02-04 15:59  source
+
+	* Unify ChangeLog entries that occur within one hour (pvk)
+	
+2004-02-04 15:55  source
+
+	* Added support for building both Unicode and non Unicode test program (pvk)
+	
+2004-02-02 15:17  source
+
+	* Small code cleanups (pvk)
+	
+2003-12-11 15:51  source
+
+	* Make sure the script functions when the current dir is not in the PATH
+	  (pvk)
+	
+2003-12-11 14:09  source
+
+	* Removed unused static functions (pvk)
+	
+2003-12-11 14:08  source
+
+	* Reindented code (pvk)
+	
+2003-12-11 14:07  source
+
+	* Changed SQLColattribute(s) function so the NumericAttribute is always
+	  a pointer to a SQLLEN  (pvk)
+	
+2003-12-11 12:32  source
+
+	* Added Unicode API function names (pvk)
+	
+2003-12-10 13:23  source
+
+	* Reindented code (pvk)
+	
+2003-12-10 13:11  source
+
+	* Fixed small compiler warnings (pvk)
+	
+2003-12-10 10:07  source
+
+	* Set SQLINTEGER to be a int which on all machines should be a 32bit
+	  quantity
+	* Set SQLLEN to be a long which on most 64bit platforms should be a 64bit
+	  quantity except on _WIN64 where we use __int64
+	* Fixed signed/unsigned mismatch
+	* Minor cleanups
+	  (pvk)
+	
+2003-12-10 09:55  source
+
+	* Fixed small compiler warnings (pvk)
+	
+2003-11-27 16:19  source
+
+	* Fixed typo (pvk)
+	
+2003-11-27 16:19  source
+
+	* Define backward compatible SQLROWSETSIZE, SQLROWOFFSET and SQLROWCOUNT
+	  (pvk)
+	
+2003-11-26 16:07  source
+
+	* Added new extentions from OpenLink (pvk)
+	
+2003-11-26 14:26  source
+
+	file sqlunix.h was initially added on branch iODBC-3_51_1-DEVEL.
+	
+2003-11-26 14:26  source
+
+	* Draft of changes needed for ODBC 64 bit (pvk)
+	
+2003-11-26 14:06  source
+
+	* Added sqlunix.h (pvk)
+	
+2003-11-26 14:05  source
+
+	* Fixed problem with make distcheck (pvk)
+	
+2003-11-14 13:56  source
+
+	* Fixed C++ warning on tzset and localtime functions (pvk)
+	
+2003-11-14 13:55  source
+
+	* Fixed C++ invalid conversion error (pvk)
+	
+2003-11-14 13:51  source
+
+	* Fixed signed/unsigned warning (pvk)
+	
+2003-11-14 13:48  source
+
+	* Fixed C++ warnings (pvk)
+	
+2003-11-14 13:47  source
+
+	* Fixed potential buffer overflow (pvk)
+	
+2003-11-14 13:05  source
+
+	* Added more SQLLEN fixes (pvk)
+	
+2003-11-14 12:21  source
+
+	* Fixed C++ warnings and errors (pvk)
+	
+2003-11-14 11:48  source
+
+	* Eliminated old FAR attribute (pvk)
+	
+2003-11-14 11:31  source
+
+	* Fixed some potential buffer overflows (pvk)
+	
+2003-11-14 11:30  source
+
+	* Fixed core dump when driver could not be loaded (pvk)
+	
+2003-11-14 11:28  source
+
+	file install_libodbc.sh was initially added on branch iODBC-3_51_1-DEVEL.
+	
+2003-11-14 11:28  source
+
+	* Create symbolic links for libodbc.a and libodbc.so for applications that
+	  need it (pvk)
+	
+2003-11-12 18:31  source
+
+	* Fixed call to _Internal function (pvk)
+	
+2003-11-12 16:20  source
+
+	* Changed prototypes according to latest Microsoft ODBC specification for
+	  WIN64
+	* Added support for tracing SQLLEN and friends
+	  (pvk)
+	
+2003-11-12 16:19  source
+
+	* Fixed warning using C++ compiler (pvk)
+	
+2003-11-12 16:16  source
+
+	* Added tracing for SQLSetDescRec (pvk)
+	
+2003-11-12 16:16  source
+
+	file SetDescRec.c was initially added on branch iODBC-3_51_1-DEVEL.
+	
+2003-09-08 18:53  source
+
+	* Added README.CVS to documentation (pvk)
+	
+2003-09-08 18:32  source
+
+	* Merged previous Changelogs into NEWS file
+	* Use cvs2cl script to generate Changelog information from CVS
+	  (pvk)
+	
 2003-09-08 18:26  source
 
 	* Updated version and build numbers to 3.51.1 (pvk)
@@ -22,11 +374,6 @@
 2003-09-07 14:08  source
 
 	* Rewrote check for Dl_info type (pvk)
-	
-2003-09-07 13:38  source
-
-	* Removed symbol clash on iodbc_version between various components
-	  (pvk)
 	
 2003-09-07 13:29  source
 
@@ -60,10 +407,6 @@
 2003-09-05 17:08  source
 
 	* Do not use -static on convenience libraries (pvk)
-	
-2003-09-04 13:49  source
-
-	* Moved iodbc/iodbc.h to include/iodbc.h (pvk)
 	
 2003-09-04 13:47  source
 
@@ -711,10 +1054,6 @@
 
 	* Upgraded to automake 1.7.1 (pvk)
 	
-2003-06-03 15:21  source
-
-	* Added Unicode support (sm)
-	
 2003-06-03 15:11  source
 
 	file iodbcext.h was initially added on branch iODBC-3_0_6-DEVEL.
@@ -734,11 +1073,6 @@
 2003-06-03 15:08  source
 
 	* Added Unicode support (sm)
-	
-2002-04-29 20:19  source
-
-	* Added instructions on how to build MyODBC using the Mac OS X frameworks
-	  (pvk)
 	
 2002-04-29 20:16  source
 
@@ -784,15 +1118,6 @@
 2002-04-26 11:34  source
 
 	* When using Apple Frameworks we need to provide the framework name (ep)
-	
-2002-04-26 11:27  source
-
-	* Cleaned some unused variables (ep)
-	
-2002-04-26 11:27  source
-
-	* If we are not compiling with GUI enabled, make sure we do not
-	  have any GUI references in our library (ep)
 	
 2002-04-26 11:23  source
 
@@ -854,25 +1179,9 @@
 
 	* Added support for automake 1.6, autoconf 2.53 and libtool 1.4.2 (pvk)
 	
-2002-03-14 21:04  source
-
-	* Updated comment to reflect dual LGPL/BSD license (pvk)
-	
-2002-03-14 20:58  source
-
-	* Updated comment to reflect dual LGPL/BSD license (pvk)
-	
-2002-03-14 20:53  source
-
-	* Updated comment to reflect dual LGPL/BSD license (pvk)
-	
 2002-03-14 20:50  source
 
 	* Updated comment to reflect dual LGPL/BSD license (pvk)
-	
-2002-03-14 20:47  source
-
-	* Added include of iodbc.h (pvk)
 	
 2002-03-14 20:45  source
 
@@ -1094,14 +1403,6 @@
 
 	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
 	
-2001-06-04 10:43  source
-
-	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
-	
-2001-06-04 10:27  source
-
-	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
-	
 2001-06-04 10:10  source
 
 	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
@@ -1131,10 +1432,6 @@
 2001-06-01 15:40  source
 
 	* Disallow root to start a debug session as this is a security risk (pvk)
-	
-2001-06-01 15:37  source
-
-	* Added checks for ODBC 3.x date, time and timestamp defines (pvk)
 	
 2001-06-01 15:36  source
 
@@ -1189,10 +1486,6 @@
 2000-01-28 14:29  source
 
 	* Forgot to update pcbDSN and pcbDesc fields (pvk)
-	
-2000-01-28 14:24  source
-
-	* Incremented package version number to 3.0.1 (pvk)
 	
 2000-01-28 14:16  source
 
@@ -1269,10 +1562,6 @@
 	
 	* Set library version for ODBC 2.x interface to 2:51:0 (pvk)
 	
-1999-12-15 11:08  source
-
-	* Added initial support for MacOS X aka Rhapsody (pvk)
-	
 1999-12-15 10:49  source
 
 	* Added initial support for MacOS X aka Rhapsody (pvk)
@@ -1315,10 +1604,6 @@
 
 	* Removed spurious #endif (pvk)
 	
-1999-12-09 15:09  source
-
-	* Added initial ODBC 3.x support (gk)
-	
 1999-12-09 15:02  source
 
 	* Added initial ODBC 3.x support (gk)
@@ -1326,10 +1611,6 @@
 1999-12-09 14:54  source
 
 	* Changed to ODBC 3.x mode (pvk)
-	
-1999-12-09 14:21  source
-
-	* Regenerated files (pvk)
 	
 1999-12-09 14:20  source
 
@@ -1456,10 +1737,6 @@
 
 	* Added source directory path to export file iodbc.exp (pvk)
 	
-1999-04-24 10:52  source
-
-	* Checked in generated file (pvk)
-	
 1999-04-24 10:51  source
 
 	* Added main.c to the list of files to be distributed. (pvk)
@@ -1553,17 +1830,9 @@
 
 	* Added support for SQL_DATE, SQL_TIME and SQL_TIMESTAMP (pvk)
 	
-1999-03-17 09:13  source
-
-	* Added support for VMS (ps)
-	
 1999-03-17 09:09  source
 
 	* Added Per Schroder who contributed the VMS patches to the iODBC project
-	
-1999-03-17 09:01  source
-
-	* Added support for VMS (ps)
 	
 1999-03-17 08:58  source
 
@@ -1577,14 +1846,6 @@
 
 	* Wrote new handle validation checks to make the driver manager more
 	  resistant to handle misuse (pvk)
-	
-1999-03-16 23:37  source
-
-	* Rewrote all function prototypes to conform to ODBC 2.51 standard (pvk)
-	
-1999-03-16 23:29  source
-
-	* Rewrote all function prototypes to conform to ODBC 2.51 standard (pvk)
 	
 1999-03-16 23:06  source
 
