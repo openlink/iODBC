@@ -454,6 +454,21 @@ then
     [
 	AC_CHECK_LIB(pthread, pthread_create, [LIBS="$LIBS -lpthread"])
     ])
+
+    AC_MSG_CHECKING(for OS dependent thread flags)
+    case $host in
+      *-aix*)	
+		CC=cc_r
+		AC_MSG_RESULT([use cc_r for AIX])
+		;;
+      *-freebsd*)	
+		CFLAGS="$CFLAGS -pthread"
+		AC_MSG_RESULT([use -pthread for FreeBSD])
+		;;
+      *)
+		AC_MSG_RESULT([none])
+		;;
+    esac
 else
     AC_MSG_RESULT(no thread support)
 fi
@@ -467,10 +482,12 @@ fi
 LIBADD_OS=""
 AC_MSG_CHECKING(for OS dependent libraries)
 case $host in
-  *-darwin*)	LIBADD_OS="-Wl,-framework,Carbon";;
+  *-darwin*)	
+	LIBADD_OS="-Wl,-framework,Carbon"
+	;;
 esac
 AC_SUBST(LIBADD_OS)
-AC_MSG_RESULT($LIBADD_OS)
+AC_MSG_RESULT([$LIBADD_OS])
 
 
 ########################################################################## 
