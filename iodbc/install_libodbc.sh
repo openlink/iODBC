@@ -1,10 +1,13 @@
+#!/bin/sh
 #
-#  Makefile.am
+#  install_libodbc.sh
+#
+#  $Id$
 #
 #  The iODBC driver manager.
 #  
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
-#  Copyright (C) 1996-2002 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2004 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -67,31 +70,67 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-SUBDIRS			= trace .
+PREFIX="$1"
+MACHINE=`uname`
 
-INCLUDES		= -I$(top_srcdir)/include
+#
+#  Check if base installation completed
+#
+if test -z "$MACHINE"
+then
+  echo "**ERROR: unknown machine type"
+  exit 1
+fi
 
-lib_LTLIBRARIES		= libiodbc.la
+if test ! -d "$PREFIX/lib"
+then
+   echo "**ERROR: installation directory [$PREFIX/lib] does not exist"
+   exit 1
+fi
 
-libiodbc_la_LDFLAGS	= -version-info @lib_version@ \
-	                  -export-symbols $(srcdir)/iodbc.exp
-libiodbc_la_LIBADD	= trace/libiodbctrace.la \
-			  ../iodbcinst/libiodbcinst.la \
-			  $(LIBADD_DL) $(LIBADD_OS)
-libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
-			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
-			  misc.c prepare.c result.c odbc3.c \
-			  unicode.c
 
-noinst_HEADERS		= dlf.h dlproc.h hdbc.h henv.h herr.h \
-			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h \
-			  unicode.h
-
-EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com
+cd "$PREFIX"/lib
 
 
 #
-#  Add symbolic link for libodbc.so as some apps need this
+#  Create a dynamic libodbc.so library link (if available)
 #
-install-exec-hook:
-	$(SHELL) install_libodbc.sh $(prefix)
+if test -f libiodbc.la
+then
+    echo "Creating dynamic library for Generic ODBC driver Manager ..."
+    . libiodbc.la
+    for lib in $library_names
+    do
+	case $lib in
+	libiodbc.so.*)
+	    rm -f libodbc.so
+	    ln -s $lib libodbc.so
+	    ;;
+	libiodbc.sl.*)
+	    rm -f libiodbc.sl
+	    ln -s $lib libodbc.sl
+	    ;;
+	esac
+	break
+    done
+fi
+
+
+#
+#  Create a static libodbc.a library link
+#
+echo "Creating static library for Generic ODBC driver Manager ..."
+case "$MACHINE" in
+  AIX)  
+	echo "Special handling for AIX ..."
+	rm -f libodbc.so libodbc.a odbc.so
+	cat libiodbc.so.2 > odbc.so
+	ar rv libodbc.a odbc.so
+	rm -f odbc.so
+	;;
+
+  *)
+	rm -f libodbc.a
+	ln -s libiodbc.a libodbc.a
+	;;
+esac
