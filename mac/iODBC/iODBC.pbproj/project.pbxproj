@@ -124,11 +124,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.51.0</string>
+	<string>3.51.3</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.51.0</string>
+	<string>3.51.3</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>
@@ -159,6 +159,7 @@
 				F586819704949C2101000FFE,
 				F578097604CED1970194ADB8,
 				F578098604CED1970194ADB8,
+				71DF011E06A3E1DD007AF56B,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -406,6 +407,24 @@
 			settings = {
 			};
 		};
+		71DF011C06A3E1DD007AF56B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = iodbcunix.h;
+			path = ../../include/iodbcunix.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		71DF011E06A3E1DD007AF56B = {
+			fileRef = 71DF011C06A3E1DD007AF56B;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
 //710
 //711
 //712
@@ -425,6 +444,7 @@
 				F535B3520277FC2E01A801DE,
 				F535B3530277FC2E01A801DE,
 				F535B3540277FC2E01A801DE,
+				71DF011C06A3E1DD007AF56B,
 				F535B3160277FBC601A801DE,
 				F535B3170277FBC601A801DE,
 				F535B3180277FBC601A801DE,
@@ -762,6 +782,9 @@
 			fileRef = F535B32C0277FBC601A801DE;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F535B33C0277FBC601A801DE = {
@@ -1002,6 +1025,9 @@
 			fileRef = F55DDABC04949A6001000FFE;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F57808F104CED1010194ADB8 = {
@@ -2227,6 +2253,9 @@
 			fileRef = F586819204949B4701000FFE;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F586819404949C2101000FFE = {
