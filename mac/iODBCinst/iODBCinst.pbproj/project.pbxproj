@@ -152,6 +152,7 @@
 				F535B3C5027827A201A801DE,
 				F59CCFDB0504F64401000DFE,
 				71DF013706A3E372007AF56B,
+				7C530B6107F075D3000BBF8D,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,6 +202,7 @@
 				F535B3A50278027E01A801DE,
 				F535B3C6027827A201A801DE,
 				F54DA8D60279584A01A801DE,
+				7C530B5F07F075A7000BBF8D,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,6 +346,46 @@
 //712
 //713
 //714
+//7C0
+//7C1
+//7C2
+//7C3
+//7C4
+		7C530B5E07F075A7000BBF8D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = unicode.c;
+			path = ../../iodbc/unicode.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7C530B5F07F075A7000BBF8D = {
+			fileRef = 7C530B5E07F075A7000BBF8D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		7C530B6007F075D3000BBF8D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = unicode.h;
+			path = ../../iodbc/unicode.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		7C530B6107F075D3000BBF8D = {
+			fileRef = 7C530B6007F075D3000BBF8D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//7C0
+//7C1
+//7C2
+//7C3
+//7C4
 //F50
 //F51
 //F52
@@ -352,6 +394,7 @@
 		F535B35B0278021D01A801DE = {
 			children = (
 				F535B35C0278023701A801DE,
+				7C530B5E07F075A7000BBF8D,
 				F535B35E0278027E01A801DE,
 				F535B35F0278027E01A801DE,
 				F535B3600278027E01A801DE,
@@ -945,6 +988,7 @@
 				F535B3A702780BB701A801DE,
 				F535B3A802780BB701A801DE,
 				F535B3A902780BB701A801DE,
+				7C530B6007F075D3000BBF8D,
 				F535B3AA02780BB701A801DE,
 				F535B3AB02780BB701A801DE,
 				F535B3AC02780BB701A801DE,
