@@ -1,6 +1,6 @@
 /*
  *
- *  config.h
+ *  iodbc.h
  *
  *  $Id$
  *
@@ -24,13 +24,18 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef	_CONFIG_H
-#define _CONFIG_H
+#ifndef	_IODBC_H
+#define _IODBC_H
 
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
 #define _UNIX_
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -137,4 +142,4 @@
 /* these are deprecated defines from the odbc headers */
 #define SQL_CONNECT_OPT_DRVR_START      1000
 
-#endif
+#endif /* _IODBC_H */
