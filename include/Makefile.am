@@ -1,7 +1,7 @@
 #
 #  Makefile.am
 #
-#  (C) 1999 OpenLink Software Inc.
+#  (C) 2001 OpenLink Software Inc.
 #
 #  The iODBC driver manager.
 #
@@ -19,16 +19,12 @@
 #  License along with this library; if not, write to the Free
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AUTOMAKE_OPTIONS	= foreign no-dependencies 1.4
+AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST		= odbctest.c
-
-noinst_PROGRAMS		= odbctest
-INCLUDES		= -I$(top_srcdir)/include
-
-#
-#  Build odbctest program
-#
-odbctest_SOURCES	= odbctest.c
-odbctest_LDADD		= ../iodbc/libiodbc.la
-odbctest_LDFLAGS	= -static
+include_HEADERS         = \
+	isql.h \
+	isqlext.h \
+	isqltypes.h \
+	sql.h \
+	sqlext.h \
+	sqltypes.h

@@ -5,7 +5,7 @@
 #
 #  RPM specification file to build binary distribution set
 #
-#  (C)Copyright 1999 OpenLink Software.
+#  (C)Copyright 2001 OpenLink Software.
 #  All Rights Reserved.
 #
 #  This library is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
 # ----------------------------------------------------------------------
 Summary: iODBC Driver Manager
 name: libiodbc
-version: 3.0.3
+version: 3.0.4
 release: 1
 Group: Libraries
 Vendor: Ke Jin 
@@ -76,8 +76,8 @@ make
 rm -rf $RPM_BUILD_ROOT
 make install prefix=$RPM_BUILD_ROOT/usr
 mkdir -p $RPM_BUILD_ROOT/etc
-install -m644 odbc.ini.sample $RPM_BUILD_ROOT/etc/odbc.ini
-# install -m644 odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
+install -m644 etc/odbc.ini.sample $RPM_BUILD_ROOT/etc/odbc.ini
+# install -m644 etc/odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT

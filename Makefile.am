@@ -1,7 +1,7 @@
 #
 #  Makefile.am
 #
-#  (C) 1999 OpenLink Software Inc.
+#  (C) 2001 OpenLink Software Inc.
 #
 #  The iODBC driver manager.
 #
@@ -20,30 +20,9 @@
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 AUTOMAKE_OPTIONS	= gnu 1.4
-SUBDIRS			= . samples
+SUBDIRS			= admin bin etc include iodbc samples
 
-lib_LTLIBRARIES		= libiodbc.la
-
-libiodbc_la_LDFLAGS	= -version-info @lib_version@ \
-	                  -export-symbols $(srcdir)/iodbc.exp
-libiodbc_la_LIBADD	= $(LIBADD_DL)
-libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
-			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
-			  itrace.c misc.c prepare.c result.c odbc3.c 
-
-noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
-			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h
-include_HEADERS		= isql.h isqlext.h isqltypes.h \
-			  sql.h sqlext.h sqltypes.h
-
-bin_SCRIPTS		= iodbc-config
-
-noinst_SCRIPTS		= config.guess config.sub configure \
-			  install-sh ltmain.sh missing mkinstalldirs
-
-EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
-			  iodbc.def iodbc.exp libiodbc.spec main.c \
-			  iodbc-config.in
+EXTRA_DIST             = IAFA-PACKAGE 
 
 
 # ----------------------------------------------------------------------

@@ -3,7 +3,7 @@ AC_REVISION($Id$)
 #
 #  configure.in
 #  
-#  (C) 1999 OpenLink Software Inc.
+#  (C) 2001 OpenLink Software Inc.
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
@@ -25,8 +25,9 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT
-AC_CONFIG_SRCDIR([isql.h])
-AM_INIT_AUTOMAKE(libiodbc,3.0.3)
+AC_CONFIG_SRCDIR([include/isql.h])
+AC_CONFIG_AUX_DIR(admin)
+AM_INIT_AUTOMAKE(libiodbc,3.0.4)
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
@@ -324,10 +325,15 @@ AC_ARG_WITH(pthreads,
 ##########################################################################
 AC_CONFIG_FILES([
     Makefile 
+    admin/Makefile
+    bin/Makefile
+    bin/iodbc-config
+    etc/Makefile
+    include/Makefile
+    iodbc/Makefile
     samples/Makefile
-    iodbc-config
 ])
 AC_CONFIG_COMMANDS([default],[
-    chmod 755 iodbc-config
+    chmod 755 bin/iodbc-config
 ])
 AC_OUTPUT
