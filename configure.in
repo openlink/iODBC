@@ -292,6 +292,29 @@ AC_DEFINE_UNQUOTED(SYS_ODBC_INI, "$inidir/odbc.ini")
 AC_DEFINE_UNQUOTED(SYS_ODBCINST_INI, "$inidir/odbcinst.ini")
 
 
+##########################################################################
+##									##
+##  Checkout pthread situation						##
+##									##
+##########################################################################
+
+AC_ARG_WITH(pthreads,
+    [  --with-pthreads         build pthread implementation if possible],
+    [CFLAGS="$CFLAGS -DWITH_PTHREADS -D_REENTRANT"
+     AC_CHECK_LIB(pthreads, pthread_create,
+       [if test "$host_os" = "osf3.2"
+	then
+	  CFLAGS="$CFLAGS -DOLD_PTHREADS"
+	  LIBS="$LIBS -lpthreads -lmach -lc_r"
+	else
+	  LIBS="$LIBS -lpthreads"
+	fi
+       ],
+       [AC_CHECK_LIB(pthread, pthread_create, [LIBS="$LIBS -lpthread"])])
+    ])
+
+
+
 ########################################################################## 
 ##									##
 ##  Generate Makefiles etc.						##
