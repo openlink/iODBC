@@ -403,8 +403,13 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
       switch (retcode)
 	{
 	case SQL_SUCCESS:
-	case SQL_SUCCESS_WITH_INFO:
 	  _iodbcdm_do_cursoropen (pstmt);
+	  pstmt->prep_state = 1;
+	  break;
+
+	case SQL_SUCCESS_WITH_INFO:
+	  pstmt->state = en_stmt_executed_with_info;
+	  pstmt->prep_state = 1;
 	  break;
 
 	case SQL_NEED_DATA:
