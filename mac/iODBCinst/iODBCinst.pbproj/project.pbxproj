@@ -860,7 +860,7 @@
 		F535B3B302780BD401A801DE = {
 			isa = PBXFileReference;
 			name = iodbc.h;
-			path = ../../iodbc/iodbc.h;
+			path = ../../include/iodbc.h;
 			refType = 2;
 		};
 		F535B3B402780BD401A801DE = {

@@ -83,7 +83,7 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  misc.c prepare.c result.c odbc3.c \
 			  unicode.c
 
-noinst_HEADERS		= iodbc.h dlf.h dlproc.h hdbc.h henv.h herr.h \
+noinst_HEADERS		= dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h \
 			  unicode.h
 
