@@ -76,6 +76,7 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <time.h>
+#include <fcntl.h>
 
 #include <sql.h>
 #include <sqlext.h>
@@ -262,14 +263,6 @@ trace_start(void)
    */
   trace_stop ();
 
-#if defined (UNIX)
-  /*
-   *  Root is not allowed to trace for security reasons
-   */
-  if (geteuid () == 0)
-    return;
-#endif
-
   /*
    *  If no trace filename is specified, use the default
    */
@@ -283,8 +276,29 @@ trace_start(void)
     }
 #endif
 
-  else if ((trace_fp = fopen (trace_fname, "w")) != NULL)
+  else
     {
+      int fd;
+      int fd_flags = O_WRONLY | O_CREAT | O_TRUNC;
+      int fd_mode = 0644;
+
+
+#if defined (unix)
+      /*
+       *  As this is a security risk, we do not allow root to overwrite a file
+       */
+      if (geteuid () == 0)
+	{
+	  fd_flags |= O_EXCL;
+	}
+#endif
+
+      fd = open (trace_fname, fd_flags, fd_mode);
+      if (fd < 0 || (trace_fp = fdopen (fd, "w")) == NULL)
+	{
+	  return;		/* no tracing */
+	}
+
       trace_fp_close = 1;
 
       /*
