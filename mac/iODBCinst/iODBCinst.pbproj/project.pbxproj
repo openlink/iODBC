@@ -73,7 +73,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "../iODBC/build";
 				FRAMEWORK_VERSION = 3.0.6;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /Library/Frameworks;
