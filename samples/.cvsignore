@@ -1,5 +1,6 @@
 *.o
 *.lo
 Makefile
+Makefile.in
 odbctest
 .libs

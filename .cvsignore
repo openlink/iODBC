@@ -1,5 +1,8 @@
+Makefile.in
 Makefile
 libtool
+configure
+aclocal.m4
 *.swp
 *.o
 *.lo
