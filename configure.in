@@ -270,19 +270,20 @@ AC_MSG_RESULT($sysinidir)
 AC_MSG_CHECKING(for iODBC ini directory)
 AC_ARG_WITH(iodbc-inidir,
 [  --with-iodbc-inidir=DIR where the system odbc.ini file should be located.
-                            (default is $ac_default_prefix/etc) ],
+                            (default is /etc) ],
 [ 
     case "$withval" in
     yes|no)
-        inidir=/etc
+        inidir=$sysinidir
 	;;
     *)
     	inidir=$withval
 	;;
     esac 
-], [ inidir=$sysinidir ])
+], [ inidir=/etc ])
 AC_MSG_RESULT($inidir)
 
+AC_SUBST(inidir)
 AC_DEFINE_UNQUOTED(SYS_ODBC_INI, "$inidir/odbc.ini")
 AC_DEFINE_UNQUOTED(SYS_ODBCINST_INI, "$inidir/odbcinst.ini")
 
