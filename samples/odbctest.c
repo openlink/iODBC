@@ -18,9 +18,9 @@
 
 #define MAXCOLS		32
 
-HENV henv;
-HDBC hdbc;
-HSTMT hstmt;
+SQLHENV henv;
+SQLHDBC hdbc;
+SQLHSTMT hstmt;
 int connected;
 
 
@@ -51,9 +51,9 @@ DB_Connect (char *connStr)
 {
   short buflen;
   char buf[257];
-  UCHAR dataSource[120];
-  UCHAR dsn[33];
-  UCHAR desc[255];
+  SQLCHAR dataSource[120];
+  SQLCHAR dsn[33];
+  SQLCHAR desc[255];
   SWORD len1, len2;
   int status;
 
@@ -69,7 +69,7 @@ DB_Connect (char *connStr)
    *  list of options
    */
   if (connStr && *connStr)
-    strcpy (dataSource, connStr);
+    strcpy ((char *)dataSource, connStr);
   else
     while (1)
       {
@@ -77,13 +77,13 @@ DB_Connect (char *connStr)
 	 *  Ask for the connect string
 	 */
 	printf ("\nEnter ODBC connect string (? shows list): ");
-	if (fgets (dataSource, sizeof (dataSource), stdin) == NULL)
+	if (fgets ((char *)dataSource, sizeof (dataSource), stdin) == NULL)
 	  return 1;
 
 	/*
 	 *  Remove trailing '\n'
 	 */
-	dataSource[strlen (dataSource) - 1] = '\0';
+	dataSource[strlen ((char *)dataSource) - 1] = '\0';
 
 	/*
 	 *  If the user entered something other than a ?
