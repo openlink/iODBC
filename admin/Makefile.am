@@ -26,7 +26,7 @@ EXTRA_DIST = \
 	config.guess \
 	config.sub \
 	install-sh \
-	libiodbc.spec \
+	libiodbc.spec.in \
 	mkinstalldirs \
 	missing \
 	ltmain.sh 
