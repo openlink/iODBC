@@ -1,3 +1,106 @@
+2005-02-01 14:48  source
+
+	* Fixed iODBC initialization code
+	* Added global lock around SQLAllocHandleSTD (SQL_HANDLE_HENV)
+	  (pvk)
+
+2005-02-01 14:22  source
+
+	* Close tracefile after the last environment handle has been freed (pvk)
+
+2005-02-01 01:11  source
+
+	* Make sure trace_stop can be called multiple times (pvk)
+
+2005-02-01 01:09  source
+
+	* Fixed iODBC initialization code
+	* Added global lock around SQLAllocEnv/SQLAllocHandle (SQL_HANDLE_HENV)
+	  (pvk)
+
+2005-02-01 00:59  source
+
+	* Do not stop tracing prematurely (pvk)
+
+2005-01-31 14:23  source
+
+	* Fixed whitespace (pvk)
+
+2005-01-31 14:22  source
+
+	* Allow root to trace odbc sessions, but make sure we do not overwrite
+	  any existing files
+	  (pvk)
+
+2005-01-31 14:20  source
+
+	* Changed parsing of TraceFile to avoid buffer overruns (pvk)
+
+2005-01-31 14:19  source
+
+	* Added Driver Manager version to start of trace
+	* Added date/time finished to end of trace
+	* Changed date/time format
+	  (pvk)
+
+2005-01-21 13:28  source
+
+	* Build sample programs with static iODBC libraries (pvk)
+
+2005-01-21 13:13  source
+
+	* Removed generated file (pvk)
+
+2005-01-21 13:07  source
+
+	* Added script OpenLink uses to port iODBC as reference (pvk)
+
+2005-01-21 13:05  source
+
+	* Added bootstrap.sh in package distribution
+	* Added admin/gtk.m4 so target machines without GTK can still use
+	  bootstrap.sh to setup the automake/autoconf configuration
+	  (pvk)
+
+2004-12-15 15:39  source
+
+	* When a driver specific SQLSetConnectAttr fails return SQL_SUCCESS_WITH_INFO
+	  rather than failing the connection
+	  (pvk)
+
+2004-12-15 15:32  source
+
+	* Only Darwin needs this special build rule (pvk)
+
+2004-12-15 15:31  source
+
+	* Only call SQLGetDiagRec on allocated handles (pvk)
+
+2004-12-15 14:39  source
+
+	* Fixed C++ prototype problems with older code on 32bit (pvk)
+
+2004-12-15 14:38  source
+
+	* Use $DESTDIR/$libdir to make libodbc symlinks (pvk)
+
+2004-11-03 15:22  source
+
+	* Fixed argument check to be case insensitive (pvk)
+
+2004-10-23 19:38  source
+
+	* Fixed null pointer problem (pvk)
+
+2004-10-15 13:08  source
+
+	* Use returned size of buffer if possible instead of relying on SQL_NTS
+	  (pvk)
+
+2004-10-04 08:38  source
+
+	* Added DESTDIR in make install for packaging in different dir (pvk)
+
 2004-09-29 12:03  source
 
 	* Updated NEWS with highlights of new release

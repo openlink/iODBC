@@ -1,3 +1,20 @@
+Feb 01 2005, V3.52.2:
+    * Added tracing option for root without overwriting existing files
+    * Added PORT.OpenLink script
+    * Fixed problem starting/stopping tracing
+    * Fixed SQLSetConnectAttr to return SQL_SUCCESS_WITH_INFO
+      if driver cannot handle option set before connect time
+    * Fixed SQLInfo to use pcbInfoValue if present
+    * Fixed NULL pointer problem in GTK choose driver dialog
+    * Fixed problem with C++ prototypes with older 32bit code
+    * Fixed locking problem with SQLAllocEnv/SQLAllocHandle
+    * Fixed tracefile name expansion
+    * Fixed problem running bootstrap.sh on machines without GTK
+    * Fixed problem installing code in temp directory for packaging
+    * Fixed problem calling SQLGetDiagRec on uninitialized handles
+      in iodbctest program
+    * Link iodbctest program with static iodbc libraries
+   
 Sep 29 2004, V3.52.1:
     * Added support for new ODBC 3.52 specification for 64bit environments
     * Added support for SQLGetEnvAttr(SQL_ATTR_WCHAR_SIZE extension
