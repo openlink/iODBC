@@ -79,6 +79,12 @@
 #include "../gui.h"
 #include "odbc4.xpm"
 
+
+#ifndef MAXPATHLEN
+#define MAXPATHLEN	1024
+#endif
+
+
 char *szDSNColumnNames[] = {
   "Name",
   "Description",
@@ -101,6 +107,7 @@ char *szDSNButtons[] = {
   "Confi_gure",
   "_Test",
 };
+
 
 void
 addlistofdir_to_optionmenu (GtkWidget *widget, LPCSTR path,
@@ -161,7 +168,11 @@ void
 adddirectories_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
 {
   DIR *dir;
-  char *path_buf[MAXPATHLEN * 2];
+#if defined (HAVE_ASPRINTF)
+  char *path_buf;
+#else
+  char path_buf[MAXPATHLEN];
+#endif
   struct dirent *dir_entry;
   struct stat fstat;
   char *data[1];
@@ -176,10 +187,17 @@ adddirectories_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
 
       while ((dir_entry = readdir (dir)))
 	{
+#if defined (HAVE_ASPRINTF)
+	  asprintf (&path_buf, "%s/%s", path, dir_entry->d_name);
+#elif defined (HAVE_SNPRINTF)
+	  snprintf (path_buf, sizeof (path_buf), "%s/%s",
+	      path, dir_entry->d_name);
+#else
 	  STRCPY (path_buf, path);
 	  if (path[STRLEN (path) - 1] != '/')
 	    STRCAT (path_buf, "/");
 	  STRCAT (path_buf, dir_entry->d_name);
+#endif
 
 	  if (stat ((LPCSTR) path_buf, &fstat) >= 0
 	      && S_ISDIR (fstat.st_mode))
@@ -188,6 +206,10 @@ adddirectories_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
 		data[0] = dir_entry->d_name;
 		gtk_clist_append (GTK_CLIST (widget), data);
 	      }
+
+#if defined (HAVE_ASPRINTF)
+	  free (path_buf);
+#endif
 	}
 
       /* Close the directory entry */
@@ -206,7 +228,11 @@ void
 addfiles_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
 {
   DIR *dir;
-  char *path_buf[MAXPATHLEN * 2];
+#if defined (HAVE_ASPRINTF)
+  char *path_buf;
+#else
+  char path_buf[MAXPATHLEN];
+#endif
   struct dirent *dir_entry;
   struct stat fstat;
   char *data[1];
@@ -221,10 +247,17 @@ addfiles_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
 
       while ((dir_entry = readdir (dir)))
 	{
+#if defined (HAVE_ASPRINTF)
+	  asprintf (&path_buf, "%s/%s", path, dir_entry->d_name);
+#elif defined (HAVE_SNPRINTF)
+	  snprintf (path_buf, sizeof (path_buf), "%s/%s",
+	      path, dir_entry->d_name);
+#else
 	  STRCPY (path_buf, path);
 	  if (path[STRLEN (path) - 1] != '/')
 	    STRCAT (path_buf, "/");
 	  STRCAT (path_buf, dir_entry->d_name);
+#endif
 
 	  if (stat ((LPCSTR) path_buf, &fstat) >= 0
 	      && !S_ISDIR (fstat.st_mode)
@@ -233,6 +266,10 @@ addfiles_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
 	      data[0] = dir_entry->d_name;
 	      gtk_clist_append (GTK_CLIST (widget), data);
 	    }
+
+#if defined (HAVE_ASPRINTF)
+	  free (path_buf);
+#endif
 	}
 
       /* Close the directory entry */
