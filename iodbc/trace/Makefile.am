@@ -138,6 +138,7 @@ libiodbctrace_la_SOURCES	= \
 	SetConnectOption.c \
 	SetCursorName.c \
 	SetDescField.c \
+	SetDescRec.c \
 	SetEnvAttr.c \
 	SetPos.c \
 	SetScrollOptions.c \
