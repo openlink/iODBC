@@ -119,8 +119,11 @@ noinst_HEADERS		= \
 	iodbc_error.h \
 	misc.h 
 
+
+CLEANFILES=	dlf.c
+
 dlf.c: $(top_srcdir)/iodbc/dlf.c
-	ln -s $(top_srcdir)/iodbc/dlf.c dlf.c
+	$(LN_S) $(top_srcdir)/iodbc/dlf.c dlf.c
 
 
 EXTRA_DIST		= iodbcinst.exp
