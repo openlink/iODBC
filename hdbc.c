@@ -308,8 +308,24 @@ _iodbcdm_SetConnectOption (
 #endif
 
 		{
-		  pdbc->tstm
-		      = fopen (pdbc->tfile, "a+");
+#if defined (UNIX)
+		  /* 
+		   *  As this is a security risk, we refuse root to start
+		   *  a trace log
+		   */
+		  if (geteuid() == 0)
+		    {
+		      pdbc->tstm = NULL;
+		      pdbc->trace = 0;
+		      return SQL_SUCCESS;
+		    }
+		  else
+		    {
+		      pdbc->tstm = fopen (pdbc->tfile, "w");
+		    }
+#else
+		  pdbc->tstm = fopen (pdbc->tfile, "w");
+#endif
 		}
 
 	      if (pdbc->tstm)
