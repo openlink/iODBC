@@ -32,7 +32,7 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  itrace.c misc.c prepare.c result.c odbc3.c 
 
 noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
-			  hstmt.h itrace.h henv.ci herr.ci hdesc.h
+			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h
 include_HEADERS		= isql.h isqlext.h isqltypes.h \
 			  sql.h sqlext.h sqltypes.h
 
