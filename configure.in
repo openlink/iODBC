@@ -115,6 +115,9 @@ AC_CHECK_LIB(dld, dld_link,
    [AC_DEFINE(HAVE_DLD, 1)dnl
     test "x$ac_cv_lib_dld_shl_load" = yes || LIBADD_DL="$LIBADD_DL -ldld"])
 
+AC_CHECK_FUNC(NSCreateObjectFileImageFromFile,
+    [AC_DEFINE(HAVE_DYLD, 1)])
+
 AC_SUBST(LIBADD_DL)
 
 AC_CACHE_CHECK([for underscore before symbols], libltdl_cv_uscore, [

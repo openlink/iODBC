@@ -785,6 +785,134 @@ iodbc_dlclose (void *hdll)
 #endif /* DLDAPI_VMS_IODBC */
 #endif /* VMS */
 
+
+/********************************* 
+ *
+ *	Apple MacOS X Rhapsody
+ *
+ *********************************/
+#ifdef	DLDAPI_DYLD
+#define	DLDAPI_DEFINED
+#include <stdio.h>
+#include <mach-o/dyld.h>
+
+static char sccsid[] = "@(#)dynamic load interface -- MacOS X dl(dyld)";
+
+
+void
+undefined_symbol_handler (const char *symbolName)
+{
+  fprintf (stderr, "dyld found undefined symbol: %s\n", symbolName);
+
+  abort ();
+}
+
+
+NSModule 
+multiple_symbol_handler (NSSymbol s, NSModule old, NSModule new)
+{
+  /*
+   *  Since we can't unload symbols, we're going to run into this
+   *  every time we reload a module. Workaround here is to just
+   *  rebind to the new symbol, and forget about the old one.
+   *  This is crummy, because it's basically a memory leak.
+   */
+
+  return (new);
+}
+
+
+void
+linkEdit_symbol_handler (NSLinkEditErrors c, int errorNumber,
+    const char *fileName, const char *errorString)
+{
+  fprintf (stderr, "dyld errors during link edit for file %s\n%s\n",
+      fileName, errorString);
+
+  abort ();
+}
+
+
+void *
+dlopen (char *path, int mode)
+{
+  NSObjectFileImage image;
+  NSLinkEditErrorHandlers handlers;
+  NSModule handle = NULL;
+  int i;
+
+  /*
+   *  Install error handler 
+   */
+  handlers.undefined = undefined_symbol_handler;
+  handlers.multiple = multiple_symbol_handler;
+  handlers.linkEdit = linkEdit_symbol_handler;
+
+  NSInstallLinkEditErrorHandlers (&handlers);
+
+  /*
+   *  Load object
+   */
+  i = NSCreateObjectFileImageFromFile (path, &image);
+  if (i != NSObjectFileImageSuccess)
+    {
+      static char *ErrorStrings[] =
+      {
+	  "%s(%d): Object Image Load Failure\n",
+	  "%s(%d): Object Image Load Success\n",
+	  "%s(%d): Not an recognisable object file\n",
+	  "%s(%d): No valid architecture\n",
+	  "%s(%d): Object image has an invalid format\n",
+	  "%s(%d): Invalid access (permissions?)\n",
+	  "%s(%d): Unknown error code from NSCreateObjectFileImageFromFile\n",
+      };
+
+      if (i < 0 || i > 6)
+	i = 6;
+
+      fprintf (stderr, ErrorStrings[i], path, i);
+    }
+  else
+    {
+      handle = NSLinkModule (image, path, TRUE);
+    }
+
+  return handle;
+}
+
+
+void *
+dlsym (void *hdll, char *sym)
+{
+  NSSymbol symbol;
+
+  if (NSIsSymbolNameDefined (sym))
+    {
+      symbol = NSLookupAndBindSymbol (sym);
+
+      return NSAddressOfSymbol (symbol);
+    }
+
+  return NULL;
+}
+
+
+char *
+dlerror ()
+{
+  return NULL;
+}
+
+
+int 
+dlclose (void *hdll)
+{
+  NSUnLinkModule (hdll, FALSE);
+  return 0;
+}
+#endif	/* end of Rhapsody Section */
+
+
 /***********************************
  *
  * 	other platforms

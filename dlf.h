@@ -31,6 +31,8 @@
 #define DLDAPI_SVR4_DLFCN
 #elif defined(HAVE_SHL_LOAD)
 #define DLDAPI_HP_SHL
+#elif defined(HAVE_DYLD)
+#define DLDAPI_DYLD
 #endif
 
 #if defined(DLDAPI_SVR4_DLFCN)
