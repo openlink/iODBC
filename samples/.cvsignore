@@ -1,0 +1,5 @@
+*.o
+*.lo
+Makefile
+odbctest
+.libs
