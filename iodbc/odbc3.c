@@ -92,6 +92,17 @@
 #include <itrace.h>
 
 
+/*
+ *  Externals
+ */
+SQLRETURN SQLAllocEnv_Internal (SQLHENV FAR * phenv, int odbc_ver);
+SQLRETURN SQLFreeEnv_Internal (SQLHENV henv);
+SQLRETURN SQLAllocConnect_Internal (SQLHENV henv, SQLHDBC FAR * phdbc);
+SQLRETURN SQLFreeConnect_Internal (SQLHDBC hdbc);
+SQLRETURN SQLAllocStmt_Internal (SQLHDBC hdbc, SQLHSTMT FAR * phstmt);
+SQLRETURN SQLFreeStmt_Internal (SQLHSTMT hstmt, SQLUSMALLINT fOption);
+SQLRETURN SQLTransact_Internal (SQLHENV henv, SQLHDBC hdbc, SQLUSMALLINT fType);
+
 RETCODE SQL_API
 SQLAllocHandle_Internal (
     SQLSMALLINT	  handleType,
@@ -203,11 +214,7 @@ SQLAllocHandle (
     SQLHANDLE	  inputHandle,
     SQLHANDLE	* outputHandlePtr)
 {
-  GENV_t *genv;
-  CONN (pdbc, inputHandle);
-  STMT (pstmt, inputHandle);
   int retcode = SQL_SUCCESS;
-  int trace = 0;
 
   if (handleType == SQL_HANDLE_ENV)
     {
@@ -249,11 +256,7 @@ SQLAllocHandleStd (
   SQLHANDLE inputHandle,
   SQLHANDLE * outputHandlePtr)
 {
-  GENV_t *genv;
-  CONN (pdbc, inputHandle);
-  STMT (pstmt, inputHandle);
   int retcode = SQL_SUCCESS;
-  int trace = 0;
 
   if (handleType == SQL_HANDLE_ENV)
     {

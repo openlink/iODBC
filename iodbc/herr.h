@@ -206,7 +206,7 @@ extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, void *sysmsg);
 	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), 0, msg)
 
 #define	PUSHSQLERR(list, code)	\
-	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (int)(code), NULL)
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (code), NULL)
 
 #define CLEAR_ERRORS(_handle) \
     { \

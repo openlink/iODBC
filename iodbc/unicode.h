@@ -108,8 +108,8 @@ int dm_StrCopyOut2_W2A (SQLWCHAR * inStr, SQLCHAR * outStr, SQLSMALLINT size,
 	MultiByteToWideChar(CP_ACP, 0, a, cb, w, cb)
 
 # else
-#define OPL_W2A(XW, XA, SIZE)      wcstombs(XA, XW, SIZE)
-#define OPL_A2W(XA, XW, SIZE)      mbstowcs(XW, XA, SIZE)
+#define OPL_W2A(XW, XA, SIZE)      wcstombs((char *) XA, (wchar_t *) XW, SIZE)
+#define OPL_A2W(XA, XW, SIZE)      mbstowcs((wchar_t *) XW, (char *) XA, SIZE)
 # endif
 
 /*

@@ -264,7 +264,7 @@ _iodbcdm_sqlerror (
   SQLINTEGER handleType = 0;
   SQLHANDLE handle3;
   SQLHANDLE dhandle3 = 0;
-  SQLUSMALLINT *perr_rec = NULL;
+  SQLSMALLINT *perr_rec = NULL;
 #endif
   SWORD unicode_driver = 0;
   SQLINTEGER dodbc_ver = SQL_OV_ODBC2;	
@@ -604,7 +604,8 @@ _iodbcdm_sqlerror (
         }
       else
         {
-          dm_StrCopyOut2_A2W (msgbuf, szErrorMsg, cbErrorMsgMax, pcbErrorMsg);
+          dm_StrCopyOut2_A2W ((SQLCHAR *) msgbuf, 
+	  	szErrorMsg, cbErrorMsgMax, pcbErrorMsg);
         }
     }
 
@@ -732,7 +733,7 @@ SQLErrorW (
   SQLSMALLINT		  cbErrorMsgMax,
   SQLSMALLINT FAR	* pcbErrorMsg)
 {
-  SQLRETURN retcode;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   ODBC_LOCK ();
   TRACE (trace_SQLErrorW (TRACE_ENTER,
@@ -903,7 +904,7 @@ SQLGetDiagRec_Internal (
             }
           else
             {
-              dm_StrCopyOut2_A2W (ststr, Sqlstate, 6, NULL);
+              dm_StrCopyOut2_A2W ((SQLCHAR *) ststr, Sqlstate, 6, NULL);
               ((wchar_t*)Sqlstate)[len] = 0;
             }
 	}
@@ -954,7 +955,8 @@ SQLGetDiagRec_Internal (
             }
           else
             {
-              dm_StrCopyOut2_A2W (msgbuf, MessageText, BufferLength, TextLengthPtr);
+              dm_StrCopyOut2_A2W ((SQLCHAR *) msgbuf, 
+		    MessageText, BufferLength, TextLengthPtr);
             }
 	}
       return retcode;
@@ -1127,7 +1129,7 @@ SQLGetDiagRec_Internal (
             {
             /* unicode<=ansi*/
               dm_StrCopyOut2_A2W (messageTextOut, MessageText, BufferLength, NULL);
-              dm_StrCopyOut2_A2W (SqlstateOut, Sqlstate, 6, NULL);
+              dm_StrCopyOut2_A2W ((SQLCHAR *) SqlstateOut, Sqlstate, 6, NULL);
             }
         }
     
@@ -1613,8 +1615,8 @@ SQLGetDiagField_Internal (
 		  }
 		else
 		  {
-		    dm_StrCopyOut2_A2W(szval, pDiagInfoPtr, nBufferLength, 
-		    	pnStringLengthPtr);
+		    dm_StrCopyOut2_A2W((SQLCHAR *) szval, 
+		    	pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
 		  }
 	      
 	      }
@@ -1691,8 +1693,8 @@ SQLGetDiagField_Internal (
                         else
                           {
                           /* unicode<=ansi*/
-                            dm_StrCopyOut2_A2W (diagInfoPtr, pDiagInfoPtr, 
-                              nBufferLength, pnStringLengthPtr);
+                            dm_StrCopyOut2_A2W ((SQLCHAR *)diagInfoPtr, 
+			    	pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
                           }
                       }
                   }
@@ -1800,8 +1802,8 @@ SQLGetDiagField_Internal (
                         else
                           {
                           /* unicode<=ansi*/
-                            dm_StrCopyOut2_A2W (diagInfoPtr, pDiagInfoPtr, 
-                              nBufferLength, pnStringLengthPtr);
+                            dm_StrCopyOut2_A2W ((SQLCHAR *)diagInfoPtr, 
+			    	pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
                           }
                       }
 
@@ -1847,8 +1849,8 @@ SQLGetDiagField_Internal (
                         else
                           {
                           /* unicode<=ansi*/
-                            dm_StrCopyOut2_A2W ((char*)szState, pDiagInfoPtr, 
-                              nBufferLength, pnStringLengthPtr);
+                            dm_StrCopyOut2_A2W ((SQLCHAR *)szState, 
+			    	pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
                           }
                       }
 
@@ -1873,8 +1875,8 @@ SQLGetDiagField_Internal (
 		  }
 		else
 		  {
-		    dm_StrCopyOut2_A2W(szval, pDiagInfoPtr, nBufferLength, 
-		    	pnStringLengthPtr);
+		    dm_StrCopyOut2_A2W((SQLCHAR *) szval, 
+		    	pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
 		  }
 	      }			/* ODBC3->ODBC2 */
 	  }			/* driver's errors */

@@ -169,7 +169,7 @@ dm_SQL_A2W (SQLCHAR * inStr, int size)
     return NULL;
 
   if (size == SQL_NTS)
-    len = strlen (inStr);
+    len = strlen ((char *) inStr);
   else
     len = size;
 
@@ -199,7 +199,7 @@ dm_StrCopyOut2_A2W (
   if (!inStr)
     return -1;
 
-  length = strlen (inStr);
+  length = strlen ((char *) inStr);
 
   if (result)
     *result = length;
@@ -267,7 +267,7 @@ dm_strcpy_A2W (SQLWCHAR * destStr, SQLCHAR * sourStr)
   if (!sourStr || !destStr)
     return destStr;
 
-  length = strlen (sourStr);
+  length = strlen ((char *) sourStr);
   if (length > 0)
     OPL_A2W (sourStr, destStr, length);
   destStr[length] = L'\0';

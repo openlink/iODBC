@@ -833,7 +833,6 @@ SQLDescribeParam_Internal (SQLHSTMT hstmt,
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
   GENV_t FAR *genv = pdbc->genv;
 
   HPROC hproc;

@@ -1315,13 +1315,13 @@ _iodbcdm_RemoveBind (STMT_t *pstmt)
 
 
 static void 
-_iodbcdm_bindConv_A2W(char *data, DWORD *pInd, UDWORD size)
+_iodbcdm_bindConv_A2W(char *data, SDWORD *pInd, UDWORD size)
 {
   wchar_t *wdata = (wchar_t *) data;
 
   if (*pInd != SQL_NULL_DATA)
     {
-      wchar_t *buf = dm_SQL_A2W (data, SQL_NTS);
+      wchar_t *buf = dm_SQL_A2W ((SQLCHAR *) data, SQL_NTS);
 
       if (buf != NULL)
 	WCSCPY (wdata, buf);
@@ -1340,7 +1340,7 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
   PBLST ptr;
   BIND_t *col;
   UDWORD i, size, row_size;
-  DWORD  *pInd;
+  SDWORD  *pInd;
   char *data;
 
   /*

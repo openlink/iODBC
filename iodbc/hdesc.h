@@ -93,7 +93,7 @@ typedef struct DESC_s {
 
   SWORD desc_cip;        /* Call in Progess flag */
 
-  SQLUSMALLINT err_rec;
+  SQLSMALLINT err_rec;
 } DESC_t;
 
 #ifndef HDESC

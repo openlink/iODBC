@@ -103,7 +103,6 @@ SQLBindCol_Internal (
   HPROC hproc = SQL_NULL_HPROC;
   SQLSMALLINT nCType;
   SQLRETURN retcode;
-  SQLSMALLINT _CType = fCType;
 
   /* check argument */
   switch (fCType)
@@ -333,7 +332,8 @@ SQLGetCursorName_Internal (
       else
         {
         /* unicode<=ansi*/
-          dm_StrCopyOut2_A2W (cursorOut, szCursor, cbCursorMax, NULL);
+          dm_StrCopyOut2_A2W (cursorOut, 
+	  	(SQLWCHAR *) szCursor, cbCursorMax, NULL);
         }
     }
 
@@ -404,7 +404,7 @@ SQLGetCursorNameW (SQLHSTMT hstmt,
 
   retcode = SQLGetCursorName_Internal(
   	hstmt, 
-	szCursor, cbCursorMax, pcbCursor, 
+	(SQLCHAR *) szCursor, cbCursorMax, pcbCursor, 
 	'W');
 
   LEAVE_STMT (hstmt,

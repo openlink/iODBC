@@ -99,7 +99,7 @@ upper_strneq (
     int n)
 {
   int i;
-  char c1, c2;
+  char c1 = 0 , c2 = 0;
 
   for (i = 1; i < n; i++)
     {
@@ -143,9 +143,7 @@ _iodbcdm_getkeyvalinstr_Internal (char *str,
 {
   char *cp, *n;
   char *s, *tmp;
-  char *section;
   int count;
-  int i;
 
   if (str == NULL || (s = tmp = strdup (str)) == NULL)
     return NULL;
@@ -241,8 +239,8 @@ _iodbcdm_getkeyvalinstrw (wchar_t *cnstr,
 	return NULL;
     }
 
-  _cnstr = dm_SQL_WtoU8 (cnstr, cnlen);
-  _keywd = dm_SQL_WtoU8 (keywd, SQL_NTS);
+  _cnstr = (char *) dm_SQL_WtoU8 (cnstr, cnlen);
+  _keywd = (char *) dm_SQL_WtoU8 (keywd, SQL_NTS);
 
   ret = _iodbcdm_getkeyvalinstr_Internal (_cnstr, SQL_NTS, _keywd, buf,
       size * UTF8_MAX_CHAR_LEN);
@@ -252,7 +250,7 @@ _iodbcdm_getkeyvalinstrw (wchar_t *cnstr,
 
   if (ret != NULL)
     {
-      dm_StrCopyOut2_U8toW (ret, value, size, NULL);
+      dm_StrCopyOut2_U8toW ((SQLCHAR *) ret, value, size, NULL);
       MEM_FREE (buf);
       return value;
     }

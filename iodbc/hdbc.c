@@ -433,8 +433,8 @@ _iodbcdm_SetConnectOption (
      * and only meaningful for driver manager. 
      */
     {
-      char *_vParam;
-      char *tmp = NULL;
+      SQLCHAR *_vParam;
+      SQLCHAR *tmp = NULL;
 
       if (((char FAR *)vParam) == NULL 
           || (waMode != 'W' && ((char FAR *) vParam)[0] == '\0')
@@ -444,7 +444,7 @@ _iodbcdm_SetConnectOption (
 	  return SQL_ERROR;
 	}
 
-      _vParam = (char FAR *)vParam;
+      _vParam = (SQLCHAR *)vParam;
       if (waMode == 'W')
         {
           if ((_vParam = tmp = dm_SQL_WtoU8((wchar_t *)vParam, SQL_NTS)) == NULL)
@@ -460,7 +460,7 @@ _iodbcdm_SetConnectOption (
 	  return SQL_ERROR;
 	}
 
-      trace_set_filename (_vParam);
+      trace_set_filename ((char *) _vParam);
       MEM_FREE (tmp);
       return SQL_SUCCESS;
     }
@@ -491,12 +491,12 @@ _iodbcdm_SetConnectOption (
             if (waMode != 'W')
               {
               /* ansi=>unicode*/
-                _vParam = dm_SQL_A2W((char*)vParam, SQL_NTS);
+                _vParam = dm_SQL_A2W((SQLCHAR *)vParam, SQL_NTS);
               }
             else
               {
               /* unicode=>ansi*/
-                _vParam = dm_SQL_W2A((wchar_t*)vParam, SQL_NTS);
+                _vParam = dm_SQL_W2A((SQLWCHAR *)vParam, SQL_NTS);
               }
             vParam = (SQLUINTEGER)_vParam;
             break;
@@ -836,7 +836,7 @@ _iodbcdm_GetConnectOption (
         }
       else
         {
-           dm_strcpy_A2W (pvParam, fname);
+           dm_strcpy_A2W (pvParam, (SQLCHAR *)fname);
         }
 
       free (fname);

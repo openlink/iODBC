@@ -147,12 +147,12 @@ _iodbcdm_SetConnectOption_init (SQLHDBC hdbc,
             if (waMode != 'W')
               {
               /* ansi=>unicode*/
-                _vParam = dm_SQL_A2W((char*)vParam, SQL_NTS);
+                _vParam = dm_SQL_A2W((SQLCHAR *)vParam, SQL_NTS);
               }
             else
               {
               /* unicode=>ansi*/
-                _vParam = dm_SQL_W2A((wchar_t*)vParam, SQL_NTS);
+                _vParam = dm_SQL_W2A((SQLWCHAR *)vParam, SQL_NTS);
               }
             ptr = _vParam;
             strLength = SQL_NTS;
@@ -865,7 +865,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 
   if (waMode == 'W')
     {
-      _dsn = _szDSN = dm_SQL_WtoU8((wchar_t*)szDSN, cbDSN);
+      _dsn = _szDSN = dm_SQL_WtoU8((SQLWCHAR *)szDSN, cbDSN);
       _dsn_len = SQL_NTS;
       if (_dsn == NULL)
         {
@@ -941,16 +941,16 @@ SQLConnect_Internal (SQLHDBC hdbc,
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          _szDSN = dm_SQL_A2W((char*)szDSN, cbDSN);
-          _szUID = dm_SQL_A2W((char*)szUID, cbUID);
-          _szAuthStr = dm_SQL_A2W((char*)szAuthStr, cbAuthStr);
+          _szDSN = dm_SQL_A2W((SQLCHAR *)szDSN, cbDSN);
+          _szUID = dm_SQL_A2W((SQLCHAR *)szUID, cbUID);
+          _szAuthStr = dm_SQL_A2W((SQLCHAR *)szAuthStr, cbAuthStr);
         }
       else
         {
         /* unicode=>ansi*/
-          _szDSN = dm_SQL_W2A((wchar_t*)szDSN, cbDSN);
-          _szUID = dm_SQL_W2A((wchar_t*)szUID, cbUID);
-          _szAuthStr = dm_SQL_W2A((wchar_t*)szAuthStr, cbAuthStr);
+          _szDSN = dm_SQL_W2A((SQLWCHAR *)szDSN, cbDSN);
+          _szUID = dm_SQL_W2A((SQLWCHAR *)szUID, cbUID);
+          _szAuthStr = dm_SQL_W2A((SQLWCHAR *)szAuthStr, cbAuthStr);
         }
       cbDSN = SQL_NTS;
       cbUID = SQL_NTS;
@@ -1118,12 +1118,10 @@ SQLDriverConnect_Internal (
   CONN (pdbc, hdbc);
   HDLL hdll;
   void *drv;
-  wchar_t drvbuf[1024];
+  SQLWCHAR drvbuf[1024];
   void *dsn;
-  wchar_t dsnbuf[SQL_MAX_DSN_LENGTH + 1];
-  wchar_t prov[1024];
-  UCHAR cnstr2drv[1024];
-  wchar_t cnstr2drvw[1024];
+  SQLWCHAR dsnbuf[SQL_MAX_DSN_LENGTH + 1];
+  SQLWCHAR prov[1024];
   SWORD thread_safe;
   char buf[1024];
   ENV_t FAR *penv = NULL;
@@ -1170,9 +1168,9 @@ SQLDriverConnect_Internal (
   else
     {
       drv = _iodbcdm_getkeyvalinstrw (szConnStrIn, cbConnStrIn,
-	  L"DRIVER", drvbuf, sizeof (drvbuf) / sizeof (wchar_t));
+	  L"DRIVER", drvbuf, sizeof (drvbuf) / sizeof (SQLWCHAR));
       dsn = _iodbcdm_getkeyvalinstrw (szConnStrIn, cbConnStrIn,
-	  L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (wchar_t));
+	  L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (SQLWCHAR));
     }
 
   switch (fDriverCompletion)
@@ -1215,7 +1213,7 @@ SQLDriverConnect_Internal (
 
 	  retcode = dialproc (hwnd,	/* window or display handle */
 	      prov,		/* input/output dsn buf */
-	      sizeof (prov) / sizeof (wchar_t),	/* buf size */
+	      sizeof (prov) / sizeof (SQLWCHAR),	/* buf size */
 	      &sqlstat,		/* error code */
 	      fDriverCompletion,	/* type of completion */
 	      &config);		/* config mode */
@@ -1238,11 +1236,11 @@ SQLDriverConnect_Internal (
 	    }
 
 	  if (waMode != 'W')
-	    dsn = _iodbcdm_getkeyvalinstr (prov, STRLEN (prov),
+	    dsn = _iodbcdm_getkeyvalinstr ((char *) prov, STRLEN (prov),
 		"DSN", (char *) dsnbuf, sizeof (dsnbuf));
 	  else
 	    dsn = _iodbcdm_getkeyvalinstrw (prov, WCSLEN (prov),
-		L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (wchar_t));
+		L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (SQLWCHAR));
 	}
       break;
 
@@ -1261,7 +1259,7 @@ SQLDriverConnect_Internal (
     {
       if (dsn != NULL)
 	{
-	  dsn = _dsn_u8 = dm_SQL_WtoU8 ((wchar_t *) dsn, SQL_NTS);
+          dsn = _dsn_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)dsn, SQL_NTS);
 	  if (dsn == NULL)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_S1001);
@@ -1271,7 +1269,7 @@ SQLDriverConnect_Internal (
 
       if (drv != NULL)
 	{
-	  drv = _drv_u8 = dm_SQL_WtoU8 ((wchar_t *) drv, SQL_NTS);
+          drv = _drv_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)drv, SQL_NTS);
 	  if (drv == NULL)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_S1001);
@@ -1359,12 +1357,12 @@ SQLDriverConnect_Internal (
 	{
 	  /* ansi=>unicode */
 	  if ((_ConnStrOut =
-		  malloc (cbConnStrOutMax * sizeof (wchar_t) + 1)) == NULL)
+		  malloc (cbConnStrOutMax * sizeof (SQLWCHAR) + 1)) == NULL)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_HY001);
 	      return SQL_ERROR;
 	    }
-	  _ConnStrIn = dm_SQL_A2W ((char *) szConnStrIn, cbConnStrIn);
+	  _ConnStrIn = dm_SQL_A2W ((SQLCHAR *) szConnStrIn, cbConnStrIn);
 	}
       else
 	{
@@ -1374,7 +1372,7 @@ SQLDriverConnect_Internal (
 	      PUSHSQLERR (pdbc->herr, en_HY001);
 	      return SQL_ERROR;
 	    }
-	  _ConnStrIn = dm_SQL_W2A ((wchar_t *) szConnStrIn, cbConnStrIn);
+	  _ConnStrIn = dm_SQL_W2A ((SQLWCHAR *) szConnStrIn, cbConnStrIn);
 	}
       connStrOut = _ConnStrOut;
       connStrIn = _ConnStrIn;
@@ -1409,14 +1407,12 @@ SQLDriverConnect_Internal (
       if (waMode != 'W')
 	{
 	  /* ansi<=unicode */
-	  dm_StrCopyOut2_W2A (connStrOut, szConnStrOut, cbConnStrOutMax,
-	      NULL);
+          dm_StrCopyOut2_W2A (connStrOut, szConnStrOut, cbConnStrOutMax, NULL);
 	}
       else
 	{
 	  /* unicode<=ansi */
-	  dm_StrCopyOut2_A2W (connStrOut, szConnStrOut, cbConnStrOutMax,
-	      NULL);
+          dm_StrCopyOut2_A2W (connStrOut, szConnStrOut, cbConnStrOutMax, NULL);
 	}
     }
 
@@ -1675,12 +1671,12 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          if ((_ConnStrOut = malloc(cbConnStrOutMax * sizeof(wchar_t) + 1)) == NULL)
+          if ((_ConnStrOut = malloc(cbConnStrOutMax * sizeof(SQLWCHAR) + 1)) == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_HY001);
 	      return SQL_ERROR;
             }
-          _ConnStrIn = dm_SQL_A2W((char*)szConnStrIn, SQL_NTS);
+          _ConnStrIn = dm_SQL_A2W((SQLCHAR *)szConnStrIn, SQL_NTS);
         }
       else
         {
@@ -1690,7 +1686,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
               PUSHSQLERR (pdbc->herr, en_HY001);
 	      return SQL_ERROR;
             }
-          _ConnStrIn = dm_SQL_W2A((wchar_t*)szConnStrIn, SQL_NTS);
+          _ConnStrIn = dm_SQL_W2A((SQLWCHAR *)szConnStrIn, SQL_NTS);
         }
       connStrIn = _ConnStrIn;
       cbConnStrIn = SQL_NTS;
@@ -1991,13 +1987,13 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          if ((_SqlStr = malloc(cbSqlStrMax * sizeof(wchar_t) + 1)) == NULL)
+          if ((_SqlStr = malloc(cbSqlStrMax * sizeof(SQLWCHAR) + 1)) == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_HY001);
 
 	      return SQL_ERROR;
             }
-          _SqlStrIn = dm_SQL_A2W((char*)szSqlStrIn, SQL_NTS);
+          _SqlStrIn = dm_SQL_A2W((SQLCHAR *)szSqlStrIn, SQL_NTS);
         }
       else
         {
@@ -2008,7 +2004,7 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
 
 	      return SQL_ERROR;
             }
-          _SqlStrIn = dm_SQL_W2A((wchar_t*)szSqlStrIn, SQL_NTS);
+          _SqlStrIn = dm_SQL_W2A((SQLWCHAR *)szSqlStrIn, SQL_NTS);
         }
       szSqlStrIn = _SqlStrIn;
       cbSqlStrIn = SQL_NTS;

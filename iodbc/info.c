@@ -359,8 +359,8 @@ SQLDataSourcesW (
   SQLSMALLINT		  cbDescMax,
   SQLSMALLINT FAR	* pcbDesc)
 {
-  char *_DSN = NULL;  
-  char *_Desc = NULL;
+  SQLCHAR *_DSN = NULL;  
+  SQLCHAR *_Desc = NULL;
 
   ENTER_HENV (henv,
     trace_SQLDataSourcesW (TRACE_ENTER,
@@ -643,8 +643,8 @@ SQLDriversW (SQLHENV henv,
     SQLSMALLINT cbDrvAttrMax,
     SQLSMALLINT FAR * pcbDrvAttr)
 {
-  char *_Driver = NULL;  
-  char *_Attrs = NULL;
+  SQLCHAR *_Driver = NULL;  
+  SQLCHAR *_Attrs = NULL;
 
   ENTER_HENV (henv,
     trace_SQLDriversW (TRACE_ENTER,
@@ -714,7 +714,7 @@ SQLGetInfo_Internal (
   void * _InfoValue = NULL;
   void * infoValueOut = rgbInfoValue;
 
-  DWORD dword;
+  DWORD dword = 0;
   int size = 0, len = 0, ret = 0;
   wchar_t buf[16] = {'\0'};
 
@@ -748,7 +748,7 @@ SQLGetInfo_Internal (
 	sprintf ((char*)buf, "%02d.%02d.0000", SQL_SPEC_MAJOR, SQL_SPEC_MINOR);
       if(waMode == 'W')
         {
-          wchar_t *prov = dm_SQL_U8toW((char*)buf, SQL_NTS);
+          SQLWCHAR *prov = dm_SQL_U8toW((SQLCHAR *)buf, SQL_NTS);
           if(prov)
             {
               WCSNCPY(buf, prov, sizeof(buf)/sizeof(wchar_t));
@@ -990,7 +990,7 @@ SQLGetInfo_Internal (
         }
       else
         {
-          ret = dm_StrCopyOut2_A2W ("01.00", rgbInfoValue, 
+          ret = dm_StrCopyOut2_A2W ((SQLCHAR *) "01.00", rgbInfoValue, 
             cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
           if (pcbInfoValue)
             *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
