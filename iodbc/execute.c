@@ -77,7 +77,6 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
-#include <wchar.h>
 #include <unicode.h>
 
 #include <dlproc.h>

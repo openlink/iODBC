@@ -87,7 +87,7 @@
 #include <hstmt.h>
 
 #include <itrace.h>
-#include <wchar.h>
+
 #include <unicode.h>
 
 #if defined(_MACX) && defined(GUI)

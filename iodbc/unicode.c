@@ -79,11 +79,56 @@
 #include <mapinls.h>
 #endif
 
+#include <sql.h>
+#include <sqlext.h>
 #include <sqltypes.h>
+
 #include "unicode.h"
 
+#if !defined(HAVE_WCSLEN)
+size_t
+wcslen (wchar_t * wcs)
+{
+  size_t len = 0;
 
-#define SQL_NTS -3
+  while (*wcs++ != L'\0')
+    len++;
+
+  return len;
+}
+#endif
+
+
+#if !defined(HAVE_WCSCPY)
+wchar_t *
+wcscpy (wchar_t * wcd, const wchar_t * wcs)
+{
+  wchar_t *dst = wcd;
+
+  while ((*dst++ = *wcs++) != L'\0')
+    ;
+
+  return wcd;
+}
+#endif
+
+
+#if !defined (HAVE_WCSNCPY)
+wchar_t *
+wcsncpy (wchar_t * wcd, const wchar_t * wcs, size_t n)
+{
+  wchar_t *dst = wcd;
+  size_t len = 0;
+
+  while ( len < n && (*dst++ = *wcs++) != L'\0')
+    len++;
+
+  for (; len < n; len++)
+    *dst++ = L'\0';
+
+  return wcd;
+}
+#endif
 
 
 SQLCHAR *

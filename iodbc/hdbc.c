@@ -78,7 +78,6 @@
 #include <sqlucode.h>
 #include <iodbcext.h>
 
-#include <wchar.h>
 #include <unicode.h>
 
 #include <dlproc.h>

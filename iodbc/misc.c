@@ -80,7 +80,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <wchar.h>
+
 #include <unicode.h>
 
 #include <fcntl.h>

@@ -79,8 +79,8 @@
 #if (ODBCVER >= 0x300)
 #include <sqlucode.h>
 
-#include <wchar.h>
 #include <unicode.h>
+
 #include <dlproc.h>
 
 #include <herr.h>

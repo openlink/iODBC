@@ -72,6 +72,11 @@
 #ifndef _UNICODE_H
 #define _UNICODE_H
 
+#if HAVE_WCHAR_H
+#include <wchar.h>
+#endif
+
+
 /*
  *  Max length of a UTF-8 encoded character sequence
  */
@@ -106,5 +111,18 @@ int dm_StrCopyOut2_W2A (SQLWCHAR * inStr, SQLCHAR * outStr, SQLSMALLINT size,
 #define OPL_W2A(XW, XA, SIZE)      wcstombs(XA, XW, SIZE)
 #define OPL_A2W(XA, XW, SIZE)      mbstowcs(XW, XA, SIZE)
 # endif
+
+/*
+ *  Replacement functions
+ */
+#if !defined(HAVE_WCSLEN)
+size_t wcslen (wchar_t * wcs);
+#endif
+#if !defined(HAVE_WCSCPY)
+wchar_t * wcscpy (wchar_t * wcd, const wchar_t * wcs);
+#endif
+#if !defined(HAVE_WCSNCPY)
+wchar_t * wcsncpy (wchar_t * wcd, const wchar_t * wcs, size_t n);
+#endif
 
 #endif /* _UNICODE_H */
