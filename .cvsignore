@@ -18,3 +18,7 @@ config.status
 iodbc-config
 autom4te.cache
 distrib
+build
+build-32
+build-64
+build-o32
