@@ -1,3 +1,8 @@
+Aug 22 2003, V3.51.0:
+    * Added Unicode support
+    * Added tracing functionality
+    * Minor cleanups and bugfixes
+
 Apr 29 2002, V3.0.6:
     * Added instructions for building MyODBC on Mac OS X
     * Added support for building iODBC on Mac OS X as a framework

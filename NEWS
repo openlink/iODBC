@@ -1,3 +1,9 @@
+Version: 3.51.0
+---------------
+Unicode support
+New trace functionality
+Many bugfixes and enhancements
+
 Version: 3.0.5
 --------------
 Added new iodbcinst code and iodbcadm GTK frontend
