@@ -68,7 +68,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <config.h>
+#include <iodbc.h>
 
 char *iodbc_version = VERSION;
 char *iodbc_libname = "iODBC Administrator";

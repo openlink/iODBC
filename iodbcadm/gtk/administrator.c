@@ -68,6 +68,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <iodbc.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
 #include <unistd.h>

@@ -68,6 +68,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <iodbc.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>

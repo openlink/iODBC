@@ -68,7 +68,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <config.h>
 #include <iodbc.h>
 #include <iodbcinst.h>
 #include <iodbc_error.h>

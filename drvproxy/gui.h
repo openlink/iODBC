@@ -68,7 +68,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <config.h>
 #ifdef _MACX
 #  include <iODBC/iodbc.h>
 #  include <iODBCinst/iodbcinst.h>

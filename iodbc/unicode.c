@@ -71,6 +71,12 @@
  */
 #define UNICODE
 
+#include <iodbc.h>
+
+#include <sql.h>
+#include <sqlext.h>
+#include <sqltypes.h>
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -78,10 +84,6 @@
 #include <ansiapi.h>
 #include <mapinls.h>
 #endif
-
-#include <sql.h>
-#include <sqlext.h>
-#include <sqltypes.h>
 
 #include "unicode.h"
 
