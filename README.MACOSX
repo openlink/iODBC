@@ -18,20 +18,10 @@ mac/iODBCinst, or execute the following commands from a terminal session:
 
 
 After building the iODBC frameworks, you have to install them on your
-system in $HOME/Library/Frameworks with the command: 
+system in /Library/Frameworks with the command: 
 
     $ cd mac
     $ make install
-
-
-If you want to install the iODBC frameworks in /Library/Frameworks, 
-you need to change the mac/Makefile and change the following lines:
-
-    install:
-     	cd iODBC;     sudo pbxbuild install -buildstyle Deployment DSTROOT=/
-     	cd iODBCinst; sudo pbxbuild install -buildstyle Deployment DSTROOT=/
-    #   cd iODBC;     pbxbuild install -buildstyle Deployment DSTROOT=$(HOME)
-    #   cd iODBCinst; pbxbuild install -buildstyle Deployment DSTROOT=$(HOME)
 
 
 Now that you have installed the iODBC frameworks on your system, you are

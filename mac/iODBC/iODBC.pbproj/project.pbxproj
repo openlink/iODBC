@@ -646,37 +646,37 @@
 		F535B34F0277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = isqltypes.h;
-			path = ../../include/isqltypes.h;
+			path = ../include/isqltypes.h;
 			refType = 2;
 		};
 		F535B3500277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = isql.h;
-			path = ../../include/isql.h;
+			path = ../include/isql.h;
 			refType = 2;
 		};
 		F535B3510277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = isqlext.h;
-			path = ../../include/isqlext.h;
+			path = ../include/isqlext.h;
 			refType = 2;
 		};
 		F535B3520277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = sql.h;
-			path = ../../include/sql.h;
+			path = ../include/sql.h;
 			refType = 2;
 		};
 		F535B3530277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = sqlext.h;
-			path = ../../include/sqlext.h;
+			path = ../include/sqlext.h;
 			refType = 2;
 		};
 		F535B3540277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = sqltypes.h;
-			path = ../../include/sqltypes.h;
+			path = ../include/sqltypes.h;
 			refType = 2;
 		};
 		F535B3550277FC2E01A801DE = {

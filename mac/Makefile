@@ -73,10 +73,10 @@ all: iODBC iODBCinst iODBCtest
 #  Build the libraries 
 #
 .PHONY: iODBC iODBCinst
-iODBC:
+iODBC: include
 	cd iODBC; pbxbuild build -buildstyle Deployment
 
-iODBCinst:
+iODBCinst: include
 	cd iODBCinst; pbxbuild build -buildstyle Deployment
 
 #
@@ -88,19 +88,25 @@ iODBCtest:
 
 
 #
+#  Generate iODBC framework style include files
+#
+.PHONY: include
+include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcinst.h
+	sh framework-include.sh
+
+#
 #  Install libraries in /Library/Frameworks
 #
 install:
-#	cd iODBC;     sudo pbxbuild install -buildstyle Deployment DSTROOT=/
-#	cd iODBCinst; sudo pbxbuild install -buildstyle Deployment DSTROOT=/
-	cd iODBC;     pbxbuild install -buildstyle Deployment DSTROOT=$(HOME)
-	cd iODBCinst; pbxbuild install -buildstyle Deployment DSTROOT=$(HOME)
+	cd iODBC;     sudo pbxbuild install -buildstyle Deployment DSTROOT=/
+	cd iODBCinst; sudo pbxbuild install -buildstyle Deployment DSTROOT=/
 
 
 #
 #  Clean out the targets
 #
 clean:
+	rm -rf include
 	cd iODBC;     pbxbuild clean
 	cd iODBCinst; pbxbuild clean
 	cd iODBCtest; pbxbuild clean

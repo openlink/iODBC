@@ -77,8 +77,4 @@
  *  the standard names sql.h, sqlext.h and sqltypes.h.
  */
 
-#ifdef __APPLE__
-#include <iODBC/sqltypes.h>
-#else
 #include <sqltypes.h>
-#endif

@@ -81,11 +81,7 @@
 #endif
 
 #ifndef _SQLTYPES_H
-#ifdef __APPLE__
-#include <iODBC/sqltypes.h>
-#else
 #include <sqltypes.h>
-#endif
 #endif
 
 #ifdef __cplusplus

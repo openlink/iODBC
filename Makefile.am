@@ -74,6 +74,7 @@ EXTRA_DIST             = \
 	LICENSE LICENSE.LGPL LICENSE.BSD \
 	README.MACOSX \
 	mac/Makefile \
+	mac/framework-include.sh \
 	mac/iODBC/English.lproj/InfoPlist.strings \
 	mac/iODBC/iODBC.pbproj/project.pbxproj \
 	mac/iODBCinst/English.lproj/InfoPlist.strings \
