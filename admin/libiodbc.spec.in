@@ -36,7 +36,7 @@ Packager: OpenLink Software <iodbc@openlinksw.com>
 Copyright: LGPL
 URL: http://www.openlinksw.com/iodbc/
 Source: libiodbc-%{PACKAGE_VERSION}.tar.gz
-Prefix: /usr
+Prefix: /
 BuildRoot:/tmp/libiodbc.root
 AutoReqProv: no
 
