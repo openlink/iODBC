@@ -540,7 +540,6 @@ SQLGetDiagRec (SQLSMALLINT HandleType,
 {
   sqlerr_t *curr_err = NULL;
   HERR err = NULL;
-  HERR saved;
   int nRecs;
   HPROC hproc = SQL_NULL_HPROC;
   HDBC hdbc = SQL_NULL_HDBC;
@@ -746,7 +745,6 @@ SQLGetDiagField (SQLSMALLINT nHandleType,
   STMT (stmt, Handle);
   DESC (desc, Handle);
   HERR err;
-  int odbc_ver;
   HPROC hproc;
   RETCODE retcode;
   SQLHANDLE dhandle = SQL_NULL_HANDLE;

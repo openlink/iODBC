@@ -268,7 +268,6 @@ SQLAllocStmt (
       hproc = _iodbcdm_getproc(pdbc, en_GetStmtAttr);
       if (hproc == SQL_NULL_HPROC)
 	{  /* with no GetStmtAttr ! */
-	  int i;
 	  PUSHSQLERR(pdbc->herr, en_HYC00);
 	  pstmt->type = 0;
 	  MEM_FREE(pstmt);
@@ -396,7 +395,7 @@ _iodbcdm_dropstmt (HSTMT hstmt)
   /* drop the implicit descriptors */
   if (pstmt->imp_desc[0])
     {
-      int i, i1;
+      int i;
       for (i = 0; i < 4; i++)
 	{
 	  _iodbcdm_freesqlerrlist (pstmt->imp_desc[i]->herr);
