@@ -75,17 +75,46 @@ AM_PROG_LIBTOOL
 
 ##########################################################################
 ##									##
+##  Check for header files 						##
+##									##
+##########################################################################
+dnl Checks for header files.
+AC_HEADER_STDC
+
+
+##########################################################################
+##									##
+##  Check for specific library functions				##
+##									##
+##########################################################################
+AC_CHECK_FUNCS(strerror)
+
+
+##########################################################################
+##									##
 ##  Check for dynamic load module					##
 ##									##
 ##########################################################################
+
+AC_CHECK_HEADERS(dlfcn.h dl.h dld.h)
+
 LIBADD_DL=
-AC_CHECK_FUNCS(dlopen, AC_DEFINE(HAVE_LIBDL),
-[AC_CHECK_LIB(dl, dlopen, [AC_DEFINE(HAVE_LIBDL) LIBADD_DL="-ldl"],
- [AC_CHECK_LIB(dld, dld_link, [AC_DEFINE(HAVE_DLD) LIBADD_DL="-ldld"],
-   [AC_CHECK_FUNCS(shl_load, AC_DEFINE(HAVE_SHL_LOAD) )]
-  )]
- )]
-)
+
+AC_CHECK_LIB(dl, dlopen, 
+  [AC_DEFINE(HAVE_LIBDL, 1) LIBADD_DL="-ldl"],
+  [AC_CHECK_FUNCS(dlopen _dlopen, [AC_DEFINE(HAVE_LIBDL, 1)])]
+  )
+
+AC_CHECK_FUNC(shl_load, 
+  [AC_DEFINE(HAVE_SHL_LOAD, 1)],
+  [AC_CHECK_LIB(dld, shl_load, 
+    [AC_DEFINE(HAVE_SHL_LOAD, 1) LIBADD_DL="$LIBADD_DL -ldld"])]
+  )
+
+AC_CHECK_LIB(dld, dld_link, 
+   [AC_DEFINE(HAVE_DLD, 1)dnl
+    test "x$ac_cv_lib_dld_shl_load" = yes || LIBADD_DL="$LIBADD_DL -ldld"])
+
 AC_SUBST(LIBADD_DL)
 
 AC_CACHE_CHECK([for underscore before symbols], libltdl_cv_uscore, [
@@ -105,12 +134,65 @@ if test x"$libltdl_cv_uscore" = xyes; then
 	AC_CACHE_CHECK([whether we have to add an underscore for dlsym],
 		libltdl_cv_need_uscore, [dnl
 		AC_TRY_RUN([
+#if HAVE_DLFCN_H
 #include <dlfcn.h>
+#endif
+
 #include <stdio.h>
-fnord() { int i=42;}
-main() { void *self, *ptr1, *ptr2; self=dlopen(NULL,RTLD_LAZY);
-    if(self) { ptr1=dlsym(self,"fnord"); ptr2=dlsym(self,"_fnord");
-    if(ptr1 && !ptr2) exit(0); } exit(1); } 
+
+#ifdef RTLD_GLOBAL
+# define LTDL_GLOBAL	RTLD_GLOBAL
+#else
+# ifdef DL_GLOBAL
+#  define LTDL_GLOBAL	DL_GLOBAL
+# else
+#  define LTDL_GLOBAL	0
+# endif
+#endif
+
+/* We may have to define LTDL_LAZY_OR_NOW in the command line if we
+   find out it does not work in some platform. */
+#ifndef LTDL_LAZY_OR_NOW
+# ifdef RTLD_LAZY
+#  define LTDL_LAZY_OR_NOW	RTLD_LAZY
+# else
+#  ifdef DL_LAZY
+#   define LTDL_LAZY_OR_NOW	DL_LAZY
+#  else
+#   ifdef RTLD_NOW
+#    define LTDL_LAZY_OR_NOW	RTLD_NOW
+#   else
+#    ifdef DL_NOW
+#     define LTDL_LAZY_OR_NOW	DL_NOW
+#    else
+#     define LTDL_LAZY_OR_NOW	0
+#    endif
+#   endif
+#  endif
+# endif
+#endif
+
+fnord ()
+{
+  int i = 42;
+}
+
+main ()
+{
+  void *self, *ptr1, *ptr2;
+  self = dlopen (0, LTDL_GLOBAL | LTDL_LAZY_OR_NOW);
+  if (self)
+    {
+      ptr1 = dlsym (self, "fnord");
+      ptr2 = dlsym (self, "_fnord");
+      if (ptr1 && !ptr2)
+	{
+	  dlclose (self);
+	  exit (0);
+	}
+    }
+  exit (1);
+}
 ],	libltdl_cv_need_uscore=no, libltdl_cv_need_uscore=yes,
 	libltdl_cv_need_uscore=no
 )])
@@ -118,18 +200,9 @@ main() { void *self, *ptr1, *ptr2; self=dlopen(NULL,RTLD_LAZY);
 fi
 
 if test x"$libltdl_cv_need_uscore" = xyes; then
-   AC_DEFINE(NEED_USCORE)
+   AC_DEFINE(NEED_USCORE, 1,
+	[Define if dlsym() requires a leading underscode in symbol names. ])
 fi
-dnl Checks for header files.
-AC_HEADER_STDC
-
-
-##########################################################################
-##									##
-##  Check for specific library functions				##
-##									##
-##########################################################################
-AC_CHECK_FUNCS(strerror)
 
 
 ##########################################################################
