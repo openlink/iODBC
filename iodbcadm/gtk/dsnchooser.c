@@ -84,6 +84,14 @@
 #define MAXPATHLEN	1024
 #endif
 
+/*
+ *  Linux glibc has the function, but does not have the prototype
+ *  with the default header files.
+ */
+#if defined(HAVE_ASPRINTF) && defined(__GLIBC__)
+extern int asprintf (char **ret, const char *format, ...);
+#endif
+
 
 char *szDSNColumnNames[] = {
   "Name",
