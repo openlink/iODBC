@@ -106,14 +106,15 @@ libiodbcadm_la_LIBADD	= \
 	../iodbcadm/gtk/loginbox.lo \
 	../iodbcadm/gtk/messagebox.lo \
 	../iodbcadm/gtk/translatorchooser.lo \
-	../iodbcinst/libiodbcinst.la \
-	../iodbc/libiodbc.la
+	@GTK_LIBS@ \
+	-L../iodbcinst -liodbcinst \
+	-L../iodbc -liodbc
 else
 libiodbcadm_la_LIBADD	= \
 	$(LIBADD_DL) \
 	../iodbc/dlf.lo \
-	../iodbcinst/libiodbcinst.la \
-	../iodbc/libiodbc.la
+	-L../iodbcinst -liodbcinst \
+	-L../iodbc -liodbc
 endif
 
 libiodbcadm_la_SOURCES	= \
@@ -124,8 +125,10 @@ libiodbcadm_la_SOURCES	= \
 
 iodbcadm_gtk_SOURCES	=
 iodbcadm_gtk_LDADD	= \
-	../iodbcadm/libiodbcadm.la \
 	../iodbcadm/gtk/main.lo \
+	-L../iodbcadm -liodbcadm \
+	-L../iodbcinst -liodbcinst \
+	-L../iodbc -liodbc \
 	@GTK_LIBS@
 iodbcadm_gtk_LDFLAGS	= # -static
 

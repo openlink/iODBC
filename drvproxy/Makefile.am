@@ -90,9 +90,20 @@ libdrvproxy_la_LDFLAGS	= -version-info @lib_version@ \
 			  -export-symbols $(srcdir)/drvproxy.exp
 
 if GTK
-libdrvproxy_la_LIBADD	= $(LIBADD_DL) ../iodbc/dlf.lo ../drvproxy/gtk/confirm.lo ../drvproxy/gtk/gensetup.lo ../iodbcinst/libiodbcinst.la ../iodbcadm/libiodbcadm.la @GTK_LIBS@
+libdrvproxy_la_LIBADD	= \
+	$(LIBADD_DL) \
+	../iodbc/dlf.lo \
+	../drvproxy/gtk/confirm.lo \
+	../drvproxy/gtk/gensetup.lo \
+	-L../iodbcinst -liodbcinst \
+	-L../iodbcadm -liodbcadm \
+	@GTK_LIBS@
 else
-libdrvproxy_la_LIBADD	= $(LIBADD_DL) ../iodbc/dlf.lo ../iodbcinst/libiodbcinst.la ../iodbcadm/libiodbcadm.la
+libdrvproxy_la_LIBADD	= \
+	$(LIBADD_DL) \
+	../iodbc/dlf.lo \
+	-L../iodbcinst -liodbcinst \
+	-L../iodbcadm -liodbcadm
 endif
 
 libdrvproxy_la_SOURCES	= \
