@@ -44,6 +44,8 @@ typedef struct STMT
     int asyn_on;		/* async executing which odbc call */
     int need_on;		/* which call return SQL_NEED_DATA */
 
+    int stmt_cip;		/* Call in progress on this handle */
+
 #if (ODBCVER >= 0x0300)
     DESC_t FAR * imp_desc[4];
     DESC_t FAR * desc[4];
@@ -63,6 +65,29 @@ STMT_t;
 	 ((STMT_t FAR *)(x))->type == SQL_HANDLE_STMT && \
 	 ((STMT_t FAR *)(x))->hdbc != SQL_NULL_HDBC)
 
+
+#define ENTER_STMT(pstmt) \
+        ODBC_LOCK(); \
+    	if (!IS_VALID_HSTMT (pstmt)) \
+	  { \
+	    ODBC_UNLOCK(); \
+	    return SQL_INVALID_HANDLE; \
+	  } \
+	else if (pstmt->stmt_cip) \
+          { \
+	    PUSHSQLERR (pstmt->herr, en_S1010); \
+	    ODBC_UNLOCK(); \
+	    return SQL_ERROR; \
+	  } \
+	pstmt->stmt_cip = 1; \
+	CLEAR_ERRORS (pstmt); \
+        ODBC_UNLOCK(); \
+
+
+#define LEAVE_STMT(pstmt, err) \
+	pstmt->stmt_cip = 0; \
+	return (err);
+	
 enum
   {
     en_stmt_allocated = 0,
@@ -85,5 +110,22 @@ enum
     en_stmt_cursor_xfetched
   };				/* for statement cursor state */
 
-extern SQLRETURN _iodbcdm_dropstmt ();
+
+/*
+ *  Internal prototypes
+ */
+SQLRETURN _iodbcdm_dropstmt ();
+
+SQLRETURN SQL_API _iodbcdm_ExtendedFetch (
+    SQLHSTMT hstmt, 
+    SQLUSMALLINT fFetchType, 
+    SQLINTEGER irow, 
+    SQLUINTEGER FAR *pcrow, 
+    SQLUSMALLINT FAR *rgfRowStatus);
+
+SQLRETURN SQL_API _iodbcdm_SetPos (
+    SQLHSTMT hstmt, 
+    SQLUSMALLINT irow, 
+    SQLUSMALLINT fOption, 
+    SQLUSMALLINT fLock);
 #endif

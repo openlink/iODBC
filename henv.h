@@ -31,6 +31,7 @@
 
 #include <sql.h>
 #include <sqlext.h>
+#include <ithread.h>
 
 
 enum odbcapi_t
@@ -66,6 +67,10 @@ typedef struct
     HPROC dllproc_tab[__LAST_API_FUNCTION__];	/* driver api calls  */
     HENV dhenv;			/* driver env handle    */
     HDLL hdll;			/* driver share library handle */
+
+    SWORD thread_safe;		/* Is the driver threadsafe? */
+    MUTEX_DECLARE (drv_lock);	/* Used only when driver is not threadsafe */
+
 #if (ODBCVER >= 0x300)
     SQLINTEGER dodbc_ver;	/* driver's ODBC version */
 #endif    
@@ -75,6 +80,19 @@ ENV_t;
 
 #define IS_VALID_HENV(x) \
 	((x) != SQL_NULL_HENV && ((GENV_t FAR *)(x))->type == SQL_HANDLE_ENV)
+
+
+/*
+ * Multi threading
+ */
+#if defined (IODBC_THREADING)
+extern SPINLOCK_DECLARE(iodbcdm_global_lock);
+#define ODBC_LOCK()	SPINLOCK_LOCK(iodbcdm_global_lock)
+#define ODBC_UNLOCK()	SPINLOCK_UNLOCK(iodbcdm_global_lock)
+#else
+#define ODBC_LOCK()
+#define ODBC_UNLOCK()
+#endif
 
 
 /* Note:

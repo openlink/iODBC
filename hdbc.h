@@ -66,11 +66,35 @@ typedef struct DBC
     int trace;				/* trace flag */
     char FAR * tfile;
     void FAR * tstm;			/* trace stream */
+
+    SWORD dbc_cip;			/* Call in Progess flag */
   }
 DBC_t;
 
 #define IS_VALID_HDBC(x) \
 	((x) != SQL_NULL_HDBC && ((DBC_t FAR *)(x))->type == SQL_HANDLE_DBC)
+
+#define ENTER_HDBC(pdbc) \
+        ODBC_LOCK();\
+    	if (!IS_VALID_HDBC (pdbc)) \
+	  { \
+	    ODBC_UNLOCK (); \
+	    return SQL_INVALID_HANDLE; \
+	  } \
+	else if (pdbc->dbc_cip) \
+          { \
+	    PUSHSQLERR (pdbc->herr, en_S1010); \
+	    ODBC_UNLOCK(); \
+	    return SQL_ERROR; \
+	  } \
+	pdbc->dbc_cip = 1; \
+	CLEAR_ERRORS (pdbc); \
+	ODBC_UNLOCK();
+
+
+#define LEAVE_HDBC(pdbc, err) \
+	pdbc->dbc_cip = 0; \
+	return (err);
 
 /* 
  * Note:
@@ -98,4 +122,17 @@ enum
     en_dbc_connected,
     en_dbc_hstmt
   };
+
+
+/*
+ *  Internal prototypes 
+ */
+SQLRETURN SQL_API _iodbcdm_SetConnectOption (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption, 
+    SQLUINTEGER vParam);
+SQLRETURN SQL_API _iodbcdm_GetConnectOption (
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption, 
+    SQLPOINTER pvParam);
 #endif

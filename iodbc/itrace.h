@@ -111,20 +111,40 @@ extern HPROC _iodbcdm_gettrproc (void FAR * stm, int procid, int type);
 
 #ifdef	NO_TRACE
 #define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
-    CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist )
+	{\
+		DBC_t FAR*	pdbc = (DBC_t FAR*)(hdbc);\
+		ENV_t FAR*      penv = (ENV_t FAR*)(pdbc->henv);\
+\
+	        if (!penv->thread_safe)\
+			MUTEX_LOCK (penv->drv_lock);\
+\
+		CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist )
+\
+	        if (!penv->thread_safe)\
+			MUTEX_UNLOCK (penv->drv_lock);\
+\
+	}
 #else
 #define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
 	{\
 		DBC_t FAR*	pdbc = (DBC_t FAR*)(hdbc);\
+		ENV_t FAR*      penv = (ENV_t FAR*)(pdbc->henv);\
+\
+	        if (!penv->thread_safe)\
+			MUTEX_LOCK (penv->drv_lock);\
 \
 		if( pdbc->trace ) {\
 			TRACE_DM2DRV( pdbc->tstm, procid, plist )\
-			CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ); \
+			CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist );\
 			TRACE_DRV2DM( pdbc->tstm, procid, plist )\
 			TRACE_RETURN( pdbc->tstm, 1, ret )\
 		}\
 		else\
-			CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ); \
+			CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist );\
+\
+	        if (!penv->thread_safe)\
+			MUTEX_UNLOCK (penv->drv_lock);\
+\
 	}
 #endif
 
