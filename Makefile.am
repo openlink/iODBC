@@ -73,6 +73,7 @@ SUBDIRS 		= admin bin etc include iodbcinst iodbc iodbcadm drvproxy samples
 EXTRA_DIST		= \
 	IAFA-PACKAGE \
 	LICENSE LICENSE.LGPL LICENSE.BSD \
+	README.CVS \
 	README.MACOSX \
 	mac/Makefile \
 	mac/README.MYODBC \
