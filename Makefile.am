@@ -42,7 +42,6 @@ EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
 			  iodbc.def iodbc.exp libiodbc.spec main.c
 
 
-
 #
 #  Create Linux RPM's
 #

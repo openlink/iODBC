@@ -55,6 +55,14 @@ typedef long DWORD;
 typedef WORD WPARAM;
 typedef DWORD LPARAM;
 typedef int BOOL;
+
+/*
+ *  If not defined, use this as the system default odbc.ini file
+ */
+#ifndef SYS_ODBC_INI
+#define SYS_ODBC_INI "/etc/odbc.ini"
+#endif
+
 #endif /* _UNIX_ */
 
 #if	defined(WINDOWS) || defined(WIN32_SYSTEM)
