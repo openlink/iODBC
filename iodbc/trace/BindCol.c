@@ -89,6 +89,6 @@ trace_SQLBindCol (int trace_leave, int retcode,
   _trace_usmallint (ColumnNumber);
   _trace_c_type (TargetType);
   _trace_pointer (TargetValuePtr);
-  _trace_integer (BufferLength);
-  _trace_pointer (Strlen_or_IndPtr);	/* TODO */
+  _trace_len (BufferLength);
+  _trace_len_p (Strlen_or_IndPtr, TRACE_OUTPUT_SUCCESS);
 }

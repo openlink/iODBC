@@ -75,12 +75,12 @@
 void 
 trace_SQLRowCount (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
-  SQLINTEGER     	* pcrow)
+  SQLINTEGER	     	* pcrow)
 {
   /* Trace function */
   _trace_print_function (en_RowCount, trace_leave, retcode);
 
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, hstmt);
-  _trace_integer_p (pcrow, TRACE_OUTPUT_SUCCESS);
+  _trace_len_p (pcrow, TRACE_OUTPUT_SUCCESS);
 }

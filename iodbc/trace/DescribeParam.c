@@ -77,7 +77,7 @@ trace_SQLDescribeParam (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  ipar,
   SQLSMALLINT 	 	* pfSqlType,
-  SQLUINTEGER   	* pcbColDef,
+  SQLUINTEGER	   	* pcbColDef,
   SQLSMALLINT  		* pibScale,
   SQLSMALLINT  		* pfNullable)
 {
@@ -88,7 +88,7 @@ trace_SQLDescribeParam (int trace_leave, int retcode,
   _trace_handle (SQL_HANDLE_STMT, hstmt);
   _trace_usmallint (ipar);
   _trace_sql_type_p (pfSqlType, TRACE_OUTPUT_SUCCESS);
-  _trace_uinteger_p (pcbColDef, TRACE_OUTPUT_SUCCESS);
+  _trace_ulen_p (pcbColDef, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (pibScale, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (pfNullable, TRACE_OUTPUT_SUCCESS);
 }

@@ -6,14 +6,14 @@
  *  SQLGetData trace functions
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1996-2003 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -77,7 +77,7 @@ _trace_data (
   SQLSMALLINT		  fCType,
   SQLPOINTER		  rgbValue,
   SQLINTEGER		  cbValueMax,
-  SQLINTEGER    	* pcbValue,
+  SQLINTEGER	    	* pcbValue,
   int			  output)
 {
   char buf[1024];		/* Temp buffer */
@@ -135,7 +135,7 @@ _trace_data (
       break;
 
     case SQL_C_DEFAULT:
-      /* 
+      /*
        *  Not enough information to dump the content of the buffer
        */
       return;
@@ -411,7 +411,7 @@ _trace_data (
       break;
 
     default:
-      /* 
+      /*
        *  Unhandled/Unknown datatype
        */
       break;
@@ -421,14 +421,14 @@ _trace_data (
 }
 
 
-void 
+void
 trace_SQLGetData (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  icol,
   SQLSMALLINT		  fCType,
   SQLPOINTER		  rgbValue,
   SQLINTEGER		  cbValueMax,
-  SQLINTEGER    	* pcbValue)
+  SQLINTEGER	    	* pcbValue)
 {
   /* Trace function */
   _trace_print_function (en_GetData, trace_leave, retcode);
@@ -438,6 +438,6 @@ trace_SQLGetData (int trace_leave, int retcode,
   _trace_usmallint (icol);
   _trace_c_type (fCType);
   _trace_data (fCType, rgbValue, cbValueMax, pcbValue, TRACE_OUTPUT_SUCCESS);
-  _trace_integer (cbValueMax);
-  _trace_integer_p (pcbValue, TRACE_OUTPUT_SUCCESS);
+  _trace_len (cbValueMax);
+  _trace_len_p (pcbValue, TRACE_OUTPUT_SUCCESS);
 }

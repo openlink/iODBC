@@ -97,6 +97,6 @@ trace_SQLBindParameter (int trace_leave, int retcode,
   _trace_uinteger (ColumnSize);
   _trace_smallint (DecimalDigits);
   _trace_pointer (ParameterValuePtr);
-  _trace_integer (BufferLength);
-  _trace_pointer (Strlen_or_IndPtr);		/* TODO */
+  _trace_len (BufferLength);
+  _trace_len_p (Strlen_or_IndPtr, TRACE_OUTPUT_SUCCESS);
 }

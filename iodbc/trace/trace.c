@@ -6,14 +6,14 @@
  *  Trace functions
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1996-2003 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -121,7 +121,7 @@ trace_set_appname (char *appname)
 }
 
 
-char * 
+char *
 trace_get_filename (void)
 {
   return STRDUP (trace_fname);
@@ -134,7 +134,7 @@ trace_set_filename (char *fname)
   char buf[255];
   char *s, *p;
   struct passwd *pwd;
-  int i;
+  size_t i;
   MEM_FREE (trace_fname);
 
   memset (buf, '\0', sizeof (buf));
@@ -196,7 +196,7 @@ trace_set_filename (char *fname)
 		  s += 2;
 		  continue;
 		  }
-	        
+
 
 	    default:
 	       buf[i++] = *s++;
@@ -210,7 +210,7 @@ trace_set_filename (char *fname)
 }
 
 
-void 
+void
 trace_start(void)
 {
   /*
@@ -359,7 +359,7 @@ trace_emit (char *fmt, ...)
 void
 trace_emit_string (SQLCHAR *str, int len, int is_utf8)
 {
-  long length = len;
+  ssize_t length = len;
   int i, j;
   long col;
   SQLCHAR *ptr;
@@ -482,7 +482,7 @@ trace_emit_binary (unsigned char *str, int len)
     {
       unsigned char c = *ptr++;
 
-      /* 
+      /*
        *  Put data into buffer
        */
       buf[3 * col] = HEX[(c >> 4) & 0xF];
@@ -537,11 +537,11 @@ _trace_print_function (int func, int trace_leave, int retcode)
 
   if (trace_leave == TRACE_LEAVE)
     trace_emit ("\n%-15.15s %08lX EXIT  %s with return code %d (%s)\n",
-	trace_appname ? trace_appname : "Application", 
+	trace_appname ? trace_appname : "Application",
 	THREAD_IDENT, odbcapi_symtab[func], retcode, ptr);
   else
     trace_emit ("\n%-15.15s %08lX ENTER %s\n",
-	trace_appname ? trace_appname : "Application", 
+	trace_appname ? trace_appname : "Application",
 	THREAD_IDENT, odbcapi_symtab[func]);
 }
 
@@ -694,6 +694,59 @@ _trace_stringlen (char *type, SQLINTEGER len)
     trace_emit ("\t\t%-15.15s   %ld (SQL_NTS)\n", type, (long) len);
   else
     trace_emit ("\t\t%-15.15s   %ld\n", type, (long) len);
+}
+
+void
+_trace_len (SQLINTEGER i)
+{
+#ifdef _WIN64
+  trace_emit ("\t\t%-15.15s   %I64d\n", "SQLINTEGER", (INT64) i);
+#else
+  trace_emit ("\t\t%-15.15s   %ld\n", "SQLINTEGER", (long) i);
+#endif
+}
+
+
+void
+_trace_ulen (SQLUINTEGER i)
+{
+#ifdef _WIN64
+  trace_emit ("\t\t%-15.15s   %I64u\n", "SQLINTEGER", (UINT64) i);
+#else
+  trace_emit ("\t\t%-15.15s   %ld\n", "SQLINTEGER", (unsigned long) i);
+#endif
+}
+
+
+void
+_trace_len_p (SQLINTEGER *p, int output)
+{
+  if (!p)
+    trace_emit ("\t\t%-15.15s * 0x0\n", "SQLINTEGER");
+  else if (output)
+#ifdef _WIN64
+    trace_emit ("\t\t%-15.15s * %p (%I64d)\n", "SQLINTEGER", p, (INT64) *p);
+#else
+    trace_emit ("\t\t%-15.15s * %p (%ld)\n", "SQLINTEGER", p, (long) *p);
+#endif
+  else
+    trace_emit ("\t\t%-15.15s * %p\n", "SQLINTEGER", p);
+}
+
+
+void
+_trace_ulen_p (SQLUINTEGER *p, int output)
+{
+  if (!p)
+    trace_emit ("\t\t%-15.15s * 0x0\n", "SQLUINTEGER");
+  else if (output)
+#ifdef _WIN64
+    trace_emit ("\t\t%-15.15s * %p (%I64u)\n", "SQLUINTEGER", p, (UINT64) *p);
+#else
+    trace_emit ("\t\t%-15.15s * %p (%lu)\n", "SQLUINTEGER", p, (unsigned long) *p);
+#endif
+  else
+    trace_emit ("\t\t%-15.15s * %p\n", "SQLUINTEGER", p);
 }
 
 
@@ -1038,7 +1091,7 @@ _trace_bufferlen (SQLINTEGER length)
    */
   if (length <= SQL_LEN_BINARY_ATTR_OFFSET)
     {
-        sprintf (buf, "SQL_LEN_BINARY_ATTR(%ld)", SQL_LEN_BINARY_ATTR(length));
+        sprintf (buf, "SQL_LEN_BINARY_ATTR(%ld)", (long) SQL_LEN_BINARY_ATTR(length));
 	ptr = buf;
     }
 

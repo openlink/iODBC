@@ -73,6 +73,17 @@
 
 
 void
+_trace_setpos_irow (SQLUSMALLINT irow)
+{
+#ifdef _WIN64
+  trace_emit ("\t\t%-15.15s   %I64d\n", "SQLUSMALLINT", (INT64) irow);
+#else
+  trace_emit ("\t\t%-15.15s   %ld\n", "SQLUSMALLINT", (long) irow);
+#endif
+}
+
+
+void
 _trace_setpos_oper (SQLUSMALLINT type)
 {
   char *ptr = "unknown operation";
@@ -121,7 +132,7 @@ trace_SQLSetPos (int trace_leave, int retcode,
 
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, hstmt);
-  _trace_usmallint (irow);
+  _trace_setpos_irow (irow);
   _trace_setpos_oper (fOption);
   _trace_setpos_lock (fLock);
 }

@@ -76,7 +76,7 @@ void
 trace_SQLSetConnectOption (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam)
+  SQLUINTEGER	  	  vParam)
 {
   /* Trace function */
   _trace_print_function (en_SetConnectOption, trace_leave, retcode);
@@ -84,7 +84,7 @@ trace_SQLSetConnectOption (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_DBC, hdbc);
   _trace_connopt_type (fOption);
-  _trace_uinteger (vParam);
+  _trace_ulen (vParam);
 }
 
 
@@ -100,5 +100,5 @@ trace_SQLSetConnectOptionW (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_DBC, hdbc);
   _trace_connopt_type (fOption);
-  _trace_uinteger (vParam);
+  _trace_ulen (vParam);
 }

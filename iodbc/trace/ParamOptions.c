@@ -83,6 +83,6 @@ trace_SQLParamOptions (int trace_leave, int retcode,
 
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, hstmt);
-  _trace_integer (crow);
-  _trace_uinteger_p (pirow, TRACE_OUTPUT_SUCCESS);
+  _trace_ulen (crow);
+  _trace_ulen_p (pirow, TRACE_OUTPUT_SUCCESS);
 }

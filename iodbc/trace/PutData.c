@@ -84,5 +84,5 @@ trace_SQLPutData (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, hstmt);
   _trace_pointer (rgbValue);
-  _trace_integer (cbValue);
+  _trace_len (cbValue);
 }

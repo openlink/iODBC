@@ -97,7 +97,7 @@ trace_SQLGetDescRec (int trace_leave, int retcode,
   _trace_smallint_p (StringLengthPtr, TRACE_OUTPUT_SUCCESS);
   _trace_sql_type_p (TypePtr, TRACE_OUTPUT_SUCCESS);
   _trace_sql_subtype (TypePtr, SubTypePtr, TRACE_OUTPUT_SUCCESS);
-  _trace_integer_p (LengthPtr, TRACE_OUTPUT_SUCCESS);
+  _trace_len_p (LengthPtr, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (PrecisionPtr, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (ScalePtr, TRACE_OUTPUT_SUCCESS);
   _trace_desc_null (NullablePtr, TRACE_OUTPUT_SUCCESS);
@@ -129,7 +129,7 @@ trace_SQLGetDescRecW (int trace_leave, int retcode,
   _trace_smallint_p (StringLengthPtr, TRACE_OUTPUT_SUCCESS);
   _trace_sql_type_p (TypePtr, TRACE_OUTPUT_SUCCESS);
   _trace_sql_subtype (TypePtr, SubTypePtr, TRACE_OUTPUT_SUCCESS);
-  _trace_integer_p (LengthPtr, TRACE_OUTPUT_SUCCESS);
+  _trace_len_p (LengthPtr, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (PrecisionPtr, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (ScalePtr, TRACE_OUTPUT_SUCCESS);
   _trace_desc_null (NullablePtr, TRACE_OUTPUT_SUCCESS);

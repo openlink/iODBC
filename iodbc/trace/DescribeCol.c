@@ -122,7 +122,7 @@ trace_SQLDescribeCol (int trace_leave, int retcode,
   _trace_stringlen ("SQLSMALLINT", BufferLength);
   _trace_smallint_p (NameLengthPtr, TRACE_OUTPUT_SUCCESS);
   _trace_sql_type_p (DataTypePtr, TRACE_OUTPUT_SUCCESS);
-  _trace_uinteger_p (ColumnSizePtr, TRACE_OUTPUT_SUCCESS);
+  _trace_ulen_p (ColumnSizePtr, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (DecimalDigitsPtr, TRACE_OUTPUT_SUCCESS);
   _trace_desc_null (NullablePtr, TRACE_OUTPUT_SUCCESS);
 }
@@ -150,7 +150,7 @@ trace_SQLDescribeColW (int trace_leave, int retcode,
   _trace_stringlen ("SQLSMALLINT", BufferLength);
   _trace_smallint_p (NameLengthPtr, TRACE_OUTPUT_SUCCESS);
   _trace_sql_type_p (DataTypePtr, TRACE_OUTPUT_SUCCESS);
-  _trace_uinteger_p (ColumnSizePtr, TRACE_OUTPUT_SUCCESS);
+  _trace_ulen_p (ColumnSizePtr, TRACE_OUTPUT_SUCCESS);
   _trace_smallint_p (DecimalDigitsPtr, TRACE_OUTPUT_SUCCESS);
   _trace_desc_null (NullablePtr, TRACE_OUTPUT_SUCCESS);
 }

@@ -84,5 +84,5 @@ trace_SQLFetchScroll (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, StatementHandle);
   _trace_fetchtype (FetchOrientation);
-  _trace_integer (FetchOffset);
+  _trace_len (FetchOffset);
 }

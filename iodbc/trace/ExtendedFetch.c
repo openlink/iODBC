@@ -106,7 +106,7 @@ trace_SQLExtendedFetch (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, hstmt);
   _trace_fetchtype (fFetchType);
-  _trace_integer (irow);
-  _trace_uinteger_p (pcrow, TRACE_OUTPUT_SUCCESS);
+  _trace_len (irow);
+  _trace_ulen_p (pcrow, TRACE_OUTPUT_SUCCESS);
   _trace_usmallint_p (rgfRowStatus, 0);
 }

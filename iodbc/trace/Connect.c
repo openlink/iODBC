@@ -85,14 +85,16 @@ trace_SQLConnect (int trace_leave, int retcode,
   /* Trace function */
   _trace_print_function (en_Connect, trace_leave, retcode);
 
+  /* Hide plaintext passwords */
+  szAuthStr = (SQLCHAR *) "****";
+
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_DBC, hdbc);
   _trace_string (szDSN, cbDSN, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbDSN);
   _trace_string (szUID, cbUID, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbDSN);
-  /* Hide plaintext passwords */
-  _trace_string ((SQLCHAR *) "***", SQL_NTS, NULL, TRACE_INPUT);
+  _trace_string (szAuthStr, SQL_NTS, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbAuthStr);
 }
 
@@ -110,13 +112,15 @@ trace_SQLConnectW (int trace_leave, int retcode,
   /* Trace function */
   _trace_print_function (en_ConnectW, trace_leave, retcode);
 
+  /* Hide plaintext passwords */
+  szAuthStr = (SQLWCHAR *) L"****";
+
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_DBC, hdbc);
   _trace_string_w (szDSN, cbDSN, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbDSN);
   _trace_string_w (szUID, cbUID, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbDSN);
-  /* Hide plaintext passwords */
-  _trace_string ((SQLCHAR *) "***", SQL_NTS, NULL, TRACE_INPUT);
+  _trace_string_w (szAuthStr, SQL_NTS, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbAuthStr);
 }

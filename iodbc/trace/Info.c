@@ -1266,6 +1266,9 @@ _trace_getinfo (
   int elem;
   int i;
 
+  cbInfoValueMax = cbInfoValueMax;	/*UNUSED*/
+  pcbInfoValue = pcbInfoValue;		/*UNUSED*/
+
   /*
    *  If the pointer is NULL, we have no information to decode, so
    *  we just print the generic details.

@@ -143,7 +143,7 @@ _trace_connstr (
   int 			  output)
 {
   SQLCHAR *dup;
-  long length;
+  ssize_t length;
 
   if (!str)
     {
@@ -171,7 +171,7 @@ _trace_connstr (
   /*
    *  Make a copy of the string
    */
-  if ((dup = malloc (length + 1)) == NULL)
+  if ((dup = (SQLCHAR *) malloc (length + 1)) == NULL)
     return;
   memcpy (dup, str, length);
   dup[length] = '\0';
