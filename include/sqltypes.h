@@ -408,6 +408,7 @@ typedef unsigned short SQLWCHAR;
 
 #  if defined(_WCHAR_T)			|| \
       defined(_WCHAR_T_DEFINED)		|| \
+      defined(_WCHAR_T_DECLARED)	|| \
       defined(_BSD_WCHAR_T_DEFINED_)
 typedef wchar_t SQLWCHAR;
 #  else
