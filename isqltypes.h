@@ -40,6 +40,10 @@ extern "C" {
 /*
  *  Environment specific definitions
  */
+#ifndef NEAR
+#define NEAR
+#endif
+
 #ifndef FAR
 #define FAR
 #endif
@@ -114,6 +118,7 @@ typedef SQLHANDLE		SQLHSTMT;
 #if defined(WIN32) || defined(OS2)
 typedef HWND			SQLHWND;
 #else
+typedef SQLPOINTER		HWND;
 typedef SQLPOINTER		SQLHWND;
 #endif
 
