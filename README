@@ -1,7 +1,7 @@
 #
 #  README
 #
-#  (C) 1999 OpenLink Software Inc.
+#  (C) 1995-2001 OpenLink Software Inc.
 #
 #  The iODBC driver manager.
 #
@@ -20,7 +20,154 @@
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-1. iODBC driver manager platform availability
+iODBC release
+Copyright 1995-2001 OpenLink Software and Ke Jin
+May be distributed under LGPL or BSD license
+
+
+1. Introduction
+
+   Welcome to the iODBC driver manager maintained by OpenLink Software
+   (http://www.openlinksw.com) This kit will provide you with everything
+   you need in order to develop ODBC compliant applications under Unix
+   without having to pay royalties to other parties.
+
+   This kit consists of a number of parts:
+
+   o  The iODBC driver manager. This is a complete implementation of
+      an ODBC driver manager, released under either the GNU Library
+      General Public License or the BSD License. We fully comply with
+      these licenses by giving you this product in source form (as well
+      as the binary form). You can download the latest version of the
+      driver manager from http://www.iodbc.org/
+
+   o  A simple example, odbctest.c, which gives you a command-line
+      interface to SQL. You can fit this to your purposes, but at the very
+      least this is useful for verification of your ODBC installation.
+ 
+   You can use either part stand-alone, if you wish.
+ 
+   An ODBC driver is still needed to affect your connection
+   architecture. You may build a driver with the iODBC components or
+   obtain an ODBC driver from a commercial vendor. OpenLink Software
+   produces cross-platform commercial drivers as well as maintaining
+   the iODBC distribution. Free, non-expiring copies may be obtained
+   via download at http://www.openlinksw.com Any ODBC-compliant drivers
+   will work with the iODBC Driver Manager.
+
+
+
+2. Installation of run-time distribution
+
+   You probably already unpacked this distribution. The next step is
+   to make sure that your applications can find all the dynamic link
+   libraries. Depending on your system's implementation of dynamic link
+   libraries, you have a number of options:
+
+   o  Install the libraries in a directory that is searched by your
+      linker by default. Typical locations are /usr/lib and
+      /usr/local/lib.
+
+   o  Install the libraries in some other place, and make sure that the
+      environment variable your dynamic linker uses to find extra
+      locations for dynamic link libraries. Most systems use the
+      environment variable LD_LIBRARY_PATH to this end. Exceptions are
+      AIX which uses LIBPATH and HP/UX which uses SHLIB_PATH.
+ 
+      If your system has a C compiler, you can verify the installation
+      by compiling the odbctest program. Otherwise, you may have ODBC
+      applications installed on your system which you can use.
+ 
+
+ 
+3. Configuration of run-time distribution
+ 
+   The iODBC driver manager looks for a file ~/.odbc.ini, where the
+   tilde stands for the user's home directory. This file only contains a
+   default section where you can select which driver library to use. Copy
+   the odbc.ini file from the examples directory to ~/.odbc.ini and make
+   sure the right path and filename is used for your installation.
+ 
+   A data source is a section (enclosed in square parenthesis), and
+   the attributes for a data source are given within this section.
+   The most important attribute to iODBC for each datasource is the Driver
+   attribute. This must point to the shared library for the ODBC driver
+   associated with the data source.
+ 
+   As example, the OpenLink ODBC drivers have a number of attributes
+   which can be set for a data source. Here is a description (with ODBC
+   connect string tags between parenthesis):
+
+     Host
+        The hostname where the database resides (HOST).
+
+     ServerType
+        The type of server (see oplrqb.ini on the server, SVT).
+
+     ServerOptions
+        Server-specific extra options. See OpenLink server documentation
+        for agents which can use this.
+
+     Database
+        The database to use (DATABASE).
+
+     Options
+        Connect options for the database (OPTIONS).
+
+     UserName
+        The name of the user (a password cannot be specified in the
+        UDBCINI file, UID/PWD).
+
+     ReadOnly
+        A Yes/No value in order to make the connection read-only
+        (READONLY=Y/N).
+
+     FetchBufferSize
+        The number of records that are transferred in a single call to
+        the server. Default is 5; maximum is 99, minimum is 1
+        (FBS=value).
+
+     Protocol
+        The protocol to use. Leave set to ``TCP'' for this release.
+
+
+   Apart from these data source-specific settings, you may add a section
+   called [Communications], which you may use to tune our driver further:
+
+     ReceiveTimeout
+        The time the client application will wait for the database agent
+        to finish the request (default is 60 seconds).
+
+     BrokerTimeout
+        The time the client application will wait for the request broker
+        to accept of reject a database connection (default is 30
+        seconds).
+
+     SendSize
+        RPC send buffer size. A value of 0 (the default) will cause the
+        application to use system-dependent defaults.
+
+     ReceiveSize
+        RPC receive buffer size. A value of 0 (the default) will cause
+        the application to use system-dependent defaults.
+
+     DebugFile
+        If set, the name of a file to which debugging output from the
+        driver should be directed.
+
+
+
+4. Contribution of changes, patches and updates.
+
+   While not mandated by the BSD license, any patches you make to
+   the iODBC may be contributed back into the iODBC project at
+   your discretion. Contributions will benefit the Open Source and
+   Data Access community as a whole. Submissions may be made at
+   http://www.iodbc.org.
+
+
+
+5. iODBC driver manager platform availability
 
     iODBC driver manager has been ported to following Unix platforms: 
 
@@ -57,7 +204,7 @@
 
 
 
-2. How to build iODBC driver manager:
+6. How to build iODBC driver manager:
 
     step 1. Run configure to adjust to target platform
     step 2. Run make
@@ -98,7 +245,8 @@
 	--with-iodbc-inidir=/xxx/yyy	/xxx/yyy/odbc.ini
 
 
-3. odbc.ini
+
+7. odbc.ini
 
     Driver manager and drivers use odbc.ini file or connection string
     when establishing a data source connection. On Windows, odbc.ini is
@@ -178,7 +326,8 @@
 	Driver 		= /usr/local/openlink/lib/oplodbc.so.1
 
 
-4. Tracing
+
+8. Tracing
 
     iODBC driver manager traces driver's ODBC call invoked by the driver
     manager. Default tracing file is ./odbc.log. Tracing option (i.e.
@@ -203,3 +352,17 @@
     tracing file(s). ODBC calls on connections without tuning tracing
     on will not be traced.
 
+
+
+9. Further Information Sources:
+
+   http://www.iodbc.org  
+	iODBC project home page.  
+	Binaries, source, WebCVS, and Discussion Forum.
+
+   http://www.openlinksw.com  
+	OpenLink Software.  
+	Free non-expiring trials and support for OpenLink's ODBC drivers.
+
+   http://www.microsoft.com/data/odbc/ 
+	Microsoft's ODBC pages.

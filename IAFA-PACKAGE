@@ -1,6 +1,6 @@
 Title:		iODBC Driver Manager 
 
-Version:	3.0.4
+Version:	3.0.5
 
 Description:	iODBC (intrinsic Open Database Connectivity) driver manager
 		is compatible with ODBC 2.x specification and performs exactly
@@ -39,5 +39,10 @@ Platforms:	SunOS (Sparc)		4.1.x
 License Policy:		Freely Redistributable under 
 			GNU Library General Public License (LGPL)
 			(see file COPYING for details)
+
+			or 
+
+			Freely Redistributable under BSD license 
+			(see file COPYING.BSD for details)
 
 Keywords:		ODBC, database, SQL, OpenLink

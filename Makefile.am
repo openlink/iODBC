@@ -22,7 +22,7 @@
 AUTOMAKE_OPTIONS	= gnu dist-shar dist-zip dist-tarZ 1.4-p2
 SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
 
-EXTRA_DIST             = IAFA-PACKAGE 
+EXTRA_DIST             = IAFA-PACKAGE COPYING.LGPL COPYING.BSD
 
 
 # ----------------------------------------------------------------------
