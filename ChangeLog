@@ -1,3 +1,17 @@
+2004-09-29 12:03  source
+
+	* Updated NEWS with highlights of new release
+	* Added tag iODBC-3_52_1 to mark final release
+	  (pvk)
+
+2004-09-29 12:00  source
+
+	* Fixed Mac OS X install problems (ep)
+
+2004-09-29 11:37  source
+
+	* Fixed RPM build/package issue on RedHat 9 (pvk)
+
 2004-09-29 10:14  source
 
 	* Keep deprecated SQLROWCOUNT,SQLROWSETSIZE,SQLTRANSID and SQLROWOFFSET
