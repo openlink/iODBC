@@ -279,6 +279,7 @@ _iodbcdm_driverload (
     char * path,
     HDBC hdbc,
     SWORD thread_safe,
+    SWORD unload_safe,
     UCHAR waMode)
 {
   CONN (pdbc, hdbc);
@@ -304,6 +305,10 @@ _iodbcdm_driverload (
 
   /* This will either load the driver dll or increase its reference count */
   hdll = _iodbcdm_dllopen ((char *) path);
+  
+  /* Set flag if it is safe to unload the driver after use */
+  if (unload_safe)
+    _iodbcdm_safe_unload (hdll);
 
   if (hdll == SQL_NULL_HDLL)
     {
@@ -468,7 +473,7 @@ _iodbcdm_driverload (
 	  genv->henv = penv;
 
 	  /* initiate this new env entry */
-	  penv->refcount = 1;	/* we will increase it after
+	  penv->refcount = 0;	/* we will increase it after
 				 * driver's SQLAllocConnect()
 				 * success
 				 */
@@ -836,6 +841,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
   char buf[256];
   HPROC hproc = SQL_NULL_HPROC;
   SWORD thread_safe;
+  SWORD unload_safe;
   void * _szDSN = NULL;
   void * _szUID = NULL;
   void * _szAuthStr = NULL;
@@ -886,7 +892,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
     }
 
   /*
-   *  Get the name of the driver module and load it
+   *  Check whether driver is thread safe
    */
   thread_safe = 1;		/* Assume driver is thread safe */
 
@@ -897,6 +903,20 @@ SQLConnect_Internal (SQLHDBC hdbc,
     {
       thread_safe = 0;	/* Driver needs a thread manager */
     }
+
+  /*
+   *  Check if it is safe to unload the driver
+   */
+  unload_safe = 0;		/* Assume driver is not unload safe */
+
+  SQLSetConfigMode (ODBC_BOTH_DSN);
+  if ( SQLGetPrivateProfileString ((char *) _dsn, "UnloadSafe", "", 
+	buf, sizeof(buf), "odbc.ini") &&
+      (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
+    {
+      unload_safe = 1;
+    }
+
 
   /*
    *  Get the name of the driver module and load it
@@ -916,7 +936,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
   MEM_FREE(_szDSN);
   _szDSN = NULL;
 
-  retcode = _iodbcdm_driverload ((char *)driver, pdbc, thread_safe, waMode);
+  retcode = _iodbcdm_driverload ((char *)driver, pdbc, thread_safe, unload_safe, waMode);
 
   switch (retcode)
     {
@@ -1128,6 +1148,7 @@ SQLDriverConnect_Internal (
   SQLWCHAR dsnbuf[SQL_MAX_DSN_LENGTH + 1];
   SQLWCHAR prov[1024];
   SWORD thread_safe;
+  SWORD unload_safe;
   char buf[1024];
   HPROC hproc = SQL_NULL_HPROC;
   void *_ConnStrIn = NULL;
@@ -1308,6 +1329,19 @@ SQLDriverConnect_Internal (
     }
 
   /*
+   *  Check whether driver is unload safe
+   */
+  unload_safe = 0;		/* Assume driver is not unload safe */
+
+  SQLSetConfigMode (ODBC_BOTH_DSN);
+  if (SQLGetPrivateProfileString ((char *) dsn, "UnloadSafe", "", 
+	buf, sizeof (buf), "odbc.ini")
+      && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
+    {
+      unload_safe = 1;
+    }
+
+  /*
    *  Get the name of the driver module
    */
   if (drv == NULL || *(char *) drv == '\0')
@@ -1328,7 +1362,7 @@ SQLDriverConnect_Internal (
       return SQL_ERROR;
     }
 
-  retcode = _iodbcdm_driverload ((char *) drv, pdbc, thread_safe, waMode);
+  retcode = _iodbcdm_driverload ((char *) drv, pdbc, thread_safe, unload_safe, waMode);
 
   MEM_FREE (_dsn_u8);
   MEM_FREE (_drv_u8);
@@ -1572,6 +1606,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
   char dsnbuf[SQL_MAX_DSN_LENGTH * UTF8_MAX_CHAR_LEN + 1];
   char buf[1024];
   SWORD thread_safe;
+  SWORD unload_safe;
   HPROC hproc = SQL_NULL_HPROC;
   void * _ConnStrIn = NULL;
   void * _ConnStrOut = NULL;
@@ -1622,6 +1657,19 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
           }
 
         /*
+         *  Check whether driver is unload safe
+         */
+        unload_safe = 0;		/* Assume driver is not unload safe */
+
+        SQLSetConfigMode (ODBC_BOTH_DSN);
+        if ( SQLGetPrivateProfileString ((char *) dsn, "ThreadManager", "", 
+		buf, sizeof(buf), "odbc.ini") &&
+            (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
+          {
+            unload_safe = 1;
+          }
+
+        /*
          *  Get the name of the driver module and load it
          */
         if (drv == NULL || *(char*)drv == '\0')
@@ -1640,7 +1688,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
 	  return SQL_ERROR;
 	}
 
-      retcode = _iodbcdm_driverload ((char *) drv, pdbc, thread_safe, waMode);
+      retcode = _iodbcdm_driverload ((char *) drv, pdbc, thread_safe, unload_safe, waMode);
 
       switch (retcode)
 	{

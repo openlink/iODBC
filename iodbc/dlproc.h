@@ -101,11 +101,24 @@ typedef shl_t HDLL;
 typedef void *HDLL;
 #endif
 
-extern HPROC _iodbcdm_getproc (HDBC hdbc, int idx);
-extern HDLL _iodbcdm_dllopen (char * dll);
-extern HPROC _iodbcdm_dllproc (HDLL hdll, char * sym);
-extern char *_iodbcdm_dllerror ();
-extern int _iodbcdm_dllclose (HDLL hdll);
+
+typedef struct _dl_s
+{
+  char		* path;
+  HDLL		  dll;
+  unsigned int    refcount;
+  int 		  safe_unload;
+  struct _dl_s	* next;
+} dlproc_t;
+
+
+/* dlproc.c */
+HPROC _iodbcdm_getproc (HDBC hdbc, int idx);
+HDLL _iodbcdm_dllopen (char *path);
+HPROC _iodbcdm_dllproc (HDLL hdll, char *sym);
+int _iodbcdm_dllclose (HDLL hdll);
+char *_iodbcdm_dllerror (void);
+void _iodbcdm_safe_unload (HDLL hdll);
 
 #define	SQL_NULL_HDLL	((HDLL)NULL)
 #define	SQL_NULL_HPROC	((HPROC)NULL)
