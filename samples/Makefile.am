@@ -24,7 +24,7 @@ AUTOMAKE_OPTIONS	= foreign no-dependencies 1.4
 EXTRA_DIST		= odbctest.c
 
 noinst_PROGRAMS		= odbctest
-INCLUDES		= -I..
+INCLUDES		= -I$(top_srcdir)
 
 #
 #  Build odbctest program
