@@ -38,6 +38,38 @@
 
 #include	<itrace.h>
 
+#include	<stdio.h>
+#include	<ctype.h>
+
+#define SECT1			"ODBC Data Sources"
+#define SECT2			"Default"
+#define MAX_ENTRIES		1024
+
+static int 
+stricmp (const char *s1, const char *s2)
+{
+  int cmp;
+
+  while (*s1)
+    {
+      if ((cmp = toupper (*s1) - toupper (*s2)) != 0)
+	return cmp;
+      s1++;
+      s2++;
+    }
+  return (*s2) ? -1 : 0;
+}
+
+static int 
+SectSorter (const void *p1, const void *p2)
+{
+  char **s1 = (char **) p1;
+  char **s2 = (char **) p2;
+
+  return stricmp (*s1, *s2);
+}
+
+
 RETCODE SQL_API 
 SQLDataSources (
     HENV henv,
@@ -50,12 +82,18 @@ SQLDataSources (
     SWORD FAR * pcbDesc)
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
+  char *path;
+  char buf[1024];
+  FILE *fp;
+  int i;
+  static int cur_entry = -1;
+  static int num_entries = 0;
+  static char **sect = NULL;
 
   if (henv == SQL_NULL_HENV)
     {
       return SQL_INVALID_HANDLE;
     }
-
   /* check argument */
   if (cbDSNMax < 0 || cbDescMax < 0)
     {
@@ -63,15 +101,106 @@ SQLDataSources (
 
       return SQL_ERROR;
     }
-
-  if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
+  if (fDir != SQL_FETCH_FIRST
+      && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
 
       return SQL_ERROR;
     }
+  if (cur_entry < 0 || fDir == SQL_FETCH_FIRST)
+    {
+      cur_entry = 0;
+      num_entries = 0;
 
-/*************************/
+
+      /* 
+       *  Open the odbc.ini file
+       */
+      path = (char *) _iodbcdm_getinifile (buf, sizeof (buf));
+      if ((fp = fopen (path, "r")) == NULL)
+	{
+	  return SQL_NO_DATA_FOUND;
+	}
+      /*
+       *  Free old section list
+       */
+      if (sect)
+	{
+	  for (i = 0; i < MAX_ENTRIES; i++)
+	    if (sect[i])
+	      free (sect[i]);
+	  free (sect);
+	}
+      if ((sect = (char **) calloc (MAX_ENTRIES, sizeof (char *))) == NULL)
+	{
+	  PUSHSQLERR (genv->herr, en_S1011);
+
+	  return SQL_ERROR;
+	}
+      /*
+       *  Build a dynamic list of sections
+       */
+      while (1)
+	{
+	  char *str, *p;
+
+	  str = fgets (buf, sizeof (buf), fp);
+
+	  if (str == NULL)
+	    break;
+
+	  if (*str == '[')
+	    {
+	      str++;
+	      for (p = str; *p; p++)
+		if (*p == ']')
+		  *p = '\0';
+
+	      if (!strcmp (str, SECT1))
+		continue;
+	      if (!strcmp (str, SECT2))
+		continue;
+
+	      /*
+	       *  Add this section to the comma separated list
+	       */
+	      if (num_entries >= MAX_ENTRIES)
+		break;		/* Skip the rest */
+
+	      sect[num_entries++] = (char *) strdup (str);
+	    }
+	}
+
+      /*
+       *  Sort all entries so we can present a nice list
+       */
+      if (num_entries > 1)
+	qsort (sect, num_entries, sizeof (char *), SectSorter);
+    }
+  /*
+   *  Try to get to the next item
+   */
+  if (cur_entry >= num_entries)
+    {
+      cur_entry = 0;		/* Next time, start all over again */
+      return SQL_NO_DATA_FOUND;
+    }
+  /*
+   *  Copy DSN information 
+   */
+  STRNCPY (szDSN, sect[cur_entry], cbDSNMax);
+
+  /*
+   *  And find the description that goes with this entry
+   */
+  _iodbcdm_getkeyvalbydsn (sect[cur_entry], strlen (sect[cur_entry]),
+      "Description", szDesc, cbDescMax);
+
+  /*
+   *  Next record
+   */
+  cur_entry++;
 
   return SQL_SUCCESS;
 }
@@ -110,7 +239,7 @@ SQLDrivers (
     }
 
 /*********************/
-  return SQL_SUCCESS;
+  return SQL_NO_DATA_FOUND;
 }
 
 
