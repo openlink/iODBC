@@ -1,0 +1,2 @@
+iodbc: non-dev-pkg-with-shlib-symlink usr/lib/libiodbcadm.so.2.1.10 usr/lib/libiodbcadm.so
+iodbc: non-dev-pkg-with-shlib-symlink usr/lib/libdrvproxy.so.2.1.10 usr/lib/libdrvproxy.so

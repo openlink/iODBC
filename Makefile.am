@@ -93,18 +93,24 @@ EXTRA_DIST		= \
 	mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
 	mac/iODBCtestw/iODBCtestw.pbproj/project.pbxproj \
 	debian/changelog \
+	debian/compat \
 	debian/control \
 	debian/copyright \
 	debian/iodbc.files \
+	debian/iodbc.install \
+	debian/iodbc.lintian-overrides \
 	debian/iodbc.undocumented \
 	debian/libiodbc2-dev.examples \
 	debian/libiodbc2-dev.files \
+	debian/libiodbc2-dev.install \
 	debian/libiodbc2.docs \
 	debian/libiodbc2.examples \
 	debian/libiodbc2.files \
+	debian/libiodbc2.install \
+	debian/libiodbc2.lintian-overrides \
 	debian/libiodbc2.undocumented \
-	debian/rules
-
+	debian/rules \
+	debian/watch 
 
 # ----------------------------------------------------------------------
 #
