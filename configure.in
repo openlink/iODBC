@@ -114,14 +114,13 @@ else
   AC_MSG_RESULT(ok)
 fi
 
+
 ##########################################################################
 ##									##
 ##  Set Layout for iODBC						##
 ##									##
 ##########################################################################
-
 AC_PREFIX_DEFAULT(/usr/local)
-
 
 AC_MSG_CHECKING(for iODBC installation layout)
 AC_ARG_WITH(layout,
@@ -152,7 +151,6 @@ case ${IODBC_LAYOUT} in
 
   [[Gg]][[Ee]][[Nn]][[Tt]][[Oo]][[Oo]])		# Gentoo
 	iodbc_layout="Gentoo"
-	echo "PREFIX=I${prefix}I"
 	test "x$prefix" = xNONE && prefix=/usr
 	includedir='${prefix}/include/iodbc'
 	inidir=/etc/iodbc
