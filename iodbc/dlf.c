@@ -62,8 +62,13 @@ dlsym (void *hdll, char *sym)
   void *symaddr = 0;
   int ret;
 
+#if 0
+  /*
+   *  iODBC does not need a handle to itself
+   */
   if (!hdll)
     hdll = (void *) PROG_HANDLE;
+#endif
 
   /* Remember, a driver may export calls as function pointers 
    * (i.e. with type TYPE_DATA) rather than as functions 
