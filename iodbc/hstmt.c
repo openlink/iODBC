@@ -110,6 +110,7 @@ SQLAllocStmt_Internal (
   STMT_t FAR *pstmt = NULL;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
+  int i;
 
   if (phstmt == NULL)
     {
@@ -162,7 +163,7 @@ SQLAllocStmt_Internal (
   pstmt->stmt_cip = 0;
   pstmt->err_rec = 0;
 
-  memset(pstmt->params, 0 , sizeof(PARAM_t) * STMT_PARAMS_MAX);
+  memset (pstmt->params, 0, sizeof (PARAM_t) * STMT_PARAMS_MAX);
   pstmt->params_inserted = 0;
 
   /* call driver's function */
@@ -205,7 +206,6 @@ SQLAllocStmt_Internal (
     }
   else
 #endif
-
     {
       hproc = _iodbcdm_getproc (pdbc, en_AllocStmt);
 
@@ -238,28 +238,19 @@ SQLAllocStmt_Internal (
   memset (&pstmt->desc, 0, sizeof (pstmt->desc));
 
   if (((ENV_t *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2)
-    {	
+    {
       /* 
        *  this is an ODBC2 driver - so alloc dummy implicit desc handles  
        *  (dhdesc = NULL) 
        */
-      int i, j;
-
       for (i = 0; i < 4; i++)
 	{
 	  pstmt->imp_desc[i] = (DESC_t FAR *) MEM_ALLOC (sizeof (DESC_t));
 	  if (pstmt->imp_desc[i] == NULL)
 	    {
-	      for (j = 0; j < i; j++)
-		{
-		  pstmt->imp_desc[j]->type = 0;
-		  MEM_FREE (pstmt->imp_desc[j]);
-		}
 	      PUSHSQLERR (pdbc->herr, en_HY001);
-	      pstmt->type = 0;
-	      MEM_FREE (pstmt);
 
-	      return SQL_ERROR;
+	      goto alloc_stmt_failed;
 	    }
 	  memset (pstmt->imp_desc[i], 0, sizeof (DESC_t));
 	  pstmt->imp_desc[i]->type = SQL_HANDLE_DESC;
@@ -279,14 +270,11 @@ SQLAllocStmt_Internal (
       if (hproc == SQL_NULL_HPROC)
 	{			/* with no GetStmtAttr ! */
 	  PUSHSQLERR (pdbc->herr, en_HYC00);
-	  pstmt->type = 0;
-	  MEM_FREE (pstmt);
 
-	  return SQL_ERROR;
+	  goto alloc_stmt_failed;
 	}
       else
 	{			/* get the implicit descriptors */
-	  int i, j;
 	  RETCODE rc1;
 
 	  for (i = 0; i < 4; i++)
@@ -313,15 +301,8 @@ SQLAllocStmt_Internal (
 	      if (pstmt->imp_desc[i] == NULL)
 		{		/* memory allocation error */
 		  PUSHSQLERR (pdbc->herr, en_HY001);
-		  for (j = 0; j < i; j++)
-		    {
-		      pstmt->imp_desc[j]->type = 0;
-		      MEM_FREE (pstmt->imp_desc[j]);
-		    }
-		  pstmt->type = 0;
-		  MEM_FREE (pstmt);
 
-		  return SQL_ERROR;
+		  goto alloc_stmt_failed;
 		}
 	      memset (pstmt->imp_desc[i], 0, sizeof (DESC_t));
 	      pstmt->imp_desc[i]->type = SQL_HANDLE_DESC;
@@ -333,15 +314,9 @@ SQLAllocStmt_Internal (
 		      NULL));
 	      if (rc1 != SQL_SUCCESS && rc1 != SQL_SUCCESS_WITH_INFO)
 		{		/* no descriptor returned from the driver */
-		  for (j = 0; j < i + 1; j++)
-		    {
-		      pstmt->imp_desc[j]->type = 0;
-		      MEM_FREE (pstmt->imp_desc[j]);
-		    }
-		  pstmt->type = 0;
-		  MEM_FREE (pstmt);
 		  pdbc->rc = SQL_ERROR;
-		  return SQL_ERROR;
+
+		  goto alloc_stmt_failed;
 		}
 	    }
 	}
@@ -358,6 +333,53 @@ SQLAllocStmt_Internal (
   pdbc->state = en_dbc_hstmt;
 
   return SQL_SUCCESS;
+
+  /*
+   *  If statement allocation has failed, we need to make sure the driver
+   *  handle is also destroyed
+   */
+alloc_stmt_failed:
+
+  /*
+   *  Deallocate any descriptors
+   */
+  for (i = 0; i < 4; i++)
+    {
+      if (pstmt->imp_desc[i])
+       {
+	  pstmt->imp_desc[i]->type = 0;
+	  MEM_FREE (pstmt->imp_desc[i]);
+       }
+    }
+
+  /*
+   *  Tell the driver to remove the statement handle
+   */
+  hproc = SQL_NULL_HPROC;
+#if (ODBCVER >= 0x0300)
+  hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeHandle);
+
+  if (hproc)
+    {
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeHandle,
+	  (SQL_HANDLE_STMT, pstmt->dhstmt));
+    }
+  else
+#endif
+    {
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
+
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt,
+	  (pstmt->dhstmt, SQL_DROP));
+    }
+
+  /*
+   *  Invalidate and free the statement handle
+   */
+  pstmt->type = 0;
+  MEM_FREE (pstmt);
+
+  return SQL_ERROR;
 }
 
 
