@@ -85,11 +85,19 @@
 #endif
 
 #ifndef _SQL_H
+#ifdef __APPLE__
+#include <iODBC/sql.h>
+#else
 #include <sql.h>
+#endif
 #endif
 
 #ifndef _SQLEXT_H
+#ifdef __APPLE__
+#include <iODBC/sqlext.h>
+#else
 #include <sqlext.h>
+#endif
 #endif
 
 #ifdef __cplusplus

@@ -76,4 +76,9 @@
  *  sometime in the future. Please recode your applications to use 
  *  the standard names sql.h, sqlext.h and sqltypes.h.
  */
+
+#ifdef __APPLE__
+#include <iODBC/sql.h>
+#else
 #include <sql.h>
+#endif

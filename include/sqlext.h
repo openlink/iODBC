@@ -74,7 +74,11 @@
 #define _SQLEXT_H
 
 #ifndef _SQL_H
+#ifdef __APPLE__
+#include <iODBC/sql.h>
+#else
 #include <sql.h>
+#endif
 #endif
 
 #ifdef __cplusplus
