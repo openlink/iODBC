@@ -19,8 +19,6 @@
 #  License along with this library; if not, write to the Free
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AUTOMAKE_OPTIONS	= foreign no-dependencies 1.4
-
 EXTRA_DIST		= odbctest.c
 
 noinst_PROGRAMS		= odbctest
