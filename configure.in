@@ -563,35 +563,73 @@ AC_HELP_STRING([--disable-pthreads], [build non-threaded libraries and applicati
 if test x$USE_PTHREADS = xtrue
 then
     AC_MSG_RESULT(enabled pthread support)
-    CFLAGS="$CFLAGS -DWITH_PTHREADS -D_REENTRANT"
-    AC_CHECK_LIB(pthreads, pthread_create,
-    [
-	if test "$host_os" = "osf3.2"
-	then
-	  CFLAGS="$CFLAGS -DOLD_PTHREADS"
-	  LIBS="$LIBS -lpthreads -lmach -lc_r"
-	else
-	  LIBS="$LIBS -lpthreads"
-	fi
-    ],
-    [
-	AC_CHECK_LIB(pthread, pthread_create, [LIBS="$LIBS -lpthread"])
-    ])
+    CPPFLAGS="$CPPFLAGS -DWITH_PTHREADS -D_REENTRANT"
+    found_lib=false
 
     AC_MSG_CHECKING(for OS dependent thread flags)
     case $host in
       *-aix*)	
-		CC=cc_r
-		AC_MSG_RESULT([use cc_r for AIX])
+		CC=cc_r7
+		AC_MSG_RESULT([use cc_r7 for AIX])
 		;;
+
+      *UnixWare*)
+      		CFLAGS="$CFLAGS -Kthread"
+		AC_MSG_RESULT([use -Kthread for UnixWare])
+		;;
+
+      i[3456]86-dg-dgux*)
+      		CFLAGS="$CFLAGS -D_POSIX4A_DRAFT6_SOURCE"
+		LIBS="$LIBS -lthread"
+		AC_MSG_RESULT([use -lthread for DG/UX])
+		;;
+
       *-freebsd*)	
 		CFLAGS="$CFLAGS -pthread"
 		AC_MSG_RESULT([use -pthread for FreeBSD])
 		;;
+
       *)
 		AC_MSG_RESULT([none])
 		;;
     esac
+
+    #
+    #  Check headers
+    #
+    AC_CHECK_HEADER(pthread.h)
+
+    #
+    #  If mutex functions are in C library, we should not need to link
+    #  with -lpthread
+    #
+    AC_CHECK_FUNC(pthread_mutex_lock, [found_lib=true])
+
+    #
+    #  Check out the various libraries
+    #
+    if test x$found_lib = xfalse
+    then
+	IODBC_CHECK_PTHREAD_LIB(pthreads, pthread_mutex_lock,
+	[
+	    if test "$host_os" = "osf3.2"
+	    then
+	      CPPFLAGS="$CPPFLAGS -DOLD_PTHREADS"
+	      LIBS="$LIBS -lpthreads -lmach -lc_r"
+	    else
+	      LIBS="$LIBS -lpthreads"
+	    fi
+	    found_lib=true
+	])
+    fi
+    if test x$found_lib = xfalse
+    then
+	IODBC_CHECK_PTHREAD_LIB(pthread, pthread_mutex_lock, 
+	[
+	    LIBS="$LIBS -lpthread"
+	    found_lib=true
+	])
+    fi 
 else
     AC_MSG_RESULT(no thread support)
 fi

@@ -1,10 +1,10 @@
 #
-#  Makefile.am
+#  acinclude.m4
 #
 #  The iODBC driver manager.
 #  
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
-#  Copyright (C) 1996-2002 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2004 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -66,93 +66,39 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
+AC_DEFUN(IODBC_CHECK_PTHREAD_LIB,
+[AC_MSG_CHECKING([for $2 in -l$1 $5])
+ac_save_LIBS="$LIBS"
+LIBS="-l$1 $5 $LIBS"
 
-SUBDIRS 		= admin bin etc man include iodbcinst iodbc iodbcadm drvproxy samples
+AC_TRY_LINK(dnl
+[
+#ifdef __cplusplus
+extern "C"
+#endif
 
-EXTRA_DIST		= \
-	IAFA-PACKAGE \
-	LICENSE LICENSE.LGPL LICENSE.BSD \
-	README.CVS \
-	README.MACOSX \
-	acinclude.m4 \
-	mac/Makefile \
-	mac/README.MYODBC \
-	mac/myodbc.configure.diff \
-	mac/framework-include.sh \
-	mac/iODBC/English.lproj/InfoPlist.strings \
-	mac/iODBC/iODBC.pbproj/project.pbxproj \
-	mac/iODBCinst/English.lproj/InfoPlist.strings \
-	mac/iODBCinst/iODBCinst.pbproj/project.pbxproj \
-	mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
-	mac/iodbc.exp \
-	mac/iodbcinst.exp \
-	debian/changelog \
-	debian/control \
-	debian/copyright \
-	debian/iodbc.files \
-	debian/iodbc.undocumented \
-	debian/libiodbc2-dev.examples \
-	debian/libiodbc2-dev.files \
-	debian/libiodbc2.docs \
-	debian/libiodbc2.examples \
-	debian/libiodbc2.files \
-	debian/libiodbc2.undocumented \
-	debian/rules
-
-
-# ----------------------------------------------------------------------
-#
-#  Maintainers only
-# 
-# ----------------------------------------------------------------------
-
-MAINTAINERCLEANFILES	= Makefile.in aclocal.m4 configure
-DISTCLEANFILES		= config.nice
-
-
-if MAINTAINER_MODE
-
-#
-#  Create Linux RPM's
-#
-RPMFLAGS=--define="_topdir `pwd`/distrib"
-
-linux-rpm:
-	$(mkinstalldirs) distrib/SOURCES distrib/SRPMS distrib/SPECS
-	$(mkinstalldirs) distrib/BUILD distrib/RPMS/i386
-	$(MAKE) dist
-	cp $(PACKAGE)-$(VERSION).tar.gz distrib/SOURCES
-	rpmbuild $(RPMFLAGS) -ba admin/libiodbc.spec
-	rpmbuild $(RPMFLAGS) --clean --rmsource admin/libiodbc.spec
-
-#
-#  Create a tar file containing the library and include files
-#
-binary-tar:
-	-mkdir @build@
-	$(MAKE) install prefix=`pwd`/@build@
-	tar cvf @build@.tar @build@
-	gzip -9vf @build@.tar
-	rm -rf @build@
-
-#
-#  Create a source snapshot package
-#
-snapshot:
-	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
-
-
-#
-#  Create an official release package
-#
-release:
-	$(MAKE) distcheck
-
-#
-#  Generate ChangeLog
-#
-changelog:
-	cvs2cl --no-wrap --utc --hide-filenames --prune --window 3600
-
-endif
+#if defined (HAVE_PTHREAD_H)
+#include <pthread.h>
+#endif
+],
+[$2(0)],
+eval "ac_cv_lib_$ac_lib_var=yes",
+eval "ac_cv_lib_$ac_lib_var=no")
+LIBS="$ac_save_LIBS"
+dnl
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+AC_MSG_RESULT(yes)
+ifelse([$3], ,
+[changequote(, )dnl
+  ac_tr_lib=HAVE_LIB`echo $1 | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_lib)
+  LIBS="-l$1 $LIBS"
+], [$3])
+else
+  AC_MSG_RESULT(no)
+ifelse([$4], , , [$4
+])dnl
+fi
+])
