@@ -77,7 +77,7 @@ trace_SQLDescribeParam (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  ipar,
   SQLSMALLINT 	 	* pfSqlType,
-  SQLUINTEGER	   	* pcbColDef,
+  SQLULEN	   	* pcbColDef,
   SQLSMALLINT  		* pibScale,
   SQLSMALLINT  		* pfNullable)
 {

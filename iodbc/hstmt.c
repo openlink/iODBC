@@ -790,7 +790,7 @@ SQLRETURN SQL_API
 SQLSetStmtOption (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam)
+  SQLULEN		  vParam)
 {
   ENTER_STMT (hstmt,
     trace_SQLSetStmtOption (TRACE_ENTER, hstmt, fOption, vParam));
@@ -806,7 +806,7 @@ SQLRETURN SQL_API
 SQLSetStmtOptionA (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam)
+  SQLULEN		  vParam)
 {
   ENTER_STMT (hstmt,
     trace_SQLSetStmtOption (TRACE_ENTER, hstmt, fOption, vParam));
@@ -1335,7 +1335,7 @@ _iodbcdm_RemoveBind (STMT_t *pstmt)
 
 
 static void 
-_iodbcdm_bindConv_A2W(char *data, SQLINTEGER *pInd, UDWORD size)
+_iodbcdm_bindConv_A2W(char *data, SQLLEN *pInd, UDWORD size)
 {
   wchar_t *wdata = (wchar_t *) data;
 
@@ -1362,7 +1362,7 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
   PBLST ptr;
   BIND_t *col;
   UDWORD i, size, row_size;
-  SQLINTEGER *pInd;
+  SQLLEN *pInd;
   char *data;
 
   /*

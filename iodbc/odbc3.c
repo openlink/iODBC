@@ -1690,7 +1690,7 @@ SQLSetConnectAttr_Internal (
 
     default:
       retcode = _iodbcdm_SetConnectOption (con, Attribute, 
-      	  (SQLUINTEGER) ValuePtr, waMode);
+      	  (SQLULEN) ValuePtr, waMode);
       return retcode;
     }
 }
@@ -2343,7 +2343,7 @@ SQLGetDescRec_Internal (
   SQLSMALLINT		* StringLengthPtr,
   SQLSMALLINT		* TypePtr,
   SQLSMALLINT 		* SubTypePtr,
-  SQLINTEGER		* LengthPtr,
+  SQLLEN		* LengthPtr,
   SQLSMALLINT		* PrecisionPtr,
   SQLSMALLINT		* ScalePtr,
   SQLSMALLINT		* NullablePtr,
@@ -2425,7 +2425,7 @@ SQLGetDescRec (
   SQLSMALLINT		* StringLengthPtr,
   SQLSMALLINT		* TypePtr,
   SQLSMALLINT		* SubTypePtr,
-  SQLINTEGER		* LengthPtr,
+  SQLLEN		* LengthPtr,
   SQLSMALLINT		* PrecisionPtr,
   SQLSMALLINT		* ScalePtr,
   SQLSMALLINT		* NullablePtr)
@@ -2477,7 +2477,7 @@ SQLGetDescRecA (
   SQLSMALLINT		* StringLengthPtr,
   SQLSMALLINT		* TypePtr,
   SQLSMALLINT		* SubTypePtr,
-  SQLINTEGER		* LengthPtr,
+  SQLLEN		* LengthPtr,
   SQLSMALLINT		* PrecisionPtr,
   SQLSMALLINT		* ScalePtr,
   SQLSMALLINT		* NullablePtr)
@@ -2529,7 +2529,7 @@ SQLGetDescRecW (
   SQLSMALLINT		* StringLengthPtr,
   SQLSMALLINT		* TypePtr,
   SQLSMALLINT		* SubTypePtr,
-  SQLINTEGER		* LengthPtr,
+  SQLLEN		* LengthPtr,
   SQLSMALLINT		* PrecisionPtr,
   SQLSMALLINT		* ScalePtr,
   SQLSMALLINT		* NullablePtr)
@@ -2578,12 +2578,12 @@ SQLSetDescRec_Internal (
   SQLSMALLINT		  RecNumber,
   SQLSMALLINT		  Type,
   SQLSMALLINT		  SubType,
-  SQLINTEGER		  Length,
+  SQLLEN		  Length,
   SQLSMALLINT		  Precision,
   SQLSMALLINT		  Scale,
   SQLPOINTER		  Data,
-  SQLINTEGER		* StringLength,
-  SQLINTEGER		* Indicator)
+  SQLLEN		* StringLength,
+  SQLLEN		* Indicator)
 {
   DESC (desc, DescriptorHandle);
   HPROC hproc;
@@ -2609,12 +2609,12 @@ SQLSetDescRec (
   SQLSMALLINT		  RecNumber,
   SQLSMALLINT		  Type,
   SQLSMALLINT		  SubType,
-  SQLINTEGER		  Length,
+  SQLLEN		  Length,
   SQLSMALLINT		  Precision,
   SQLSMALLINT		  Scale,
   SQLPOINTER		  Data,
-  SQLINTEGER		* StringLength,
-  SQLINTEGER		* Indicator)
+  SQLLEN		* StringLength,
+  SQLLEN		* Indicator)
 {
   ENTER_DESC (DescriptorHandle,
     trace_SQLSetDescRec (TRACE_ENTER,
@@ -2685,7 +2685,7 @@ SQLColAttribute_Internal (
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLPOINTER		  NumericAttributePtr,
+  SQLLEN		* NumericAttributePtr,
   SQLCHAR		  waMode)
 {
   STMT (stmt, statementHandle);
@@ -3017,7 +3017,7 @@ SQLColAttribute (
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLPOINTER		  NumericAttributePtr)
+  SQLLEN		* NumericAttributePtr)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttribute (TRACE_ENTER, 
@@ -3052,7 +3052,7 @@ SQLColAttributeA (
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLPOINTER		  NumericAttributePtr)
+  SQLLEN		* NumericAttributePtr)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttribute (TRACE_ENTER, 
@@ -3087,7 +3087,7 @@ SQLColAttributeW (
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLPOINTER		  NumericAttributePtr)
+  SQLLEN		* NumericAttributePtr)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttributeW (TRACE_ENTER, 
@@ -3223,7 +3223,7 @@ static RETCODE
 SQLFetchScroll_Internal (
   SQLHSTMT		  statementHandle,
   SQLSMALLINT		  fetchOrientation,
-  SQLINTEGER		  fetchOffset)
+  SQLLEN		  fetchOffset)
 {
   STMT (stmt, statementHandle);
   HPROC hproc;
@@ -3293,15 +3293,14 @@ SQLFetchScroll_Internal (
 	    }
 	  retcode = _iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
 	      stmt->fetch_bookmark_ptr ? *((SQLINTEGER *) stmt->fetch_bookmark_ptr)
-	      : 0, (SQLUINTEGER *) stmt->rows_fetched_ptr, 
+	      : 0, (SQLULEN *) stmt->rows_fetched_ptr, 
 		(SQLUSMALLINT *) stmt->row_status_ptr);
 	}
       else
 	retcode =
 	    _iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
-	    fetchOffset, (SQLUINTEGER *) stmt->rows_fetched_ptr, 
+	    fetchOffset, (SQLULEN *) stmt->rows_fetched_ptr, 
 	    (SQLUSMALLINT *) stmt->row_status_ptr);
-
     }
 
   /* state transition */
@@ -3356,7 +3355,7 @@ RETCODE SQL_API
 SQLFetchScroll (
   SQLHSTMT		  StatementHandle,
   SQLSMALLINT		  FetchOrientation,
-  SQLINTEGER		  FetchOffset)
+  SQLLEN		  FetchOffset)
 {
   ENTER_STMT (StatementHandle,
     trace_SQLFetchScroll (TRACE_ENTER,
@@ -3386,10 +3385,10 @@ SQLBindParam (
     SQLUSMALLINT ipar,
     SQLSMALLINT fCType,
     SQLSMALLINT fSqlType,
-    SQLUINTEGER cbParamDef,
+    SQLULEN cbParamDef,
     SQLSMALLINT ibScale,
     SQLPOINTER rgbValue,
-    SQLINTEGER * pcbValue)
+    SQLLEN *pcbValue)
 {
   return SQLBindParameter (hstmt, ipar, SQL_PARAM_INPUT, fCType, fSqlType, cbParamDef, ibScale, rgbValue, SQL_MAX_OPTION_STRING_LENGTH, pcbValue);
 }

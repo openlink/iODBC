@@ -309,7 +309,7 @@ SQLRETURN
 _iodbcdm_SetConnectOption (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam,
+  SQLULEN		  vParam,
   SQLCHAR		  waMode)
 {
   CONN (pdbc, hdbc);
@@ -697,7 +697,7 @@ SQLRETURN SQL_API
 SQLSetConnectOption (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam)
+  SQLULEN		  vParam)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLSetConnectOption (TRACE_ENTER, hdbc, fOption, vParam));
@@ -713,7 +713,7 @@ SQLRETURN SQL_API
 SQLSetConnectOptionA (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam)
+  SQLULEN		  vParam)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLSetConnectOption (TRACE_ENTER, hdbc, fOption, vParam));
@@ -729,7 +729,7 @@ SQLRETURN SQL_API
 SQLSetConnectOptionW (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fOption,
-  SQLUINTEGER		  vParam)
+  SQLULEN		  vParam)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLSetConnectOptionW (TRACE_ENTER, hdbc, fOption, vParam));

@@ -78,8 +78,8 @@ trace_SQLBindCol (int trace_leave, int retcode,
     SQLUSMALLINT	  ColumnNumber,
     SQLSMALLINT		  TargetType,
     SQLPOINTER		  TargetValuePtr,
-    SQLINTEGER		  BufferLength,
-    SQLINTEGER		* Strlen_or_IndPtr)
+    SQLLEN		  BufferLength,
+    SQLLEN		* Strlen_or_IndPtr)
 {
   /* Trace function */
   _trace_print_function (en_BindCol, trace_leave, retcode);

@@ -82,8 +82,8 @@ trace_SQLBindParameter (int trace_leave, int retcode,
   SQLUINTEGER		  ColumnSize,
   SQLSMALLINT		  DecimalDigits,
   SQLPOINTER		  ParameterValuePtr,
-  SQLINTEGER		  BufferLength,
-  SQLINTEGER		* Strlen_or_IndPtr)
+  SQLLEN		  BufferLength,
+  SQLLEN		* Strlen_or_IndPtr)
 {
   /* Trace function */
   _trace_print_function (en_BindParameter, trace_leave, retcode);

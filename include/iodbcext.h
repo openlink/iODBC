@@ -17,15 +17,21 @@
 /*
  * OpenLink API Extensions
  */
-#define SQL_GETLASTROWID	1048L
-#define SQL_GETLASTSERIAL	1049L
-#define SQL_CONCUR_VAL_EXTENT	1050L
-#define SQL_APPLICATION_NAME	1051L /* connect option */
-#define SQL_PARSE_FWD_ONLY_REQ	1052L
-#define SQL_DESC_KEY		1053L
-#define SQL_APPEND_KEYS		1054L
-#define SQL_DESC_EXPR		1055L
-#define SQL_ATTR_WCHAR_SIZE	1056L
+#define SQL_GETLASTROWID		1048L
+#define SQL_GETLASTSERIAL		1049L
+#define SQL_CONCUR_VAL_EXTENT		1050L
+#define SQL_APPLICATION_NAME		1051L /* connect option */
+#define SQL_PARSE_FWD_ONLY_REQ		1052L
+#define SQL_DESC_KEY			1053L
+#define SQL_APPEND_KEYS			1054L
+#define SQL_DESC_EXPR			1055L
+#define SQL_ATTR_WCHAR_SIZE		1056L
+
+#define SQL_COLUMN_ROWVER 		SQL_DESC_ROWVER
+#define SQL_COLUMN_KEY 			SQL_DESC_KEY
+#define SQL_COLUMN_EXPR			SQL_DESC_EXPR
+#define SQL_ATTR_PARSE_FWD_ONLY_REQ  	SQL_PARSE_FWD_ONLY_REQ
+#define SQL_ATTR_APPEND_KEYS            SQL_APPEND_KEYS
 
 
 /*
@@ -136,6 +142,7 @@
 #define SQL_RE_OFF		0L	/* No regionalization occurs on output character conversions */
 #define SQL_RE_ON		1L	/* Regionalization occurs on output character conversions */
 #define SQL_RE_DEFAULT	SQL_RE_OFF
+
 
 /*
  * IBM extensions for DB2

@@ -440,11 +440,11 @@ SQLBindParameter_Internal (
     SQLSMALLINT		  fParamType,
     SQLSMALLINT		  fCType,
     SQLSMALLINT		  fSqlType,
-    SQLUINTEGER		  cbColDef,
+    SQLULEN		  cbColDef,
     SQLSMALLINT		  ibScale,
     SQLPOINTER		  rgbValue,
-    SQLINTEGER		  cbValueMax,
-    SQLINTEGER		* pcbValue)
+    SQLLEN		  cbValueMax,
+    SQLLEN		* pcbValue)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
@@ -610,11 +610,11 @@ SQLBindParameter (
     SQLSMALLINT		  fParamType,
     SQLSMALLINT		  fCType,
     SQLSMALLINT		  fSqlType,
-    SQLUINTEGER		  cbColDef,
+    SQLULEN		  cbColDef,
     SQLSMALLINT		  ibScale,
     SQLPOINTER		  rgbValue,
-    SQLINTEGER		  cbValueMax,
-    SQLINTEGER		* pcbValue)
+    SQLLEN		  cbValueMax,
+    SQLLEN		* pcbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLBindParameter (TRACE_ENTER,
@@ -635,8 +635,8 @@ SQLBindParameter (
 static SQLRETURN 
 SQLParamOptions_Internal (
   SQLHSTMT		  hstmt,
-  SQLUINTEGER		  crow,
-  SQLUINTEGER 		* pirow)
+  SQLULEN		  crow,
+  SQLULEN 		* pirow)
 {
   STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
@@ -694,8 +694,8 @@ SQLParamOptions_Internal (
 SQLRETURN SQL_API
 SQLParamOptions(
   SQLHSTMT		  hstmt,
-  SQLUINTEGER		  crow,
-  SQLUINTEGER 		* pirow)
+  SQLULEN		  crow,
+  SQLULEN 		* pirow)
 {
   ENTER_STMT (hstmt,
     trace_SQLParamOptions (TRACE_ENTER, hstmt, crow, pirow));
@@ -711,7 +711,7 @@ static SQLRETURN
 SQLSetScrollOptions_Internal (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  fConcurrency,
-  SQLINTEGER		  crowKeyset,
+  SQLLEN		  crowKeyset,
   SQLUSMALLINT		  crowRowset)
 {
   STMT (pstmt, hstmt);
@@ -902,7 +902,7 @@ SQLRETURN SQL_API
 SQLSetScrollOptions (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  fConcurrency,
-  SQLINTEGER		  crowKeyset,
+  SQLLEN		  crowKeyset,
   SQLUSMALLINT		  crowRowset)
 {
   ENTER_STMT (hstmt,
@@ -933,10 +933,10 @@ SQLSetParam (
   SQLUSMALLINT		  ipar,
   SQLSMALLINT		  fCType,
   SQLSMALLINT		  fSqlType,
-  SQLUINTEGER		  cbColDef,
+  SQLULEN		  cbColDef,
   SQLSMALLINT		  ibScale,
   SQLPOINTER		  rgbValue,
-  SQLINTEGER 		* pcbValue)
+  SQLLEN 		* pcbValue)
 {
   return SQLBindParameter (hstmt,
       ipar,

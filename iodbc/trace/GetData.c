@@ -76,8 +76,8 @@ void
 _trace_data (
   SQLSMALLINT		  fCType,
   SQLPOINTER		  rgbValue,
-  SQLINTEGER		  cbValueMax,
-  SQLINTEGER	    	* pcbValue,
+  SQLLEN		  cbValueMax,
+  SQLLEN	    	* pcbValue,
   int			  output)
 {
   char buf[1024];		/* Temp buffer */
@@ -427,8 +427,8 @@ trace_SQLGetData (int trace_leave, int retcode,
   SQLUSMALLINT		  icol,
   SQLSMALLINT		  fCType,
   SQLPOINTER		  rgbValue,
-  SQLINTEGER		  cbValueMax,
-  SQLINTEGER	    	* pcbValue)
+  SQLLEN		  cbValueMax,
+  SQLLEN	    	* pcbValue)
 {
   /* Trace function */
   _trace_print_function (en_GetData, trace_leave, retcode);

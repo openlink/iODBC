@@ -76,7 +76,7 @@ void
 trace_SQLPutData (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
   SQLPOINTER		  rgbValue,
-  SQLINTEGER		  cbValue)
+  SQLLEN		  cbValue)
 {
   /* Trace function */
   _trace_print_function (en_PutData, trace_leave, retcode);

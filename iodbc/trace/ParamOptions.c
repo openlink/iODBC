@@ -75,8 +75,8 @@
 void
 trace_SQLParamOptions (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
-  SQLUINTEGER		  crow,
-  SQLUINTEGER    	* pirow)
+  SQLULEN		  crow,
+  SQLULEN    		* pirow)
 {
   /* Trace function */
   _trace_print_function (en_ParamOptions, trace_leave, retcode);

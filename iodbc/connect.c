@@ -107,7 +107,7 @@ char *iodbc_version = VERSION;
  */
 extern SQLRETURN _iodbcdm_driverunload (HDBC hdbc);
 extern SQLRETURN SQL_API _iodbcdm_SetConnectOption (SQLHDBC hdbc,
-    SQLUSMALLINT fOption, SQLUINTEGER vParam, SQLCHAR waMode);
+    SQLUSMALLINT fOption, SQLULEN vParam, SQLCHAR waMode);
 
 extern char * _iodbcdm_getkeyvalinstr (char *cnstr, int cnlen,
     char *keywd, char *value, int size);
@@ -119,7 +119,7 @@ static SQLRETURN
 _iodbcdm_SetConnectOption_init (
     SQLHDBC		  hdbc,
     SQLUSMALLINT	  fOption,
-    SQLUINTEGER		  vParam,
+    SQLULEN		  vParam,
     UCHAR		  waMode)
 {
   CONN (pdbc, hdbc);

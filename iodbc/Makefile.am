@@ -96,3 +96,4 @@ EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com \
 #
 install-exec-hook:
 	$(SHELL) $(srcdir)/install_libodbc.sh $(prefix)
+

@@ -96,8 +96,8 @@ void
 trace_SQLExtendedFetch (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  fFetchType,
-  SQLINTEGER		  irow,
-  SQLUINTEGER 	 	* pcrow,
+  SQLLEN		  irow,
+  SQLULEN 	 	* pcrow,
   SQLUSMALLINT    	* rgfRowStatus)
 {
   /* Trace function */

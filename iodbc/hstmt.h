@@ -91,7 +91,7 @@ typedef struct BIND {
   SWORD		 bn_type;	  /* ODBC C data type */
   void *	 bn_data;	  /* Pointer to data */
   SDWORD	 bn_size;	  /* Size of data area */
-  SQLINTEGER	*bn_pInd;	  /* Holds SQL_NULL_DATA | 0. 
+  SQLLEN	*bn_pInd;	  /* Holds SQL_NULL_DATA | 0. 
                                    * And length of returned char/bin data 
 				   */
 } BIND_t;
@@ -233,13 +233,13 @@ SQLSMALLINT _iodbcdm_map_c_type (int type, int odbcver);
 SQLRETURN SQL_API _iodbcdm_ExtendedFetch (
     SQLHSTMT		  hstmt,
     SQLUSMALLINT	  fFetchType,
-    SQLINTEGER		  irow, 
-    SQLUINTEGER	 	* pcrow, 
+    SQLLEN		  irow, 
+    SQLULEN	 	* pcrow, 
     SQLUSMALLINT 	* rgfRowStatus);
 
 SQLRETURN SQL_API _iodbcdm_SetPos (
     SQLHSTMT		  hstmt, 
-    SQLUSMALLINT	  irow, 
+    SQLSETPOSIROW	  irow, 
     SQLUSMALLINT	  fOption, 
     SQLUSMALLINT	  fLock);
 

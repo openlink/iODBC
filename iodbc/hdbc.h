@@ -80,7 +80,7 @@
 typedef struct _drvopt
   {
     SQLUSMALLINT Option;
-    SQLINTEGER Param;
+    SQLLEN Param;
     SQLCHAR waMode;
 
     struct _drvopt *next;
@@ -199,7 +199,7 @@ enum
 SQLRETURN SQL_API _iodbcdm_SetConnectOption (
     SQLHDBC hdbc,
     SQLUSMALLINT fOption, 
-    SQLUINTEGER vParam,
+    SQLULEN vParam,
     SQLCHAR waMode);
 SQLRETURN SQL_API _iodbcdm_GetConnectOption (
     SQLHDBC hdbc,

@@ -108,7 +108,7 @@ trace_SQLDescribeCol (int trace_leave, int retcode,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* NameLengthPtr,
   SQLSMALLINT		* DataTypePtr,
-  SQLUINTEGER		* ColumnSizePtr,
+  SQLULEN		* ColumnSizePtr,
   SQLSMALLINT		* DecimalDigitsPtr,
   SQLSMALLINT		* NullablePtr)
 {
@@ -136,7 +136,7 @@ trace_SQLDescribeColW (int trace_leave, int retcode,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* NameLengthPtr,
   SQLSMALLINT		* DataTypePtr,
-  SQLUINTEGER		* ColumnSizePtr,
+  SQLULEN		* ColumnSizePtr,
   SQLSMALLINT		* DecimalDigitsPtr,
   SQLSMALLINT		* NullablePtr)
 {

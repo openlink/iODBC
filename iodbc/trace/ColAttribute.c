@@ -153,7 +153,7 @@ trace_SQLColAttribute (int trace_leave, int retcode,
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLINTEGER		* NumericAttributePtr
+  SQLLEN		* NumericAttributePtr
   )
 {
   /* Trace function */
@@ -178,7 +178,7 @@ trace_SQLColAttributeW (int trace_leave, int retcode,
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLINTEGER		* NumericAttributePtr)
+  SQLLEN		* NumericAttributePtr)
 {
   /* Trace function */
   _trace_print_function (en_ColAttributeW, trace_leave, retcode);
@@ -202,7 +202,7 @@ trace_SQLColAttributes (int trace_leave, int retcode,
   SQLPOINTER		  rgbDesc,
   SQLSMALLINT		  cbDescMax,
   SQLSMALLINT		* pcbDesc,
-  SQLINTEGER		* pfDesc)
+  SQLLEN		* pfDesc)
 {
   /* Trace function */
   _trace_print_function (en_ColAttribute, trace_leave, retcode);
@@ -226,7 +226,7 @@ trace_SQLColAttributesW (int trace_leave, int retcode,
   SQLPOINTER		  rgbDesc,
   SQLSMALLINT		  cbDescMax,
   SQLSMALLINT		* pcbDesc,
-  SQLINTEGER		* pfDesc)
+  SQLLEN		* pfDesc)
 {
   /* Trace function */
   _trace_print_function (en_ColAttributeW, trace_leave, retcode);

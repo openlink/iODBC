@@ -1,19 +1,20 @@
 /*
- *  FetchScroll.c
+ *  iodbcunix.h
  *
  *  $Id$
  *
- *  SQLFetchScroll trace functions
+ *  ODBC defines for Unix
  *
  *  The iODBC driver manager.
- *  
- *  Copyright (C) 1996-2003 by OpenLink Software <iodbc@openlinksw.com>
+ *
+ *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2004 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -69,20 +70,47 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "trace.h"
+#ifndef _IODBCUNIX_H
+#define _IODBCUNIX_H
 
 
-void 
-trace_SQLFetchScroll (int trace_leave, int retcode,
-  SQLHSTMT		  StatementHandle,
-  SQLSMALLINT		  FetchOrientation,
-  SQLLEN		  FetchOffset)
-{
-  /* Trace function */
-  _trace_print_function (en_FetchScroll, trace_leave, retcode);
+/*
+ *  Windows-style declarations
+ */
+#define NEAR
+#define FAR
+#define EXPORT
+#define PASCAL
+#define VOID			void
+#define CALLBACK
+#define _cdecl
+#define __stdcall
 
-  /* Trace Arguments */
-  _trace_handle (SQL_HANDLE_STMT, StatementHandle);
-  _trace_fetchtype (FetchOrientation);
-  _trace_len (FetchOffset);
-}
+
+/*
+ *  Boolean support
+ */
+#ifndef TRUE
+#define TRUE			1
+#endif
+#ifndef FALSE
+#define FALSE			0
+#endif
+
+
+/*
+ *  Windows-style typedefs
+ */
+typedef unsigned char		BYTE;
+typedef unsigned short		WORD;
+typedef unsigned int		DWORD;
+typedef char *			LPSTR;
+typedef const char *		LPCSTR;
+typedef wchar_t *		LPWSTR;
+typedef DWORD *			LPDWORD;
+
+#if !defined(BOOL) && !defined(_OBJC_OBJC_H_)
+typedef int			BOOL;
+#endif
+
+#endif /* _IODBCUNIX_H */

@@ -12,10 +12,10 @@ void trace_SQLAllocHandle (int trace_leave, int retcode, SQLSMALLINT HandleType,
 void trace_SQLAllocStmt (int trace_leave, int retcode, SQLHDBC hdbc, SQLHSTMT *phstmt);
 
 /* BindCol.c */
-void trace_SQLBindCol (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLSMALLINT TargetType, SQLPOINTER TargetValuePtr, SQLINTEGER BufferLength, SQLINTEGER *Strlen_or_IndPtr);
+void trace_SQLBindCol (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLSMALLINT TargetType, SQLPOINTER TargetValuePtr, SQLLEN BufferLength, SQLLEN *Strlen_or_IndPtr);
 
 /* BindParameter.c */
-void trace_SQLBindParameter (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ParameterNumber, SQLSMALLINT InputOutputType, SQLSMALLINT ValueType, SQLSMALLINT ParameterType, SQLUINTEGER ColumnSize, SQLSMALLINT DecimalDigits, SQLPOINTER ParameterValuePtr, SQLINTEGER BufferLength, SQLINTEGER *Strlen_or_IndPtr);
+void trace_SQLBindParameter (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ParameterNumber, SQLSMALLINT InputOutputType, SQLSMALLINT ValueType, SQLSMALLINT ParameterType, SQLUINTEGER ColumnSize, SQLSMALLINT DecimalDigits, SQLPOINTER ParameterValuePtr, SQLLEN BufferLength, SQLLEN *Strlen_or_IndPtr);
 
 /* BrowseConnect.c */
 void trace_SQLBrowseConnect (int trace_leave, int retcode, SQLHDBC ConnectionHandle, SQLCHAR *InConnectionString, SQLSMALLINT StringLength1, SQLCHAR *OutConnectionString, SQLSMALLINT BufferLength, SQLSMALLINT *StringLength2Ptr);
@@ -33,10 +33,10 @@ void trace_SQLCloseCursor (int trace_leave, int retcode, SQLHSTMT StatementHandl
 /* ColAttribute.c */
 void _trace_colattr2_type (SQLUSMALLINT type);
 void _trace_colattr3_type (SQLUSMALLINT type);
-void trace_SQLColAttribute (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLINTEGER * NumericAttributePtr);
-void trace_SQLColAttributeW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLINTEGER * NumericAttributePtr);
-void trace_SQLColAttributes (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT icol, SQLUSMALLINT fDescType, SQLPOINTER rgbDesc, SQLSMALLINT cbDescMax, SQLSMALLINT *pcbDesc, SQLINTEGER *pfDesc);
-void trace_SQLColAttributesW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT icol, SQLUSMALLINT fDescType, SQLPOINTER rgbDesc, SQLSMALLINT cbDescMax, SQLSMALLINT *pcbDesc, SQLINTEGER *pfDesc);
+void trace_SQLColAttribute (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLLEN * NumericAttributePtr);
+void trace_SQLColAttributeW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT ColumnNumber, SQLUSMALLINT FieldIdentifier, SQLPOINTER CharacterAttributePtr, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLLEN * NumericAttributePtr);
+void trace_SQLColAttributes (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT icol, SQLUSMALLINT fDescType, SQLPOINTER rgbDesc, SQLSMALLINT cbDescMax, SQLSMALLINT *pcbDesc, SQLLEN *pfDesc);
+void trace_SQLColAttributesW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLUSMALLINT icol, SQLUSMALLINT fDescType, SQLPOINTER rgbDesc, SQLSMALLINT cbDescMax, SQLSMALLINT *pcbDesc, SQLLEN *pfDesc);
 
 /* ColumnPrivileges.c */
 void trace_SQLColumnPrivileges (int trace_leave, int retcode, SQLHSTMT hstmt, SQLCHAR *szTableQualifier, SQLSMALLINT cbTableQualifier, SQLCHAR *szTableOwner, SQLSMALLINT cbTableOwner, SQLCHAR *szTableName, SQLSMALLINT cbTableName, SQLCHAR *szColumnName, SQLSMALLINT cbColumnName);
@@ -60,11 +60,11 @@ void trace_SQLDataSourcesW (int trace_leave, int retcode, SQLHENV EnvironmentHan
 
 /* DescribeCol.c */
 void _trace_desc_null (SQLSMALLINT *p, int output);
-void trace_SQLDescribeCol (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLSMALLINT ColumnNumber, SQLCHAR *ColumnName, SQLSMALLINT BufferLength, SQLSMALLINT *NameLengthPtr, SQLSMALLINT *DataTypePtr, SQLUINTEGER *ColumnSizePtr, SQLSMALLINT *DecimalDigitsPtr, SQLSMALLINT *NullablePtr);
-void trace_SQLDescribeColW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLSMALLINT ColumnNumber, SQLWCHAR *ColumnName, SQLSMALLINT BufferLength, SQLSMALLINT *NameLengthPtr, SQLSMALLINT *DataTypePtr, SQLUINTEGER *ColumnSizePtr, SQLSMALLINT *DecimalDigitsPtr, SQLSMALLINT *NullablePtr);
+void trace_SQLDescribeCol (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLSMALLINT ColumnNumber, SQLCHAR *ColumnName, SQLSMALLINT BufferLength, SQLSMALLINT *NameLengthPtr, SQLSMALLINT *DataTypePtr, SQLULEN *ColumnSizePtr, SQLSMALLINT *DecimalDigitsPtr, SQLSMALLINT *NullablePtr);
+void trace_SQLDescribeColW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLSMALLINT ColumnNumber, SQLWCHAR *ColumnName, SQLSMALLINT BufferLength, SQLSMALLINT *NameLengthPtr, SQLSMALLINT *DataTypePtr, SQLULEN *ColumnSizePtr, SQLSMALLINT *DecimalDigitsPtr, SQLSMALLINT *NullablePtr);
 
 /* DescribeParam.c */
-void trace_SQLDescribeParam (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT ipar, SQLSMALLINT *pfSqlType, SQLUINTEGER *pcbColDef, SQLSMALLINT *pibScale, SQLSMALLINT *pfNullable);
+void trace_SQLDescribeParam (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT ipar, SQLSMALLINT *pfSqlType, SQLULEN *pcbColDef, SQLSMALLINT *pibScale, SQLSMALLINT *pfNullable);
 
 /* Disconnect.c */
 void trace_SQLDisconnect (int trace_leave, int retcode, SQLHDBC ConnectionHandle);
@@ -93,13 +93,13 @@ void trace_SQLExecute (int trace_leave, int retcode, SQLHSTMT hstmt);
 
 /* ExtendedFetch.c */
 void _trace_fetchtype (SQLUSMALLINT type);
-void trace_SQLExtendedFetch (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT fFetchType, SQLINTEGER irow, SQLUINTEGER *pcrow, SQLUSMALLINT *rgfRowStatus);
+void trace_SQLExtendedFetch (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT fFetchType, SQLLEN irow, SQLULEN *pcrow, SQLUSMALLINT *rgfRowStatus);
 
 /* Fetch.c */
 void trace_SQLFetch (int trace_leave, int retcode, SQLHSTMT hstmt);
 
 /* FetchScroll.c */
-void trace_SQLFetchScroll (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLSMALLINT FetchOrientation, SQLINTEGER FetchOffset);
+void trace_SQLFetchScroll (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLSMALLINT FetchOrientation, SQLLEN FetchOffset);
 
 /* ForeignKeys.c */
 void trace_SQLForeignKeys (int trace_leave, int retcode, SQLHSTMT hstmt, SQLCHAR *szPkTableQualifier, SQLSMALLINT cbPkTableQualifier, SQLCHAR *szPkTableOwner, SQLSMALLINT cbPkTableOwner, SQLCHAR *szPkTableName, SQLSMALLINT cbPkTableName, SQLCHAR *szFkTableQualifier, SQLSMALLINT cbFkTableQualifier, SQLCHAR *szFkTableOwner, SQLSMALLINT cbFkTableOwner, SQLCHAR *szFkTableName, SQLSMALLINT cbFkTableName);
@@ -133,8 +133,8 @@ void trace_SQLGetCursorName (int trace_leave, int retcode, SQLHSTMT StatementHan
 void trace_SQLGetCursorNameW (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLWCHAR *CursorName, SQLSMALLINT BufferLength, SQLSMALLINT *NameLengthPtr);
 
 /* GetData.c */
-void _trace_data (SQLSMALLINT fCType, SQLPOINTER rgbValue, SQLINTEGER cbValueMax, SQLINTEGER *pcbValue, int output);
-void trace_SQLGetData (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT icol, SQLSMALLINT fCType, SQLPOINTER rgbValue, SQLINTEGER cbValueMax, SQLINTEGER *pcbValue);
+void _trace_data (SQLSMALLINT fCType, SQLPOINTER rgbValue, SQLLEN cbValueMax, SQLLEN *pcbValue, int output);
+void trace_SQLGetData (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT icol, SQLSMALLINT fCType, SQLPOINTER rgbValue, SQLLEN cbValueMax, SQLLEN *pcbValue);
 
 /* GetDescField.c */
 void _trace_descfield_type (SQLSMALLINT type);
@@ -142,8 +142,8 @@ void trace_SQLGetDescField (int trace_leave, int retcode, SQLHDESC DescriptorHan
 void trace_SQLGetDescFieldW (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT FieldIdentifier, SQLPOINTER ValuePtr, SQLINTEGER BufferLength, SQLINTEGER *StringLengthPtr);
 
 /* GetDescRec.c */
-void trace_SQLGetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLCHAR *Name, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLSMALLINT *TypePtr, SQLSMALLINT *SubTypePtr, SQLINTEGER *LengthPtr, SQLSMALLINT *PrecisionPtr, SQLSMALLINT *ScalePtr, SQLSMALLINT *NullablePtr);
-void trace_SQLGetDescRecW (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLWCHAR *Name, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLSMALLINT *TypePtr, SQLSMALLINT *SubTypePtr, SQLINTEGER *LengthPtr, SQLSMALLINT *PrecisionPtr, SQLSMALLINT *ScalePtr, SQLSMALLINT *NullablePtr);
+void trace_SQLGetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLCHAR *Name, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLSMALLINT *TypePtr, SQLSMALLINT *SubTypePtr, SQLLEN *LengthPtr, SQLSMALLINT *PrecisionPtr, SQLSMALLINT *ScalePtr, SQLSMALLINT *NullablePtr);
+void trace_SQLGetDescRecW (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLWCHAR *Name, SQLSMALLINT BufferLength, SQLSMALLINT *StringLengthPtr, SQLSMALLINT *TypePtr, SQLSMALLINT *SubTypePtr, SQLLEN *LengthPtr, SQLSMALLINT *PrecisionPtr, SQLSMALLINT *ScalePtr, SQLSMALLINT *NullablePtr);
 
 /* GetDiagField.c */
 void _trace_diag_type (SQLSMALLINT type);
@@ -196,7 +196,7 @@ void trace_SQLNumResultCols (int trace_leave, int retcode, SQLHSTMT hstmt, SQLSM
 void trace_SQLParamData (int trace_leave, int retcode, SQLHSTMT hstmt, SQLPOINTER *prgbValue);
 
 /* ParamOptions.c */
-void trace_SQLParamOptions (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUINTEGER crow, SQLUINTEGER *pirow);
+void trace_SQLParamOptions (int trace_leave, int retcode, SQLHSTMT hstmt, SQLULEN crow, SQLULEN *pirow);
 
 /* Prepare.c */
 void trace_SQLPrepare (int trace_leave, int retcode, SQLHSTMT StatementHandle, SQLCHAR *StatementText, SQLINTEGER TextLength);
@@ -215,18 +215,18 @@ void trace_SQLProcedures (int trace_leave, int retcode, SQLHSTMT hstmt, SQLCHAR 
 void trace_SQLProceduresW (int trace_leave, int retcode, SQLHSTMT hstmt, SQLWCHAR *szProcQualifier, SQLSMALLINT cbProcQualifier, SQLWCHAR *szProcOwner, SQLSMALLINT cbProcOwner, SQLWCHAR *szProcName, SQLSMALLINT cbProcName);
 
 /* PutData.c */
-void trace_SQLPutData (int trace_leave, int retcode, SQLHSTMT hstmt, SQLPOINTER rgbValue, SQLINTEGER cbValue);
+void trace_SQLPutData (int trace_leave, int retcode, SQLHSTMT hstmt, SQLPOINTER rgbValue, SQLLEN cbValue);
 
 /* RowCount.c */
-void trace_SQLRowCount (int trace_leave, int retcode, SQLHSTMT hstmt, SQLINTEGER *pcrow);
+void trace_SQLRowCount (int trace_leave, int retcode, SQLHSTMT hstmt, SQLLEN *pcrow);
 
 /* SetConnectAttr.c */
 void trace_SQLSetConnectAttr (int trace_leave, int retcode, SQLHDBC ConnectionHandle, SQLINTEGER Attribute, SQLPOINTER ValuePtr, SQLINTEGER StringLength);
 void trace_SQLSetConnectAttrW (int trace_leave, int retcode, SQLHDBC ConnectionHandle, SQLINTEGER Attribute, SQLPOINTER ValuePtr, SQLINTEGER StringLength);
 
 /* SetConnectOption.c */
-void trace_SQLSetConnectOption (int trace_leave, int retcode, SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam);
-void trace_SQLSetConnectOptionW (int trace_leave, int retcode, SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam);
+void trace_SQLSetConnectOption (int trace_leave, int retcode, SQLHDBC hdbc, SQLUSMALLINT fOption, SQLULEN vParam);
+void trace_SQLSetConnectOptionW (int trace_leave, int retcode, SQLHDBC hdbc, SQLUSMALLINT fOption, SQLULEN vParam);
 
 /* SetCursorName.c */
 void trace_SQLSetCursorName (int trace_leave, int retcode, SQLHSTMT hstmt, SQLCHAR *szCursor, SQLSMALLINT cbCursor);
@@ -237,16 +237,16 @@ void trace_SQLSetDescField (int trace_leave, int retcode, SQLHDESC DescriptorHan
 void trace_SQLSetDescFieldW (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT FieldIdentifier, SQLPOINTER ValuePtr, SQLINTEGER BufferLength);
 
 /* SetDescRec.c */
-void trace_SQLSetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type, SQLSMALLINT SubType, SQLINTEGER Length, SQLSMALLINT Precision, SQLSMALLINT Scale, SQLPOINTER Data, SQLINTEGER * StringLength, SQLINTEGER * Indicator);
+void trace_SQLSetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type, SQLSMALLINT SubType, SQLLEN Length, SQLSMALLINT Precision, SQLSMALLINT Scale, SQLPOINTER Data, SQLLEN *StringLength, SQLLEN *Indicator);
 
 /* SetEnvAttr.c */
 void trace_SQLSetEnvAttr (int trace_leave, int retcode, SQLHENV EnvironmentHandle, SQLINTEGER Attribute, SQLPOINTER ValuePtr, SQLINTEGER StringLength);
 
 /* SetPos.c */
-void _trace_setpos_irow (SQLUSMALLINT irow);
+void _trace_setpos_irow (SQLSETPOSIROW i);
 void _trace_setpos_oper (SQLUSMALLINT type);
 void _trace_setpos_lock (SQLUSMALLINT type);
-void trace_SQLSetPos (int trace_leave, int retcode, SQLHSTMT hstmt, SQLUSMALLINT irow, SQLUSMALLINT fOption, SQLUSMALLINT fLock);
+void trace_SQLSetPos (int trace_leave, int retcode, SQLHSTMT hstmt, SQLSETPOSIROW irow, SQLUSMALLINT fOption, SQLUSMALLINT fLock);
 
 /* SetScrollOptions.c */
 void _trace_scrollopt_type (SQLUSMALLINT type);
@@ -304,10 +304,10 @@ void _trace_usmallint_p (SQLUSMALLINT *p, int output);
 void _trace_integer_p (SQLINTEGER *p, int output);
 void _trace_uinteger_p (SQLUINTEGER *p, int output);
 void _trace_stringlen (char *type, SQLINTEGER len);
-void _trace_len (SQLINTEGER i);
-void _trace_ulen (SQLUINTEGER i);
-void _trace_len_p (SQLINTEGER *p, int output);
-void _trace_ulen_p (SQLUINTEGER *p, int output);
+void _trace_len (SQLLEN i);
+void _trace_ulen (SQLULEN i);
+void _trace_len_p (SQLLEN *p, int output);
+void _trace_ulen_p (SQLULEN *p, int output);
 void _trace_string (SQLCHAR *str, SQLSMALLINT len, SQLSMALLINT *lenptr, int output);
 void _trace_string_w (SQLWCHAR *str, SQLSMALLINT len, SQLSMALLINT *lenptr, int output);
 void _trace_c_type (SQLSMALLINT type);

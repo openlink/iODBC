@@ -237,8 +237,8 @@ SQLRETURN SQL_API
 _iodbcdm_ExtendedFetch (
     SQLHSTMT		  hstmt,
     SQLUSMALLINT	  fFetchType,
-    SQLINTEGER		  irow, 
-    SQLUINTEGER	 	* pcrow, 
+    SQLLEN		  irow, 
+    SQLULEN	 	* pcrow, 
     SQLUSMALLINT 	* rgfRowStatus)
 {
   STMT (pstmt, hstmt);
@@ -353,8 +353,8 @@ SQLRETURN SQL_API
 SQLExtendedFetch (
   SQLHSTMT		  hstmt, 
   SQLUSMALLINT		  fFetchType, 
-  SQLINTEGER		  irow, 
-  SQLUINTEGER 		* pcrow, 
+  SQLLEN		  irow, 
+  SQLULEN 		* pcrow, 
   SQLUSMALLINT 		* rgfRowStatus)
 {
   ENTER_STMT (hstmt,
@@ -379,8 +379,8 @@ SQLGetData_Internal (
   SQLUSMALLINT		  icol,
   SQLSMALLINT		  fCType,
   SQLPOINTER		  rgbValue,
-  SQLINTEGER		  cbValueMax,
-  SQLINTEGER 		* pcbValue)
+  SQLLEN		  cbValueMax,
+  SQLLEN 		* pcbValue)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
@@ -572,8 +572,8 @@ SQLGetData (
     SQLUSMALLINT	  icol,
     SQLSMALLINT		  fCType,
     SQLPOINTER		  rgbValue,
-    SQLINTEGER		  cbValueMax,
-    SQLINTEGER 		* pcbValue)
+    SQLLEN		  cbValueMax,
+    SQLLEN 		* pcbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLGetData (TRACE_ENTER, 
@@ -748,7 +748,7 @@ SQLMoreResults (SQLHSTMT hstmt)
 SQLRETURN SQL_API
 _iodbcdm_SetPos (
   SQLHSTMT		  hstmt,
-  SQLUSMALLINT		  irow, 
+  SQLSETPOSIROW		  irow, 
   SQLUSMALLINT		  fOption, 
   SQLUSMALLINT		  fLock)
 {
@@ -857,7 +857,7 @@ _iodbcdm_SetPos (
 SQLRETURN SQL_API
 SQLSetPos (
   SQLHSTMT		  hstmt,
-  SQLUSMALLINT		  irow, 
+  SQLSETPOSIROW		  irow, 
   SQLUSMALLINT		  fOption, 
   SQLUSMALLINT		  fLock)
 {

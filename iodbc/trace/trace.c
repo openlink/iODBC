@@ -713,56 +713,56 @@ _trace_stringlen (char *type, SQLINTEGER len)
 }
 
 void
-_trace_len (SQLINTEGER i)
+_trace_len (SQLLEN i)
 {
 #ifdef _WIN64
-  trace_emit ("\t\t%-15.15s   %I64d\n", "SQLINTEGER", (INT64) i);
+  trace_emit ("\t\t%-15.15s   %I64d\n", "SQLLEN", (INT64) i);
 #else
-  trace_emit ("\t\t%-15.15s   %ld\n", "SQLINTEGER", (long) i);
+  trace_emit ("\t\t%-15.15s   %ld\n", "SQLLEN", (long) i);
 #endif
 }
 
 
 void
-_trace_ulen (SQLUINTEGER i)
+_trace_ulen (SQLULEN i)
 {
 #ifdef _WIN64
-  trace_emit ("\t\t%-15.15s   %I64u\n", "SQLINTEGER", (UINT64) i);
+  trace_emit ("\t\t%-15.15s   %I64u\n", "SQLLEN", (UINT64) i);
 #else
-  trace_emit ("\t\t%-15.15s   %ld\n", "SQLINTEGER", (unsigned long) i);
+  trace_emit ("\t\t%-15.15s   %ld\n", "SQLLEN", (unsigned long) i);
 #endif
 }
 
 
 void
-_trace_len_p (SQLINTEGER *p, int output)
+_trace_len_p (SQLLEN *p, int output)
 {
   if (!p)
-    trace_emit ("\t\t%-15.15s * 0x0\n", "SQLINTEGER");
+    trace_emit ("\t\t%-15.15s * 0x0\n", "SQLLEN");
   else if (output)
 #ifdef _WIN64
-    trace_emit ("\t\t%-15.15s * %p (%I64d)\n", "SQLINTEGER", p, (INT64) *p);
+    trace_emit ("\t\t%-15.15s * %p (%I64d)\n", "SQLLEN", p, (INT64) *p);
 #else
-    trace_emit ("\t\t%-15.15s * %p (%ld)\n", "SQLINTEGER", p, (long) *p);
+    trace_emit ("\t\t%-15.15s * %p (%ld)\n", "SQLLEN", p, (long) *p);
 #endif
   else
-    trace_emit ("\t\t%-15.15s * %p\n", "SQLINTEGER", p);
+    trace_emit ("\t\t%-15.15s * %p\n", "SQLLEN", p);
 }
 
 
 void
-_trace_ulen_p (SQLUINTEGER *p, int output)
+_trace_ulen_p (SQLULEN *p, int output)
 {
   if (!p)
-    trace_emit ("\t\t%-15.15s * 0x0\n", "SQLUINTEGER");
+    trace_emit ("\t\t%-15.15s * 0x0\n", "SQLULEN");
   else if (output)
 #ifdef _WIN64
-    trace_emit ("\t\t%-15.15s * %p (%I64u)\n", "SQLUINTEGER", p, (UINT64) *p);
+    trace_emit ("\t\t%-15.15s * %p (%I64u)\n", "SQLULEN", p, (UINT64) *p);
 #else
-    trace_emit ("\t\t%-15.15s * %p (%lu)\n", "SQLUINTEGER", p, (unsigned long) *p);
+    trace_emit ("\t\t%-15.15s * %p (%lu)\n", "SQLULEN", p, (unsigned long) *p);
 #endif
   else
-    trace_emit ("\t\t%-15.15s * %p\n", "SQLUINTEGER", p);
+    trace_emit ("\t\t%-15.15s * %p\n", "SQLULEN", p);
 }
 
 

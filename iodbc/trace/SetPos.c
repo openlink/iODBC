@@ -73,12 +73,12 @@
 
 
 void
-_trace_setpos_irow (SQLUSMALLINT irow)
+_trace_setpos_irow (SQLSETPOSIROW i)
 {
 #ifdef _WIN64
-  trace_emit ("\t\t%-15.15s   %I64d\n", "SQLUSMALLINT", (INT64) irow);
+  trace_emit ("\t\t%-15.15s   %I64d\n", "SQLSETPOSIROW", (INT64) i);
 #else
-  trace_emit ("\t\t%-15.15s   %ld\n", "SQLUSMALLINT", (long) irow);
+  trace_emit ("\t\t%-15.15s   %ld\n", "SQLSETPOSIROW", (long) i);
 #endif
 }
 
@@ -123,7 +123,7 @@ _trace_setpos_lock (SQLUSMALLINT type)
 void
 trace_SQLSetPos (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
-  SQLUSMALLINT		  irow,
+  SQLSETPOSIROW		  irow,
   SQLUSMALLINT		  fOption,
   SQLUSMALLINT		  fLock)
 {

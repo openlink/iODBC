@@ -477,7 +477,7 @@ static SQLRETURN
 SQLPutData_Internal (
   SQLHSTMT		  hstmt,
   SQLPOINTER		  rgbValue, 
-  SQLINTEGER		  cbValue)
+  SQLLEN		  cbValue)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
@@ -589,7 +589,7 @@ SQLRETURN SQL_API
 SQLPutData (
   SQLHSTMT		  hstmt, 
   SQLPOINTER		  rgbValue, 
-  SQLINTEGER		  cbValue)
+  SQLLEN		  cbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLPutData (TRACE_ENTER, hstmt, rgbValue, cbValue));
@@ -834,7 +834,7 @@ SQLDescribeParam_Internal (
     SQLHSTMT		  hstmt,
     SQLUSMALLINT	  ipar,
     SQLSMALLINT		* pfSqlType,
-    SQLUINTEGER		* pcbColDef,
+    SQLULEN		* pcbColDef,
     SQLSMALLINT		* pibScale, 
     SQLSMALLINT 	* pfNullable)
 {
@@ -925,7 +925,7 @@ SQLDescribeParam (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  ipar,
   SQLSMALLINT 		* pfSqlType,
-  SQLUINTEGER 		* pcbColDef,
+  SQLULEN 		* pcbColDef,
   SQLSMALLINT 		* pibScale,
   SQLSMALLINT 		* pfNullable)
 {
