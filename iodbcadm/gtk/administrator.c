@@ -29,7 +29,8 @@
 #include "../gui.h"
 #include "odbc4.xpm"
 
-#ifndef Dl_info
+#if defined(HAVE_DLADDR)
+#if defined(linux)
 typedef struct
 {
   __const char *dli_fname;	/* File name of defining object.  */
@@ -38,6 +39,7 @@ typedef struct
   void *dli_saddr;		/* Exact value of nearest symbol.  */
 } Dl_info;
 #endif
+#endif /* HAVE_DLADDR */
 
 static char *szDriverButtons[] = {
   "_Add a driver",
@@ -65,7 +67,9 @@ addcomponents_to_list (GtkWidget *widget)
   char _date[1024], _size[1024];
   char *data[5];
   struct stat _stat;
+#if defined(HAVE_DLADDR)
   Dl_info info;
+#endif
   void *handle, *proc;
   int i;
 
