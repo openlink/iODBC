@@ -236,6 +236,7 @@ else
 	CFLAGS="$CFLAGS -DODBCVER=0x0250" 
 	AC_MSG_RESULT(ODBC 2.x compatible mode)
 fi
+AC_SUBST(odbcmode)
 AC_SUBST(lib_version)
 
 
@@ -293,4 +294,10 @@ AC_DEFINE_UNQUOTED(SYS_ODBCINST_INI, "$inidir/odbcinst.ini")
 ##  Generate Makefiles etc.						##
 ##									##
 ##########################################################################
-AC_OUTPUT([Makefile samples/Makefile])
+AC_OUTPUT([
+    Makefile 
+    samples/Makefile
+    iodbc-config
+], [
+    chmod 755 iodbc-config
+])
