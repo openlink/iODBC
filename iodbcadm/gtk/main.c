@@ -159,8 +159,10 @@ main (int argc, char *argv[])
   char *gui = NULL;
   int i = 1;
 
-  printf ("iODBC Administrator from OpenLink Software, Copyright 2000.\n\r");
-  printf ("Build " DATEBUILD ", compliant ODBC v" VERSION "\n\r\n\r");
+  printf ("iODBC Administrator (GTK)\n");
+  printf ("%s\n", PACKAGE_STRING);
+  printf ("Copyright (C) 2000-2003 OpenLink Software\n");
+  printf ("Please report all bugs to <%s>\n\n", PACKAGE_BUGREPORT);
 
   /* Check options commands */
   if (argc > 1)

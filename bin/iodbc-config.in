@@ -72,7 +72,14 @@ data_dir=@datadir@
 usage()
 {
 	cat <<EOF
-Usage: iodbc-config [OPTIONS] [LIBRARIES]
+iODBC Configuration Script
+@PACKAGE_STRING@
+Copyright (C) 2000-2003 OpenLink Software
+Please report all bugs to <@PACKAGE_BUGREPORT@>
+
+Usage: 
+        iodbc-config [OPTIONS] [LIBRARIES]
+
 Options:
 	[--prefix[=DIR]]
 	[--exec-prefix[=DIR]]
