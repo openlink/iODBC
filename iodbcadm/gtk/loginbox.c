@@ -130,6 +130,12 @@ create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
   guint b_ok_key, b_cancel_key;
   char buff[1024];
 
+  if (hwnd == (HWND)-1L)
+    {
+      gtk_init(0, NULL);
+      hwnd = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    }
+
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return;
 

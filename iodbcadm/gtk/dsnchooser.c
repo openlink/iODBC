@@ -1320,6 +1320,12 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   GtkStyle *style;
   GtkAccelGroup *accel_group;
 
+  if (hwnd == (HWND)-1L)
+    {
+      gtk_init(0, NULL);
+      hwnd = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    }
+
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return;
 
