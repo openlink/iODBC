@@ -94,10 +94,7 @@ SQLInstallTranslator (LPCSTR lpszInfFile, LPCSTR lpszTranslator,
     WORD FAR *pcbPathOut, WORD fRequest, LPDWORD lpdwUsageCount)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
-  int ret = 0, sect_len = 0;
-  WORD curr = 0;
   BOOL retcode = FALSE;
-  char *szId;
 
   /* Check input parameters */
   CLEAR_ERROR ();

@@ -81,7 +81,7 @@ BOOL
 GetAvailableDrivers (LPCSTR lpszInfFile, LPSTR lpszBuf, WORD cbBufMax,
     WORD FAR *pcbBufOut, BOOL infFile)
 {
-  int ret = 0, sect_len = 0;
+  int sect_len = 0;
   WORD curr = 0;
   BOOL retcode = FALSE;
   PCONFIG pCfg;
@@ -166,7 +166,6 @@ SQLGetAvailableDrivers (LPCSTR lpszInfFile, LPSTR lpszBuf, WORD cbBufMax,
     WORD FAR *pcbBufOut)
 {
   BOOL retcode = FALSE;
-  char path[1024] = { 0 };
   WORD lenBufOut;
 
   /* Get from the user files */

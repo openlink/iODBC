@@ -218,10 +218,7 @@ SQLInstallDriverEx (LPCSTR lpszDriver, LPCSTR lpszPathIn, LPSTR lpszPathOut,
     WORD cbPathOutMax, WORD *pcbPathOut, WORD fRequest, LPDWORD lpdwUsageCount)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
-  int ret = 0, sect_len = 0;
-  WORD curr = 0;
   BOOL retcode = FALSE;
-  char *szId;
 
   CLEAR_ERROR ();
 

@@ -231,10 +231,7 @@ SQLInstallDriver (LPCSTR lpszInfFile, LPCSTR lpszDriver, LPSTR lpszPath,
     WORD cbPathMax, WORD FAR *pcbPathOut)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
-  int ret = 0, sect_len = 0;
-  WORD curr = 0;
   BOOL retcode = FALSE;
-  char *szId;
 
   /* Check input parameters */
   CLEAR_ERROR ();

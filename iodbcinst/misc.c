@@ -381,7 +381,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 const char *
 _iodbcdm_check_for_string(const char *szList, const char *szString, int bContains)
 {
-  const char *currP = szList, *ret;
+  const char *currP = szList;
 
   while (*currP)
     {

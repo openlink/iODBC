@@ -82,7 +82,6 @@ extern BOOL ValidDSN(LPCSTR);
 BOOL
 RemoveDSNFromIni (LPCSTR lpszDSN)
 {
-  char szBuffer[4096];
   BOOL retcode = FALSE;
   PCONFIG pCfg;
 
