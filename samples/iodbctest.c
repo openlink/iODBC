@@ -312,6 +312,7 @@ ODBC_Connect (char *connStr)
 
   connected = 1;
 
+
   /*
    *  Print out the version number and the name of the connected driver
    */
@@ -339,6 +340,28 @@ ODBC_Connect (char *connStr)
     }
 
 
+  /*
+   *  Show the list of supported functions in trace log
+   */
+#if (ODBCVER < 0x0300)
+  {
+     SQLUSMALLINT exists[100];
+
+     SQLGetFunctions (hdbc, SQL_API_ALL_FUNCTIONS, exists);
+  }
+#else
+  {
+     SQLUSMALLINT exists[SQL_API_ODBC3_ALL_FUNCTIONS_SIZE];
+
+     SQLGetFunctions (hdbc, SQL_API_ODBC3_ALL_FUNCTIONS, exists);
+  }
+#endif
+
+
+
+  /*
+   *  Allocate statement handle
+   */
 #if (ODBCVER < 0x0300)
   if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
     return -1;

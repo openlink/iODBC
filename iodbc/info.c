@@ -1383,7 +1383,7 @@ SQLGetFunctions (
 	pfExists);
 
   LEAVE_HDBC (hdbc, 0,
-    trace_SQLGetFunctions (TRACE_ENTER,
+    trace_SQLGetFunctions (TRACE_LEAVE,
     	hdbc,
 	fFunc,
 	pfExists));
