@@ -6,14 +6,14 @@
  *  These functions intentionally left blank
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -83,6 +83,7 @@
 #include <Carbon/Carbon.h>
 #endif
 
+
 #ifndef WIN32
 #include <unistd.h>
 #define CALL_CONFIG_TRANSLATOR(path) \
@@ -118,7 +119,9 @@
 	else ret = SQL_NO_DATA;
 #endif
 
+
 extern SQLRETURN _iodbcdm_trschoose_dialbox(HWND, LPSTR, DWORD, int *);
+
 
 BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
     WORD *pcbNameOut, LPSTR lpszPath, WORD cbPathMax,
@@ -145,23 +148,23 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 #ifdef __APPLE__
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
       if (bundle)
-        {
-          /* Search for the drvproxy library */
-          liburl = CFBundleCopyExecutableURL (bundle);
-          if (liburl
+	{
+	  /* Search for the drvproxy library */
+	  liburl = CFBundleCopyExecutableURL (bundle);
+	  if (liburl
 	      && (libname =
-	          CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+		  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	    {
 	      CFStringGetCString (libname, name, sizeof (name),
-	          kCFStringEncodingASCII);
+		  kCFStringEncodingASCII);
 	      CALL_TRSCHOOSE_DIALBOX (name);
 	    }
-          if (liburl)
+	  if (liburl)
 	    CFRelease (liburl);
-          if (libname)
+	  if (libname)
 	    CFRelease (libname);
-          CFRelease (bundle);
-        }
+	  CFRelease (bundle);
+	}
 #else
       CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so");
 #endif

@@ -7,14 +7,14 @@
  *  function.
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -70,8 +70,6 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-
 #include <iodbc.h>
 #include <iodbcinst.h>
 
@@ -83,6 +81,7 @@
 #include "inifile.h"
 #include "misc.h"
 #include "iodbc_error.h"
+
 
 #ifndef WIN32
 #include <unistd.h>
@@ -108,6 +107,7 @@
 		DLL_CLOSE(handle); \
 	}
 #endif
+
 
 BOOL INSTAPI
 SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,

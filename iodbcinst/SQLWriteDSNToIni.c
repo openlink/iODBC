@@ -6,14 +6,14 @@
  *  Write a DSN connect string to a file
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -77,11 +77,13 @@
 #include "misc.h"
 #include "iodbc_error.h"
 
+
 extern BOOL ValidDSN (LPCSTR lpszDSN);
 
 extern int GetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
     LPCSTR lpszDefault, LPSTR lpszRetBuffer, int cbRetBuffer,
     LPCSTR lpszFilename);
+
 
 BOOL
 WriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)

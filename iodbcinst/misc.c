@@ -90,86 +90,6 @@
 WORD wSystemDSN = USERDSN_ONLY;
 WORD configMode = ODBC_BOTH_DSN;
 
-static int
-upper_strneq (char *s1, char *s2, int n)
-{
-  int i;
-  char c1 = '\0', c2 = '\0';
-
-  for (i = 1; i < n; i++)
-    {
-      c1 = s1[i];
-      c2 = s2[i];
-
-      if (c1 >= 'a' && c1 <= 'z')
-	{
-	  c1 += ('A' - 'a');
-	}
-      else if (c1 == '\n')
-	{
-	  c1 = '\0';
-	}
-
-      if (c2 >= 'a' && c2 <= 'z')
-	{
-	  c2 += ('A' - 'a');
-	}
-      else if (c2 == '\n')
-	{
-	  c2 = '\0';
-	}
-
-      if ((c1 - c2) || !c1 || !c2)
-	{
-	  break;
-	}
-    }
-
-  return (int) !(c1 - c2);
-}
-
-
-static char *			/* return new position in input str */
-readtoken (
-    char *istr,			/* old position in input buf */
-    char *obuf)			/* token string ( if "\0", then finished ) */
-{
-  char *start = obuf;
-
-  /* Skip leading white space */
-  while (*istr == ' ' || *istr == '\t')
-    istr++;
-
-  for (; *istr && *istr != '\n'; istr++)
-    {
-      char c, nx;
-
-      c = *(istr);
-      nx = *(istr + 1);
-
-      if (c == ';')
-	{
-	  for (; *istr && *istr != '\n'; istr++);
-	  break;
-	}
-      *obuf = c;
-      obuf++;
-
-      if (nx == ';' || nx == '=' || c == '=')
-	{
-	  istr++;
-	  break;
-	}
-    }
-  *obuf = '\0';
-
-  /* Trim end of token */
-  for (; obuf > start && (*(obuf - 1) == ' ' || *(obuf - 1) == '\t');)
-    *--obuf = '\0';
-
-  return istr;
-}
-
 
 #if !defined(WINDOWS) && !defined(WIN32) && !defined(OS2) && !defined(macintosh)
 # include <pwd.h>
@@ -308,18 +228,18 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	{
 	  STRNCPY (buf, ptr, size);
 
-          if (access (buf, R_OK) == 0)
-            return buf;
-          else if (doCreate)
-            {
-              int f = open ((char*)buf, O_CREAT,
-                S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-              if(f != -1)
-                {
-                  close(f);
-                  return buf;
-                }
-            }
+	  if (access (buf, R_OK) == 0)
+	    return buf;
+	  else if (doCreate)
+	    {
+	      int f = open ((char *) buf, O_CREAT,
+		  S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	      if (f != -1)
+		{
+		  close (f);
+		  return buf;
+		}
+	    }
 	}
 
 #  ifdef VMS
@@ -358,18 +278,18 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	  snprintf (buf, size,
 	      bIsInst ? "%s" ODBCINST_INI_APP : "%s" ODBC_INI_APP, ptr);
 
-          if (access (buf, R_OK) == 0)
-            return buf;
-          else if (doCreate)
-            {
-              int f = open ((char*)buf, O_CREAT,
-                S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-              if(f != -1)
-                {
-                  close(f);
-                  return buf;
-                }
-            }
+	  if (access (buf, R_OK) == 0)
+	    return buf;
+	  else if (doCreate)
+	    {
+	      int f = open ((char *) buf, O_CREAT,
+		  S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	      if (f != -1)
+		{
+		  close (f);
+		  return buf;
+		}
+	    }
 #   endif /* endif __APPLE__ */
 	}
 
@@ -388,39 +308,38 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	{
 	  STRNCPY (buf, ptr, size);
 
-          if (access (buf, R_OK) == 0)
-            return buf;
-          else if (doCreate)
-            {
-              int f = open ((char*)buf, O_CREAT,
-                S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-              if(f != -1)
-                {
-                  close(f);
-                  return buf;
-                }
-            }
+	  if (access (buf, R_OK) == 0)
+	    return buf;
+	  else if (doCreate)
+	    {
+	      int f = open ((char *) buf, O_CREAT,
+		  S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	      if (f != -1)
+		{
+		  close (f);
+		  return buf;
+		}
+	    }
 	}
 
 #   ifdef __APPLE__
       /*
        * Try to check the /Library/ODBC/odbc.ini
        */
-      snprintf (buf, size, "%s",
-	  bIsInst ? ODBCINST_INI_APP : ODBC_INI_APP);
+      snprintf (buf, size, "%s", bIsInst ? ODBCINST_INI_APP : ODBC_INI_APP);
 
       if (access (buf, R_OK) == 0)
-        return buf;
+	return buf;
       else if (doCreate)
-        {
-          int f = open ((char*)buf, O_CREAT,
-            S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-          if(f != -1)
-            {
-              close(f);
-              return buf;
-            }
-        }
+	{
+	  int f = open ((char *) buf, O_CREAT,
+	      S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	  if (f != -1)
+	    {
+	      close (f);
+	      return buf;
+	    }
+	}
 #   endif /* endif __APPLE__ */
 
       STRNCPY (buf, bIsInst ? SYS_ODBCINST_INI : SYS_ODBC_INI, size);

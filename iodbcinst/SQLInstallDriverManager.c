@@ -6,14 +6,14 @@
  *  These functions intentionally left blank
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -78,6 +78,7 @@
 extern BOOL InstallDriverPath ( LPSTR lpszPath, WORD cbPathMax,
     WORD * pcbPathOut,LPSTR envname);
 
+
 BOOL INSTAPI
 SQLInstallDriverManager (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut)
 {
@@ -91,7 +92,8 @@ SQLInstallDriverManager (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut)
       goto quit;
     }
 
-  retcode = InstallDriverPath (lpszPath, cbPathMax, pcbPathOut, "ODBCMANAGER");
+  retcode =
+      InstallDriverPath (lpszPath, cbPathMax, pcbPathOut, "ODBCMANAGER");
 
 quit:
   return retcode;

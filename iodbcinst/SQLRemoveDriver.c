@@ -6,14 +6,14 @@
  *  Remove a driver
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -124,7 +124,7 @@ SQLRemoveDriver (LPCSTR lpszDriver, BOOL fRemoveDSN, LPDWORD lpdwUsageCount)
     {
 #ifdef WIN32
       if (entries &&
-	(len = _iodbcdm_list_entries (pCfg, "ODBC 32 bit Data Sources",
+	  (len = _iodbcdm_list_entries (pCfg, "ODBC 32 bit Data Sources",
 		  entries, 65535)))
 #else
       if (entries

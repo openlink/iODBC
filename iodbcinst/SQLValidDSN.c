@@ -6,14 +6,14 @@
  *  Validate a DSN name
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -76,6 +76,7 @@
 #include "iodbc_error.h"
 
 #define INVALID_CHARS	"[]{}(),;?*=!@\\"
+
 
 BOOL
 ValidDSN (LPCSTR lpszDSN)

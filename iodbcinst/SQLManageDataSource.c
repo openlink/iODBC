@@ -6,14 +6,14 @@
  *  Add, modify or delete datasources
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -81,6 +81,7 @@
 #include <Carbon/Carbon.h>
 #endif
 
+
 #define CALL_ADMIN_DIALBOX(path) \
 	if ((handle = DLL_OPEN(path)) != NULL) \
 	{ \
@@ -89,6 +90,7 @@
 		    retcode = TRUE; \
 		DLL_CLOSE(handle); \
 	} \
+
 
 BOOL
 ManageDataSources (HWND hwndParent)
