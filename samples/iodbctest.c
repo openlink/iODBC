@@ -215,8 +215,6 @@ ODBC_Connect (char *connStr)
   if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     return -1;
 
-  SQLSetConnectOption (hdbc, SQL_OPT_TRACEFILE, (UDWORD) "\\SQL.LOG");
-
   connected = 1;
 
   status = SQLGetInfo (hdbc, SQL_DRIVER_VER, 
