@@ -155,7 +155,7 @@ AC_CHECK_HEADERS(wchar.h)
 ##  Check for specific library functions				##
 ##									##
 ##########################################################################
-AC_CHECK_FUNCS(strerror setenv wcslen wcscpy wcsncpy)
+AC_CHECK_FUNCS(strerror setenv wcslen wcscpy wcsncpy asprintf snprintf)
 
 
 ##########################################################################
