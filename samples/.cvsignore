@@ -3,5 +3,6 @@
 Makefile
 Makefile.in
 iodbctest
+iodbctestw
 .libs
 .deps

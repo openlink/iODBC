@@ -1,9 +1,9 @@
 #
-#  Makefile.am
+#  Makefile.sample
 #
 #  The iODBC driver manager.
 #  
-#  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1999-2004 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -65,29 +65,10 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-bin_PROGRAMS		= iodbctest iodbctestw
-INCLUDES		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
+all: iodbctest iodbctestw
 
-#
-#  Build odbctest program
-#
-iodbctest_SOURCES	= iodbctest.c
-iodbctest_LDADD		= ../iodbc/libiodbc.la
-iodbctest_LDFLAGS	= # -static
+iodbctest: iodbctest.c
+	cc `iodbc-config --cflags` -o iodbctest iodbctest.c `iodbc-config --static-libs`
 
-iodbctestw_CFLAGS	= -DUNICODE
-iodbctestw_SOURCES	= iodbctest.c
-iodbctestw_LDADD	= ../iodbc/libiodbc.la
-iodbctestw_LDFLAGS	= # -static
-
-EXTRA_DIST		= Makefile.sample 
-
-install-exec-hook:
-	$(mkinstalldirs) ${pkgdatadir}/samples
-	cp $(srcdir)/iodbctest.c ${pkgdatadir}/samples/iodbctest.c
-	cp $(srcdir)/Makefile.sample ${pkgdatadir}/samples/Makefile
-
-uninstall-hook:
-	rm -f ${pkgdatadir}/samples/iodbctest.c
-	rm -f ${pkgdatadir}/samples/Makefile
-	rmdir ${pkgdatadir}/samples
+iodbctestw: iodbctest.c
+	cc `iodbc-config --cflags` -DUNICODE -o iodbctestw iodbctest.c `iodbc-config --static-libs`
