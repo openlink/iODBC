@@ -1,3 +1,27 @@
+2004-02-24 10:14  source
+
+	* Updated NEWS with highlights of new release
+	* Updated version and build numbers to 3.51.2
+	  (pvk)
+	
+2004-02-24 10:10  source
+
+	* Fixed build problem on panther (th)
+	
+2004-02-23 18:13  source
+
+	* Fixed build problem with older make programs (pvk)
+	
+2004-02-23 15:01  source
+
+	* Fixed problem building on FreeBSD
+	* Clean symbolic links
+	  (pvk)
+	
+2004-02-23 13:22  source
+
+	* Regenerated ChangeLog (pvk)
+	
 2004-02-23 13:21  source
 
 	* Remove config.nice when making distributions (pvk)
