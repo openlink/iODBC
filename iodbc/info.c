@@ -222,11 +222,19 @@ SQLDataSources (
    */
   STRNCPY (szDSN, sect[cur_entry], cbDSNMax);
 
+  if (*pcbDSN)
+    *pcbDSN = strlen (sect[cur_entry]);
+
+
   /*
    *  And find the description that goes with this entry
    */
   _iodbcdm_getkeyvalbydsn (sect[cur_entry], strlen (sect[cur_entry]),
       "Description", szDesc, cbDescMax);
+
+  if (*pcbDesc)
+    *pcbDesc = strlen(szDesc);
+
 
   /*
    *  Next record
