@@ -151,6 +151,6 @@ release:
 #  Generate ChangeLog
 #
 changelog:
-	cvs2cl --branches --no-wrap --utc --hide-filenames --prune
+	cvs2cl --no-wrap --utc --hide-filenames --prune --window 3600
 
 endif
