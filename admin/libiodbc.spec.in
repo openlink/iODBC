@@ -184,10 +184,14 @@ mkdir -p $RPM_BUILD_ROOT/etc
 
 %files 
 %attr(0755, root, root) /usr/bin/iodbctest
+%attr(0755, root, root) /usr/bin/iodbctestw
 %attr(0755, root, root) /usr/lib/libiodbc.so.*
 %attr(0755, root, root) /usr/lib/libiodbcinst.so.*
+%attr(0644, root, root) /usr/man/man1/iodbctest.1*
+%attr(0644, root, root) /usr/man/man1/iodbctestw.1*
 #%attr(0644, root, root) %config /etc/odbc.ini
 #%attr(0644, root, root) %config /etc/odbcinst.ini
+
 
 %files devel
 %attr(0644, root, root) %doc AUTHORS 
@@ -216,6 +220,9 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) /usr/lib/libiodbcinst.a
 %attr(0644, root, root) /usr/lib/libiodbcinst.la
 %attr(0755, root, root) /usr/lib/libiodbcinst.so
+%attr(0644, root, root) /usr/man/man1/iodbc-config.1.*
+%attr(0644, root, root) /usr/share/libiodbc/samples/Makefile
+%attr(0644, root, root) /usr/share/libiodbc/samples/iodbctest.c
 
 %files admin
 %attr(0755, root, root) /usr/bin/iodbcadm-gtk
@@ -225,3 +232,4 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) /usr/lib/libiodbcadm.a
 %attr(0644, root, root) /usr/lib/libiodbcadm.la
 %attr(0755, root, root) /usr/lib/libiodbcadm.so*
+%attr(0644, root, root) /usr/man/man1/iodbcadm-gtk.1*

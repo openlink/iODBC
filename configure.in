@@ -620,6 +620,11 @@ AC_CONFIG_FILES([
     bin/Makefile
     bin/iodbc-config
     etc/Makefile
+    man/Makefile
+    man/iodbc-config.1
+    man/iodbctest.1
+    man/iodbctestw.1
+    man/iodbcadm-gtk.1
     include/Makefile
     iodbc/Makefile
     iodbc/trace/Makefile

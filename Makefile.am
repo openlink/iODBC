@@ -68,7 +68,7 @@
 
 AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
 
-SUBDIRS 		= admin bin etc include iodbcinst iodbc iodbcadm drvproxy samples
+SUBDIRS 		= admin bin etc man include iodbcinst iodbc iodbcadm drvproxy samples
 
 EXTRA_DIST		= \
 	IAFA-PACKAGE \
