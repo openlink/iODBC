@@ -131,31 +131,32 @@ typedef unsigned char		SQLVARCHAR;
 typedef INT64			SQLLEN;
 typedef UINT64			SQLULEN;
 typedef UINT64			SQLSETPOSIROW;
-#elif ODBC64
-typedef signed long long	SQLLEN;
-typedef unsigned long long	SQLULEN;
-typedef unsigned long long	SQLSETPOSIROW;
-#else
-typedef signed long		SQLLEN;
+#elif defined(STRICT_ODBC_TYPES)
+typedef long			SQLLEN;
 typedef unsigned long		SQLULEN;
-typedef unsigned long		SQLSETPOSIROW;
+typedef unsigned short		SQLSETPOSIROW;
+#else
+#define SQLLEN			long
+#define SQLULEN 		unsigned long
+#define SQLSETPOSIROW		unsigned short
 #endif
 
 
 /*
- *  Backward compatibility
+ *  Backward compatibility with older platform sdks
  */
-typedef SQLULEN			SQLROWCOUNT;
-typedef SQLULEN			SQLROWSETSIZE;
-typedef SQLULEN			SQLTRANSID;
+#if defined(WIN32)
+typedef SQLULEN 		SQLROWCOUNT;
+typedef SQLULEN 		SQLROWSETSIZE;
+typedef SQLULEN 		SQLTRANSID;
 typedef SQLLEN			SQLROWOFFSET;
+#endif
 
 
 /*
  *  Generic pointer types
  */
 typedef void *              	PTR;
-typedef void *              	SQLPOINTER;
 typedef void *			SQLHANDLE;
 
 
