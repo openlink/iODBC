@@ -145,12 +145,10 @@ typedef unsigned short		SQLSETPOSIROW;
 /*
  *  Backward compatibility with older platform sdks
  */
-#if defined(WIN32)
 typedef SQLULEN 		SQLROWCOUNT;
 typedef SQLULEN 		SQLROWSETSIZE;
 typedef SQLULEN 		SQLTRANSID;
 typedef SQLLEN			SQLROWOFFSET;
-#endif
 
 
 /*
