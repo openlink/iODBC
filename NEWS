@@ -1,3 +1,18 @@
+Feb 24 2004, V3.51.2:
+    * Added support for installation layouts for different distributions
+      e.g. --with-layout=RedHat
+    * Added support for Mac OS X 10.3 (panther)
+    * Added support for creating libodbc.so symlink
+    * Added more ODBC 3.x calls to iodbctest.c program
+    * Added SQLRowCount for SQL UPDATE/DELETE statements in iodbctest.c
+    * Fixed build problem with older make programs
+    * Fixed bug in state handling SQLCloseCursor 
+    * Fixed driver statement allocation problem
+    * Fixed double free in statement handle
+    * Fixed problem tracing variable length strings and binary data
+    * Use snprintf when available to guard against buffer overruns
+    * Small documentation fixes
+
 Sept 08 2003, V3.51.1:
     * Fixed library dependency for PHP and other open source packages
     * Fixed build problems on Mac OS X
