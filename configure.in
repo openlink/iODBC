@@ -216,8 +216,18 @@ case ${IODBC_LAYOUT} in
 	inidir=/etc
 	;;
 
+ [[Oo]][[Pp]][[Ee]][[Nn]][[Ll]][[Ii]][[Nn]][[Kk]])	# OpenLink
+ 	iodbc_layout=openlink
+	prefix=/usr/local/iODBC
+	inidir=/etc
+	;;
+
   *)						# UNKNOWN
-	AC_MSG_ERROR(Unknown layout ${IODBC_LAYOUT})
+  	AC_MSG_RESULT(unknown)
+	echo ""
+	echo "AC_HELP_STRING([Supported layouts:], [Debian FreeBSD GNU OpenLink opt RedHat])"
+	echo ""
+	AC_MSG_ERROR([unable to continue])
 	;;
 esac
 AC_MSG_RESULT([${iodbc_layout}])
