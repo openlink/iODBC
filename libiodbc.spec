@@ -28,7 +28,7 @@
 # ----------------------------------------------------------------------
 Summary: iODBC Driver Manager
 name: libiodbc
-version: 3.0.0
+version: 3.0.1
 release: 1
 Group: Libraries
 Vendor: Ke Jin 
@@ -69,7 +69,7 @@ currently maintained by OpenLink Software under an LGPL license.
 %prep
 %setup
 %build
-./configure --prefix=/usr --enable-odbc3 --with-iodbc-inidir=/etc
+./configure --prefix=/usr --enable-odbc3 --with-iodbc-inidir=/etc --with-pthreads
 make
 
 %install
@@ -87,7 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files 
 %attr(0755, root, root) /usr/lib/libiodbc.so.2
-%attr(0755, root, root) /usr/lib/libiodbc.so.2.1.0
+%attr(0755, root, root) /usr/lib/libiodbc.so.2.1.1
 %attr(0644, root, root) %config /etc/odbc.ini
 # %attr(0644, root, root) %config /etc/odbcinst.ini
 
