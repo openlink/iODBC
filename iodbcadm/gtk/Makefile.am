@@ -83,7 +83,7 @@ INCLUDES			= \
 AM_CFLAGS			= \
 	@CFLAGS@ -D__GTK__ -DDATEBUILD=\"$(DATEBUILD)\"
 
-libiodbcadm_gtk_la_LDFLAGS	= -static
+libiodbcadm_gtk_la_LDFLAGS	= #-static
 libiodbcadm_gtk_la_LIBADD	= @GTK_LIBS@
 libiodbcadm_gtk_la_SOURCES	= \
 	administrator.c \

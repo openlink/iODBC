@@ -75,7 +75,7 @@ INCLUDES			= \
 	-I$(top_srcdir)/include -I$(top_srcdir)/iodbc \
 	@GTK_CFLAGS@ -D __GTK__
 
-libdrvproxy_gtk_la_LDFLAGS	= -static
+libdrvproxy_gtk_la_LDFLAGS	= #-static
 
 libdrvproxy_gtk_la_LIBADD	= @GTK_LIBS@
 

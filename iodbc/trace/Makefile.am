@@ -73,7 +73,7 @@ INCLUDES			= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc 
 
-libiodbctrace_la_LDFLAGS	= -static
+libiodbctrace_la_LDFLAGS	= #-static
 libiodbctrace_la_SOURCES	= \
 	AllocConnect.c \
 	AllocEnv.c \
