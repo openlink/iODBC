@@ -37,7 +37,26 @@ enum
 
 #if (ODBCVER >= 0x0300)
     en_AllocHandle = SQL_API_SQLALLOCHANDLE,
+    en_BindParam = SQL_API_SQLBINDPARAM,
+    en_BulkOperations = SQL_API_SQLBULKOPERATIONS,
+    en_CloseCursor = SQL_API_SQLCLOSECURSOR,
+    en_ColAttribute = SQL_API_SQLCOLATTRIBUTE,
+    en_CopyDesc = SQL_API_SQLCOPYDESC,
+    en_EndTran = SQL_API_SQLENDTRAN,
+    en_FetchScroll = SQL_API_SQLFETCHSCROLL,
     en_FreeHandle = SQL_API_SQLFREEHANDLE,
+    en_GetConnectAttr = SQL_API_SQLGETCONNECTATTR,
+    en_GetDescField = SQL_API_SQLGETDESCFIELD,
+    en_GetDescRec = SQL_API_SQLGETDESCREC,
+    en_GetDiagField = SQL_API_SQLGETDIAGFIELD,
+    en_GetDiagRec = SQL_API_SQLGETDIAGREC,
+    en_GetEnvAttr = SQL_API_SQLGETENVATTR,
+    en_GetStmtAttr = SQL_API_SQLGETSTMTATTR,
+    en_SetConnectAttr = SQL_API_SQLSETCONNECTATTR,
+    en_SetDescField = SQL_API_SQLSETDESCFIELD,
+    en_SetDescRec = SQL_API_SQLSETDESCREC,
+    en_SetEnvAttr = SQL_API_SQLSETENVATTR,
+    en_SetStmtAttr = SQL_API_SQLSETSTMTATTR,
 #endif
 
     en_AllocEnv = SQL_API_SQLALLOCENV,
@@ -111,11 +130,15 @@ enum
 typedef struct
   {
     int type;			/* must be 1st field */
+    HERR herr;			/* err list          */
+    SQLRETURN rc;
 
     HENV henv;			/* driver's env list */
     HDBC hdbc;			/* driver's dbc list */
-    HERR herr;			/* err list          */
     int state;
+#if (ODBCVER >= 0x300)
+    SQLINTEGER odbc_ver;    /* ODBC version of the application */
+#endif    
   }
 GENV_t;
 
@@ -123,15 +146,21 @@ typedef struct
   {
     HENV next;			/* next attached env handle */
     int refcount;		/* Driver's bookkeeping reference count */
+#if (ODBCVER >= 0x300)
+    HPROC dllproc_tab[SQL_ODBC3_API_LAST + 1];	/* driver api calls  */
+#else
     HPROC dllproc_tab[SQL_EXT_API_LAST + 1];	/* driver api calls  */
-
+#endif    
     HENV dhenv;			/* driver env handle    */
     HDLL hdll;			/* driver share library handle */
+#if (ODBCVER >= 0x300)
+    SQLINTEGER dodbc_ver;	/* driver's ODBC version */
+#endif    
   }
 ENV_t;
 
 #define IS_VALID_HENV(x) \
-	((x) != SQL_NULL_HENV && (x)->type == SQL_HANDLE_ENV)
+	((x) != SQL_NULL_HENV && ((GENV_t FAR *)(x))->type == SQL_HANDLE_ENV)
 
 /* Note:
  *

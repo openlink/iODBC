@@ -103,22 +103,31 @@ extern HPROC _iodbcdm_gettrproc (void FAR * stm, int procid, int type);
 	}
 #endif
 
+#define CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ) \
+    { \
+      ret = proc plist; \
+      if (errHandle) ((GENV_t FAR *)(errHandle))->rc = ret; \
+    }
+#endif
+
 #ifdef	NO_TRACE
-#define CALL_DRIVER( hdbc, ret, proc, procid, plist )	{ ret = proc plist; }
+#define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
+    CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist )
 #else
-#define CALL_DRIVER( hdbc, ret, proc, procid, plist )\
+#define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
 	{\
 		DBC_t FAR*	pdbc = (DBC_t FAR*)(hdbc);\
 \
 		if( pdbc->trace ) {\
 			TRACE_DM2DRV( pdbc->tstm, procid, plist )\
-			ret = proc plist;\
+			CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ); \
 			TRACE_DRV2DM( pdbc->tstm, procid, plist )\
 			TRACE_RETURN( pdbc->tstm, 1, ret )\
 		}\
 		else\
-			ret = proc plist;\
+			CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ); \
 	}
 #endif
+
 
 #endif

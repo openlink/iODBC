@@ -64,6 +64,14 @@ typedef enum
     en_40001,
     en_42000,
     en_70100,
+    en_HY001,
+    en_HY009,
+    en_HY010,
+    en_HY017,
+    en_HY024,
+    en_HY091,
+    en_HY092,
+    en_HYC00,
     en_IM001,
     en_IM002,
     en_IM003,
@@ -147,7 +155,16 @@ extern void _iodbcdm_freesqlerrlist (HERR herr);
 extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, char *sysmsg);
 
 #define	PUSHSYSERR(list, msg)	\
-			list = (HERR)_iodbcdm_pushsqlerr( (HERR)(list), 0, (char*)msg )
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), 0, (char *) msg)
+
 #define	PUSHSQLERR(list, code)	\
-			list = (HERR)_iodbcdm_pushsqlerr( (HERR)(list), (int)(code), NULL )
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (int)(code), NULL)
+
+#define CLEAR_ERRORS(_handle) \
+    { \
+	_iodbcdm_freesqlerrlist ((_handle)->herr); \
+	 (_handle)->herr = SQL_NULL_HERR; \
+	 (_handle)->rc = SQL_SUCCESS; \
+    }
+	
 #endif /* _SQLERR_H */

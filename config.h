@@ -48,13 +48,9 @@
 #define CALLBACK
 #define FAR
 
-typedef signed short SSHOR;
-typedef short WORD;
-typedef long DWORD;
-
-typedef WORD WPARAM;
-typedef DWORD LPARAM;
-typedef int BOOL;
+#ifndef WIN32
+#define UNALIGNED
+#endif
 
 /*
  *  If not defined, use this as the system default odbc.ini file
@@ -78,6 +74,7 @@ typedef int BOOL;
 #define STREQ(a, b)	(fstrcmp((char FAR*)(a), (char FAR*)(b) == 0))
 #define STRCAT(t, s)	(strcat((char*)(t), (char*)(s)))
 #define STRNCAT(t,s,n)	(strncat((char*)(t), (char*)(s), (size_t)(n)))
+#define STRNCMP(t,s,n)	(strncmp((char*)(t), (char*)(s), (size_t)(n)))
 #endif
 
 #ifdef	_BORLAND_
@@ -89,6 +86,7 @@ typedef int BOOL;
 #define STREQ(a, b)     (_fstrcmp((char FAR*)(a), (char FAR*)(b) == 0))
 #define STRCAT(t, s)	(strcat((char*)(t), (char*)(s)))
 #define STRNCAT(t,s,n)	(strncat((char*)(t), (char*)(s), (size_t)(n)))
+#define STRNCMP(t,s,n)	(strncmp((char*)(t), (char*)(s), (size_t)(n)))
 #endif
 
 #endif /* WINDOWS */
@@ -112,6 +110,59 @@ typedef int BOOL;
 
 #ifndef	NULL
 #define NULL		((void FAR*)0UL)
+#endif
+
+/*
+ *  Map generic pointer to internal pointer 
+ */
+#define STMT(stmt, var) \
+	STMT_t FAR *stmt = (STMT_t FAR *)var
+
+#define CONN(con, var) \
+	DBC_t FAR *con = (DBC_t FAR *)var
+
+#define GENV(genv, var) \
+	GENV_t FAR *genv = (GENV_t FAR *)var
+
+#define ENVR(env, var) \
+	ENV_t FAR *env = (ENV_t FAR *)var
+
+#define DESC(desc, var) \
+	DESC_t FAR *desc = (DESC_t FAR *)var
+
+#define NEW_VAR(type, var) \
+	type *var = (type *)MEM_ALLOC(sizeof(type))
+
+/* these are deprecated defines from the odbc headers */
+#define SQL_EXT_API_LAST            SQL_API_SQLBINDPARAMETER
+#define SQL_NUM_FUNCTIONS           23
+#define SQL_EXT_API_START           40
+#define SQL_NUM_EXTENSIONS 	    (SQL_EXT_API_LAST-SQL_EXT_API_START+1)
+#define SQL_ODBC3_API_LAST	    SQL_API_SQLBINDPARAMETER + 21
+#define SQL_CONNECT_OPT_DRVR_START      1000
+
+/* the ODBC3 additional space for ODBC3 calls */
+#define API_IS_ODBC3_FUNCTION(index) \
+    ((index) > 1000 && (index) < 1021 && (index) != 1013 && (index) != 1015)
+#define API_ODBC3_FUNCTION_INDEX(x) \
+    (API_IS_ODBC3_FUNCTION(x) ? ((x) - 1000 + SQL_EXT_API_LAST) : (x))
+
+#if 0
+#define SQL_TYPE_MIN                SQL_BIT
+#define SQL_TYPE_MAX                SQL_VARCHAR
+#define SQL_TYPE_DRIVER_START       SQL_INTERVAL_YEAR
+#define SQL_TYPE_DRIVER_END         SQL_UNICODE_LONGVARCHAR
+
+#define SQL_CONN_OPT_MAX                SQL_PACKET_SIZE
+#define SQL_CONN_OPT_MIN                SQL_ACCESS_MODE
+
+#define SQL_STMT_OPT_MIN		SQL_QUERY_TIMEOUT
+#define SQL_STMT_OPT_MAX		SQL_ROW_NUMBER
+
+#define SQL_INFO_LAST			SQL_QUALIFIER_LOCATION
+#define SQL_INFO_DRIVER_START		1000
+
+#define SQL_COLUMN_DRIVER_START         1000
 #endif
 
 #endif

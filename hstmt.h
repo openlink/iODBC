@@ -26,19 +26,16 @@
 #ifndef	_HSTMT_H
 #define	_HSTMT_H
 
-#include <config.h>
-
-#include <sql.h>
-#include <sqlext.h>
-
 typedef struct STMT
   {
     int type;			/* must be 1st field */
+    HERR herr;
+    SQLRETURN rc;		/* Return code of last function */
 
     struct STMT *next;
 
-    HERR herr;
     HDBC hdbc;			/* back point to connection object */
+
     HSTMT dhstmt;		/* driver's stmt handle */
 
     int state;
@@ -46,13 +43,25 @@ typedef struct STMT
     int prep_state;
     int asyn_on;		/* async executing which odbc call */
     int need_on;		/* which call return SQL_NEED_DATA */
+
+#if (ODBCVER >= 0x0300)
+    DESC_t FAR * imp_desc[4];
+    DESC_t FAR * desc[4];
+    SQLUINTEGER row_array_size, rowset_size;
+    SQLPOINTER fetch_bookmark_ptr, params_processed_ptr;
+    SQLUINTEGER paramset_size;
+    SQLPOINTER row_status_ptr;
+    SQLPOINTER rows_fetched_ptr;
+    SQLUSMALLINT row_status_allocated;
+#endif
+
   }
 STMT_t;
 
 #define IS_VALID_HSTMT(x) \
 	((x) != SQL_NULL_HSTMT && \
-	 (x)->type == SQL_HANDLE_STMT && \
-	 (x)->hdbc != SQL_NULL_HDBC)
+	 ((STMT_t FAR *)(x))->type == SQL_HANDLE_STMT && \
+	 ((STMT_t FAR *)(x))->hdbc != SQL_NULL_HDBC)
 
 enum
   {

@@ -26,9 +26,16 @@
 #ifndef	_HDBC_H
 #define	_HDBC_H
 
+#if (ODBCVER >= 0x0300)
+#include <hdesc.h>
+#endif
+
 typedef struct DBC
   {
     int type;			/* must be 1st field */
+    HERR herr;
+    SQLRETURN rc;
+
     struct DBC FAR * next;
 
     HENV genv;			/* back point to global env object */
@@ -36,7 +43,9 @@ typedef struct DBC
     HDBC dhdbc;			/* driver's private dbc */
     HENV henv;			/* back point to instant env object */
     HSTMT hstmt;		/* list of statement object handle(s) */
-    HERR herr;
+#if (ODBCVER >= 0x300)
+    HDESC hdesc;    		/* list of connection descriptors */
+#endif    
 
     int state;
 
@@ -61,7 +70,7 @@ typedef struct DBC
 DBC_t;
 
 #define IS_VALID_HDBC(x) \
-	((x) != SQL_NULL_HDBC && (x)->type == SQL_HANDLE_DBC)
+	((x) != SQL_NULL_HDBC && ((DBC_t FAR *)(x))->type == SQL_HANDLE_DBC)
 
 /* 
  * Note:
