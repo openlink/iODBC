@@ -1365,7 +1365,7 @@ SQLGetDiagField_Internal (
       return SQL_INVALID_HANDLE;
     }
 
-  if (con != NULL)
+  if (con != NULL && con->henv != SQL_NULL_HENV)
     unicode_driver = ((ENV_t FAR *) con->henv)->unicode_driver;
 
   switch (nRecNumber)
