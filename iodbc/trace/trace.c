@@ -75,6 +75,7 @@
 #include <ctype.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <sql.h>
 #include <sqlext.h>
@@ -136,8 +137,8 @@ trace_set_filename (char *fname)
   int i;
   MEM_FREE (trace_fname);
 
-  memset (buf, '\0', 255);
-  for (s = fname, i = 0; i < 255 && *s;)
+  memset (buf, '\0', sizeof (buf));
+  for (s = fname, i = 0; i < sizeof (buf) && *s;)
     {
       if (*s == '$')
 	{
@@ -168,7 +169,11 @@ trace_set_filename (char *fname)
 
 	      if (p)
 		{
-		  snprintf (buf, 255, "%s%s", buf, p);
+#if defined (HAVE_SNPRINTF)
+		  snprintf (buf, sizeof (buf), "%s%s", buf, p);
+#else
+		  sprintf (buf, "%s%s", buf, p);
+#endif
 		  i = strlen(buf);
 		  s += 2;
 		  continue;
@@ -457,7 +462,7 @@ trace_emit_binary (unsigned char *str, int len)
   char buf[80];
   char *HEX = "0123456789ABCDEF";
 
-  if (!str || len < 0)
+  if (!str || len <= 0)
     return;
 
   /*
