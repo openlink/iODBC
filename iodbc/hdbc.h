@@ -1,42 +1,64 @@
+/*
+ *  hdbc.h
+ *
+ *  $Id$
+ *
+ *  Data source connect object management functions
+ *
+ *  The iODBC driver manager.
+ *  
+ *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ */
 #ifndef	_HDBC_H
 #define	_HDBC_H
 
-typedef	struct DBC
-{
-	int	type;		/* must be 1st field */
-	struct DBC FAR*	
-		next;
+typedef struct DBC
+  {
+    int type;			/* must be 1st field */
+    struct DBC FAR *
+     next;
 
-	HENV	genv;		/* back point to global env object */
+    HENV genv;			/* back point to global env object */
 
-	HDBC	dhdbc;		/* driver's private dbc */
-	HENV	henv;		/* back point to instant env object */
-	HSTMT	hstmt;		/* list of statement object handle(s) */
-	HERR	herr;
+    HDBC dhdbc;			/* driver's private dbc */
+    HENV henv;			/* back point to instant env object */
+    HSTMT hstmt;		/* list of statement object handle(s) */
+    HERR herr;
 
-	int	state;
+    int state;
 
-	/* options */
-	UDWORD	access_mode;
-	UDWORD	autocommit;
+    /* options */
+    UDWORD access_mode;
+    UDWORD autocommit;
 
-	UDWORD	login_timeout;
-	UDWORD	odbc_cursors;
-	UDWORD	packet_size;
-	UDWORD	quiet_mode;
-	UDWORD	txn_isolation;
-	SWORD	cb_commit;
-	SWORD	cb_rollback;
+    UDWORD login_timeout;
+    UDWORD odbc_cursors;
+    UDWORD packet_size;
+    UDWORD quiet_mode;
+    UDWORD txn_isolation;
+    SWORD cb_commit;
+    SWORD cb_rollback;
 
-	char FAR*	
-		current_qualifier;
+    char FAR *
+     current_qualifier;
 
-	int	trace;	/* trace flag */
-	char FAR*	
-		tfile;
-	void FAR*
-		tstm;	/* trace stream */
-} DBC_t;
+    int trace;			/* trace flag */
+    char FAR *
+     tfile;
+    void FAR *
+     tstm;			/* trace stream */
+  }
+DBC_t;
 
 /* 
  * Note:
@@ -57,11 +79,11 @@ typedef	struct DBC
  *    SQLGetInfo() with fInfoType equals to SQL_DRIVER_HDBC.
  */
 
-enum	{
-	en_dbc_allocated,
-	en_dbc_needdata,
-	en_dbc_connected,
-	en_dbc_hstmt
-};
-
+enum
+  {
+    en_dbc_allocated,
+    en_dbc_needdata,
+    en_dbc_connected,
+    en_dbc_hstmt
+  };
 #endif

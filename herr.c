@@ -1,17 +1,24 @@
-/** Error stack management functions
-  
-    Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-**/
+/*
+ *  herr.c
+ *
+ *  $Id$
+ *
+ *  Error stack management functions
+ *
+ *  The iODBC driver manager.
+ *  
+ *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ */
 
 #include	<config.h>
 
@@ -29,336 +36,348 @@
 
 #include	"herr.ci"
 
-static	HERR	_iodbcdm_popsqlerr( HERR herr )
+static HERR 
+_iodbcdm_popsqlerr (HERR herr)
 {
-	sqlerr_t*	list = (sqlerr_t*)herr;
-	sqlerr_t*	next;
+  sqlerr_t *list = (sqlerr_t *) herr;
+  sqlerr_t *next;
 
-	if( herr == SQL_NULL_HERR )
-	{
-		return herr;
-	}
-	
-	next = list->next;
+  if (herr == SQL_NULL_HERR)
+    {
+      return herr;
+    }
 
-	MEM_FREE (list);
+  next = list->next;
 
-	return next;
+  MEM_FREE (list);
+
+  return next;
 }
 
-void	_iodbcdm_freesqlerrlist( HERR herrlist )
-{
-	HERR	list;
 
-	for(list = herrlist; list!= 0; )
-	{
-		list = _iodbcdm_popsqlerr(list);
-	}
+void 
+_iodbcdm_freesqlerrlist (HERR herrlist)
+{
+  HERR list;
+
+  for (list = herrlist; list != 0;)
+    {
+      list = _iodbcdm_popsqlerr (list);
+    }
 }
 
-HERR	_iodbcdm_pushsqlerr ( 
-		HERR 		herr,
-		sqlstcode_t	code,
-		char*		msg )
+
+HERR 
+_iodbcdm_pushsqlerr (
+    HERR herr,
+    sqlstcode_t code,
+    char *msg)
 {
-	sqlerr_t*	ebuf;
-	sqlerr_t*	perr 	= (sqlerr_t*)herr;
-	int		idx 	= 0;
+  sqlerr_t *ebuf;
+  sqlerr_t *perr = (sqlerr_t *) herr;
+  int idx = 0;
 
-	if(herr != SQL_NULL_HERR )
-	{
-		idx = perr->idx + 1;
-	}
+  if (herr != SQL_NULL_HERR)
+    {
+      idx = perr->idx + 1;
+    }
 
-	if( idx == 64 )		
-	/* over wirte the top entry to prevent error stack blow out */
-	{
-		perr->code = code;
-		perr->msg  = msg;
+  if (idx == 64)
+    /* over wirte the top entry to prevent error stack blow out */
+    {
+      perr->code = code;
+      perr->msg = msg;
 
-		return herr;
-	}
+      return herr;
+    }
 
-	ebuf = (sqlerr_t*)MEM_ALLOC (sizeof(sqlerr_t)); 
-	
-	if( ebuf == NULL )
-	{
-		return NULL;
-	}
+  ebuf = (sqlerr_t *) MEM_ALLOC (sizeof (sqlerr_t));
 
-	ebuf->msg	= msg;	
-	ebuf->code 	= code;
-	ebuf->idx	= idx;
-	ebuf->next	= (sqlerr_t*)herr;
+  if (ebuf == NULL)
+    {
+      return NULL;
+    }
 
-	return (HERR)ebuf;
+  ebuf->msg = msg;
+  ebuf->code = code;
+  ebuf->idx = idx;
+  ebuf->next = (sqlerr_t *) herr;
+
+  return (HERR) ebuf;
 }
 
-static	char FAR*	_iodbcdm_getsqlstate ( 
-				HERR		herr, 
-				void FAR*	tab )
+
+static char FAR *
+_iodbcdm_getsqlstate (
+    HERR herr,
+    void FAR * tab)
 {
-	sqlerr_t*	perr = (sqlerr_t*)herr;
-	sqlerrmsg_t*	ptr;
+  sqlerr_t *perr = (sqlerr_t *) herr;
+  sqlerrmsg_t *ptr;
 
-	if( herr == SQL_NULL_HERR || tab == NULL )
+  if (herr == SQL_NULL_HERR || tab == NULL)
+    {
+      return (char FAR *) NULL;
+    }
+
+  for (ptr = tab;
+      ptr->code != en_sqlstat_total;
+      ptr++)
+    {
+      if (ptr->code == perr->code)
 	{
-		return (char FAR*)NULL;
+	  return (char FAR *) (ptr->stat);
 	}
+    }
 
-	for( ptr = tab;
-	     ptr->code != en_sqlstat_total;
-	     ptr++ )
-	{
-		if(ptr->code == perr->code)
-		{
-			return (char FAR*)(ptr->stat);
-		}
-	}
-
-	return (char FAR*)NULL;
+  return (char FAR *) NULL;
 }
 
-static char FAR*   	_iodbcdm_getsqlerrmsg(
-				HERR		herr,
-				void FAR*	errtab )
+
+static char FAR *
+_iodbcdm_getsqlerrmsg (
+    HERR herr,
+    void FAR * errtab)
 {
-        sqlerr_t*       perr = (sqlerr_t*)herr;
-	sqlerrmsg_t*	ptr;
+  sqlerr_t *perr = (sqlerr_t *) herr;
+  sqlerrmsg_t *ptr;
 
-        if( herr == SQL_NULL_HERR )
-        {
-                return NULL;
-        }
+  if (herr == SQL_NULL_HERR)
+    {
+      return NULL;
+    }
 
-	if( perr->msg == NULL && errtab == NULL )
+  if (perr->msg == NULL && errtab == NULL)
+    {
+      return NULL;
+    }
+
+  if (perr->msg != NULL)
+    {
+      return perr->msg;
+    }
+
+  for (ptr = (sqlerrmsg_t *) errtab;
+      ptr->code != en_sqlstat_total;
+      ptr++)
+    {
+      if (ptr->code == perr->code)
 	{
-		return NULL;
+	  return (char FAR *) ptr->msg;
 	}
+    }
 
-	if( perr->msg != NULL )
-	{
-		return perr->msg;
-	}
-
-	for( ptr = (sqlerrmsg_t*)errtab;
-	     ptr->code != en_sqlstat_total;
-	     ptr++ )
-	{
-		if( ptr->code == perr->code )
-		{
-			return (char FAR*)ptr->msg;
-		}
-	}
-
-	return (char FAR*)NULL;
+  return (char FAR *) NULL;
 }
 
-RETCODE SQL_API	SQLError (
- 			HENV		henv,
-			HDBC		hdbc,
-			HSTMT		hstmt,
-			UCHAR FAR*	szSqlstate,
-			SDWORD FAR*	pfNativeError,
-			UCHAR FAR*	szErrorMsg,
-			SWORD		cbErrorMsgMax,
-			SWORD FAR*	pcbErrorMsg )
+
+RETCODE SQL_API 
+SQLError (
+    HENV henv,
+    HDBC hdbc,
+    HSTMT hstmt,
+    UCHAR FAR * szSqlstate,
+    SDWORD FAR * pfNativeError,
+    UCHAR FAR * szErrorMsg,
+    SWORD cbErrorMsgMax,
+    SWORD FAR * pcbErrorMsg)
 {
-	GENV_t FAR*	genv  	= (GENV_t FAR*) henv;
-	DBC_t  FAR*     pdbc    = (DBC_t FAR*) hdbc;
-	STMT_t FAR*     pstmt   = (STMT_t FAR*)hstmt;
-	HDBC		thdbc;
+  GENV_t FAR *genv = (GENV_t FAR *) henv;
+  DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
+  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  HDBC thdbc;
 
-	HENV		dhenv	= SQL_NULL_HENV;
-	HDBC		dhdbc	= SQL_NULL_HDBC;
-	HSTMT		dhstmt	= SQL_NULL_HSTMT;
+  HENV dhenv = SQL_NULL_HENV;
+  HDBC dhdbc = SQL_NULL_HDBC;
+  HSTMT dhstmt = SQL_NULL_HSTMT;
 
-	HERR		herr 	= SQL_NULL_HERR;
-	HPROC		hproc	= SQL_NULL_HPROC;
+  HERR herr = SQL_NULL_HERR;
+  HPROC hproc = SQL_NULL_HPROC;
 
-	char   FAR*	errmsg	= NULL;
-	char   FAR*	ststr	= NULL;
+  char FAR *errmsg = NULL;
+  char FAR *ststr = NULL;
 
-	int		handle	= 0;
-	RETCODE		retcode = SQL_SUCCESS;
-	
-	if( hstmt != SQL_NULL_HSTMT )	/* retrive stmt err */
+  int handle = 0;
+  RETCODE retcode = SQL_SUCCESS;
+
+  if (hstmt != SQL_NULL_HSTMT)	/* retrive stmt err */
+    {
+      herr = pstmt->herr;
+      thdbc = pstmt->hdbc;
+
+      if (thdbc == SQL_NULL_HDBC)
 	{
-		herr 	= pstmt->herr;
-		thdbc	= pstmt->hdbc;
-
-		if( thdbc == SQL_NULL_HDBC )
-		{
-			return SQL_INVALID_HANDLE;
-		}	
-		hproc	= _iodbcdm_getproc( thdbc, en_Error );
-		dhstmt	= pstmt->dhstmt;
-		handle	= 3;
+	  return SQL_INVALID_HANDLE;
 	}
-	else if( hdbc != SQL_NULL_HDBC )	/* retrive dbc err */
+      hproc = _iodbcdm_getproc (thdbc, en_Error);
+      dhstmt = pstmt->dhstmt;
+      handle = 3;
+    }
+  else if (hdbc != SQL_NULL_HDBC)	/* retrive dbc err */
+    {
+      herr = pdbc->herr;
+      thdbc = hdbc;
+      if (thdbc == SQL_NULL_HDBC)
 	{
-		herr	= pdbc->herr;
-		thdbc	= hdbc;
-		if( thdbc == SQL_NULL_HDBC )
-		{
-			return SQL_INVALID_HANDLE;
-		}
-		hproc	= _iodbcdm_getproc( thdbc, en_Error );
-		dhdbc	= pdbc->dhdbc;
-		handle	= 2;
-
-		if( herr == SQL_NULL_HERR
-		 && pdbc->henv == SQL_NULL_HENV )
-		{
-			return SQL_NO_DATA_FOUND;
-		}
+	  return SQL_INVALID_HANDLE;
 	}
-	else if( henv != SQL_NULL_HENV )	/* retrive env err */
+      hproc = _iodbcdm_getproc (thdbc, en_Error);
+      dhdbc = pdbc->dhdbc;
+      handle = 2;
+
+      if (herr == SQL_NULL_HERR
+	  && pdbc->henv == SQL_NULL_HENV)
 	{
-		herr	= genv->herr;
-
-		/* Drivers shouldn't push error message 
-		 * on envoriment handle */
-
-		if( herr == SQL_NULL_HERR )
-		{
-			return SQL_NO_DATA_FOUND;
-		}
-
-		handle = 1;
+	  return SQL_NO_DATA_FOUND;
 	}
-	else
+    }
+  else if (henv != SQL_NULL_HENV)	/* retrive env err */
+    {
+      herr = genv->herr;
+
+      /* Drivers shouldn't push error message 
+       * on envoriment handle */
+
+      if (herr == SQL_NULL_HERR)
 	{
-		return SQL_INVALID_HANDLE;
+	  return SQL_NO_DATA_FOUND;
 	}
 
-	if( szErrorMsg != NULL )
+      handle = 1;
+    }
+  else
+    {
+      return SQL_INVALID_HANDLE;
+    }
+
+  if (szErrorMsg != NULL)
+    {
+      if (cbErrorMsgMax < 0
+	  || cbErrorMsgMax > SQL_MAX_MESSAGE_LENGTH - 1)
 	{
-		if( cbErrorMsgMax < 0
-		 || cbErrorMsgMax > SQL_MAX_MESSAGE_LENGTH - 1 )
-		{
-			return SQL_ERROR;
-			/* SQLError() doesn't post error for itself */
-		}
+	  return SQL_ERROR;
+	  /* SQLError() doesn't post error for itself */
+	}
+    }
+
+  if (herr == SQL_NULL_HERR)	/* no err on drv mng */
+    {
+      /* call driver */
+      if (hproc == SQL_NULL_HPROC)
+	{
+	  PUSHSQLERR (herr, en_IM001);
+
+	  return SQL_ERROR;
 	}
 
-	if( herr == SQL_NULL_HERR )		/* no err on drv mng */
-	{
-		/* call driver */
-		if( hproc == SQL_NULL_HPROC )
-		{
-			PUSHSQLERR ( herr, en_IM001 );
-
-			return SQL_ERROR;
-		}
-
-		CALL_DRIVER ( thdbc, retcode, hproc, en_Error, (
-				dhenv, dhdbc, dhstmt, 
-				szSqlstate, pfNativeError, 
-				szErrorMsg, cbErrorMsgMax, pcbErrorMsg) )
+      CALL_DRIVER (thdbc, retcode, hproc, en_Error, (
+	      dhenv, dhdbc, dhstmt,
+	      szSqlstate, pfNativeError,
+	      szErrorMsg, cbErrorMsgMax, pcbErrorMsg))
 
 #if 0
-		retcode = hproc(dhenv, dhdbc, dhstmt, 
-				szSqlstate, pfNativeError, 
-				szErrorMsg, cbErrorMsgMax, pcbErrorMsg);
+	  retcode = hproc (dhenv, dhdbc, dhstmt,
+	  szSqlstate, pfNativeError,
+	  szErrorMsg, cbErrorMsgMax, pcbErrorMsg);
 #endif
 
-		return retcode;
-	}
+      return retcode;
+    }
 
-	if( szSqlstate != NULL )
+  if (szSqlstate != NULL)
+    {
+      int len;
+
+      /* get sql state  string */
+      ststr = (char FAR *) _iodbcdm_getsqlstate (herr,
+	  (void FAR *) sqlerrmsg_tab);
+
+      if (ststr == NULL)
 	{
-		int	len;
-
-		/* get sql state  string */
-		ststr = (char FAR*)_iodbcdm_getsqlstate( herr, 
-				(void FAR*)sqlerrmsg_tab );
-	
-		if( ststr == NULL)
-		{
-			len = 0;
-		}
-		else
-		{
-			len = (int)STRLEN(ststr);
-		}
-	
-		STRNCPY ( szSqlstate, ststr, len );
-		szSqlstate[len] = 0;
-		/* buffer size of szSqlstate is not checked. Applications
-		 * suppose provide enough ( not less than 6 bytes ) buffer
-		 * or NULL for it.
-		 */
+	  len = 0;
 	}
-
-	if( pfNativeError != NULL )
+      else
 	{
-		/* native error code is specific to data source */
-		*pfNativeError = (SDWORD)0L;
+	  len = (int) STRLEN (ststr);
 	}
 
-	if( szErrorMsg == NULL || cbErrorMsgMax == 0 )
+      STRNCPY (szSqlstate, ststr, len);
+      szSqlstate[len] = 0;
+      /* buffer size of szSqlstate is not checked. Applications
+       * suppose provide enough ( not less than 6 bytes ) buffer
+       * or NULL for it.
+       */
+    }
+
+  if (pfNativeError != NULL)
+    {
+      /* native error code is specific to data source */
+      *pfNativeError = (SDWORD) 0L;
+    }
+
+  if (szErrorMsg == NULL || cbErrorMsgMax == 0)
+    {
+      if (pcbErrorMsg != NULL)
 	{
-		if( pcbErrorMsg != NULL )
-		{
-			*pcbErrorMsg = (SWORD)0;
-		}
+	  *pcbErrorMsg = (SWORD) 0;
 	}
-	else
+    }
+  else
+    {
+      int len;
+      char msgbuf[256] =
+      {'\0'};
+
+      /* get sql state message */
+      errmsg = _iodbcdm_getsqlerrmsg (herr,
+	  (void FAR *) sqlerrmsg_tab);
+
+      if (errmsg == NULL)
 	{
-		int	len;
-		char	msgbuf[256] = { '\0' };
-
-		/* get sql state message */
-		errmsg = _iodbcdm_getsqlerrmsg(herr, 
-				(void FAR*)sqlerrmsg_tab);
-
-		if(errmsg == NULL)
-		{
-			errmsg = (char FAR*)"";
-		}       
-
-		sprintf(msgbuf, "%s%s", sqlerrhd, errmsg); 
-	
-		len = STRLEN( msgbuf );
-
-		if( len < cbErrorMsgMax - 1 )
-		{
-			retcode = SQL_SUCCESS;
-		}
-		else
-		{
-			len = cbErrorMsgMax - 1;
-			retcode = SQL_SUCCESS_WITH_INFO;
-			/* and not posts error for itself */
-		}
-
-		STRNCPY((char*)szErrorMsg, msgbuf, len);
-		szErrorMsg[len] = 0;
-
-		if( pcbErrorMsg != NULL)
-		{
-			*pcbErrorMsg = (SWORD)len;
-		}
+	  errmsg = (char FAR *) "";
 	}
 
-	switch(handle)		/* free this err */
+      sprintf (msgbuf, "%s%s", sqlerrhd, errmsg);
+
+      len = STRLEN (msgbuf);
+
+      if (len < cbErrorMsgMax - 1)
 	{
-		case 1:
-			genv->herr = _iodbcdm_popsqlerr(genv->herr);
-			break;
-
-		case 2:
-			pdbc->herr = _iodbcdm_popsqlerr(pdbc->herr);
-			break;
-
-		case 3: 
-			pstmt->herr= _iodbcdm_popsqlerr(pstmt->herr);
-			break;
-
-		default:
-			break;
+	  retcode = SQL_SUCCESS;
+	}
+      else
+	{
+	  len = cbErrorMsgMax - 1;
+	  retcode = SQL_SUCCESS_WITH_INFO;
+	  /* and not posts error for itself */
 	}
 
-	return retcode;
+      STRNCPY ((char *) szErrorMsg, msgbuf, len);
+      szErrorMsg[len] = 0;
+
+      if (pcbErrorMsg != NULL)
+	{
+	  *pcbErrorMsg = (SWORD) len;
+	}
+    }
+
+  switch (handle)		/* free this err */
+     {
+     case 1:
+       genv->herr = _iodbcdm_popsqlerr (genv->herr);
+       break;
+
+     case 2:
+       pdbc->herr = _iodbcdm_popsqlerr (pdbc->herr);
+       break;
+
+     case 3:
+       pstmt->herr = _iodbcdm_popsqlerr (pstmt->herr);
+       break;
+
+     default:
+       break;
+     }
+
+  return retcode;
 }
