@@ -1,3 +1,23 @@
+Version: 3.0.4
+--------------
+Reworked CVS tree to use multiple directories
+
+Version: 3.0.3
+--------------
+Minor bug fixes and security fix
+
+Version: 3.0.2
+--------------
+Minor bug fixes
+
+Version: 3.0.1
+--------------
+Added threadsafe code
+
+Version: 3.0.0
+--------------
+Added ODBC 3.x support
+
 Version: 2.5
 -------------
 Added OpenLink enhancements
