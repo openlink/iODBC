@@ -1,2 +1,5 @@
 Makefile.in
 Makefile
+config.h
+stamp-h
+stamp-h.in
