@@ -1262,7 +1262,7 @@ SQLGetDiagRecW (
 	MessageText, BufferLength, TextLengthPtr, 
 	'W');
 
-  TRACE (trace_SQLGetDiagRec (TRACE_LEAVE,
+  TRACE (trace_SQLGetDiagRecW (TRACE_LEAVE,
   	HandleType,
 	Handle,
 	RecNumber,

@@ -647,7 +647,7 @@ SQLDriversW (SQLHENV henv,
   char *_Attrs = NULL;
 
   ENTER_HENV (henv,
-    trace_SQLDrivers (TRACE_ENTER,
+    trace_SQLDriversW (TRACE_ENTER,
   	henv, 
 	fDir, 
 	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
