@@ -255,10 +255,7 @@ ODBC_Disconnect (void)
 #else
   if (hstmt)
     {
-       int sts;
-       sts = SQLCloseCursor (hstmt);
-       if (sts != SQL_ERROR)
-	   ODBC_Errors ("CloseCursor");
+       SQLCloseCursor (hstmt);
        SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
     }
 
@@ -544,7 +541,11 @@ ODBC_Test ()
       while (SQLMoreResults (hstmt) == SQL_SUCCESS);
 
     endCursor:
+#if (ODBCVER < 0x0300)
       SQLFreeStmt (hstmt, SQL_CLOSE);
+#else
+      SQLCloseCursor (hstmt);
+#endif
     }
 
   return 0;
