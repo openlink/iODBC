@@ -185,7 +185,11 @@ SQLAllocStmt (
   memset(&pstmt->desc, 0, sizeof(pstmt->desc));
 
   if (((ENV_t *)pdbc->henv)->dodbc_ver == SQL_OV_ODBC2)
-    { /* this is an ODBC2 driver - so alloc dummy implicit desc handles  (dhdesc = NULL) */
+    {	
+      /* 
+       *  this is an ODBC2 driver - so alloc dummy implicit desc handles  
+       *  (dhdesc = NULL) 
+       */
       int i, i1;
 
       for (i = 0; i < 4; i++)
@@ -194,7 +198,7 @@ SQLAllocStmt (
 	  memset(pstmt->imp_desc[i], 0, sizeof(DESC_t));
 	  if (pstmt->imp_desc[i] == NULL)
 	    {
-	      for (i1 = 0; i1 < i; i++)
+	      for (i1 = 0; i1 < i; i1++)
 		{
 		  pstmt->imp_desc[i1]->type = 0;
 		  MEM_FREE(pstmt->imp_desc[i1]);
@@ -229,12 +233,30 @@ SQLAllocStmt (
 
 	  for (i = 0; i < 4; i++)
 	    {
+	      int desc_type;
+
+	      switch (i)
+		{
+		case APP_ROW_DESC:
+		  desc_type = SQL_ATTR_APP_ROW_DESC;
+		  break;
+		case APP_PARAM_DESC:
+		  desc_type = SQL_ATTR_APP_PARAM_DESC;
+		  break;
+		case IMP_ROW_DESC:
+		  desc_type = SQL_ATTR_IMP_ROW_DESC;
+		  break;
+		case IMP_PARAM_DESC:
+		  desc_type = SQL_ATTR_IMP_PARAM_DESC;
+		  break;
+		}
+
 	      pstmt->imp_desc[i] = (DESC_t FAR *) MEM_ALLOC (sizeof (DESC_t));
 	      memset(pstmt->imp_desc[i], 0, sizeof(DESC_t));
 	      if (pstmt->imp_desc[i] == NULL)
 		{ /* memory allocation error */
 		  PUSHSQLERR(pdbc->herr, en_HY001);
-		  for (i1 = 0; i1 < i; i++)
+		  for (i1 = 0; i1 < i; i1++)
 		    {
 		      pstmt->imp_desc[i1]->type = 0;
 		      MEM_FREE(pstmt->imp_desc[i1]);
@@ -248,7 +270,8 @@ SQLAllocStmt (
 	      pstmt->imp_desc[i]->hstmt = *phstmt;
 	      pstmt->imp_desc[i]->herr = NULL;
 	      CALL_DRIVER(hdbc, pstmt, rc1, hproc, en_GetStmtAttr,
-		  (pstmt->dhstmt, SQL_ATTR_IMP_PARAM_DESC, &pstmt->imp_desc[i]->dhdesc, 0, NULL));
+		  (pstmt->dhstmt, desc_type, &pstmt->imp_desc[i]->dhdesc, 0,
+		      NULL));
 	      if (rc1 != SQL_SUCCESS && rc1 != SQL_SUCCESS_WITH_INFO)
 		{ /* no descriptor returned from the driver */
 		  pstmt->type = 0;
