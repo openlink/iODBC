@@ -87,7 +87,8 @@ noinst_HEADERS		= dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h \
 			  unicode.h
 
-EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com
+EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com \
+			  install_libodbc.sh
 
 
 #
