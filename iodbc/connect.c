@@ -43,14 +43,10 @@ extern	char*	_iodbcdm_getkeyvalinstr();
 extern	RETCODE	_iodbcdm_driverunload();
 
 /*
- *   Following id string is a copyright mark. Removing(i.e. use 
- *   souce code of this package without it or make it not appear 
- *   in the final object file) or modifing it without permission 
- *   from original author(kejin@empress.com) are copyright 
- *   violation.
+ *  Identification string
  */
-static	char sccsid[] 
-	= "@(#)iODBC driver manager " VERSION ", Copyright(c) 1995 by Ke Jin";
+static	char sccsid[] = "@(#)iODBC driver manager " VERSION ", (LGPL)\n";
+
 
 /* - Load driver share library( or increase its reference count 
  *   if it has already been loaded by another active connection)

@@ -108,16 +108,6 @@ dlclose (void *hdll)
 #include	<sys/stat.h>
 #include	<nlist.h>
 
-/*
- *   Following id sting is a copyright mark. Removing(i.e. use the 
- *   source code in this .c file without include it or make it not
- *   appear in the final object file of AIX platform) or modifing 
- *   it without permission from original author(kejin@empress.com) 
- *   are copyright violation.
- */
-static char sccsid[]
-= "@(#)dynamic load interface, Copyright(c) 1995 by Ke Jin";
-
 #ifndef	HTAB_SIZE
 #define	HTAB_SIZE	256
 #endif
