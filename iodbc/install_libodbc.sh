@@ -107,7 +107,7 @@ then
 	    ln -s $lib libodbc.so
 	    ;;
 	libiodbc.sl.*)
-	    rm -f libiodbc.sl
+	    rm -f libodbc.sl
 	    ln -s $lib libodbc.sl
 	    ;;
 	esac
