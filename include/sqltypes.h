@@ -106,8 +106,13 @@ extern "C" {
 typedef unsigned char		SQLCHAR;
 typedef signed short		SQLSMALLINT;
 typedef unsigned short		SQLUSMALLINT;
+#if (SIZEOF_LONG == 8)
 typedef signed int		SQLINTEGER;
 typedef unsigned int		SQLUINTEGER;
+#else
+typedef signed long		SQLINTEGER;
+typedef unsigned long		SQLUINTEGER;
+#endif
 typedef void *              	SQLPOINTER;
 
 #if (ODBCVER >= 0x0300)
