@@ -73,7 +73,7 @@ endif
 
 INCLUDES			= \
 	-I$(top_srcdir)/include -I$(top_srcdir)/iodbc \
-	@GTK_CFLAGS@ -D __GTK__
+	@GTK_CFLAGS@ -D__GTK__
 
 libdrvproxy_gtk_la_LDFLAGS	= #-static
 
