@@ -93,7 +93,9 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+inidir = @inidir@
 lib_version = @lib_version@
+odbcmode = @odbcmode@
 
 AUTOMAKE_OPTIONS = foreign no-dependencies 1.4
 
