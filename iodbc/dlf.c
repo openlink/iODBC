@@ -799,7 +799,7 @@ iodbc_dlclose (void *hdll)
 static char sccsid[] = "@(#)dynamic load interface -- MacOS X dl(dyld)";
 
 
-void
+static void
 undefined_symbol_handler (const char *symbolName)
 {
   fprintf (stderr, "dyld found undefined symbol: %s\n", symbolName);
@@ -808,7 +808,7 @@ undefined_symbol_handler (const char *symbolName)
 }
 
 
-NSModule 
+static NSModule 
 multiple_symbol_handler (NSSymbol s, NSModule old, NSModule new)
 {
   /*
@@ -822,7 +822,7 @@ multiple_symbol_handler (NSSymbol s, NSModule old, NSModule new)
 }
 
 
-void
+static void
 linkEdit_symbol_handler (NSLinkEditErrors c, int errorNumber,
     const char *fileName, const char *errorString)
 {
@@ -845,7 +845,9 @@ dlopen (char *path, int mode)
    *  Install error handler 
    */
   handlers.undefined = undefined_symbol_handler;
+#if !defined (NSLINKMODULE_OPTION_PRIVATE)
   handlers.multiple = multiple_symbol_handler;
+#endif
   handlers.linkEdit = linkEdit_symbol_handler;
 
   NSInstallLinkEditErrorHandlers (&handlers);
@@ -874,10 +876,14 @@ dlopen (char *path, int mode)
     }
   else
     {
+#if !defined (NSLINKMODULE_OPTION_PRIVATE)
       handle = NSLinkModule (image, path, TRUE);
+#else
+      handle = NSLinkModule (image, path, NSLINKMODULE_OPTION_PRIVATE);
+#endif
     }
 
-  return handle;
+  return (void *) handle;
 }
 
 
@@ -886,6 +892,7 @@ dlsym (void *hdll, char *sym)
 {
   NSSymbol symbol;
 
+#if !defined (NSLINKMODULE_OPTION_PRIVATE)
   if (NSIsSymbolNameDefined (sym))
     {
       symbol = NSLookupAndBindSymbol (sym);
@@ -894,6 +901,11 @@ dlsym (void *hdll, char *sym)
     }
 
   return NULL;
+#else
+  symbol = NSLookupSymbolInModule ((NSModule) hdll, sym);
+
+  return NSAddressOfSymbol (symbol);   
+#endif
 }
 
 

@@ -30,7 +30,7 @@
  * on AIX 3.x 4.x,     CLI is defined in Config.mk as ".SQL" 
  */
 #ifndef CLI
-# if defined(NEED_USCORE) || defined (HAVE_DYLD)
+# if defined(NEED_USCORE) || defined (DLDAPI_DYLD)
 #  define CLI    "_SQL"
 # else
 #  define CLI    "SQL"
