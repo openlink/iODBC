@@ -8,6 +8,8 @@ aclocal.m4
 *.lo
 *.la
 *.tar.gz
+*.shar.gz
+*.zip
 config.log
 config.cache
 config.status
