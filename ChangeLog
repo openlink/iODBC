@@ -1,6 +1,8 @@
 Jun 7 2001, V3.0.5:
     * Added new iodbcinst code
     * Added new drvproxy and iodbcadm GTK frontend
+    * iODBC released under LGPL or BSD license
+    * SQLMoreResults always returned SQL_NO_DATA_FOUND
 
 Jun 4 2001, V3.0.4:
     * Reorganized source tree to use multiple subdirectories in 

@@ -1,6 +1,7 @@
 Version: 3.0.5
 --------------
 Added new iodbcinst code and iodbcadm GTK frontend
+iODBC released under both LGPL or BSD license
 
 Version: 3.0.4
 --------------
