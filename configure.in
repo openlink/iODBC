@@ -183,6 +183,11 @@ then
   USE_GUI=false
 fi
 
+if test x$USE_GUI = xtrue
+then
+  AC_DEFINE(GUI, 1, [Define if we detected a GUI library we can use])
+fi
+
 AM_CONDITIONAL(GUI, [test x$USE_GUI = xtrue])
 AM_CONDITIONAL(GTK, [test x$USE_GTK = xtrue])
 
