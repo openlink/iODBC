@@ -31,6 +31,7 @@
 #define	_UNIX_
 
 #include	<stdlib.h>
+#include        <string.h>
 #include	<sys/types.h>
 
 #define	MEM_ALLOC(size)	(malloc((size_t)(size)))
@@ -79,6 +80,21 @@ typedef int BOOL;
 #endif
 
 #endif /* WINDOWS */
+
+#ifdef VMS
+/*
+ *  VMS also defines _UNIX_ above. This is OK for iODBC since all used UNIX
+ *  interfaces are supported.
+ *  The DEC C RTL actually supports dlopen(), etc, but I have made my own
+ *  implementation that supports:
+ *     - Proper error messages from dlopen()
+ *     - The ability to place the driver in other directories than SYS$SHARE:
+ *     - Neither implementation can do dlopen(NULL,), but my implementation
+ *       will not crash in this case.
+ *  To use old DEC C dlopen() implementation, remove the following define.
+ */
+#define DLDAPI_VMS_IODBC	/* Use enhanced dlopen() */
+#endif
 
 #define	SYSERR		(-1)
 
