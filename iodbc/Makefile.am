@@ -29,10 +29,10 @@ libiodbc_la_LDFLAGS	= -version-info @lib_version@ \
 libiodbc_la_LIBADD	= $(LIBADD_DL)
 libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
-			  itrace.c misc.c prepare.c result.c
+			  itrace.c misc.c prepare.c result.c odbc3.c 
 
 noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
-			  hstmt.h itrace.h henv.ci herr.ci
+			  hstmt.h itrace.h henv.ci herr.ci hdesc.h
 include_HEADERS		= isql.h isqlext.h isqltypes.h \
 			  sql.h sqlext.h sqltypes.h
 
@@ -43,12 +43,23 @@ EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
 			  iodbc.def iodbc.exp libiodbc.spec main.c
 
 
+# ----------------------------------------------------------------------
+#
+#  Maintainers only
+# 
+# ----------------------------------------------------------------------
+
+MAINTAINERCLEANFILES	= Makefile.in aclocal.m4 configure
+
+
+if MAINTAINER_MODE
+
 #
 #  Create Linux RPM's
 #
 linux-rpm:
-	make dist VERSION=2.50
-	cp libiodbc-2.50.tar.gz /usr/src/redhat/SOURCES
+	make dist
+	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
 	rpm -ba libiodbc.spec
 
 #
@@ -60,3 +71,18 @@ binary-tar:
 	tar cvf @build@.tar @build@
 	gzip -9v @build@.tar
 	rm -rf @build@
+
+#
+#  Create a source snapshot package
+#
+snapshot:
+	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
+
+
+#
+#  Create an official release package
+#
+release:
+	$(MAKE) distcheck
+
+endif
