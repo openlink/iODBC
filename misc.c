@@ -415,3 +415,24 @@ _iodbcdm_getkeyvalinstr (
 
   return NULL;
 }
+
+int
+SQLGetPrivateProfileString (
+    char *lpszSection,
+    char *lpszEntry,
+    char *lpszDefault,
+    char *RetBuffer,
+    int cbRetBuffer,
+    char *lpzFilename)
+{
+  char *value;
+
+  value = _iodbcdm_getkeyvalbydsn (
+      lpszSection, SQL_NTS,
+      lpszEntry, RetBuffer, cbRetBuffer);
+
+  if (value == NULL)
+    strncpy (RetBuffer, lpszDefault, cbRetBuffer);
+
+  return strlen (RetBuffer);
+}
