@@ -3390,12 +3390,6 @@ SQLCloseCursor_Internal (SQLHSTMT hstmt)
 
       return SQL_ERROR;
     }
-  else if (pstmt->state < en_stmt_cursoropen)
-    {
-      PUSHSQLERR (pstmt->herr, en_24000);
-
-      return SQL_ERROR;
-    }
 
   hproc = _iodbcdm_getproc (pstmt->hdbc, en_CloseCursor);
 
@@ -3404,8 +3398,7 @@ SQLCloseCursor_Internal (SQLHSTMT hstmt)
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_CloseCursor,
 	  (pstmt->dhstmt));
     }
-
-  if (hproc == SQL_NULL_HPROC)
+  else
     {
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
 
