@@ -18,6 +18,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "../../include ../../../include ../include";
 				OPTIMIZATION_CFLAGS = "-O0";
 				RESMERGER_SOURCES_FORK = data;
 				ZERO_LINK = NO;
@@ -196,9 +197,9 @@
 //F53
 //F54
 		F535B3B702780F5F01A801DE = {
+			explicitFileType = sourcecode.c.c;
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
 			name = iodbctest.c;
 			path = ../../samples/iodbctest.c;
 			refType = 2;
