@@ -1,3 +1,20 @@
+Dec 16 1999, V3.0.0:
+    * Added initial support for ODBC 3.x API and the ODBC 3.x to 2.x
+      translation layer
+    * Added --disable-odbc3 flag to configure.in for building ODBC 2.x 
+      compatible driver manager
+    * Added --enable-maintainer-mode flag to configure.in
+    * Rewrote dlopen and underscore checks in configure.in
+    * Default iodbc-inidir is set to /etc
+    * Clear error stack at the start of each ODBC function
+    * Imported libtool 1.3.4
+    * Small code cleanups
+    * Created iodbc-config script for other projects to find out how
+      to link with the iodbc libraries.
+    * Fixed bug in SQLDataSources 
+    * Added initial support for MacOS X (Rhapsody)
+    * Add some ODBC 3.x API calls to the odbctest program
+    
 June 25, 1999, V2.50.3:
     * Renamed public header files to conform to ODBC standard 
     * System wide iodbc.ini can now be set with --with-odbc-inidir=,
