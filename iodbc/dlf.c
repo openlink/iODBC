@@ -941,6 +941,528 @@ dlclose (void *hdll)
 #endif	/* end of Rhapsody Section */
 
 
+/********************************* 
+ *
+ *	Apple MacOS X Rhapsody
+ *
+ *********************************/
+#ifdef	DLDAPI_MACX
+static struct dlopen_handle *dlopen_handles = NULL;
+static const struct dlopen_handle main_program_handle = { NULL };
+static char *dlerror_pointer = NULL;
+
+/*
+ * NSMakePrivateModulePublic() is not part of the public dyld API so we define
+ * it here.  The internal dyld function pointer for
+ * __dyld_NSMakePrivateModulePublic is returned so thats all that maters to get
+ * the functionality need to implement the dlopen() interfaces.
+ */
+static enum bool
+NSMakePrivateModulePublic (NSModule module)
+{
+  static enum bool (*p) (NSModule module) = NULL;
+
+  if (p == NULL)
+    _dyld_func_lookup ("__dyld_NSMakePrivateModulePublic",
+	(unsigned long *) &p);
+  if (p == NULL)
+    {
+#ifdef DEBUG
+      printf ("_dyld_func_lookup of __dyld_NSMakePrivateModulePublic "
+	  "failed\n");
+#endif
+      return (FALSE);
+    }
+  return (p (module));
+}
+
+
+/*
+ * dlopen() the MacOS X version of the FreeBSD dlopen() interface.
+ */
+void FAR *
+dlopen (char FAR * path, int mode)
+{
+  void *retval;
+  struct stat stat_buf;
+  NSObjectFileImage objectFileImage;
+  NSObjectFileImageReturnCode ofile_result_code;
+  NSModule module;
+  struct dlopen_handle *p;
+  unsigned long options;
+  NSSymbol NSSymbol;
+  void (*init) (void);
+
+  dlerror_pointer = NULL;
+  /*
+   * A NULL path is to indicate the caller wants a handle for the
+   * main program.
+   */
+  if (path == NULL)
+    {
+      retval = (void *) &main_program_handle;
+      return (retval);
+    }
+
+  /* see if the path exists and if so get the device and inode number */
+  if (stat (path, &stat_buf) == -1)
+    {
+      dlerror_pointer = strerror (errno);
+      return (NULL);
+    }
+
+  /*
+   * If we don't want an unshared handle see if we already have a handle
+   * for this path.
+   */
+  if ((mode & RTLD_UNSHARED) != RTLD_UNSHARED)
+    {
+      p = dlopen_handles;
+      while (p != NULL)
+	{
+	  if (p->dev == stat_buf.st_dev && p->ino == stat_buf.st_ino)
+	    {
+	      /* skip unshared handles */
+	      if ((p->dlopen_mode & RTLD_UNSHARED) == RTLD_UNSHARED)
+		continue;
+	      /*
+	       * We have already created a handle for this path.  The
+	       * caller might be trying to promote an RTLD_LOCAL handle
+	       * to a RTLD_GLOBAL.  Or just looking it up with
+	       * RTLD_NOLOAD.
+	       */
+	      if ((p->dlopen_mode & RTLD_LOCAL) == RTLD_LOCAL &&
+		  (mode & RTLD_GLOBAL) == RTLD_GLOBAL)
+		{
+		  /* promote the handle */
+		  if (NSMakePrivateModulePublic (p->module) == TRUE)
+		    {
+		      p->dlopen_mode &= ~RTLD_LOCAL;
+		      p->dlopen_mode |= RTLD_GLOBAL;
+		      p->dlopen_count++;
+		      return (p);
+		    }
+		  else
+		    {
+		      dlerror_pointer = "can't promote handle from "
+			  "RTLD_LOCAL to RTLD_GLOBAL";
+		      return (NULL);
+		    }
+		}
+	      p->dlopen_count++;
+	      return (p);
+	    }
+	  p = p->next;
+	}
+    }
+
+  /*
+   * We do not have a handle for this path if we were just trying to
+   * look it up return NULL to indicate we don't have it.
+   */
+  if ((mode & RTLD_NOLOAD) == RTLD_NOLOAD)
+    {
+      dlerror_pointer = "no existing handle for path RTLD_NOLOAD test";
+      return (NULL);
+    }
+
+  /* try to create an object file image from this path */
+  ofile_result_code = NSCreateObjectFileImageFromFile (path,
+      &objectFileImage);
+  if (ofile_result_code != NSObjectFileImageSuccess)
+    {
+      switch (ofile_result_code)
+	{
+	case NSObjectFileImageFailure:
+	  dlerror_pointer = "object file setup failure";
+	  return (NULL);
+	case NSObjectFileImageInappropriateFile:
+	  dlerror_pointer = "not a Mach-O MH_BUNDLE file type";
+	  return (NULL);
+	case NSObjectFileImageArch:
+	  dlerror_pointer = "no object for this architecture";
+	  return (NULL);
+	case NSObjectFileImageFormat:
+	  dlerror_pointer = "bad object file format";
+	  return (NULL);
+	case NSObjectFileImageAccess:
+	  dlerror_pointer = "can't read object file";
+	  return (NULL);
+	default:
+	  dlerror_pointer = "unknown error from "
+	      "NSCreateObjectFileImageFromFile()";
+	  return (NULL);
+	}
+    }
+
+  /* try to link in this object file image */
+  options = NSLINKMODULE_OPTION_PRIVATE;
+  if ((mode & RTLD_NOW) == RTLD_NOW)
+    options |= NSLINKMODULE_OPTION_BINDNOW;
+  module = NSLinkModule (objectFileImage, path, options);
+  NSDestroyObjectFileImage (objectFileImage);
+  if (module == NULL)
+    {
+      dlerror_pointer = "NSLinkModule() failed for dlopen()";
+      return (NULL);
+    }
+
+  /*
+   * If the handle is to be global promote the handle.  It is done this
+   * way to avoid multiply defined symbols.
+   */
+  if ((mode & RTLD_GLOBAL) == RTLD_GLOBAL)
+    {
+      if (NSMakePrivateModulePublic (module) == FALSE)
+	{
+	  dlerror_pointer = "can't promote handle from RTLD_LOCAL to "
+	      "RTLD_GLOBAL";
+	  return (NULL);
+	}
+    }
+
+  p = malloc (sizeof (struct dlopen_handle));
+  if (p == NULL)
+    {
+      dlerror_pointer = "can't allocate memory for the dlopen handle";
+      return (NULL);
+    }
+
+  /* fill in the handle */
+  p->dev = stat_buf.st_dev;
+  p->ino = stat_buf.st_ino;
+  if (mode & RTLD_GLOBAL)
+    p->dlopen_mode = RTLD_GLOBAL;
+  else
+    p->dlopen_mode = RTLD_LOCAL;
+  p->dlopen_mode |= (mode & RTLD_UNSHARED) |
+      (mode & RTLD_NODELETE) | (mode & RTLD_LAZY_UNDEF);
+  p->dlopen_count = 1;
+  p->module = module;
+  p->prev = NULL;
+  p->next = dlopen_handles;
+  if (dlopen_handles != NULL)
+    dlopen_handles->prev = p;
+  dlopen_handles = p;
+
+  /* call the init function if one exists */
+  NSSymbol = NSLookupSymbolInModule (p->module, "__init");
+  if (NSSymbol != NULL)
+    {
+      init = NSAddressOfSymbol (NSSymbol);
+      init ();
+    }
+
+  return (p);
+}
+
+
+/*
+ * dlsym() the MacOS X version of the FreeBSD dlopen() interface.
+ */
+void FAR *
+dlsym (void FAR * handle, char FAR * symbol)
+{
+  struct dlopen_handle *dlopen_handle, *p;
+  char symbol2[1024];
+  NSSymbol NSSymbol;
+  void *address;
+
+  symbol2[0] = '_';
+  strcpy (symbol2 + 1, symbol);
+
+  dlopen_handle = (struct dlopen_handle *) handle;
+
+  /*
+   * If this is the handle for the main program do a global lookup.
+   */
+  if (dlopen_handle == (struct dlopen_handle *) &main_program_handle)
+    {
+      if (NSIsSymbolNameDefined (symbol2) == TRUE)
+	{
+	  NSSymbol = NSLookupAndBindSymbol (symbol2);
+	  address = NSAddressOfSymbol (NSSymbol);
+	  dlerror_pointer = NULL;
+	  return (address);
+	}
+      else
+	{
+	  dlerror_pointer = "symbol not found";
+	  return (NULL);
+	}
+    }
+
+  /*
+   * Find this handle and do a lookup in just this module.
+   */
+  p = dlopen_handles;
+  while (p != NULL)
+    {
+      if (dlopen_handle == p)
+	{
+	  NSSymbol = NSLookupSymbolInModule (p->module, symbol2);
+	  if (NSSymbol != NULL)
+	    {
+	      address = NSAddressOfSymbol (NSSymbol);
+	      dlerror_pointer = NULL;
+	      return (address);
+	    }
+	  else
+	    {
+	      dlerror_pointer = "symbol not found";
+	      return (NULL);
+	    }
+	}
+      p = p->next;
+    }
+
+  dlerror_pointer = "bad handle passed to dlsym()";
+  return (NULL);
+}
+
+
+/*
+ * dlerror() the MacOS X version of the FreeBSD dlopen() interface.
+ */
+char FAR *
+dlerror (void)
+{
+  const char *p;
+
+  p = (const char *) dlerror_pointer;
+  dlerror_pointer = NULL;
+  return (p);
+}
+
+
+/*
+ * dlclose() the MacOS X version of the FreeBSD dlopen() interface.
+ */
+int
+dlclose (void FAR * handle)
+{
+  struct dlopen_handle *p, *q;
+  unsigned long options;
+  NSSymbol NSSymbol;
+  void (*fini) (void);
+
+  dlerror_pointer = NULL;
+  q = (struct dlopen_handle *) handle;
+  p = dlopen_handles;
+  while (p != NULL)
+    {
+      if (p == q)
+	{
+	  /* if the dlopen() count is not zero we are done */
+	  p->dlopen_count--;
+	  if (p->dlopen_count != 0)
+	    return (0);
+
+	  /* call the fini function if one exists */
+	  NSSymbol = NSLookupSymbolInModule (p->module, "__fini");
+	  if (NSSymbol != NULL)
+	    {
+	      fini = NSAddressOfSymbol (NSSymbol);
+	      fini ();
+	    }
+
+	  /* unlink the module for this handle */
+	  options = 0;
+	  if (p->dlopen_mode & RTLD_NODELETE)
+	    options |= NSUNLINKMODULE_OPTION_KEEP_MEMORY_MAPPED;
+	  if (p->dlopen_mode & RTLD_LAZY_UNDEF)
+	    options |= NSUNLINKMODULE_OPTION_RESET_LAZY_REFERENCES;
+	  if (NSUnLinkModule (p->module, options) == FALSE)
+	    {
+	      dlerror_pointer = "NSUnLinkModule() failed for dlclose()";
+	      return (-1);
+	    }
+	  if (p->prev != NULL)
+	    p->prev->next = p->next;
+	  if (p->next != NULL)
+	    p->next->prev = p->prev;
+	  if (dlopen_handles == p)
+	    dlopen_handles = p->next;
+	  free (p);
+	  return (0);
+	}
+      p = p->next;
+    }
+  dlerror_pointer = "invalid handle passed to dlclose()";
+  return (-1);
+}
+
+#define	DLDAPI_DEFINED
+#endif /* end of Rhapsody Section */
+
+/********************************* 
+ *
+ *	Macintosh
+ *
+ *********************************/
+#ifdef	DLDAPI_MAC
+
+#include <CodeFragments.h>
+#include <strconv.h>
+
+static OSErr error = noErr;
+
+void *
+dlopen (char *dll, int mode)
+{
+#ifdef __POWERPC__
+  CFragConnectionID conn_id;
+  Ptr main_addr;
+  Str255 name;
+
+  if (dll == NULL)
+    {
+      return NULL;
+    }
+
+  error =
+      GetSharedLibrary ((unsigned char *) str_to_Str255 (dll),
+      kPowerPCCFragArch, kLoadCFrag, &conn_id, &main_addr, name);
+
+  if (error != noErr)
+    {
+      return NULL;
+    }
+
+  return (void *) conn_id;
+#else
+#endif
+}
+
+
+void *
+dlsym (void *hdll, char *sym)
+{
+#ifdef __POWERPC__
+  Ptr symbol;
+  CFragSymbolClass symbol_type;
+
+  error =
+      FindSymbol ((CFragConnectionID) hdll,
+      (unsigned char *) str_to_Str255 (sym), &symbol, &symbol_type);
+
+  if (error != noErr)
+    {
+      return NULL;
+    }
+
+  return symbol;
+#else
+#endif
+}
+
+
+char *
+dlerror ()
+{
+  return 0L;			/* unimplemented yet */
+}
+
+
+int
+dlclose (void *hdll)
+{
+#ifdef __POWERPC__
+  error = CloseConnection ((CFragConnectionID *) hdll);
+
+  return error;
+#else
+#endif
+}
+
+#define	DLDAPI_DEFINED
+#endif /* end of Macintosh family */
+
+
+/********************************* 
+ *
+ *	BeOS
+ *
+ *********************************/
+#ifdef	DLDAPI_BE
+#define	DLDAPI_DEFINED
+
+#include <kernel/image.h>
+#include <be/support/Errors.h>
+
+static char *msg_error = NULL;
+
+void *
+dlopen (char *dll, int mode)
+{
+  image_id dll_id;
+
+  if (dll == NULL)
+    {
+      msg_error = "Library name not valid.";
+      return NULL;
+    }
+
+  dll_id = load_add_on (dll);
+
+  if (dll_id == B_ERROR)
+    {
+      msg_error = "Library cannot be loaded.";
+      return NULL;
+    }
+
+  msg_error = NULL;
+  return (void *) dll_id;
+}
+
+
+void *
+dlsym (void *hdll, char *sym)
+{
+  void *address = NULL;
+
+  if (sym == NULL)
+    {
+      msg_error = "Symbol name not valid.";
+      return NULL;
+    }
+
+  if (get_image_symbol ((image_id) hdll, sym, B_SYMBOL_TYPE_ANY,
+	  &address) != B_OK)
+    {
+      msg_error = "Symbol cannot be loaded.";
+      return NULL;
+    }
+
+  msg_error = NULL;
+  return address;
+}
+
+
+char *
+dlerror ()
+{
+  return (msg_error) ? msg_error : "No error detected.";
+}
+
+
+int
+dlclose (void *hdll)
+{
+  if (unload_add_on ((image_id) hdll) != B_OK)
+    {
+      msg_error = "Library cannot be unloaded.";
+      return 1;
+    }
+
+  msg_error = NULL;
+  return 0;
+}
+
+#endif /* end of BeOS */
+
+
+
 /***********************************
  *
  * 	other platforms
@@ -952,10 +1474,6 @@ dlclose (void *hdll)
 /*
  *    DosLoadModule(), DosQueryProcAddress(), DosFreeModule(), ...
  */
-#endif
-
-#ifdef	DLDAPI_MAC
-#define	DLDAPI_DEFINED
 #endif
 
 #ifdef DLDAPI_NEXT

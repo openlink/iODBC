@@ -28,11 +28,14 @@
 
 #include <dlf.h>
 
+#if defined(_MAC)
+typedef SQLRETURN (FAR * HPROC) (...);
+#else
 typedef SQLRETURN (FAR * HPROC) ();
+#endif
 
 #ifdef	DLDAPI_SVR4_DLFCN
 #include <dlfcn.h>
-typedef void *HDLL;
 #endif
 
 #ifdef DLDAPI_HP_SHL
@@ -40,15 +43,13 @@ typedef void *HDLL;
 typedef shl_t HDLL;
 #endif
 
-#ifdef	DLDAPI_AIX_LOAD
-typedef void *HDLL;
-#endif
-
-#ifdef	VMS
-typedef void *HDLL;
-#endif
-
-#ifdef	DLDAPI_DYLD
+#if defined(_BE)		|| \
+    defined(_MAC)		|| \
+    defined(_MACX)		|| \
+    defined(DLDAPI_AIX_LOAD)	|| \
+    defined(DLDAPI_DYLD)	|| \
+    defined(DLDAPI_SVR4_DLFCN)	|| \
+    defined(VMS)
 typedef void *HDLL;
 #endif
 
