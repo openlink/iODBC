@@ -262,14 +262,26 @@ trace_start(void)
       time_t now;
       struct tm *timeNow;
 
+      trace_emit ("** iODBC Trace file\n");
+
+      /*
+       *  Show start time
+       */
       tzset ();
       time (&now);
       timeNow = localtime (&now);
-      strftime (mesgBuf, sizeof (mesgBuf), "** started on %a %b %d, %H:%M **",
+      strftime (mesgBuf,
+	  sizeof (mesgBuf), "** Trace started on %a %b %d %H:%M:%S %Y",
 	  timeNow);
+      trace_emit ("%s\n", mesgBuf);
 
-      trace_emit ("** iODBC Trace file **\n");
-      trace_emit ("%s\n\n", mesgBuf);
+      /*
+       *  Show Driver Manager version similar to SQLGetInfo (SQL_DM_VER)
+       */
+      sprintf ((char *) mesgBuf, "%02d.%02d.%04d.%04d",
+	  SQL_SPEC_MAJOR,
+	  SQL_SPEC_MINOR, IODBC_BUILD / 10000, IODBC_BUILD % 10000);
+      trace_emit ("** Driver Manager: %s\n\n", mesgBuf);
     }
 
 #if defined (linux)
@@ -311,6 +323,21 @@ trace_start(void)
 void
 trace_stop(void)
 {
+  char mesgBuf[200];
+  time_t now;
+  struct tm *timeNow;
+
+  /*
+   * Show end time
+   */
+  tzset ();
+  time (&now);
+  timeNow = localtime (&now);
+  strftime (mesgBuf,
+      sizeof (mesgBuf), "** Trace finished on %a %b %d %H:%M:%S %Y", timeNow);
+
+  trace_emit ("\n%s\n", mesgBuf);
+
   ODBCSharedTraceFlag = SQL_OPT_TRACE_OFF;
 
   if (trace_fp_close && trace_fp)
