@@ -77,7 +77,7 @@ libiodbc_la_LDFLAGS	= -version-info @lib_version@ \
 	                  -export-symbols $(srcdir)/iodbc.exp
 libiodbc_la_LIBADD	= trace/libiodbctrace.la \
 			  ../iodbcinst/libiodbcinst.la \
-			  $(LIBADD_DL)
+			  $(LIBADD_DL) $(LIBADD_OS)
 libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
 			  misc.c prepare.c result.c odbc3.c \

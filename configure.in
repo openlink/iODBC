@@ -201,7 +201,7 @@ AM_CONDITIONAL(GTK, [test x$USE_GTK = xtrue])
 
 AC_CHECK_HEADERS(dlfcn.h dl.h dld.h)
 
-LIBADD_DL=
+LIBADD_DL=""
 
 AC_CHECK_LIB(dl, dlopen, 
   [AC_DEFINE(HAVE_LIBDL, 1, [Define if you have the -ldl library]) 
@@ -456,6 +456,20 @@ then
 else
     AC_MSG_RESULT(no thread support)
 fi
+
+
+########################################################################## 
+##									##
+##  OS dependent libraries						##
+##									##
+##########################################################################
+LIBADD_OS=""
+AC_MSG_CHECKING(for OS dependent libraries)
+case $host in
+  *-darwin*)	LIBADD_OS="-Wl,-framework,Carbon";;
+esac
+AC_SUBST(LIBADD_OS)
+AC_MSG_RESULT($LIBADD_OS)
 
 
 ########################################################################## 
