@@ -716,7 +716,7 @@ SQLGetInfo_Internal (
 
   DWORD dword = 0;
   int size = 0, len = 0, ret = 0;
-  wchar_t buf[16] = {'\0'};
+  wchar_t buf[20] = {'\0'};
 
   if (cbInfoValueMax < 0)
     {
