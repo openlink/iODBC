@@ -89,7 +89,7 @@
 
 #if !defined(HAVE_WCSLEN)
 size_t
-wcslen (wchar_t * wcs)
+wcslen (const wchar_t * wcs)
 {
   size_t len = 0;
 
@@ -132,6 +132,108 @@ wcsncpy (wchar_t * wcd, const wchar_t * wcs, size_t n)
 }
 #endif
 
+#if !defined(HAVE_WCSCHR)
+wchar_t* wcschr(const wchar_t *wcs, const wchar_t wc)
+{
+  do
+    if(*wcs == wc)
+      return (wchar_t*) wcs;
+  while(*wcs++ != L'\0');
+ 
+  return NULL;
+}
+#endif
+
+#if !defined(HAVE_WCSCAT)
+wchar_t* wcscat(wchar_t *dest, const wchar_t *src)
+{
+  wchar_t *s1 = dest;
+  const wchar_t *s2 = src;
+  wchar_t c;
+  
+  do
+    c = *s1 ++;
+  while(c != L'\0');
+
+  s1 -= 2;
+  
+  do
+    {
+      c = *s2 ++;
+      *++s1 = c;
+    }
+  while(c != L'\0');
+
+  return dest;
+}
+#endif
+
+#if !defined(HAVE_WCSCMP)
+int wcscmp (const wchar_t* s1, const wchar_t* s2)
+{
+  wchar_t c1, c2;
+  
+  if (s1 == s2)
+    return 0;
+
+  do
+    {
+      c1 = *s1++;
+      c2 = *s2++;
+      if(c1 == L'\0')
+        break;
+    }
+  while (c1 == c2);
+
+  return c1 - c2;
+}
+#endif
+
+#if !defined(HAVE_TOWLOWER)
+#if defined(__APPLE__) || defined(macintosh)
+wchar_t towlower(wchar_t wc)
+{
+#ifdef __APPLE__
+#ifndef __CORESERVICES__
+#include <CoreServices/CoreServices.h>
+#endif
+
+  CFMutableStringRef strRef = CFStringCreateMutable(NULL, 0);
+  UniChar c = (UniChar)wc;
+  wchar_t wcs;
+
+  CFStringAppendCharacters(strRef, &c, 1);
+  CFStringLowercase(strRef, NULL);
+  wcs = CFStringGetCharacterAtIndex(strRef, 0);
+  CFRelease(strRef);
+
+  return wcs;
+#else
+  return wc;
+#endif
+}
+#endif
+#endif
+
+#if !defined(HAVE_WCSNCASECMP)
+int wcsncasecmp (wchar_t* s1, wchar_t* s2, size_t n)
+{
+  wchar_t c1, c2;
+  
+  if (s1 == s2 || n ==0)
+    return 0;
+
+  do
+    {
+      c1 = towlower(*s1++);
+      c2 = towlower(*s2++);
+      if(c1 == L'\0' || c1 != c2)
+        return c1 - c2;
+    } while (--n > 0);
+
+  return c1 - c2;
+}
+#endif
 
 SQLCHAR *
 dm_SQL_W2A (SQLWCHAR * inStr, ssize_t size)

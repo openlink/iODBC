@@ -117,13 +117,25 @@ int dm_StrCopyOut2_W2A (SQLWCHAR * inStr, SQLCHAR * outStr, SQLSMALLINT size,
  *  Replacement functions
  */
 #if !defined(HAVE_WCSLEN)
-size_t wcslen (wchar_t * wcs);
+size_t wcslen (const wchar_t * wcs);
 #endif
 #if !defined(HAVE_WCSCPY)
 wchar_t * wcscpy (wchar_t * wcd, const wchar_t * wcs);
 #endif
 #if !defined(HAVE_WCSNCPY)
 wchar_t * wcsncpy (wchar_t * wcd, const wchar_t * wcs, size_t n);
+#endif
+#if !defined(HAVE_WCSCHR)
+wchar_t* wcschr(const wchar_t *wcs, const wchar_t wc);
+#endif
+#if !defined(HAVE_WCSCAT)
+wchar_t* wcscat(wchar_t *dest, const wchar_t *src);
+#endif
+#if !defined(HAVE_WCSCMP)
+int wcscmp (const wchar_t* s1, const wchar_t* s2);
+#endif
+#if !defined(HAVE_WCSNCASECMP)
+int wcsncasecmp (wchar_t* s1, wchar_t* s2, size_t n);
 #endif
 
 #endif /* _UNICODE_H */
