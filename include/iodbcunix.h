@@ -111,7 +111,9 @@ extern "C" {
 /*
  *  Windows-style typedefs
  */
+#if defined (OBSOLETE_WINDOWS_TYPES)
 typedef unsigned char		BYTE;
+#endif
 typedef unsigned short		WORD;
 typedef unsigned int		DWORD;
 typedef char *			LPSTR;
