@@ -107,6 +107,7 @@ EXTRA_DIST		= \
 # ----------------------------------------------------------------------
 
 MAINTAINERCLEANFILES	= Makefile.in aclocal.m4 configure
+DISTCLEANFILES		= config.nice
 
 
 if MAINTAINER_MODE
