@@ -76,7 +76,7 @@ extern "C" {
     !defined(__cplusplus) && \
     !defined(__APPLE__)
 enum bool { false, true };
-#endif!
+#endif
 
 
 /*
