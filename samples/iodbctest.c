@@ -279,35 +279,76 @@ ODBC_Disconnect (void)
 int
 ODBC_Errors (char *where)
 {
-  unsigned char buf[250];
-  unsigned char sqlstate[15];
+  SQLCHAR buf[250];
+  SQLCHAR sqlstate[15];
+  SQLINTEGER native_error;
 
+#if (ODBCVER < 0x0300)
   /*
    *  Get statement errors
    */
-  while (SQLError (henv, hdbc, hstmt, sqlstate, NULL,
-      buf, sizeof(buf), NULL) == SQL_SUCCESS)
+  while (SQLError (henv, hdbc, hstmt, sqlstate, &native_error,
+	  buf, sizeof (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%s, SQLSTATE=%s\n", buf, sqlstate);
+      fprintf (stderr, "%s (%ld), SQLSTATE=%s\n",
+	  buf, (long) native_error, sqlstate);
     }
 
   /*
    *  Get connection errors
    */
-  while (SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, NULL,
-      buf, sizeof(buf), NULL) == SQL_SUCCESS)
+  while (SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
+	  buf, sizeof (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%s, SQLSTATE=%s\n", buf, sqlstate);
+      fprintf (stderr, "%s (%ld), SQLSTATE=%s\n",
+	  buf, (long) native_error, sqlstate);
     }
 
   /*
-   *  Get environmental errors
+   *  Get environmen errors
    */
-  while (SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate, NULL,
-      buf, sizeof(buf), NULL) == SQL_SUCCESS)
+  while (SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
+	  &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%s, SQLSTATE=%s\n", buf, sqlstate);
+      fprintf (stderr, "%s (%ld), SQLSTATE=%s\n",
+	  buf, (long) native_error, sqlstate);
     }
+#else
+  int i;
+
+  /*
+   *  Get statement errors
+   */
+  i = 0;
+  while (i < 5 && SQLGetDiagRec (SQL_HANDLE_STMT, hstmt, ++i,
+	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+    {
+      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s\n",
+	  i, buf, (long) native_error, sqlstate);
+    }
+
+  /*
+   *  Get connection errors
+   */
+  i = 0;
+  while (i < 5 && SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
+	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+    {
+      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s (%ld)\n",
+	  i, buf, (long) native_error, sqlstate);
+    }
+
+  /*
+   *  Get environmen errors
+   */
+  i = 0;
+  while (i < 5 && SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
+	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+    {
+      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s (%ld)\n",
+	  i, buf, (long) native_error, sqlstate);
+    }
+#endif
 
   return -1;
 }
