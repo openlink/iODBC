@@ -417,14 +417,30 @@ trace_emit_string (SQLCHAR *str, int len, int is_utf8)
 	bytes = 3;
       else if ((c & 0xF8) == 0xF0)
 	bytes = 4;
+      else if ((c & 0xFC) == 0xF8)
+        bytes = 5;
+      else if ((c & 0xFE) == 0xFC)
+        bytes = 6;
       else
-	bytes = -1;
+	bytes = -1;	/* Wrong UTF8 character */
 
-      /*
-       *  Emit the number of bytes calculated
-       */
-      for (j = 0; j < bytes; j++)
-	trace_emitc (*ptr++);
+      if (bytes > 0)
+        {
+	  /*
+	   *  Emit the number of bytes calculated
+	   */
+	  for (j = 0; j < bytes; j++)
+	    trace_emitc (*ptr++);
+	}
+      else
+        {
+	  /*
+	   *  Skip this bogus UTF8 character sequence and emit a single # 
+	   */
+	  for (bytes = 1, ptr++; (*ptr & 0xC0) == 0x80; bytes++)
+	    ptr++;	
+	  trace_emitc ('#');
+	}
 
       /*
        *  After 40 characters, start a new line
