@@ -137,7 +137,7 @@ SQLCHAR *
 dm_SQL_W2A (SQLWCHAR * inStr, ssize_t size)
 {
   SQLCHAR *outStr = NULL;
-  ssize_t len;
+  size_t len;
 
   if (inStr == NULL)
     return NULL;
@@ -162,10 +162,10 @@ dm_SQL_W2A (SQLWCHAR * inStr, ssize_t size)
 
 
 SQLWCHAR *
-dm_SQL_A2W (SQLCHAR * inStr, int size)
+dm_SQL_A2W (SQLCHAR * inStr, ssize_t size)
 {
   SQLWCHAR *outStr = NULL;
-  int len;
+  size_t len;
 
   if (inStr == NULL)
     return NULL;
@@ -196,7 +196,7 @@ dm_StrCopyOut2_A2W (
   SQLSMALLINT	  size,
   SQLSMALLINT	* result)
 {
-  int length;
+  size_t length;
 
   if (!inStr)
     return -1;
@@ -204,7 +204,7 @@ dm_StrCopyOut2_A2W (
   length = strlen ((char *) inStr);
 
   if (result)
-    *result = length;
+    *result = (SQLSMALLINT) length;
 
   if (!outStr)
     return 0;
@@ -232,7 +232,7 @@ dm_StrCopyOut2_W2A (
   SQLSMALLINT	  size,
   SQLSMALLINT	* result)
 {
-  int length;
+  size_t length;
 
   if (!inStr)
     return -1;
@@ -240,7 +240,7 @@ dm_StrCopyOut2_W2A (
   length = wcslen (inStr);
 
   if (result)
-    *result = length;
+    *result = (SQLSMALLINT) length;
 
   if (!outStr)
     return 0;
@@ -293,10 +293,10 @@ dm_strcpy_W2A (SQLCHAR * destStr, SQLWCHAR * sourStr)
 }
 
 
-static int
-calc_len_for_utf8 (SQLWCHAR * str, int size)
+static size_t
+calc_len_for_utf8 (SQLWCHAR * str, ssize_t size)
 {
-  int len = 0;
+  size_t len = 0;
   SQLWCHAR c;
 
   if (!str)
@@ -344,10 +344,10 @@ calc_len_for_utf8 (SQLWCHAR * str, int size)
 }
 
 
-static int
-utf8_len (SQLCHAR * p, int size)
+static size_t
+utf8_len (SQLCHAR * p, ssize_t size)
 {
-  int len = 0;
+  size_t len = 0;
 
   if (!*p)
     return 0;
@@ -374,13 +374,14 @@ utf8_len (SQLCHAR * p, int size)
  *  size      - size of buffer for output utf8 string in bytes
  *  return    - length of output utf8 string
  */
-static int
-wcstoutf8 (SQLWCHAR * wstr, SQLCHAR * ustr, int size)
+static size_t
+wcstoutf8 (SQLWCHAR * wstr, SQLCHAR * ustr, size_t size)
 {
-  int len;
+  size_t len;
   SQLWCHAR c;
-  int first, i;
-  int count = 0;
+  int first;
+  size_t i;
+  size_t count = 0;
 
   if (!wstr)
     return 0;
@@ -445,15 +446,16 @@ static int
 wcsntoutf8 (
   SQLWCHAR	* wstr,
   SQLCHAR	* ustr,
-  int		  wlen,
-  int		  size,
-  int		* converted)
+  size_t	  wlen,
+  size_t	  size,
+  u_short 	* converted)
 {
-  int len;
+  size_t len;
   SQLWCHAR c;
-  int first, i;
-  int count = 0;
-  int _converted = 0;
+  int first;
+  size_t i;
+  size_t count = 0;
+  size_t _converted = 0;
 
   if (!wstr)
     return 0;
@@ -491,7 +493,7 @@ wcsntoutf8 (
       if (size - count < len)
 	{
 	  if (converted)
-	    *converted = _converted;
+	    *converted = (u_short) _converted;
 	  return count;
 	}
 
@@ -508,7 +510,7 @@ wcsntoutf8 (
       _converted++;
     }
   if (converted)
-    *converted = _converted;
+    *converted = (u_short) _converted;
   return count;
 }
 
@@ -517,7 +519,7 @@ static SQLCHAR *
 strdup_WtoU8 (SQLWCHAR * str)
 {
   SQLCHAR *ret;
-  int len;
+  size_t len;
 
   if (!str)
     return NULL;
@@ -564,18 +566,20 @@ strdup_WtoU8 (SQLWCHAR * str)
  *  size      - size of buffer for output string in symbols (SQLWCHAR)
  *  return    - length of output SQLWCHAR string
  */
-static int
-utf8towcs (SQLCHAR * ustr, SQLWCHAR * wstr, int size)
+static size_t
+utf8towcs (SQLCHAR * ustr, SQLWCHAR * wstr, ssize_t size)
 {
-  int i, mask = 0, len;
-  unsigned char c;
+  int i;
+  int mask = 0;
+  int len;
+  SQLCHAR c;
   SQLWCHAR wc;
   int count = 0;
 
   if (!ustr)
     return 0;
 
-  while ((c = (unsigned char) *ustr) && count < size)
+  while ((c = (SQLCHAR) *ustr) && count < size)
     {
       UTF8_COMPUTE (c, mask, len);
       if (len == -1)
@@ -609,27 +613,29 @@ static int
 utf8ntowcs (
   SQLCHAR	* ustr,
   SQLWCHAR	* wstr,
-  int		  ulen,
-  int		  size,
+  size_t	  ulen,
+  size_t	  size,
   int		* converted)
 {
-  int i, mask = 0, len;
-  unsigned char c;
+  int i;
+  int mask = 0;
+  int len;
+  SQLCHAR c;
   SQLWCHAR wc;
-  int count = 0;
-  int _converted = 0;
+  size_t count = 0;
+  size_t _converted = 0;
 
   if (!ustr)
     return 0;
 
   while ((_converted < ulen) && (count < size))
     {
-      c = (unsigned char) *ustr;
+      c = (SQLCHAR) *ustr;
       UTF8_COMPUTE (c, mask, len);
       if ((len == -1) || (_converted + len > ulen))
 	{
 	  if (converted)
-	    *converted = _converted;
+	    *converted = (u_short) _converted;
 	  return count;
 	}
 
@@ -639,7 +645,7 @@ utf8ntowcs (
 	  if ((ustr[i] & 0xC0) != 0x80)
 	    {
 	      if (converted)
-		*converted = _converted;
+		*converted = (u_short) _converted;
 	      return count;
 	    }
 	  wc <<= 6;
@@ -652,7 +658,7 @@ utf8ntowcs (
       _converted += len;
     }
   if (converted)
-    *converted = _converted;
+    *converted = (u_short) _converted;
   return count;
 }
 
@@ -661,7 +667,7 @@ static SQLWCHAR *
 strdup_U8toW (SQLCHAR * str)
 {
   SQLWCHAR *ret;
-  int len;
+  size_t len;
 
   if (!str)
     return NULL;
@@ -678,10 +684,10 @@ strdup_U8toW (SQLCHAR * str)
 
 
 SQLCHAR *
-dm_SQL_WtoU8 (SQLWCHAR * inStr, int size)
+dm_SQL_WtoU8 (SQLWCHAR * inStr, ssize_t size)
 {
   SQLCHAR *outStr = NULL;
-  int len;
+  size_t len;
 
   if (inStr == NULL)
     return NULL;
@@ -708,7 +714,7 @@ SQLWCHAR *
 dm_SQL_U8toW (SQLCHAR * inStr, SQLSMALLINT size)
 {
   SQLWCHAR *outStr = NULL;
-  int len;
+  size_t len;
 
   if (inStr == NULL)
     return NULL;
@@ -732,10 +738,10 @@ int
 dm_StrCopyOut2_U8toW (
   SQLCHAR	* inStr,
   SQLWCHAR	* outStr,
-  SQLSMALLINT	  size,
-  SQLSMALLINT	* result)
+  size_t	  size,
+  u_short	* result)
 {
-  int length;
+  size_t length;
 
   if (!inStr)
     return -1;
@@ -743,7 +749,7 @@ dm_StrCopyOut2_U8toW (
   length = utf8_len (inStr, SQL_NTS);
 
   if (result)
-    *result = length;
+    *result = (u_short) length;
 
   if (!outStr)
     return 0;

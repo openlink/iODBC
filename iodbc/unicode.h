@@ -95,10 +95,11 @@ SQLWCHAR *dm_strcpy_A2W (SQLWCHAR * destStr, SQLCHAR * sourStr);
 
 int dm_StrCopyOut2_A2W (SQLCHAR * inStr, SQLWCHAR * outStr, SQLSMALLINT size,
     SQLSMALLINT * result);
-int dm_StrCopyOut2_U8toW (SQLCHAR * inStr, SQLWCHAR * outStr,
-    SQLSMALLINT size, SQLSMALLINT * result);
+int dm_StrCopyOut2_U8toW (SQLCHAR * inStr, SQLWCHAR * outStr, size_t size,
+    u_short * result);
 int dm_StrCopyOut2_W2A (SQLWCHAR * inStr, SQLCHAR * outStr, SQLSMALLINT size,
     SQLSMALLINT * result);
+
 
 # ifdef WIN32
 #define OPL_W2A(w, a, cb)     \
