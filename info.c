@@ -43,7 +43,7 @@
 
 extern char *_iodbcdm_getinifile (char *buf, int size);
 
-#define SECT1			"ODBC Data Sources"
+#define SECT1			"[ODBC Data Sources]"
 #define SECT2			"Default"
 #define MAX_ENTRIES		1024
 
@@ -145,6 +145,20 @@ SQLDataSources (
 	  return SQL_ERROR;
 	}
 
+      /* Finds the section heading [ODBC Data Sources] */
+      while (1)
+	{
+	  char *str;
+
+	  str = fgets (buf, sizeof (buf), fp);
+
+	  if (str == NULL)
+	    break;
+
+	  if (strcmp (str, SECT1) >= 0)
+	    break;
+	}
+
       /*
        *  Build a dynamic list of sections
        */
@@ -154,29 +168,33 @@ SQLDataSources (
 
 	  str = fgets (buf, sizeof (buf), fp);
 
-	  if (str == NULL)
+	  if (*str == '[' || str == NULL)
 	    break;
 
-	  if (*str == '[')
+	  if (*str == '\n')
+	    continue;
+
+	  for (p = str; *p; p++)
 	    {
-	      str++;
-	      for (p = str; *p; p++)
-		if (*p == ']')
+	      if (*p == '=' || *p == '\n')
+	        {
 		  *p = '\0';
 
-	      if (!strcmp (str, SECT1))
-		continue;
-	      if (!strcmp (str, SECT2))
-		continue;
-
-	      /*
-	       *  Add this section to the comma separated list
-	       */
-	      if (num_entries >= MAX_ENTRIES)
-		break;		/* Skip the rest */
-
-	      sect[num_entries++] = (char *) strdup (str);
+		  /*
+		   *  Trim whitespace from the right
+		   */
+		  for (; p > str && (*(p - 1) == ' ' || *(p - 1) == '\t');)
+		      *--p = '\0';
+		  break;
+	        }
 	    }
+
+	  /* Add this section to the comma separated list */
+
+	  if (num_entries >= MAX_ENTRIES)
+	    break;		/* Skip the rest */
+
+	  sect[num_entries++] = (char *) strdup (str);
 	}
       fclose (fp);
 
