@@ -30,17 +30,15 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
 			  itrace.c misc.c prepare.c result.c
 
-
 noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci
 include_HEADERS		= isql.h isqlext.h isqltypes.h
-
 
 noinst_SCRIPTS		= config.guess config.sub configure \
 			  install-sh ltconfig ltmain.sh missing mkinstalldirs
 
 EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
-			  iodbc.def iodbc.exp libiodbc.spec
+			  iodbc.def iodbc.exp libiodbc.spec main.c
 
 
 
