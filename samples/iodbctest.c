@@ -120,9 +120,9 @@ int ODBC_Test (void);
 /*
  *  Global variables
  */
-HENV henv;
-HDBC hdbc;
-HSTMT hstmt;
+HENV henv = SQL_NULL_HANDLE;
+HDBC hdbc = SQL_NULL_HANDLE;
+HSTMT hstmt = SQL_NULL_HANDLE;
 
 int connected = 0;
 
@@ -428,7 +428,7 @@ ODBC_Errors (char *where)
   /*
    *  Get statement errors
    */
-  while (SQLError (henv, hdbc, hstmt, sqlstate, &native_error,
+  while (hstmt && SQLError (henv, hdbc, hstmt, sqlstate, &native_error,
 	  buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
 #ifdef UNICODE
@@ -450,7 +450,7 @@ ODBC_Errors (char *where)
   /*
    *  Get connection errors
    */
-  while (SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
+  while (hdbc && SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
 	  buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
 #ifdef UNICODE
@@ -472,7 +472,7 @@ ODBC_Errors (char *where)
   /*
    *  Get environment errors
    */
-  while (SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
+  while (henv && SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
 	  &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
 #ifdef UNICODE
@@ -497,7 +497,7 @@ ODBC_Errors (char *where)
    *  Get statement errors
    */
   i = 0;
-  while (i < 5 && SQLGetDiagRec (SQL_HANDLE_STMT, hstmt, ++i,
+  while (hstmt && i < 5 && SQLGetDiagRec (SQL_HANDLE_STMT, hstmt, ++i,
 	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
 #ifdef UNICODE
@@ -520,7 +520,7 @@ ODBC_Errors (char *where)
    *  Get connection errors
    */
   i = 0;
-  while (i < 5 && SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
+  while (hdbc && i < 5 && SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
 	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
 #ifdef UNICODE
@@ -543,7 +543,7 @@ ODBC_Errors (char *where)
    *  Get environment errors
    */
   i = 0;
-  while (i < 5 && SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
+  while (henv && i < 5 && SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
 	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
     {
 #ifdef UNICODE
