@@ -220,7 +220,7 @@ _iodbcdm_sqlerror (
   int handle = 0;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (hstmt != SQL_NULL_HSTMT)	/* retrive stmt err */
+  if (hstmt != SQL_NULL_HSTMT)	/* retrieve stmt err */
     {
       herr = pstmt->herr;
       thdbc = pstmt->hdbc;
@@ -239,7 +239,7 @@ _iodbcdm_sqlerror (
       dhstmt = pstmt->dhstmt;
       handle = 3;
     }
-  else if (hdbc != SQL_NULL_HDBC)	/* retrive dbc err */
+  else if (hdbc != SQL_NULL_HDBC)	/* retrieve dbc err */
     {
       herr = pdbc->herr;
       thdbc = pdbc;
@@ -263,12 +263,12 @@ _iodbcdm_sqlerror (
 	  return SQL_NO_DATA_FOUND;
 	}
     }
-  else if (henv != SQL_NULL_HENV)	/* retrive env err */
+  else if (henv != SQL_NULL_HENV)	/* retrieve env err */
     {
       herr = genv->herr;
 
       /* Drivers shouldn't push error message 
-       * on envoriment handle */
+       * on environment handle */
 
       if (herr == SQL_NULL_HERR)
 	{
@@ -876,7 +876,7 @@ SQLGetDiagField (SQLSMALLINT nHandleType,
 		    }
 		  else if (((ENV_t *) con->henv)->dodbc_ver == SQL_OV_ODBC2 &&
 		      ((GENV_t FAR *) Handle)->rc)
-		    {		/* ODBC2 drivers can only have one errror */
+		    {		/* ODBC2 drivers can only have one error */
 		      (*(SQLINTEGER *) pDiagInfoPtr) = 1;
 		    }
 		}

@@ -453,7 +453,7 @@ SQLFreeStmt (
   switch (fOption)
     {
     case SQL_DROP:
-      /* delet this object (ignore return) */
+      /* delete this object (ignore return) */
       _iodbcdm_dropstmt (pstmt);
       break;
 

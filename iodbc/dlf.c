@@ -183,7 +183,7 @@ static char *errmsg = 0;
 
 static void
 init_htab (hent_t * ht)
-/* initate a hashing table */
+/* initialize a hashing table */
 {
   int i;
 
@@ -482,7 +482,7 @@ dlsym (void *hdl, char *sym)
    * manager. 2. applications always pass driver's full 
    * path name. 3. if driver itself don't support 
    * SQLGetFunctions(), call it with SQL_ALL_FUNCTIONS
-   * as flag immidately after SQLConnect(), SQLDriverConnect()
+   * as flag immediately after SQLConnect(), SQLDriverConnect()
    * and SQLBrowseConnect() to force the driver manager
    * resolving all will be used symbols. 
    */
@@ -500,13 +500,13 @@ dlsym (void *hdl, char *sym)
    * is always 0. While on 4.x it will be 32. 
    * On AIX 4.x, if the symbol is a entry point,
    * n_value will be 0. However, one thing is for sure 
-   * that if a symbol is not existance in the file,
+   * that if a symbol does not exists in the file,
    * both .n_type and .n_value would be 0.
    */
 
   if (!nl[1].n_type && !nl[1].n_value)
     {
-      errmsg = "symbol not existance in this module";
+      errmsg = "symbol does not exist in this module";
       return 0;
     }
 
@@ -528,7 +528,7 @@ dlsym (void *hdl, char *sym)
    * by adding a relative offset getting from the module 
    * file symbol table, i.e
    *
-   *  functin virtual address = entry point virtual address +
+   *  function virtual address = entry point virtual address +
    *     + ( function offset in file - entry point offset in file )
    */
 
@@ -878,7 +878,7 @@ dlopen (char *path, int mode)
       {
 	  "%s(%d): Object Image Load Failure\n",
 	  "%s(%d): Object Image Load Success\n",
-	  "%s(%d): Not an recognisable object file\n",
+	  "%s(%d): Not an recognizable object file\n",
 	  "%s(%d): No valid architecture\n",
 	  "%s(%d): Object image has an invalid format\n",
 	  "%s(%d): Invalid access (permissions?)\n",
@@ -954,7 +954,7 @@ static char *dlerror_pointer = NULL;
 /*
  * NSMakePrivateModulePublic() is not part of the public dyld API so we define
  * it here.  The internal dyld function pointer for
- * __dyld_NSMakePrivateModulePublic is returned so thats all that maters to get
+ * __dyld_NSMakePrivateModulePublic is returned so thats all that matters to get
  * the functionality need to implement the dlopen() interfaces.
  */
 static enum bool

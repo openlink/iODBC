@@ -361,7 +361,7 @@ _iodbcdm_driverload (
 /* - Call driver's SQLFreeConnect()
  * - Call driver's SQLFreeEnv() ( for the last reference only)
  * - Unload the share library( or decrease its reference
- *   count if it is not the last referenct )
+ *   count if it is not the last reference )
  * - decrease bookkeeping reference count
  * - state transition to allocated
  */
@@ -631,7 +631,7 @@ _iodbcdm_settracing (HDBC hdbc, char *dsn, int dsnlen)
   char *ptr;
   SQLRETURN setopterr = SQL_SUCCESS;
 
-  /* Get Driver's DLL path from specificed or default dsn section */
+  /* Get Driver's DLL path from specified or default dsn section */
   ptr = _iodbcdm_getkeyvalbydsn (dsn, dsnlen, "TraceFile",
       (char FAR *) buf, sizeof (buf));
 
@@ -777,7 +777,7 @@ SQLConnect (
 
     case SQL_SUCCESS_WITH_INFO:
       setopterr = SQL_ERROR;
-      /* unsuccessed in calling driver's 
+      /* unsuccessful in calling driver's 
        * SQLSetConnectOption() to set login
        * timeout.
        */
@@ -807,8 +807,8 @@ SQLConnect (
   if (retcode != SQL_SUCCESS
       && retcode != SQL_SUCCESS_WITH_INFO)
     {
-      /* not unload driver for retrive error 
-       * messge from driver */
+      /* not unload driver for retrieve error 
+       * message from driver */
 		/*********
 		_iodbcdm_driverunload( hdbc );
 		**********/
@@ -820,7 +820,7 @@ SQLConnect (
   /* state transition */
   pdbc->state = en_dbc_connected;
 
-  /* do delaid option setting */
+  /* do delayed option setting */
   setopterr |= _iodbcdm_dbcdelayset (pdbc);
 
   if (setopterr != SQL_SUCCESS)
@@ -1045,7 +1045,7 @@ SQLDriverConnect (
 
     case SQL_SUCCESS_WITH_INFO:
       setopterr = SQL_ERROR;
-      /* unsuccessed in calling driver's 
+      /* unsuccessful in calling driver's 
        * SQLSetConnectOption() to set login
        * timeout.
        */
@@ -1077,7 +1077,7 @@ SQLDriverConnect (
 
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
-      /* don't unload driver here for retrive 
+      /* don't unload driver here for retrieve 
        * error message from driver */
 		/********
 		_iodbcdm_driverunload( hdbc );
@@ -1090,7 +1090,7 @@ SQLDriverConnect (
   /* state transition */
   pdbc->state = en_dbc_connected;
 
-  /* do delaid option setting */
+  /* do delayed option setting */
   setopterr |= _iodbcdm_dbcdelayset (pdbc);
 
   if (setopterr != SQL_SUCCESS)
@@ -1200,7 +1200,7 @@ SQLBrowseConnect (SQLHDBC hdbc,
 
 	case SQL_SUCCESS_WITH_INFO:
 	  setopterr = SQL_ERROR;
-	  /* unsuccessed in calling driver's 
+	  /* unsuccessful in calling driver's 
 	   * SQLSetConnectOption() to set login
 	   * timeout.
 	   */
@@ -1252,7 +1252,7 @@ SQLBrowseConnect (SQLHDBC hdbc,
     case SQL_ERROR:
       pdbc->state = en_dbc_allocated;
       /* but the driver will not unloaded 
-       * to allow application retrive err
+       * to allow application retrieve err
        * message from driver 
        */
       break;

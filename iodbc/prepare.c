@@ -272,7 +272,7 @@ SQLBindParameter (
   /* check param */
   if (fSqlType > SQL_TYPE_MAX ||
       (fSqlType < SQL_TYPE_MIN && fSqlType > SQL_TYPE_DRIVER_START))
-    /* Note: SQL_TYPE_DRIVER_START is a nagtive number 
+    /* Note: SQL_TYPE_DRIVER_START is a negative number 
      * So, we use ">" */
 #endif
     {

@@ -272,7 +272,7 @@ _iodbcdm_SetConnectOption (
 	{
 	  /* This two options are only meaningful
 	   * for specified driver. So, has to be
-	   * set after a dirver has been loaded.
+	   * set after a driver has been loaded.
 	   */
 	  sqlstat = en_08003;
 	  break;
@@ -544,12 +544,12 @@ _iodbcdm_SetConnectOption (
     }
 
   /* 
-   * Now, either driver's odbc call was successed or
+   * Now, either driver's odbc call was successful or
    * driver has not been loaded yet. In the first case, we
    * need flip flag for(such as access_mode, autocommit, ...)
    * for our finit state machine. While in the second case, 
    * we need save option values(such as current_qualifier, ...)
-   * for delaied setting. So, ...
+   * for delayed setting. So, ...
    */
 
   /* No matter what state we are(i.e. allocated or connected, ..)
@@ -573,7 +573,7 @@ _iodbcdm_SetConnectOption (
     }
 
   /* Only 'allocated' state is possible here, and we need to
-   * save the options for delaied setting.
+   * save the options for delayed setting.
    */
   switch (fOption)
     {
@@ -624,7 +624,7 @@ _iodbcdm_SetConnectOption (
       break;
 
     default:
-      /* Since we didn't save the option value for delaied
+      /* Since we didn't save the option value for delayed
        * setting, we should raise an error here.
        */
       break;
