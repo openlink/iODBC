@@ -114,6 +114,74 @@ else
   AC_MSG_RESULT(ok)
 fi
 
+##########################################################################
+##									##
+##  Set Layout for iODBC						##
+##									##
+##########################################################################
+
+AC_PREFIX_DEFAULT(/usr/local)
+
+
+AC_MSG_CHECKING(for iODBC installation layout)
+AC_ARG_WITH(layout,
+[  --with-layout=LAYOUT    Choose installation layout],
+[ case "${withval}" in
+    yes|no)	IODBC_LAYOUT=unset ;;
+    *)		IODBC_LAYOUT=${withval} ;;
+  esac
+], [IODBC_LAYOUT=unset]) 
+
+case ${IODBC_LAYOUT} in
+  unset)					# No Layout set
+	iodbc_layout="default"
+	inidir=/etc
+	;;
+
+  [[Gg]][[Nn]][[Uu]])				# GNU
+	iodbc_layout="GNU"
+	test "x$prefix" = xNONE && prefix=/usr/local
+	inidir=${prefix}/etc/iodbc
+	;;
+
+  [[Dd]][[Ee]][[Bb]][[Ii]][[Aa]][[Nn]])		# Debian
+	iodbc_layout="Debian"
+	test "x$prefix" = xNONE && prefix=/usr
+	inidir=/etc
+	;;
+
+  [[Gg]][[Ee]][[Nn]][[Tt]][[Oo]][[Oo]])		# Gentoo
+	iodbc_layout="Gentoo"
+	echo "PREFIX=I${prefix}I"
+	test "x$prefix" = xNONE && prefix=/usr
+	includedir='${prefix}/include/iodbc'
+	inidir=/etc/iodbc
+	;;
+
+  [[Rr]][[Ee]][[Dd]][[Hh]][[Aa]][[Tt]])		# RedHat
+	iodbc_layout=RedHat
+	test "x$prefix" = xNONE && prefix=/usr
+	inidir=/etc
+	;;
+
+  [[Ff]][[Rr]][[Ee]][[Ee]][[Bb]][[Ss]][[Dd]])	# FreeBSD
+	iodbc_layout=FreeBSD
+	test "x$prefix" = xNONE && prefix=/usr
+	inidir=/etc
+	;;
+
+  [[Oo]][[Pp]][[Tt]])				# /opt
+	iodbc_layout=opt
+	test "x$prefix" = xNONE && prefix=/opt/iodbc
+	inidir=/etc
+	;;
+
+  *)						# UNKNOWN
+	AC_MSG_ERROR(Unknown layout ${IODBC_LAYOUT})
+	;;
+esac
+AC_MSG_RESULT([${iodbc_layout}])
+
 
 ##########################################################################
 ##									##
@@ -422,7 +490,7 @@ AC_ARG_WITH(iodbc-inidir,
     	inidir=$withval
 	;;
     esac 
-], [ inidir=/etc ])
+])
 AC_MSG_RESULT($inidir)
 
 AC_SUBST(inidir)
@@ -535,3 +603,35 @@ AC_CONFIG_COMMANDS([default],[
     chmod 755 bin/iodbc-config
 ])
 AC_OUTPUT
+
+
+########################################################################## 
+##									##
+##  Display configuration information					##
+##									##
+##########################################################################
+echo ""
+echo ""
+echo "${PACKAGE_STRING} configuration summary"
+echo "${PACKAGE_STRING} configuration summary" | sed 's/./=/g'
+echo ""
+echo "Installation variables"
+echo "AC_HELP_STRING(layout,		[${iodbc_layout}])"
+echo "AC_HELP_STRING(prefix,		[${prefix}])"
+echo "AC_HELP_STRING(exec_prefix,	[${exec_prefix}])"
+echo ""
+echo "Installation paths"
+echo "AC_HELP_STRING(programs,		[${bindir}])"
+echo "AC_HELP_STRING(include files, 	[${includedir}])"
+echo "AC_HELP_STRING(libraries, 	[${libdir}])"
+echo "AC_HELP_STRING(manual pages, 	[${mandir}])"
+echo ""
+echo "Configuration files"
+echo "AC_HELP_STRING(odbc.ini , 	[${inidir}/odbc.ini])"
+echo "AC_HELP_STRING(odbcinst.ini , 	[${inidir}/odbcinst.ini])"
+echo ""
+echo "Extensions"
+echo "AC_HELP_STRING(ODBC Version, 	[${odbcmode}])"
+echo "AC_HELP_STRING(GUI Extensions,	[${USE_GUI}])"
+echo "AC_HELP_STRING(ThreadSafe,	[${USE_PTHREADS}])"
+echo ""
