@@ -124,6 +124,7 @@ SQLAllocHandle (SQLSMALLINT handleType,
 	new_desc->hdbc = con;
 	new_desc->hstmt = NULL;
 	new_desc->herr = NULL;
+	new_desc->desc_cip = 0;
 	*outputHandlePtr = new_desc;
 
 	new_desc->next = con->hdesc;

@@ -97,6 +97,7 @@ SQLAllocConnect (
   pdbc->trace = 0;
   pdbc->tstm = NULL;
   pdbc->tfile = NULL;
+  pdbc->dbc_cip = 0;
 
   /* set connect options to default values */
   pdbc->access_mode = SQL_MODE_DEFAULT;
