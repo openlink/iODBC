@@ -136,8 +136,53 @@ AC_HEADER_STDC
 ##  Check for specific library functions				##
 ##									##
 ##########################################################################
-dnl Checks for library functions.
 AC_CHECK_FUNCS(strerror)
+
+
+##########################################################################
+##									##
+##  Where to find the system odbc.ini file				**
+##									##
+##########################################################################
+
+#
+#  First determine the systemwide default directory according 
+#  to GNU specifications
+#
+AC_MSG_CHECKING(system config directory)
+sysinidir=`eval echo $sysconfdir`
+case "$sysinidir" in
+NONE*) 
+       sysinidir=$ac_default_prefix/etc
+       ;;
+/usr/etc)
+       sysinidir=/etc
+       ;;
+*)
+       sysinidir=$sysconfdir
+       ;;
+esac
+AC_MSG_RESULT($sysinidir)
+
+#
+#  Now allow to overrule this directory with a custom setting
+#
+AC_MSG_CHECKING(for iODBC ini directory)
+AC_ARG_WITH(iodbc-inidir,
+[  --with-iodbc-inidir=DIR Where the system odbc.ini file should be located.],
+[ 
+    case "$withval" in
+    yes|no)
+        inidir=/etc
+	;;
+    *)
+    	inidir=$withval
+	;;
+    esac 
+], [ inidir=$sysinidir ])
+AC_MSG_RESULT($inidir)
+
+AC_DEFINE_UNQUOTED(SYS_ODBC_INI, "$inidir/odbc.ini")
 
 
 ##########################################################################
