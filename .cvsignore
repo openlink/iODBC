@@ -13,6 +13,7 @@ aclocal.m4
 config.log
 config.cache
 config.status
+config.nice
 .libs
 .deps
 iodbc-config
