@@ -77,13 +77,13 @@ name: libiodbc
 version: @VERSION@
 release: 1
 Group: Libraries
-Vendor: Ke Jin 
+Vendor: Ke Jin and OpenLink Software
 Packager: OpenLink Software <iodbc@openlinksw.com>
-Copyright: either LGPL or BSD
+Copyright: LGPL or BSD license (see "LICENSE" file included in distribution)
 URL: http://www.iodbc.org/
 Source: http://www.iodbc.org/dist/libiodbc-%{PACKAGE_VERSION}.tar.gz
-#Prefix: /
-BuildRoot:/tmp/libiodbc.root
+Prefix: /usr
+BuildRoot:/var/tmp/build-libiodbc-%{PACKAGE_VERSION}
 AutoReqProv: no
 
 %description
@@ -138,14 +138,28 @@ currently maintained by OpenLink Software under an LGPL license.
 make
 
 %install
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
+
+#
+#  Make sure we can find the necessary libraries
+#
+LIBRARY_PATH=$RPM_BUILD_ROOT/usr/lib
+export LIBRARY_PATH
+
+#
+#  Install binaries, include files and libraries
+#
 make install prefix=$RPM_BUILD_ROOT/usr
+
+#
+#  Install the sample odbc.ini and odbcinst.ini files
+#
 mkdir -p $RPM_BUILD_ROOT/etc
 install -m644 etc/odbc.ini.sample $RPM_BUILD_ROOT/etc/odbc.ini
 install -m644 etc/odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -158,9 +172,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %attr(0644, root, root) %doc AUTHORS 
-%attr(0644, root, root) %doc COPYING
-%attr(0644, root, root) %doc COPYING.LGPL
-%attr(0644, root, root) %doc COPYING.BSD
+%attr(0644, root, root) %doc LICENSE
+%attr(0644, root, root) %doc LICENSE.LGPL
+%attr(0644, root, root) %doc LICENSE.BSD
 %attr(0644, root, root) %doc ChangeLog 
 %attr(0644, root, root) %doc NEWS 
 %attr(0644, root, root) %doc README
