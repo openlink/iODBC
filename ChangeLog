@@ -1,4 +1,11 @@
-Sep 11 2001, V3.0.6:
+Apr 29 2002, V3.0.6:
+    * Added instructions for building MyODBC on Mac OS X
+    * Added support for building iODBC on Mac OS X as a framework
+    * Fixed creating new window handle
+    * Fixed portability issues
+    * Use the latest versions of autoconf, automake and libtool
+    * Updated all comments to reflect the new dual licensing policy
+    * Fixed bug in SQLError/SQLGetDiagRec
     * Added support for driver specific connect options
     * Fixed wrong argument to SQLEndTran
     * Fixed handling statement descriptor
