@@ -24,7 +24,8 @@ SUBDIRS			= . samples
 
 lib_LTLIBRARIES		= libiodbc.la
 
-libiodbc_la_LDFLAGS	= -version-info @lib_version@ -export-symbols iodbc.exp
+libiodbc_la_LDFLAGS	= -version-info @lib_version@ \
+	                  -export-symbols $(srcdir)/iodbc.exp
 libiodbc_la_LIBADD	= $(LIBADD_DL)
 libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
