@@ -189,7 +189,7 @@ fi
 if test "$echo_staticlibs" = "yes"; then
 	libs=""
 	if test "$lib_iodbc" = "yes"; then
-		libs="@libdir@/libiodbc.a @libdir@/libiodbcinst.a"
+		libs="@libdir@/libiodbc.a @libdir@/libiodbcinst.a @LIBADD_DL@"
 	fi
 	echo "$libs"
 fi
