@@ -51,7 +51,7 @@ binary-tar:
 	-mkdir @build@
 	$(MAKE) install prefix=`pwd`/@build@
 	tar cvf @build@.tar @build@
-	gzip -9v @build@.tar
+	gzip -9vf @build@.tar
 	rm -rf @build@
 
 #
