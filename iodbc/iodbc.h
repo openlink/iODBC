@@ -30,9 +30,9 @@
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
 #define	_UNIX_
 
-#include	<stdlib.h>
-#include        <string.h>
-#include	<sys/types.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 
 #define	MEM_ALLOC(size)	(malloc((size_t)(size)))
 #define	MEM_FREE(ptr)	{if(ptr) free(ptr);}
@@ -75,8 +75,8 @@ typedef int BOOL;
 #define	MEM_FREE(ptr)	((ptr)? farfree((void far*)(ptr)):0)
 #define	STRCPY(t, s)	(_fstrcpy((char FAR*)(t), (char FAR*)(s)))
 #define	STRNCPY(t,s,n)	(_fstrncpy((char FAR*)(t), (char FAR*)(s), (size_t)(n)))
-#define      STRLEN(str)     ((str)? _fstrlen((char FAR*)(str)):0)
-#define      STREQ(a, b)     (_fstrcmp((char FAR*)(a), (char FAR*)(b) == 0)
+#define STRLEN(str)     ((str)? _fstrlen((char FAR*)(str)):0)
+#define STREQ(a, b)     (_fstrcmp((char FAR*)(a), (char FAR*)(b) == 0)
 #endif
 
 #endif /* WINDOWS */
