@@ -281,7 +281,7 @@ ODBC_Errors (char *where)
 {
   SQLCHAR buf[250];
   SQLCHAR sqlstate[15];
-  SQLINTEGER native_error;
+  SQLINTEGER native_error = 0;
 
 #if (ODBCVER < 0x0300)
   /*
