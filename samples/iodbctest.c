@@ -73,13 +73,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined(__APPLE__) && !defined(NO_FRAMEWORKS)
-#include <iODBC/sql.h>
-#include <iODBC/sqlext.h>
-#else
 #include <sql.h>
 #include <sqlext.h>
-#endif
 
 #define MAXCOLS		32
 
