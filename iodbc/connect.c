@@ -868,7 +868,8 @@ SQLConnect_Internal (SQLHDBC hdbc,
 
   if (waMode == 'W')
     {
-      _dsn = (SQLCHAR *) _szDSN = dm_SQL_WtoU8((SQLWCHAR *)szDSN, cbDSN);
+      _szDSN = (void *) dm_SQL_WtoU8((SQLWCHAR *)szDSN, cbDSN);
+      _dsn = (SQLCHAR *) _szDSN;
       _dsn_len = SQL_NTS;
       if (_dsn == NULL)
         {
