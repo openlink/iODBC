@@ -181,7 +181,7 @@ ODBC_Connect (char *connStr)
   SQLTCHAR desc[255];
   SQLTCHAR driverInfo[255];
   SQLTCHAR outdsn[255];
-  SWORD len1, len2;
+  SQLSMALLINT len1, len2;
   int status;
 #ifdef UNICODE
   SQLWCHAR wdataSource[1024];
@@ -209,7 +209,7 @@ ODBC_Connect (char *connStr)
    *  Set the application name
    */
   SQLSetConnectOption (hdbc, SQL_APPLICATION_NAME,
-	(SQLUINTEGER) TEXT ("odbctest"));
+	(SQLULEN) TEXT ("odbctest"));
 
 
   /*
@@ -247,7 +247,7 @@ ODBC_Connect (char *connStr)
 	/*
 	 *  Remove trailing '\n'
 	 */
-	dataSource[strlen (dataSource) - 1] = '\0';
+	dataSource[strlen ((char *) dataSource) - 1] = '\0';
 
 	/*
 	 * Check if the user wants to quit
@@ -295,7 +295,7 @@ ODBC_Connect (char *connStr)
       }
 
 #ifdef UNICODE
-  strcpy_A2W (wdataSource, dataSource);
+  strcpy_A2W (wdataSource, (char *) dataSource);
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
       (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
   if (status != SQL_SUCCESS)
@@ -565,8 +565,8 @@ ODBC_Test ()
   short colNum;
   SQLTCHAR colName[50];
   SQLSMALLINT colType;
-  SQLUINTEGER colPrecision;
-  SQLINTEGER colIndicator;
+  SQLULEN colPrecision;
+  SQLLEN colIndicator;
   SQLSMALLINT colScale;
   SQLSMALLINT colNullable;
   unsigned long totalRows;
@@ -705,11 +705,11 @@ ODBC_Test ()
 	    }
 	  if (numCols == 0)
 	    {
-	      SQLINTEGER nrows = 0;
+	      SQLLEN nrows = 0;
 
 	      SQLRowCount (hstmt, &nrows);
 	      printf ("Statement executed. %ld rows affected.\n",
-		  nrows > 0 ? nrows : 0);
+		  nrows > 0 ? (long) nrows : 0L);
 	      goto endCursor;
 	    }
 
