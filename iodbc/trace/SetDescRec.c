@@ -78,12 +78,12 @@ trace_SQLSetDescRec (int trace_leave, int retcode,
   SQLSMALLINT		  RecNumber,
   SQLSMALLINT		  Type,
   SQLSMALLINT		  SubType,
-  SQLINTEGER		  Length,
+  SQLLEN		  Length,
   SQLSMALLINT		  Precision,
   SQLSMALLINT		  Scale,
   SQLPOINTER		  Data,
-  SQLINTEGER		* StringLength,
-  SQLINTEGER		* Indicator)
+  SQLLEN		* StringLength,
+  SQLLEN		* Indicator)
 {
   /* Trace function */
   _trace_print_function (en_SetDescRec, trace_leave, retcode);
@@ -93,10 +93,10 @@ trace_SQLSetDescRec (int trace_leave, int retcode,
   _trace_smallint (RecNumber);
   _trace_smallint (Type);
   _trace_smallint (SubType);
-  _trace_integer (Length);
+  _trace_len (Length);
   _trace_smallint (Precision);
   _trace_smallint (Scale);
   _trace_pointer (Data);
-  _trace_integer_p (StringLength, TRACE_OUTPUT_SUCCESS);
-  _trace_integer_p (Indicator, TRACE_OUTPUT_SUCCESS);
+  _trace_len_p (StringLength, TRACE_OUTPUT_SUCCESS);
+  _trace_len_p (Indicator, TRACE_OUTPUT_SUCCESS);
 }

@@ -237,7 +237,7 @@ void trace_SQLSetDescField (int trace_leave, int retcode, SQLHDESC DescriptorHan
 void trace_SQLSetDescFieldW (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT FieldIdentifier, SQLPOINTER ValuePtr, SQLINTEGER BufferLength);
 
 /* SetDescRec.c */
-void trace_SQLSetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type, SQLSMALLINT SubType, SQLINTEGER Length, SQLSMALLINT Precision, SQLSMALLINT Scale, SQLPOINTER Data, SQLINTEGER *StringLength, SQLINTEGER *Indicator);
+void trace_SQLSetDescRec (int trace_leave, int retcode, SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type, SQLSMALLINT SubType, SQLLEN Length, SQLSMALLINT Precision, SQLSMALLINT Scale, SQLPOINTER Data, SQLLEN *StringLength, SQLLEN *Indicator);
 
 /* SetEnvAttr.c */
 void trace_SQLSetEnvAttr (int trace_leave, int retcode, SQLHENV EnvironmentHandle, SQLINTEGER Attribute, SQLPOINTER ValuePtr, SQLINTEGER StringLength);
