@@ -25,7 +25,7 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT(isql.h)
-AM_INIT_AUTOMAKE(libiodbc,2.50)
+AM_INIT_AUTOMAKE(libiodbc,2.50.2)
 AC_CANONICAL_HOST
 
 
@@ -34,7 +34,7 @@ AC_CANONICAL_HOST
 ##  Set version information						## 
 ##									##
 ##########################################################################
-lib_version=2:12
+lib_version=2:50:0
 AC_SUBST(lib_version)
 
 
