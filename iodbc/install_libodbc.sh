@@ -82,14 +82,14 @@ then
   exit 1
 fi
 
-if test ! -d "$PREFIX/lib"
+if test ! -d "$PREFIX"
 then
-   echo "**ERROR: installation directory [$PREFIX/lib] does not exist"
+   echo "**ERROR: installation directory [$PREFIX] does not exist"
    exit 1
 fi
 
 
-cd "$PREFIX"/lib
+cd "$PREFIX"
 
 
 #
