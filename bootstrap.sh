@@ -96,8 +96,8 @@ echo "Checking build environment ..."
 
 (gtk-config --version) < /dev/null > /dev/null 2>&1 || {
     echo
-    echo "**Error**: You must have \`GTK' installed on your system."
-    DIE=1
+    echo "**Warning**: You may need \`GTK' installed on your system."
+    DIE=0
 }
 
 if test "$DIE" -eq 1
@@ -124,7 +124,7 @@ then
 fi
 
 echo "Running aclocal ..."
-aclocal
+aclocal -I admin
 if test $? -ne 0
 then
     echo

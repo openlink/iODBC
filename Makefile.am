@@ -75,6 +75,7 @@ EXTRA_DIST		= \
 	LICENSE LICENSE.LGPL LICENSE.BSD \
 	README.CVS \
 	README.MACOSX \
+	bootstrap.sh \
 	acinclude.m4 \
 	mac/Makefile \
 	mac/link-inclibs.sh \

@@ -67,6 +67,7 @@
 
 EXTRA_DIST = \
 	acinclude.m4 \
+	gtk.m4 \
 	config.guess \
 	config.sub \
 	install-sh \
