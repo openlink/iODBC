@@ -28,7 +28,7 @@
 # ----------------------------------------------------------------------
 Summary: iODBC Driver Manager
 name: libiodbc
-version: 3.0.1
+version: 3.0.2
 release: 1
 Group: Libraries
 Vendor: Ke Jin 
@@ -87,7 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files 
 %attr(0755, root, root) /usr/lib/libiodbc.so.2
-%attr(0755, root, root) /usr/lib/libiodbc.so.2.1.1
+%attr(0755, root, root) /usr/lib/libiodbc.so.2.1.2
 %attr(0644, root, root) %config /etc/odbc.ini
 # %attr(0644, root, root) %config /etc/odbcinst.ini
 
