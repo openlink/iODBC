@@ -5,8 +5,23 @@
  *
  *  Sample ODBC program
  *
- *  (C)Copyright 1996 OpenLink Software.
- *  All Rights Reserved.
+ *  Distributed as part of the iODBC driver manager.
+ *  
+ *  Copyright (C) 1999 by OpenLink Software <iodbc@openlinksw.com>
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
 
@@ -57,11 +72,22 @@ DB_Connect (char *connStr)
   SWORD len1, len2;
   int status;
 
+#if (ODBCVER < 0x0300)
   if (SQLAllocEnv (&henv) != SQL_SUCCESS)
     return -1;
 
   if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
     return -1;
+#else
+  if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
+    return -1;
+
+  SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
+      SQL_IS_UINTEGER);
+
+  if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
+    return -1;
+#endif
 
   /*
    *  Either use the connect string provided on the command line or
@@ -69,7 +95,7 @@ DB_Connect (char *connStr)
    *  list of options
    */
   if (connStr && *connStr)
-    strcpy ((char *)dataSource, connStr);
+    strcpy ((char *) dataSource, connStr);
   else
     while (1)
       {
@@ -77,13 +103,13 @@ DB_Connect (char *connStr)
 	 *  Ask for the connect string
 	 */
 	printf ("\nEnter ODBC connect string (? shows list): ");
-	if (fgets ((char *)dataSource, sizeof (dataSource), stdin) == NULL)
+	if (fgets ((char *) dataSource, sizeof (dataSource), stdin) == NULL)
 	  return 1;
 
 	/*
 	 *  Remove trailing '\n'
 	 */
-	dataSource[strlen ((char *)dataSource) - 1] = '\0';
+	dataSource[strlen ((char *) dataSource) - 1] = '\0';
 
 	/*
 	 *  If the user entered something other than a ?
@@ -102,7 +128,7 @@ DB_Connect (char *connStr)
 	/*
 	 *  Goto the first record
 	 */
-	if (SQLDataSources (henv, SQL_FETCH_FIRST, 
+	if (SQLDataSources (henv, SQL_FETCH_FIRST,
 		dsn, 33, &len1, desc, 255, &len2) != SQL_SUCCESS)
 	  continue;
 
@@ -113,22 +139,27 @@ DB_Connect (char *connStr)
 	  {
 	    fprintf (stderr, "%-30s | %-30s\n", dsn, desc);
 	  }
-	while (SQLDataSources (henv, SQL_FETCH_NEXT, 
+	while (SQLDataSources (henv, SQL_FETCH_NEXT,
 		dsn, 33, &len1, desc, 255, &len2) == SQL_SUCCESS);
       }
 
-  status = SQLDriverConnect (hdbc, 0, (UCHAR *) dataSource, SQL_NTS, 
-  	(UCHAR *) buf, sizeof (buf), &buflen, SQL_DRIVER_COMPLETE);
+  status = SQLDriverConnect (hdbc, 0, (UCHAR *) dataSource, SQL_NTS,
+      (UCHAR *) buf, sizeof (buf), &buflen, SQL_DRIVER_COMPLETE);
 
   if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     return -1;
 
-  SQLSetConnectOption( hdbc, SQL_OPT_TRACEFILE, (UDWORD) "\\SQL.LOG"); 
+  SQLSetConnectOption (hdbc, SQL_OPT_TRACEFILE, (UDWORD) "\\SQL.LOG");
 
   connected = 1;
 
+#if (ODBCVER < 0x0300)
   if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
     return -1;
+#else
+  if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
+    return -1;
+#endif
 
   return 0;
 }
@@ -140,6 +171,7 @@ DB_Connect (char *connStr)
 int
 DB_Disconnect (void)
 {
+#if (ODBCVER < 0x0300)
   if (hstmt)
     SQLFreeStmt (hstmt, SQL_DROP);
 
@@ -147,10 +179,23 @@ DB_Disconnect (void)
     SQLDisconnect (hdbc);
 
   if (hdbc)
-    SQLFreeConnect (hdbc);
+    QLFreeConnect (hdbc);
 
   if (henv)
     SQLFreeEnv (henv);
+#else
+  if (hstmt)
+    SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
+
+  if (connected)
+    SQLDisconnect (hdbc);
+
+  if (hdbc)
+    SQLFreeHandle (SQL_HANDLE_DBC, hdbc);
+
+  if (henv)
+    SQLFreeHandle (SQL_HANDLE_ENV, henv);
+#endif
 
   return 0;
 }
