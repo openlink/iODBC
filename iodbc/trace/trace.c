@@ -87,12 +87,12 @@
 #include "trace.h"
 #include "unicode.h"
 
-
+#define NO_CARBON 1
 #if defined(macintosh)
 # include       <Errors.h>
 # include       <OSUtils.h>
 # include       <Processes.h>
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(NO_CARBON)
 # include       <Carbon/Carbon.h>
 #endif
 
@@ -277,7 +277,7 @@ trace_start(void)
     extern char *__progname;
     trace_set_appname (__progname);
   }
-#elif defined(macintosh) || defined(__APPLE__)
+#elif defined(macintosh) || (defined(__APPLE__) && !defined(NO_CARBON))
   {
     ProcessSerialNumber PSN;
     ProcessInfoRec prec;
