@@ -24,7 +24,7 @@ SUBDIRS			= . samples
 
 lib_LTLIBRARIES		= libiodbc.la
 
-libiodbc_la_LDFLAGS	= -version-info @lib_version@
+libiodbc_la_LDFLAGS	= -version-info @lib_version@ -export-symbols iodbc.exp
 libiodbc_la_LIBADD	= $(LIBADD_DL)
 libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
@@ -39,7 +39,8 @@ include_HEADERS		= isql.h isqlext.h isqltypes.h
 noinst_SCRIPTS		= config.guess config.sub configure \
 			  install-sh ltconfig ltmain.sh missing mkinstalldirs
 
-EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com
+EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
+			  iodbc.def iodbc.exp libiodbc.spec
 
 
 
