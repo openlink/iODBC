@@ -66,7 +66,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-all: iODBCinst iODBC iODBCtest
+all: iODBCinst iODBC iODBCtest iODBCtestw
 
 #
 # ascertain whether to use pbxbuild (jaguar) or xcodebuild (panther)
@@ -88,10 +88,12 @@ iODBCinst: include
 #
 #  Build the test program
 #
-.PHONY: iODBCtest
+.PHONY: iODBCtest iODBCtestw
 iODBCtest:
 	cd iODBCtest; $(PROJBUILD) build -buildstyle Deployment
 
+iODBCtestw:
+	cd iODBCtestw ; $(PROJBUILD) build -buildstyle Deployment
 
 #
 #  Generate iODBC framework style include files
@@ -116,3 +118,4 @@ clean:
 	cd iODBC;     $(PROJBUILD) clean
 	cd iODBCinst; $(PROJBUILD) clean
 	cd iODBCtest; $(PROJBUILD) clean
+	cd iODBCtestw; $(PROJBUILD) clean

@@ -79,7 +79,7 @@
 #endif
 
 #ifndef VERSION
-#define VERSION	"3.51.1"
+#define VERSION	"3.51.3"
 #endif
 
 #ifndef IODBC_BUILD
