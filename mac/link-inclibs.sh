@@ -1,9 +1,10 @@
+#!/bin/sh
 #
-#  Makefile.mac
+#  link-inclibs.sh
 #
 #  The iODBC driver manager.
 #  
-#  Copyright (C) 1996-2002 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2004 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -66,56 +67,56 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-all: iODBCinst iODBC iODBCtest iODBCtestw
+#
+#  Installation PATHS
+#
+PREFIX="/usr/local/iODBC"
+ODBC_FW="/Library/Frameworks/iODBC.framework"
+INST_FW="/Library/Frameworks/iODBCinst.framework"
+
 
 #
-# ascertain whether to use pbxbuild (jaguar) or xcodebuild (panther)
+#  Remove old installation
 #
+if [ -d "$PREFIX" ] ; then
+  rm -rf "$PREFIX"
+fi
 
-PROJBUILD:=$(shell (ls -1 /usr/bin/{pbxbuild,xcodebuild}|head -1)2>/dev/null)
-
-#
-#  Build the libraries 
-#
-.PHONY: iODBCinst iODBC
-iODBC: include iODBCinst
-	cd iODBC; $(PROJBUILD) build -buildstyle Deployment
-
-iODBCinst: include 
-	echo "Projbuild is [$(PROJBUILD)]"
-	cd iODBCinst; $(PROJBUILD) build -buildstyle Deployment
 
 #
-#  Build the test program
+#  Create new directory structure
 #
-.PHONY: iODBCtest iODBCtestw
-iODBCtest:
-	cd iODBCtest; $(PROJBUILD) build -buildstyle Deployment
+mkdir -p "$PREFIX/bin"
+mkdir -p "$PREFIX/lib"
+mkdir -p "$PREFIX/include"
 
-iODBCtestw:
-	cd iODBCtestw ; $(PROJBUILD) build -buildstyle Deployment
 
 #
-#  Generate iODBC framework style include files
+#  Create symlinks for all header files
 #
-.PHONY: include
-include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/iodbcinst.h
-	sh framework-include.sh
+ln -s "$ODBC_FW/Headers/iodbc.h"	"$PREFIX/include/iodbc.h"
+ln -s "$ODBC_FW/Headers/iodbcext.h"	"$PREFIX/include/iodbcext.h"
+ln -s "$ODBC_FW/Headers/iodbcunix.h"	"$PREFIX/include/iodbcunix.h"
+ln -s "$ODBC_FW/Headers/isql.h"		"$PREFIX/include/isql.h"
+ln -s "$ODBC_FW/Headers/isqlext.h"	"$PREFIX/include/isqlext.h"
+ln -s "$ODBC_FW/Headers/isqltypes.h"	"$PREFIX/include/isqltypes.h"
+ln -s "$ODBC_FW/Headers/sql.h"		"$PREFIX/include/sql.h"
+ln -s "$ODBC_FW/Headers/sqlext.h"	"$PREFIX/include/sqlext.h"
+ln -s "$ODBC_FW/Headers/sqltypes.h"	"$PREFIX/include/sqltypes.h"
+ln -s "$ODBC_FW/Headers/sqlucode.h"	"$PREFIX/include/sqlucode.h"
+
+ln -s "$INST_FW/Headers/iodbcinst.h"	"$PREFIX/include/iodbcinst.h"
+ln -s "$INST_FW/Headers/odbcinst.h"	"$PREFIX/include/odbcinst.h"
+
 
 #
-#  Install libraries in /Library/Frameworks
+#  Create symlinks for libraries
 #
-install:
-	cd iODBC;     sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
-	cd iODBCinst; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
-	sh link-inclibs.sh
+ln -s "$ODBC_FW/iODBC"			"$PREFIX/lib/libiodbc.dylib"
+ln -s "$INST_FW/iODBCinst"		"$PREFIX/lib/libiodbcinst.dylib"
+
 
 #
-#  Clean out the targets
+#  Done
 #
-clean:
-	rm -rf include
-	cd iODBC;     $(PROJBUILD) clean
-	cd iODBCinst; $(PROJBUILD) clean
-	cd iODBCtest; $(PROJBUILD) clean
-	cd iODBCtestw; $(PROJBUILD) clean
+exit 0
