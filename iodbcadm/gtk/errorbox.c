@@ -208,3 +208,9 @@ create_error (HWND hwnd, LPCSTR dsn, LPCSTR text, LPCSTR errmsg)
   gtk_widget_show_all (error);
   gtk_main ();
 }
+
+void
+create_errorw (HWND hwnd, LPCWSTR dsn, LPCWSTR text, LPCWSTR errmsg)
+{
+/* TODO */
+}

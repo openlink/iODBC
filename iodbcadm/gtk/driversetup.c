@@ -476,7 +476,7 @@ delete_event (GtkWidget *widget, GdkEvent *event,
 
 
 LPSTR
-create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add)
+create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add, BOOL user)
 {
   GtkWidget *driversetup, *dialog_vbox1, *fixed1, *t_name, *t_driver,
       *t_keyword;

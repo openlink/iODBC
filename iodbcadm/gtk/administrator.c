@@ -579,7 +579,7 @@ driver_add_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 
   if (choose_t)
     {
-      cstr = create_driversetup (choose_t->mainwnd, NULL, connstr, FALSE);
+      cstr = create_driversetup (choose_t->mainwnd, NULL, connstr, FALSE, TRUE);
 
       if (cstr && cstr != connstr && cstr != (LPSTR) - 1L)
 	{
@@ -700,7 +700,7 @@ driver_configure_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 
 	  cstr =
 	      create_driversetup (choose_t->mainwnd, szDriver, connstr,
-	      FALSE);
+	      FALSE, TRUE);
 
 	  if (cstr && cstr != connstr && cstr != (LPSTR) - 1L)
 	    {

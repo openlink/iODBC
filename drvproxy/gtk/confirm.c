@@ -234,3 +234,9 @@ create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text)
 
   return confirm_t.yes_no;
 }
+
+BOOL
+create_confirmw (HWND hwnd, LPCWSTR dsn, LPCWSTR text)
+{
+/* TODO */
+}

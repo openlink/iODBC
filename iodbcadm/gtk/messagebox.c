@@ -183,3 +183,9 @@ create_message (HWND hwnd, LPCSTR dsn, LPCSTR text)
   gtk_widget_show_all (message);
   gtk_main ();
 }
+
+void
+create_messagew (HWND hwnd, LPCWSTR dsn, LPCWSTR text)
+{
+/* TODO */
+}
