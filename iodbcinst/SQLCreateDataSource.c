@@ -102,7 +102,7 @@ BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN)
   void *handle;
   pDrvConnFunc pDrvConn;
 #ifdef __APPLE__
-  CFStringRef libname;
+  CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
   char name[1024] = { 0 };

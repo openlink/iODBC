@@ -143,7 +143,7 @@ SQLDataSources_Internal (
 {
   GENV (genv, henv);
   char buffer[4096], desc[1024], *ptr;
-  int i, j, usernum;
+  int i, j, usernum = 0;
   static int cur_entry = -1;
   static int num_entries = 0;
   static void **sect = NULL;
@@ -426,7 +426,7 @@ SQLDrivers_Internal (
 {
   GENV (genv, henv);
   char buffer[4096], desc[1024], *ptr;
-  int i, j, usernum;
+  int i, j, usernum = 0;
   static int cur_entry = -1;
   static int num_entries = 0;
   static void **sect = NULL;

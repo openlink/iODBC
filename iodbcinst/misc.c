@@ -94,7 +94,7 @@ static int
 upper_strneq (char *s1, char *s2, int n)
 {
   int i;
-  char c1, c2;
+  char c1 = '\0', c2 = '\0';
 
   for (i = 1; i < n; i++)
     {

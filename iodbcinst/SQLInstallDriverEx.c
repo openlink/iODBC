@@ -102,7 +102,7 @@ InstallDriverPathLength (WORD FAR *pcbPathOut, LPSTR envname)
   short fldrRef;
 #endif
   BOOL retcode = FALSE;
-  WORD len;
+  WORD len = 0;
   char path[1024];
   char *ptr;
 

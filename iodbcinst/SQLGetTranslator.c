@@ -129,11 +129,11 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   BOOL retcode = FALSE, finish = FALSE;
   PCONFIG pCfg;
   UWORD configMode;
-  RETCODE ret;
+  RETCODE ret = SQL_NO_DATA;
   void *handle;
   char translator[1024];
 #ifdef __APPLE__
-  CFStringRef libname;
+  CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
   char name[1024] = { 0 };

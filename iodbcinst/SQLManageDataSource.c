@@ -97,7 +97,7 @@ ManageDataSources (HWND hwndParent)
   pAdminBoxFunc pAdminBox;
   BOOL retcode = FALSE;
 #ifdef __APPLE__
-  CFStringRef libname;
+  CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
   char name[1024] = { 0 };
