@@ -15,6 +15,7 @@ Options:
 	[--version]
 	[--libs]
 	[--static-libs]
+	[--libtool-libs]
 	[--cflags]
 	[--odbcversion]
 	[--odbcini]
@@ -70,6 +71,9 @@ while test $# -gt 0; do
    --static-libs)
       echo_staticlibs=yes
       ;;
+   --libtool-libs)
+      echo_libtoollibs=yes
+      ;;
    --data-dir)
       echo_data_dir=yes
       ;;
@@ -122,6 +126,13 @@ if test "$echo_staticlibs" = "yes"; then
 	libs=""
 	if test "$lib_iodbc" = "yes"; then
 		libs="@libdir@/libiodbc.a"
+	fi
+	echo "$libs"
+fi
+if test "$echo_libtoollibs" = "yes"; then
+	libs=""
+	if test "$lib_iodbc" = "yes"; then
+		libs="@libdir@/libiodbc.la"
 	fi
 	echo "$libs"
 fi
