@@ -774,6 +774,10 @@ ODBC_Test ()
 		  displayWidth = colPrecision;
 		  break;
 
+		case SQL_BINARY:
+		  displayWidth = colPrecision * 2;
+		  break;
+
 		case SQL_LONGVARCHAR:
 		case SQL_WLONGVARCHAR:
 		case SQL_LONGVARBINARY:
