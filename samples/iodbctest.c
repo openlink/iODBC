@@ -355,7 +355,7 @@ ODBC_Errors (char *where)
 int
 ODBC_Test ()
 {
-  char request[512];
+  char request[4096];
   char fetchBuffer[1000];
   short displayWidths[MAXCOLS];
   short displayWidth;
