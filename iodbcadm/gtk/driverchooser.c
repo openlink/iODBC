@@ -253,7 +253,8 @@ adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
 	    freeHdl (SQL_HANDLE_ENV, drv_henv);
 	}
 
-      DLL_CLOSE (handle);
+      if (handle)
+        DLL_CLOSE (handle);
 
       /* Get the size of the driver */
       if (!stat (driver, &_stat))
