@@ -34,7 +34,7 @@
 #endif
 
 #ifndef _ISQLTYPES_H
-#include "isqltypes.h"
+#include <isqltypes.h>
 #endif
 
 #ifdef __cplusplus
