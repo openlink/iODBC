@@ -439,6 +439,7 @@ _iodbcdm_getkeyvalinstr (
 }
 
 
+#if 0
 int
 SQLGetPrivateProfileString (
     char *lpszSection,
@@ -459,3 +460,4 @@ SQLGetPrivateProfileString (
 
   return strlen (RetBuffer);
 }
+#endif
