@@ -69,6 +69,42 @@ display_help (void)
 }
 
 
+#if !defined(HAVE_SETENV)
+static int 
+setenv (const char *name, const char *value, int overwrite)
+{
+  int rc;
+  char *entry;
+  
+  /*
+   *  Allocate some space for new environment variable
+   */
+  if ((entry = (char *) malloc (strlen (name) + strlen (value) + 2)) == NULL)
+      return -1;
+  strcpy (entry, name);
+  strcat (entry, "=");
+  strcat (entry, value);
+
+  /*
+   *  Check if variable already exists in current environment and whether 
+   *  we want to overwrite it with a new value if it exists.
+   */
+  if (getenv (name) != NULL && !overwrite)
+    {
+      free (entry);
+      return 0;
+    }
+
+  /*
+   *  Add the variable to the environment.
+   */
+  rc = putenv (entry);
+  free (entry);
+  return (rc == 0) ? 0 : -1;
+}
+#endif /* HAVE_SETENV */
+
+
 int
 main (int argc, char *argv[])
 {
