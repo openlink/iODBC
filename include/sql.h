@@ -825,6 +825,11 @@ SQLRETURN SQL_API SQLCancel (
 SQLRETURN SQL_API SQLCloseCursor (
     SQLHSTMT		  StatementHandle);
 
+/*
+ *  Using SQLLEN * instead of SQLPOINTER for NumericAttribute,
+ *  makes the prototype the same as SQLColAttributes (deprecated)
+ *  and clearer for 64bit ports
+ */
 SQLRETURN SQL_API SQLColAttribute (
     SQLHSTMT		  StatementHandle,
     SQLUSMALLINT	  ColumnNumber,
