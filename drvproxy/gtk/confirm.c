@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -71,6 +71,7 @@
 #include "gui.h"
 #include "question.xpm"
 
+
 static void
 confirm_yes_clicked (GtkWidget *widget, TCONFIRM *confirm_t)
 {
@@ -84,7 +85,6 @@ confirm_yes_clicked (GtkWidget *widget, TCONFIRM *confirm_t)
       gtk_widget_destroy (confirm_t->mainwnd);
     }
 }
-
 
 
 static void
@@ -125,7 +125,7 @@ create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text)
   TCONFIRM confirm_t;
 
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
-    return;
+    return FALSE;
 
   accel_group = gtk_accel_group_new ();
 

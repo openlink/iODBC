@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -74,21 +74,23 @@
 #ifndef	_GTKGUI_H
 #define _GTKGUI_H
 
-typedef struct TLOGIN {
-  GtkWidget *username,*password,*mainwnd;
+typedef struct TLOGIN
+{
+  GtkWidget *username, *password, *mainwnd;
   char *user, *pwd;
   BOOL ok;
 } TLOGIN;
 
 typedef struct TGENSETUP
 {
-	GtkWidget *dsn_entry, *comment_entry, *key_list, *bupdate;
-	GtkWidget *key_entry, *value_entry;
-	GtkWidget *mainwnd;
-	LPSTR connstr;
+  GtkWidget *dsn_entry, *comment_entry, *key_list, *bupdate;
+  GtkWidget *key_entry, *value_entry;
+  GtkWidget *mainwnd;
+  LPSTR connstr;
 } TGENSETUP;
 
-typedef struct TCONFIRM {
+typedef struct TCONFIRM
+{
   GtkWidget *mainwnd;
   BOOL yes_no;
 } TCONFIRM;

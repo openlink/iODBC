@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2003 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -70,6 +70,7 @@
 
 #include "gui.h"
 
+
 static void
 login_ok_clicked (GtkWidget *widget, TLOGIN *log_t)
 {
@@ -80,13 +81,14 @@ login_ok_clicked (GtkWidget *widget, TLOGIN *log_t)
       log_t->pwd = (char *) malloc (sizeof (char) *
 	  (STRLEN (gtk_entry_get_text (GTK_ENTRY (log_t->password))) + 1));
 
-      if (log_t->user) strcpy (log_t->user,
+      if (log_t->user)
+	strcpy (log_t->user,
 	    gtk_entry_get_text (GTK_ENTRY (log_t->username)));
       if (log_t->pwd)
 	strcpy (log_t->pwd, gtk_entry_get_text (GTK_ENTRY (log_t->password)));
 
       log_t->username = log_t->password = NULL;
-		log_t->ok = TRUE;
+      log_t->ok = TRUE;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (log_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -103,7 +105,7 @@ login_cancel_clicked (GtkWidget *widget, TLOGIN *log_t)
     {
       log_t->user = log_t->pwd = NULL;
       log_t->username = log_t->password = NULL;
-		log_t->ok = FALSE;
+      log_t->ok = FALSE;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (log_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -133,9 +135,9 @@ create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
   guint b_ok_key, b_cancel_key;
   char buff[1024];
 
-  if (hwnd == (HWND)-1L)
+  if (hwnd == (HWND) - 1L)
     {
-      gtk_init(0, NULL);
+      gtk_init (0, NULL);
       hwnd = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     }
 

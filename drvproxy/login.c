@@ -6,14 +6,14 @@
  *  The data_sources dialog for SQLDriverConnect and a login box procedures
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -76,9 +76,13 @@
 
 #include "gui.h"
 
+
 SQLRETURN SQL_API
-_iodbcdm_loginbox (HWND hwnd,
-    LPSTR szInOutConnStr, DWORD cbInOutConnStr, int * sqlStat)
+_iodbcdm_loginbox (
+    HWND	  hwnd,
+    LPSTR	  szInOutConnStr,
+    DWORD	  cbInOutConnStr,
+    int	 	* sqlStat)
 {
   RETCODE retcode = SQL_ERROR;
   char *szUID = NULL, *szPWD = NULL, *szDSN = NULL, *curr;
