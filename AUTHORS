@@ -7,10 +7,23 @@
 #
 
 Original Author:
+----------------
 Ke Jin <kejin@inprise.com> 						(kj)
 
+
 Current Maintainer:
+-------------------
 Patrick van Kleef <iodbc@openlinksw.com>				(pvk)
 
+
 Contributors:
-Per Schroder <per@mimer.se>	- VMS port				(ps)
+-------------
+Per Schroder <per@mimer.se>			 			(ps)
+  - Added VMS port
+
+George Kodinov <kgeorge@plovdiv.techno-link.com> 	 		(gk)
+  - Added ODBC 3.x support
+
+
+This list is not complete. If you have contributed to this project and
+want to appear on this list, please email the current maintainer.
