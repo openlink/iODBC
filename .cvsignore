@@ -10,3 +10,4 @@ config.cache
 config.status
 .libs
 .deps
+iodbc-config
