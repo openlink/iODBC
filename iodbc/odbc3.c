@@ -219,6 +219,13 @@ SQLAllocHandle (
 
   if (handleType == SQL_HANDLE_ENV)
     {
+      /* 
+       *  One time initialization
+       */
+      Init_iODBC();
+
+      ODBC_LOCK ();
+
       retcode = SQLAllocEnv_Internal (outputHandlePtr, 0);
 
       /*
@@ -230,6 +237,7 @@ SQLAllocHandle (
       TRACE (trace_SQLAllocHandle (TRACE_LEAVE,
 	    handleType, inputHandle, outputHandlePtr));
 
+      ODBC_UNLOCK ();
 
       return retcode;
     }

@@ -95,8 +95,9 @@ SPINLOCK_DECLARE (iodbcdm_global_lock);
 #endif
 
 static int _iodbcdm_initialized = 0;
-static void Init_iODBC(void);
-static void Done_iODBC(void);
+
+void Init_iODBC(void);
+void Done_iODBC(void);
 
 
 static void
@@ -132,12 +133,6 @@ SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
 {
   GENV (genv, NULL);
   int retcode = SQL_SUCCESS;
-
-  /* 
-   *  One time initialization
-   */
-  if (!_iodbcdm_initialized)
-      Init_iODBC();
 
   genv = (GENV_t *) MEM_ALLOC (sizeof (GENV_t));
 
@@ -178,6 +173,12 @@ SQLAllocEnv (SQLHENV * phenv)
   GENV (genv, NULL);
   int retcode = SQL_SUCCESS;
 
+  /* 
+   *  One time initialization
+   */
+  Init_iODBC();
+
+  ODBC_LOCK ();
   retcode = SQLAllocEnv_Internal (phenv, SQL_OV_ODBC2);
 
   genv = (GENV_t *) *phenv;
@@ -187,6 +188,8 @@ SQLAllocEnv (SQLHENV * phenv)
    */
   TRACE (trace_SQLAllocEnv (TRACE_ENTER, phenv));
   TRACE (trace_SQLAllocEnv (TRACE_LEAVE, phenv));
+
+  ODBC_UNLOCK ();
 
   return retcode;
 }
@@ -245,7 +248,7 @@ SQLFreeEnv (SQLHENV henv)
  *  Initialize the system and let everyone wait until we have done so
  *  properly
  */
-static void
+void
 Init_iODBC (void)
 {
 #if !defined (PTHREAD_MUTEX_INITIALIZER) || defined (WINDOWS)
@@ -256,13 +259,13 @@ Init_iODBC (void)
   if (!_iodbcdm_initialized)
     {
       /*
-       *  Other one time initializations can be performed here
-       */
-
-      /*
-       *  OK, now flag we are not callable anymore and return
+       *  OK, now flag we are not callable anymore
        */
       _iodbcdm_initialized = 1;
+
+      /*
+       *  Other one time initializations can be performed here
+       */
     }
   SPINLOCK_UNLOCK (iodbcdm_global_lock);
 
@@ -273,7 +276,9 @@ Init_iODBC (void)
 static void 
 Done_iODBC(void)
 {
+#if !defined (PTHREAD_MUTEX_INITIALIZER) || defined (WINDOWS)
     SPINLOCK_DONE (iodbcdm_global_lock);
+#endif
 }
 
 
