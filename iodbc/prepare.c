@@ -713,9 +713,10 @@ SQLSetScrollOptions_Internal (
   SQLUSMALLINT		  crowRowset)
 {
   STMT (pstmt, hstmt);
+  CONN (pdbc, pstmt->hdbc);
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
-  SQLRETURN retcode;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   for (;;)
     {
@@ -762,13 +763,19 @@ SQLSetScrollOptions_Internal (
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetScrollOptions);
 
-      if (hproc == SQL_NULL_HPROC)
-	{
+      if (hproc != SQL_NULL_HPROC)
+        {
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetScrollOptions,
+	      (pstmt->dhstmt, fConcurrency, crowKeyset, crowRowset));
+	}
+      else
+        {
 #if (ODBCVER >= 0x0300)
 	  SQLINTEGER InfoValue, InfoType, Value;
 	  HPROC hproc1 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+	  HPROC hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_GetInfo);
 
-	  if (hproc1 == SQL_NULL_HPROC)
+	  if (hproc1 == SQL_NULL_HPROC || hproc2 == SQL_NULL_HPROC)
 	    {
 	      PUSHSQLERR (pstmt->herr, en_IM001);
 	      return SQL_ERROR;
@@ -798,7 +805,9 @@ SQLSetScrollOptions_Internal (
 	      break;
 	    }
 
-	  retcode = SQLGetInfo (pstmt->hdbc, InfoType, &InfoValue, 0, NULL);
+	  CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc2, en_GetInfo,
+	      (pdbc->dhdbc, InfoType, &InfoValue, 0, NULL));
+
 	  if (retcode != SQL_SUCCESS)
 	    {
 	      return retcode;
@@ -838,6 +847,7 @@ SQLSetScrollOptions_Internal (
 		}
 	      break;
 	    }
+
 	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
 	      (pstmt->dhstmt, SQL_ATTR_CURSOR_TYPE, Value, 0));
 
@@ -881,9 +891,6 @@ SQLSetScrollOptions_Internal (
 
       return SQL_ERROR;
     }
-
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetScrollOptions,
-      (pstmt->dhstmt, fConcurrency, crowKeyset, crowRowset));
 
   return retcode;
 }
