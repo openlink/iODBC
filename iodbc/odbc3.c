@@ -75,6 +75,7 @@
 
 #include <sql.h>
 #include <sqlext.h>
+#include <iodbcext.h>
 
 #if (ODBCVER >= 0x300)
 #include <sqlucode.h>
