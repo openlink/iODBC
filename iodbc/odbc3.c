@@ -570,7 +570,8 @@ SQLGetEnvAttr_Internal (
   if (Attribute != SQL_ATTR_CONNECTION_POOLING &&
       Attribute != SQL_ATTR_CP_MATCH &&
       Attribute != SQL_ATTR_ODBC_VERSION && 
-      Attribute != SQL_ATTR_OUTPUT_NTS)
+      Attribute != SQL_ATTR_OUTPUT_NTS &&
+      Attribute != SQL_ATTR_WCHAR_SIZE)
     {
       PUSHSQLERR (genv->herr, en_HY092);
       return SQL_ERROR;
@@ -601,6 +602,12 @@ SQLGetEnvAttr_Internal (
 	*((SQLINTEGER *) ValuePtr) = SQL_TRUE;
       return SQL_SUCCESS;
     }
+  if (Attribute == SQL_ATTR_WCHAR_SIZE)
+    {
+      if (ValuePtr)
+	*((SQLINTEGER *) ValuePtr) = sizeof(wchar_t);
+       return SQL_SUCCESS;
+     }
 
   /* fall back to the first driver */
   if (IS_VALID_HDBC (genv->hdbc))
