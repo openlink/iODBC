@@ -1,4 +1,4 @@
-AC_PREREQ(2.50)
+AC_PREREQ(2.52)
 AC_REVISION($Id$)
 #
 #  configure.in
@@ -28,7 +28,7 @@ AC_INIT
 AC_CONFIG_SRCDIR([include/isql.h])
 AC_CONFIG_AUX_DIR(admin)
 AM_CONFIG_HEADER(include/config.h)
-AM_INIT_AUTOMAKE(libiodbc,3.0.5)
+AM_INIT_AUTOMAKE(libiodbc,3.0.6)
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 

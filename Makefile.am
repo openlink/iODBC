@@ -19,7 +19,7 @@
 #  License along with this library; if not, write to the Free
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AUTOMAKE_OPTIONS	= gnu dist-shar dist-zip dist-tarZ 1.4-p2
+AUTOMAKE_OPTIONS	= gnu dist-shar dist-zip dist-tarZ 1.4-p5
 SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
 
 EXTRA_DIST             = IAFA-PACKAGE COPYING.LGPL COPYING.BSD
