@@ -96,7 +96,8 @@ typedef void FAR *              SQLPOINTER;
 #if defined(WIN32)
 typedef void FAR *		SQLHANDLE;
 #else
-typedef SQLINTEGER		SQLHANDLE;
+typedef void FAR *		SQLHANDLE;
+/* typedef SQLINTEGER		SQLHANDLE; */
 #endif
 
 
