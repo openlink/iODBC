@@ -290,6 +290,7 @@ DB_Test ()
   short colScale;
   short colNullable;
   UDWORD totalRows;
+  UDWORD totalSets;
   int i;
 
   while (1)
@@ -299,28 +300,28 @@ DB_Test ()
        */
       printf ("\nSQL>");
       if (fgets (request, sizeof (request), stdin) == NULL)
-        break;
+	break;
 
       request[strlen (request) - 1] = '\0';
       if (request[0] == '\0')
-        continue;
+	continue;
 
       /*
        *  If the user just types tables, give him a list
        */
       if (!strcmp (request, "tables"))
-        {
-	   if (SQLTables (hstmt, NULL, SQL_NTS, NULL, SQL_NTS, NULL, SQL_NTS, 
-			  NULL, SQL_NTS) != SQL_SUCCESS)
-	     {
-	       DB_Errors ("SQLTables");
-	       continue;
-	     }
+	{
+	  if (SQLTables (hstmt, NULL, SQL_NTS, NULL, SQL_NTS, NULL, SQL_NTS,
+		  NULL, SQL_NTS) != SQL_SUCCESS)
+	    {
+	      DB_Errors ("SQLTables");
+	      continue;
+	    }
 	}
       else if (!strcmp (request, "quit") || !strcmp (request, "exit"))
-        break;	/* If you want to quit, just say so */
+	break;			/* If you want to quit, just say so */
       else
-        {
+	{
 	  /*
 	   *  Prepare & Execute the statement
 	   */
@@ -334,157 +335,168 @@ DB_Test ()
 	      DB_Errors ("SQLExec");
 	      continue;
 	    }
-        }
+	}
 
       /*
-       *  Get the number of result columns for this cursor.
-       *  If it is 0, then the statement was probably a select
+       *  Loop through all the result sets
        */
-      if (SQLNumResultCols (hstmt, &numCols) != SQL_SUCCESS)
-	{
-	  DB_Errors ("SQLNumResultCols");
-	  goto endCursor;
-	}
-      if (numCols == 0)
-        {
-	  printf ("Statement executed.\n");
-	  goto endCursor;
-	}
-    
-      if (numCols > MAXCOLS)
-        numCols = MAXCOLS;
-
-      /*
-       *  Get the names for the columns
-       */
-      for (colNum = 1; colNum <= numCols; colNum++)
+      totalSets = 1;
+      do
 	{
 	  /*
-	   *  Get the name and other type information
+	   *  Get the number of result columns for this cursor.
+	   *  If it is 0, then the statement was probably a select
 	   */
-	  if (SQLDescribeCol (hstmt, colNum, (UCHAR *) colName,
-	          sizeof (colName), NULL, &colType, &colPrecision,
-		  &colScale, &colNullable) != SQL_SUCCESS)
+	  if (SQLNumResultCols (hstmt, &numCols) != SQL_SUCCESS)
 	    {
-	      DB_Errors ("SQLDescribeCol");
+	      DB_Errors ("SQLNumResultCols");
+	      goto endCursor;
+	    }
+	  if (numCols == 0)
+	    {
+	      printf ("Statement executed.\n");
 	      goto endCursor;
 	    }
 
-	  /*
-	   *  Calculate the display width for the column
-	   */
-	  switch (colType)
-	    {
-	    case SQL_VARCHAR:
-	    case SQL_CHAR:
-	      displayWidth = (short) colPrecision;
-	      break;
-	    case SQL_BIT:
-	      displayWidth = 1;
-	      break;
-	    case SQL_TINYINT:
-	    case SQL_SMALLINT:
-	    case SQL_INTEGER:
-	    case SQL_BIGINT:
-	      displayWidth = colPrecision + 1;	/* sign */
-	      break;
-	    case SQL_DOUBLE:
-	    case SQL_DECIMAL:
-	    case SQL_NUMERIC:
-	    case SQL_FLOAT:
-	    case SQL_REAL:
-	      displayWidth = colPrecision + 2;  /* sign, comma */
-	      break;
-	    case SQL_DATE:
-	      displayWidth = 10;
-	      break;
-	    case SQL_TIME:
-	      displayWidth = 8;
-	      break;
-	    case SQL_TIMESTAMP:
-	      displayWidth = 19;
-	      break;
-	    default:
-	      displayWidths[colNum-1] = 0;	/* skip other data types */
-	      continue;
-	    }
-	
-	  if (displayWidth < strlen (colName))
-	    displayWidth = strlen (colName);
-	  if (displayWidth > sizeof (fetchBuffer) - 1)
-	    displayWidth = sizeof (fetchBuffer) - 1;
-	
-	  displayWidths[colNum-1] = displayWidth; 
+	  if (numCols > MAXCOLS)
+	    numCols = MAXCOLS;
 
 	  /*
-	   *  Print header field
+	   *  Get the names for the columns
 	   */
-	  printf ("%-*.*s", displayWidth, displayWidth, colName);
-	  if (colNum < numCols)
-	    putchar ('|');
-	}
-      putchar ('\n');
-
-      /*
-       *  Print second line
-       */
-      for (colNum = 1; colNum <= numCols; colNum++)
-        {
-	  for (i = 0; i < displayWidths[colNum-1]; i++)
-	    putchar ('-');
-	  if (colNum < numCols)
-	    putchar ('+');
-	}
-      putchar ('\n');
-
-      /*
-       *  Print all the fields
-       */
-      totalRows = 0;
-      while (1)
-        {
-	  int sts = SQLFetch (hstmt);
-
-	  if (sts == SQL_NO_DATA_FOUND)
-	    break;
-
-	  if (sts != SQL_SUCCESS)
-	    {
-	      DB_Errors ("Fetch");
-	      break;
-	    }
+	  putchar ('\n');
 	  for (colNum = 1; colNum <= numCols; colNum++)
 	    {
 	      /*
-	       *  Fetch this column as character
+	       *  Get the name and other type information
 	       */
-	      if (SQLGetData (hstmt, colNum, SQL_CHAR, fetchBuffer,
-		  sizeof (fetchBuffer), &colIndicator) != SQL_SUCCESS)
+	      if (SQLDescribeCol (hstmt, colNum, (UCHAR *) colName,
+		      sizeof (colName), NULL, &colType, &colPrecision,
+		      &colScale, &colNullable) != SQL_SUCCESS)
 		{
-		  DB_Errors ("SQLGetData");
+		  DB_Errors ("SQLDescribeCol");
 		  goto endCursor;
 		}
 
 	      /*
-	       *  Show NULL fields as ****
+	       *  Calculate the display width for the column
 	       */
-	      if (colIndicator == SQL_NULL_DATA)
-	        {
-		  for (i = 0; i < displayWidths[colNum-1]; i++)
-		    fetchBuffer[i] = '*';
-		  fetchBuffer[i] = '\0';
+	      switch (colType)
+		{
+		case SQL_VARCHAR:
+		case SQL_CHAR:
+		  displayWidth = (short) colPrecision;
+		  break;
+		case SQL_BIT:
+		  displayWidth = 1;
+		  break;
+		case SQL_TINYINT:
+		case SQL_SMALLINT:
+		case SQL_INTEGER:
+		case SQL_BIGINT:
+		  displayWidth = colPrecision + 1;	/* sign */
+		  break;
+		case SQL_DOUBLE:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
+		case SQL_FLOAT:
+		case SQL_REAL:
+		  displayWidth = colPrecision + 2;	/* sign, comma */
+		  break;
+		case SQL_DATE:
+		  displayWidth = 10;
+		  break;
+		case SQL_TIME:
+		  displayWidth = 8;
+		  break;
+		case SQL_TIMESTAMP:
+		  displayWidth = 19;
+		  break;
+		default:
+		  displayWidths[colNum - 1] = 0;     /* skip other data types */
+		  continue;
 		}
 
-	      printf ("%-*.*s", displayWidths[colNum-1],
-	          displayWidths[colNum-1], fetchBuffer);
+	      if (displayWidth < strlen (colName))
+		displayWidth = strlen (colName);
+	      if (displayWidth > sizeof (fetchBuffer) - 1)
+		displayWidth = sizeof (fetchBuffer) - 1;
+
+	      displayWidths[colNum - 1] = displayWidth;
+
+	      /*
+	       *  Print header field
+	       */
+	      printf ("%-*.*s", displayWidth, displayWidth, colName);
 	      if (colNum < numCols)
-	        putchar ('|');
+		putchar ('|');
 	    }
 	  putchar ('\n');
-	  totalRows++;
-	}
 
-      printf (" %lu row(s) fetched.\n", totalRows);
+	  /*
+	   *  Print second line
+	   */
+	  for (colNum = 1; colNum <= numCols; colNum++)
+	    {
+	      for (i = 0; i < displayWidths[colNum - 1]; i++)
+		putchar ('-');
+	      if (colNum < numCols)
+		putchar ('+');
+	    }
+	  putchar ('\n');
+
+	  /*
+	   *  Print all the fields
+	   */
+	  totalRows = 0;
+	  while (1)
+	    {
+	      int sts = SQLFetch (hstmt);
+
+	      if (sts == SQL_NO_DATA_FOUND)
+		break;
+
+	      if (sts != SQL_SUCCESS)
+		{
+		  DB_Errors ("Fetch");
+		  break;
+		}
+	      for (colNum = 1; colNum <= numCols; colNum++)
+		{
+		  /*
+		   *  Fetch this column as character
+		   */
+		  if (SQLGetData (hstmt, colNum, SQL_CHAR, fetchBuffer,
+			  sizeof (fetchBuffer), &colIndicator) != SQL_SUCCESS)
+		    {
+		      DB_Errors ("SQLGetData");
+		      goto endCursor;
+		    }
+
+		  /*
+		   *  Show NULL fields as ****
+		   */
+		  if (colIndicator == SQL_NULL_DATA)
+		    {
+		      for (i = 0; i < displayWidths[colNum - 1]; i++)
+			fetchBuffer[i] = '*';
+		      fetchBuffer[i] = '\0';
+		    }
+
+		  printf ("%-*.*s", displayWidths[colNum - 1],
+		      displayWidths[colNum - 1], fetchBuffer);
+		  if (colNum < numCols)
+		    putchar ('|');
+		}
+	      putchar ('\n');
+	      totalRows++;
+	    }
+
+	  printf ("\n result set %lu returned %lu rows.\n\n",
+	      totalSets, totalRows);
+	  totalSets++;
+	}
+      while (SQLMoreResults (hstmt) == SQL_SUCCESS);
 
     endCursor:
       SQLFreeStmt (hstmt, SQL_CLOSE);
@@ -527,7 +539,7 @@ main (int argc, char **argv)
    */
   DB_Disconnect ();
 
-  puts ("\nHave a nice day.");
+  printf ("\nHave a nice day.");
 
   return 0;
 }
