@@ -94,7 +94,7 @@
 extern SQLRETURN _iodbcdm_driverunload (HDBC hdbc);
 
 static SQLRETURN
-_iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam,
+_iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLULEN vParam,
 	SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
