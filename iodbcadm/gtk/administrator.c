@@ -75,8 +75,7 @@
 #include "../gui.h"
 #include "odbc4.xpm"
 
-#if defined(HAVE_DLADDR)
-#if defined(linux)
+#if !defined(HAVE_DL_INFO)
 typedef struct
 {
   __const char *dli_fname;	/* File name of defining object.  */
@@ -84,8 +83,7 @@ typedef struct
   __const char *dli_sname;	/* Name of nearest symbol.  */
   void *dli_saddr;		/* Exact value of nearest symbol.  */
 } Dl_info;
-#endif
-#endif /* HAVE_DLADDR */
+#endif /* HAVE_DL_INFO */
 
 static char *szDriverButtons[] = {
   "_Add a driver",
