@@ -79,6 +79,7 @@ typedef struct DBC
     SWORD dbc_cip;			/* Call in Progess flag */
 
     DRVOPT *drvopt;			/* Driver specific connect options */
+    SQLSMALLINT err_rec;
   }
 DBC_t;
 

@@ -56,6 +56,8 @@ typedef struct
 #if (ODBCVER >= 0x300)
     SQLINTEGER odbc_ver;    /* ODBC version of the application */
 #endif    
+
+    SQLSMALLINT err_rec;
   }
 GENV_t;
 

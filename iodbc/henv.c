@@ -83,6 +83,7 @@ SQLAllocEnv (SQLHENV FAR * phenv)
 #if (ODBCVER >= 0x300)
   genv->odbc_ver = SQL_OV_ODBC2;
 #endif
+  genv->err_rec = 0;
 
   *phenv = (SQLHENV) genv;
 

@@ -165,6 +165,7 @@ extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, char *sysmsg);
 	_iodbcdm_freesqlerrlist ((_handle)->herr); \
 	 (_handle)->herr = SQL_NULL_HERR; \
 	 (_handle)->rc = SQL_SUCCESS; \
+         (_handle)->err_rec = 0; \
     }
 	
 #endif /* _SQLERR_H */

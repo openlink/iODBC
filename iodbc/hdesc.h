@@ -45,7 +45,8 @@ typedef struct DESC_s {
   HSTMT hstmt;   	/* if not null - the descriptor is implicit to that statement */
 
   SWORD desc_cip;        /* Call in Progess flag */
-  
+
+  SQLUSMALLINT err_rec;
 } DESC_t;
 
 #ifndef HDESC

@@ -113,6 +113,7 @@ SQLAllocStmt (
   pstmt->asyn_on = en_NullProc;
   pstmt->need_on = en_NullProc;
   pstmt->stmt_cip = 0;
+  pstmt->err_rec = 0;
 
   /* call driver's function */
 

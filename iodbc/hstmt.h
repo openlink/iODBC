@@ -57,6 +57,7 @@ typedef struct STMT
     SQLUSMALLINT row_status_allocated;
 #endif
 
+    SQLSMALLINT err_rec;
   }
 STMT_t;
 
