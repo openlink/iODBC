@@ -336,6 +336,11 @@ DB_Test ()
 	    case SQL_FLOAT:
 	      displayWidth = colPrecision + 2;  /* sign, comma */
 	      break;
+	    case SQL_DATE:
+	    case SQL_TIME:
+	    case SQL_TIMESTAMP:
+	      displayWidth = colPrecision;  
+	      break;
 	    default:
 	      displayWidths[colNum-1] = 0;	/* skip other data types */
 	      continue;
