@@ -53,6 +53,15 @@ extern "C" {
 #define SQL_MAX_DSN_LENGTH		32
 #define SQL_MAX_OPTION_STRING_LENGTH	256
 
+/*
+ *  Handle types
+ */
+#define SQL_HANDLE_ENV			1
+#define SQL_HANDLE_DBC			2
+#define SQL_HANDLE_STMT			3
+#if (ODBCVER >= 0x0300)
+#define SQL_HANDLE_DESC			4
+#endif
 
 /*
  *  Function return codes
