@@ -72,12 +72,12 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #include "iodbc_error.h"
 
 extern BOOL InstallDriverPath ( LPSTR lpszPath, WORD cbPathMax,
     WORD * pcbPathOut,LPSTR envname);
-
 
 BOOL INSTAPI
 SQLInstallDriverManager (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut)
@@ -92,9 +92,36 @@ SQLInstallDriverManager (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut)
       goto quit;
     }
 
-  retcode =
-      InstallDriverPath (lpszPath, cbPathMax, pcbPathOut, "ODBCMANAGER");
+  retcode = InstallDriverPath (lpszPath, cbPathMax, pcbPathOut, "ODBCMANAGER");
 
 quit:
+  return retcode;
+}
+
+BOOL INSTAPI
+SQLInstallDriverManagerW (LPWSTR lpszPath, WORD cbPathMax, WORD FAR *pcbPathOut)
+{
+  char *_path_u8 = NULL;
+  BOOL retcode = FALSE;
+
+  if (cbPathMax > 0)
+    {
+      if ((_path_u8 = malloc (cbPathMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto done;
+        }
+    }
+
+  retcode = SQLInstallDriverManager (_path_u8, cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut);
+
+  if (retcode == TRUE)
+    {
+      dm_StrCopyOut2_U8toW (_path_u8, lpszPath, cbPathMax, pcbPathOut);
+    }
+
+done:
+  MEM_FREE (_path_u8);
+
   return retcode;
 }

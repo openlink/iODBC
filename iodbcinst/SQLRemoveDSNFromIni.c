@@ -72,25 +72,46 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #include "inifile.h"
 #include "misc.h"
 #include "iodbc_error.h"
 
 extern BOOL ValidDSN(LPCSTR);
-
+extern BOOL ValidDSNW(LPCSTR);
 
 BOOL
-RemoveDSNFromIni (LPCSTR lpszDSN)
+RemoveDSNFromIni (SQLPOINTER lpszDSN, SQLCHAR waMode)
 {
   BOOL retcode = FALSE;
+  char *_dsn_u8 = NULL;
   PCONFIG pCfg;
 
   /* Check dsn */
-  if (!lpszDSN || !ValidDSN (lpszDSN) || !STRLEN (lpszDSN))
+  if (waMode == 'A')
     {
-      PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
-      goto quit;
+      if (!lpszDSN || !ValidDSN (lpszDSN) || !STRLEN (lpszDSN))
+        {
+          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+          goto quit;
+        }
+      _dsn_u8 = lpszDSN;
+    }
+  else
+    {
+      if (!lpszDSN || !ValidDSNW (lpszDSN) || !WCSLEN (lpszDSN))
+        {
+          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+          goto quit;
+        }
+
+      _dsn_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDSN, SQL_NTS);
+      if (_dsn_u8 == NULL && lpszDSN)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto quit;
+        }
     }
 
   if (_iodbcdm_cfg_search_init (&pCfg, "odbc.ini", TRUE))
@@ -99,19 +120,19 @@ RemoveDSNFromIni (LPCSTR lpszDSN)
       goto quit;
     }
 
-  if (strcmp (lpszDSN, "Default"))
+  if (strcmp (_dsn_u8, "Default"))
     {
       /* deletes a DSN from [ODBC data sources] section */
 #ifdef WIN32
-      _iodbcdm_cfg_write (pCfg, "ODBC 32 bit Data Sources", (LPSTR) lpszDSN,
+      _iodbcdm_cfg_write (pCfg, "ODBC 32 bit Data Sources", (LPSTR) _dsn_u8,
 	  NULL);
 #else
-      _iodbcdm_cfg_write (pCfg, "ODBC Data Sources", (LPSTR) lpszDSN, NULL);
+      _iodbcdm_cfg_write (pCfg, "ODBC Data Sources", (LPSTR) _dsn_u8, NULL);
 #endif
     }
 
   /* deletes the DSN section in odbc.ini */
-  _iodbcdm_cfg_write (pCfg, (LPSTR) lpszDSN, NULL, NULL);
+  _iodbcdm_cfg_write (pCfg, (LPSTR) _dsn_u8, NULL, NULL);
 
   if (_iodbcdm_cfg_commit (pCfg))
     {
@@ -125,6 +146,8 @@ done:
   _iodbcdm_cfg_done (pCfg);
 
 quit:
+  MEM_FREE (_dsn_u8);
+
   return retcode;
 }
 
@@ -140,22 +163,62 @@ SQLRemoveDSNFromIni (LPCSTR lpszDSN)
     {
     case ODBC_USER_DSN:
       wSystemDSN = USERDSN_ONLY;
-      retcode = RemoveDSNFromIni (lpszDSN);
+      retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'A');
       goto quit;
 
     case ODBC_SYSTEM_DSN:
       wSystemDSN = SYSTEMDSN_ONLY;
-      retcode = RemoveDSNFromIni (lpszDSN);
+      retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'A');
       goto quit;
 
     case ODBC_BOTH_DSN:
       wSystemDSN = USERDSN_ONLY;
-      retcode = RemoveDSNFromIni (lpszDSN);
+      retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'A');
       if (!retcode)
 	{
 	  CLEAR_ERROR ();
 	  wSystemDSN = SYSTEMDSN_ONLY;
-	  retcode = RemoveDSNFromIni (lpszDSN);
+	  retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'A');
+	}
+      goto quit;
+    };
+
+  PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
+  goto quit;
+
+quit:
+  wSystemDSN = USERDSN_ONLY;
+  configMode = ODBC_BOTH_DSN;
+  return retcode;
+}
+
+BOOL INSTAPI
+SQLRemoveDSNFromIniW (LPCWSTR lpszDSN)
+{
+  BOOL retcode = FALSE;
+
+  CLEAR_ERROR ();
+
+  switch (configMode)
+    {
+    case ODBC_USER_DSN:
+      wSystemDSN = USERDSN_ONLY;
+      retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'W');
+      goto quit;
+
+    case ODBC_SYSTEM_DSN:
+      wSystemDSN = SYSTEMDSN_ONLY;
+      retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'W');
+      goto quit;
+
+    case ODBC_BOTH_DSN:
+      wSystemDSN = USERDSN_ONLY;
+      retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'W');
+      if (!retcode)
+	{
+	  CLEAR_ERROR ();
+	  wSystemDSN = SYSTEMDSN_ONLY;
+	  retcode = RemoveDSNFromIni ((SQLPOINTER)lpszDSN, 'W');
 	}
       goto quit;
     };

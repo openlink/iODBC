@@ -119,6 +119,7 @@ typedef unsigned int		DWORD;
 typedef char *			LPSTR;
 typedef const char *		LPCSTR;
 typedef wchar_t *		LPWSTR;
+typedef const wchar_t *		LPCWSTR;
 typedef DWORD *			LPDWORD;
 
 #if !defined(BOOL) && !defined(_OBJC_OBJC_H_)

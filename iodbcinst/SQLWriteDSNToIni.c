@@ -72,18 +72,18 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #include "inifile.h"
 #include "misc.h"
 #include "iodbc_error.h"
 
-
 extern BOOL ValidDSN (LPCSTR lpszDSN);
+extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 
 extern int GetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
     LPCSTR lpszDefault, LPSTR lpszRetBuffer, int cbRetBuffer,
     LPCSTR lpszFilename);
-
 
 BOOL
 WriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)
@@ -156,19 +156,55 @@ done:
 
 
 BOOL INSTAPI
-SQLWriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)
+SQLWriteDSNToIni_Internal (SQLPOINTER lpszDSN, SQLPOINTER lpszDriver, SQLCHAR waMode)
 {
+  char *_driver_u8 = NULL;
+  char *_dsn_u8 = NULL;
   BOOL retcode = FALSE;
 
   /* Check input parameters */
   CLEAR_ERROR ();
-  if (!lpszDSN || !ValidDSN (lpszDSN) || !STRLEN (lpszDSN))
+
+  if (waMode == 'A')
     {
-      PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
-      goto quit;
+      if (!lpszDSN || !ValidDSN (lpszDSN) || !STRLEN (lpszDSN))
+        {
+          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+          goto quit;
+        }
+    }
+  else
+    {
+      if (!lpszDSN || !ValidDSNW (lpszDSN) || !WCSLEN (lpszDSN))
+        {
+          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+          goto quit;
+        }
     }
 
-  if (!lpszDriver || !STRLEN (lpszDriver))
+  if (waMode == 'W')
+    {
+      _dsn_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDSN, SQL_NTS);
+      if (_dsn_u8 == NULL && lpszDSN)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto quit;
+        }
+    }
+  else _dsn_u8 = (SQLCHAR*)lpszDSN;
+
+  if (waMode == 'W')
+    {
+      _driver_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+      if (_driver_u8 == NULL && lpszDriver)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto quit;
+        }
+    }
+  else _driver_u8 = (SQLCHAR*)lpszDriver;
+
+  if (!_driver_u8 || !STRLEN (_driver_u8))
     {
       PUSH_ERROR (ODBC_ERROR_INVALID_NAME);
       goto quit;
@@ -178,22 +214,22 @@ SQLWriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)
     {
     case ODBC_USER_DSN:
       wSystemDSN = USERDSN_ONLY;
-      retcode = WriteDSNToIni (lpszDSN, lpszDriver);
+      retcode = WriteDSNToIni (_dsn_u8, _driver_u8);
       goto quit;
 
     case ODBC_SYSTEM_DSN:
       wSystemDSN = SYSTEMDSN_ONLY;
-      retcode = WriteDSNToIni (lpszDSN, lpszDriver);
+      retcode = WriteDSNToIni (_dsn_u8, _driver_u8);
       goto quit;
 
     case ODBC_BOTH_DSN:
       wSystemDSN = USERDSN_ONLY;
-      retcode = WriteDSNToIni (lpszDSN, lpszDriver);
+      retcode = WriteDSNToIni (_dsn_u8, _driver_u8);
       if (!retcode)
 	{
 	  CLEAR_ERROR ();
 	  wSystemDSN = SYSTEMDSN_ONLY;
-	  retcode = WriteDSNToIni (lpszDSN, lpszDriver);
+          retcode = WriteDSNToIni (_dsn_u8, _driver_u8);
 	}
       goto quit;
     };
@@ -202,7 +238,25 @@ SQLWriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)
   goto quit;
 
 quit:
+  if (_dsn_u8 != lpszDSN)
+    MEM_FREE (_dsn_u8);
+  if (_driver_u8 != lpszDriver)
+    MEM_FREE (_driver_u8);
+
   wSystemDSN = USERDSN_ONLY;
   configMode = ODBC_BOTH_DSN;
+
   return retcode;
+}
+
+BOOL INSTAPI
+SQLWriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)
+{
+  return SQLWriteDSNToIni_Internal ((SQLPOINTER)lpszDSN, (SQLPOINTER)lpszDriver, 'A');
+}
+
+BOOL INSTAPI
+SQLWriteDSNToIniW (LPCWSTR lpszDSN, LPCWSTR lpszDriver)
+{
+  return SQLWriteDSNToIni_Internal ((SQLPOINTER)lpszDSN, (SQLPOINTER)lpszDriver, 'W');
 }

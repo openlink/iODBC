@@ -72,11 +72,12 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #include "iodbc_error.h"
 
 #define INVALID_CHARS	"[]{}(),;?*=!@\\"
-
+#define INVALID_CHARSW	L"[]{}(),;?*=!@\\"
 
 BOOL
 ValidDSN (LPCSTR lpszDSN)
@@ -88,7 +89,24 @@ ValidDSN (LPCSTR lpszDSN)
       if (strchr (INVALID_CHARS, *currp))
 	return FALSE;
       else
-	currp += 1;
+	currp ++;
+    }
+
+  return TRUE;
+}
+
+
+BOOL
+ValidDSNW (LPCWSTR lpszDSN)
+{
+  wchar_t *currp = (wchar_t *) lpszDSN;
+
+  while (*currp)
+    {
+      if (wcschr (INVALID_CHARSW, *currp))
+	return FALSE;
+      else
+	currp ++;
     }
 
   return TRUE;
@@ -102,13 +120,32 @@ SQLValidDSN (LPCSTR lpszDSN)
 
   /* Check dsn */
   CLEAR_ERROR ();
-  if (!lpszDSN || !strlen (lpszDSN) || strlen (lpszDSN) >= SQL_MAX_DSN_LENGTH)
+  if (!lpszDSN || !STRLEN (lpszDSN) || STRLEN (lpszDSN) >= SQL_MAX_DSN_LENGTH)
     {
       PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
       goto quit;
     }
 
   retcode = ValidDSN (lpszDSN);
+
+quit:
+  return retcode;
+}
+
+BOOL INSTAPI
+SQLValidDSNW (LPCWSTR lpszDSN)
+{
+  BOOL retcode = FALSE;
+
+  /* Check dsn */
+  CLEAR_ERROR ();
+  if (!lpszDSN || !WCSLEN (lpszDSN) || WCSLEN (lpszDSN) >= SQL_MAX_DSN_LENGTH)
+    {
+      PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
+      goto quit;
+    }
+
+  retcode = ValidDSNW (lpszDSN);
 
 quit:
   return retcode;

@@ -72,6 +72,7 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #include "misc.h"
 #include "inifile.h"
@@ -308,6 +309,53 @@ done:
 quit:
   wSystemDSN = USERDSN_ONLY;
   configMode = ODBC_BOTH_DSN;
+
+  return retcode;
+}
+
+BOOL INSTAPI
+SQLInstallDriverW (LPCWSTR lpszInfFile, LPCWSTR lpszDriver, LPWSTR lpszPath,
+    WORD cbPathMax, WORD FAR *pcbPathOut)
+{
+  char *_inf_u8 = NULL;
+  char *_driver_u8 = NULL;
+  char *_path_u8 = NULL;
+  BOOL retcode = FALSE;
+
+  _inf_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszInfFile, SQL_NTS);
+  if (_inf_u8 == NULL && lpszInfFile)
+    {
+      PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+      goto done;
+    }
+
+  _driver_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+  if (_driver_u8 == NULL && lpszDriver)
+    {
+      PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+      goto done;
+    }
+
+  if (cbPathMax > 0)
+    {
+      if ((_path_u8 = malloc (cbPathMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto done;
+        }
+    }
+
+  retcode = SQLInstallDriver (_inf_u8, _driver_u8, _path_u8, cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut);
+
+  if (retcode == TRUE)
+    {
+      dm_StrCopyOut2_U8toW (_path_u8, lpszPath, cbPathMax, pcbPathOut);
+    }
+
+done:
+  MEM_FREE (_inf_u8);
+  MEM_FREE (_driver_u8);
+  MEM_FREE (_path_u8);
 
   return retcode;
 }

@@ -73,6 +73,7 @@
 #include <iodbc.h>
 #include <iodbcinst.h>
 #include <iodbcadm.h>
+#include <unicode.h>
 
 #include "dlf.h"
 #include "inifile.h"
@@ -82,7 +83,6 @@
 #ifdef __APPLE__
 #include <Carbon/Carbon.h>
 #endif
-
 
 #ifndef WIN32
 #include <unistd.h>
@@ -119,9 +119,7 @@
 	else ret = SQL_NO_DATA;
 #endif
 
-
 extern SQLRETURN _iodbcdm_trschoose_dialbox(HWND, LPSTR, DWORD, int *);
-
 
 BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
     WORD *pcbNameOut, LPSTR lpszPath, WORD cbPathMax,
@@ -146,25 +144,27 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
     {
       /* Load the Admin dialbox function */
 #ifdef __APPLE__
-      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
+      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
       if (bundle)
-	{
-	  /* Search for the drvproxy library */
-	  liburl = CFBundleCopyExecutableURL (bundle);
-	  if (liburl
+        {
+          /* Search for the iODBCadm library */
+          liburl =
+	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+	      NULL, NULL);
+          if (liburl
 	      && (libname =
-		  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	          CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	    {
 	      CFStringGetCString (libname, name, sizeof (name),
-		  kCFStringEncodingASCII);
+	          kCFStringEncodingASCII);
+              STRCAT (name, "/Contents/MacOS/iODBCadm");
 	      CALL_TRSCHOOSE_DIALBOX (name);
 	    }
-	  if (liburl)
+          if (liburl)
 	    CFRelease (liburl);
-	  if (libname)
+          if (libname)
 	    CFRelease (libname);
-	  CFRelease (bundle);
-	}
+        }
 #else
       CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so");
 #endif
@@ -239,7 +239,6 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 
   retcode = TRUE;
 
-quit:
   wSystemDSN = USERDSN_ONLY;
   configMode = ODBC_BOTH_DSN;
 
@@ -278,5 +277,54 @@ SQLGetTranslator (
       cbPathMax, pcbPathOut, pvOption);
 
 quit:
+  return retcode;
+}
+
+BOOL INSTAPI
+SQLGetTranslatorW (
+    HWND hwnd,
+    LPWSTR lpszName,
+    WORD cbNameMax,
+    WORD FAR * pcbNameOut,
+    LPWSTR lpszPath,
+    WORD cbPathMax,
+    WORD FAR * pcbPathOut,
+    DWORD FAR * pvOption)
+{
+  char *_name_u8 = NULL;
+  char *_path_u8 = NULL;
+  BOOL retcode = FALSE;
+
+  if (cbNameMax > 0)
+    {
+      if ((_name_u8 = malloc (cbNameMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto done;
+        }
+    }
+
+  if (cbPathMax > 0)
+    {
+      if ((_path_u8 = malloc (cbPathMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto done;
+        }
+    }
+
+  retcode = SQLGetTranslator (hwnd, _name_u8, cbNameMax * UTF8_MAX_CHAR_LEN, pcbNameOut,
+    _path_u8, cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut, pvOption);
+
+  if (retcode == TRUE)
+    {
+      dm_StrCopyOut2_U8toW (_name_u8, lpszName, cbNameMax, pcbNameOut);
+      dm_StrCopyOut2_U8toW (_path_u8, lpszPath, cbPathMax, pcbPathOut);
+    }
+
+done:
+  MEM_FREE (_name_u8);
+  MEM_FREE (_path_u8);
+
   return retcode;
 }

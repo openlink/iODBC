@@ -107,25 +107,27 @@ ManageDataSources (HWND hwndParent)
 
   /* Load the Admin dialbox function */
 #ifdef __APPLE__
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {
-      /* Search for the drvproxy library */
-      liburl = CFBundleCopyExecutableURL (bundle);
-      if (liburl
-	  && (libname =
-	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+      /* Search for the iODBCadm library */
+      liburl =
+	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+	  NULL, NULL);
+      if (liburl && (libname =
+       CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	{
-	  CFStringGetCString (libname, name, sizeof (name),
-	      kCFStringEncodingASCII);
-	  CALL_ADMIN_DIALBOX (name);
+          CFStringGetCString (libname, name, sizeof (name),
+            kCFStringEncodingASCII);
+          STRCAT (name, "/Contents/MacOS/iODBCadm");
+          CALL_ADMIN_DIALBOX (name);
 	}
       if (liburl)
 	CFRelease (liburl);
       if (libname)
 	CFRelease (libname);
-      CFRelease (bundle);
     }
+
 #else
   CALL_ADMIN_DIALBOX ("libiodbcadm.so");
 #endif

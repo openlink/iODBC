@@ -70,8 +70,11 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #ifdef __APPLE__
 #  include <Carbon/Carbon.h>
@@ -81,7 +84,6 @@
 #include "inifile.h"
 #include "misc.h"
 #include "iodbc_error.h"
-
 
 #ifndef WIN32
 #include <unistd.h>
@@ -106,27 +108,92 @@
 		} \
 		DLL_CLOSE(handle); \
 	}
+
+#define CALL_CONFIG_DRIVERW(driverpath) \
+  if ((handle = DLL_OPEN((driverpath))) != NULL) \
+	{ \
+		if ((pConfigDriverW = (pConfigDriverWFunc)DLL_PROC(handle, "ConfigDriverW")) != NULL) \
+		{ \
+			if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszArgs, (SQLWCHAR*)lpszMsg, cbMsgMax, pcbMsgOut))  \
+	  	{ \
+	    	DLL_CLOSE(handle); \
+	    	retcode = TRUE; \
+	    	goto done; \
+	  	} \
+			else \
+			{ \
+				PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	DLL_CLOSE(handle); \
+	    	retcode = FALSE; \
+	    	goto done; \
+			} \
+		} \
+                else if ((pConfigDriver = (pConfigDriverFunc)DLL_PROC(handle, "ConfigDriver")) != NULL) \
+                { \
+                  char *_args_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszArgs, SQL_NTS); \
+                  char *_msg_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszMsg, SQL_NTS); \
+                  if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
+                  { \
+                    PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+                    DLL_CLOSE(handle); \
+                    retcode = FALSE; \
+                    goto done; \
+                  } \
+			if (pConfigDriver (hwndParent, fRequest, _drv_u8, _args_u8, _msg_u8, STRLEN(_msg_u8), pcbMsgOut))  \
+	  	{ \
+                MEM_FREE (_args_u8); \
+                MEM_FREE (_msg_u8); \
+	    	DLL_CLOSE(handle); \
+	    	retcode = TRUE; \
+	    	goto done; \
+	  	} \
+			else \
+			{ \
+                MEM_FREE (_args_u8); \
+                MEM_FREE (_msg_u8); \
+				PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	DLL_CLOSE(handle); \
+	    	retcode = FALSE; \
+	    	goto done; \
+			} \
+                } \
+		DLL_CLOSE(handle); \
+	}
 #endif
 
-
 BOOL INSTAPI
-SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
-    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD *pcbMsgOut)
+SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
+    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR *pcbMsgOut, SQLCHAR waMode)
 {
   PCONFIG pCfg;
   BOOL retcode = FALSE;
   void *handle;
   pConfigDriverFunc pConfigDriver;
+  pConfigDriverWFunc pConfigDriverW;
 #ifdef __APPLE__
   CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
   char name[1024] = { 0 };
 #endif
+  char *_drv_u8 = NULL;
 
   /* Check input parameters */
   CLEAR_ERROR ();
-  if (!lpszDriver || !STRLEN (lpszDriver))
+
+  if (waMode == 'W')
+    {
+      _drv_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+      if (_drv_u8 == NULL && lpszDriver)
+        {
+          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+          goto quit;
+        }
+    }
+  else
+    _drv_u8 = (char*)lpszDriver;
+
+  if (!_drv_u8 || !STRLEN (_drv_u8))
     {
       PUSH_ERROR (ODBC_ERROR_INVALID_NAME);
       goto quit;
@@ -143,16 +210,31 @@ SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   wSystemDSN = USERDSN_ONLY;
   if (!_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {
-      if (!_iodbcdm_cfg_find (pCfg, (char *) lpszDriver, "Setup"))
-	CALL_CONFIG_DRIVER (pCfg->value);
-      if (!_iodbcdm_cfg_find (pCfg, (char *) lpszDriver, "Driver"))
-	CALL_CONFIG_DRIVER (pCfg->value);
-      if (!access (lpszDriver, X_OK))
-	CALL_CONFIG_DRIVER (lpszDriver);
+      if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Setup"))
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
+      if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Driver"))
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
+      if (!access (_drv_u8, X_OK))
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (_drv_u8); }
+          else { CALL_CONFIG_DRIVERW (_drv_u8); }
+        }
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Setup"))
-	CALL_CONFIG_DRIVER (pCfg->value);
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Driver"))
-	CALL_CONFIG_DRIVER (pCfg->value);
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
     }
 
   /* Get it from the system odbcinst file */
@@ -164,21 +246,36 @@ SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   wSystemDSN = SYSTEMDSN_ONLY;
   if (!_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {
-      if (!_iodbcdm_cfg_find (pCfg, (char *) lpszDriver, "Setup"))
-	CALL_CONFIG_DRIVER (pCfg->value);
-      if (!_iodbcdm_cfg_find (pCfg, (char *) lpszDriver, "Driver"))
-	CALL_CONFIG_DRIVER (pCfg->value);
-      if (!access (lpszDriver, X_OK))
-	CALL_CONFIG_DRIVER (lpszDriver);
+      if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Setup"))
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
+      if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Driver"))
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
+      if (!access (_drv_u8, X_OK))
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (_drv_u8); }
+          else { CALL_CONFIG_DRIVERW (_drv_u8); }
+        }
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Setup"))
-	CALL_CONFIG_DRIVER (pCfg->value);
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Driver"))
-	CALL_CONFIG_DRIVER (pCfg->value);
+        {
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
+          else { CALL_CONFIG_DRIVERW (pCfg->value); }
+        }
     }
 
   /* The last ressort, a proxy driver */
 #ifdef __APPLE__
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {
       /* Search for the drvproxy library */
@@ -192,16 +289,17 @@ SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 	  CFStringGetCString (libname, name, sizeof (name),
 	      kCFStringEncodingASCII);
 	  strcat (name, "/Contents/MacOS/iODBCdrvproxy");
-	  CALL_CONFIG_DRIVER (name);
+	  if (waMode == 'A') { CALL_CONFIG_DRIVER (name); }
+          else { CALL_CONFIG_DRIVERW (name); }
 	}
       if (liburl)
 	CFRelease (liburl);
       if (libname)
 	CFRelease (libname);
-      CFRelease (bundle);
     }
 #else
-  CALL_CONFIG_DRIVER ("libdrvproxy.so");
+  if (waMode == 'A') { CALL_CONFIG_DRIVER ("libdrvproxy.so"); }
+  else { CALL_CONFIG_DRIVERW ("libdrvproxy.so"); }
 #endif
 
   /* Error : ConfigDriver could no be found */
@@ -212,10 +310,30 @@ done:
     _iodbcdm_cfg_done (pCfg);
 
 quit:
+  if (_drv_u8 != lpszDriver)
+    MEM_FREE (_drv_u8);
+
   wSystemDSN = USERDSN_ONLY;
   configMode = ODBC_BOTH_DSN;
+
   if (pcbMsgOut)
     *pcbMsgOut = 0;
 
   return retcode;
+}
+
+BOOL INSTAPI
+SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
+  LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
+{
+  return SQLConfigDriver_Internal(hwndParent, fRequest, (SQLPOINTER)lpszDriver,
+    (SQLPOINTER)lpszArgs, (SQLPOINTER)lpszMsg, cbMsgMax, pcbMsgOut, 'A');
+}
+
+BOOL INSTAPI
+SQLConfigDriverW (HWND hwndParent, WORD fRequest, LPCWSTR lpszDriver,
+  LPCWSTR lpszArgs, LPWSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
+{
+  return SQLConfigDriver_Internal(hwndParent, fRequest, (SQLPOINTER)lpszDriver,
+    (SQLPOINTER)lpszArgs, (SQLPOINTER)lpszMsg, cbMsgMax, pcbMsgOut, 'W');
 }

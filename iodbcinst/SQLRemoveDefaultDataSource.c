@@ -1,5 +1,5 @@
 /*
- *  SQLRemoveDSNFromIni.c
+ *  SQLRemoveDefaultDataSource.c
  *
  *  $Id$
  *

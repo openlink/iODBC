@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -70,6 +70,7 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <unicode.h>
 
 #include "inifile.h"
 #include "iodbc_error.h"
@@ -215,4 +216,69 @@ quit:
   wSystemDSN = USERDSN_ONLY;
   configMode = ODBC_BOTH_DSN;
   return retcode;
+}
+
+BOOL INSTAPI
+SQLWritePrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
+    LPCWSTR lpszString, LPCWSTR lpszFilename)
+{
+  char *_section_u8 = NULL;
+  char *_entry_u8 = NULL;
+  char *_string_u8 = NULL;
+  char *_filename_u8 = NULL;
+  BOOL retcode = FALSE;
+
+  _section_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszSection, SQL_NTS);
+  if (_section_u8 == NULL && lpszSection)
+    {
+      PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+      goto done;
+    }
+
+  _entry_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszEntry, SQL_NTS);
+  if (_entry_u8 == NULL && lpszEntry)
+    {
+      PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+      goto done;
+    }
+
+  _string_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszString, SQL_NTS);
+  if (_string_u8 == NULL && lpszString)
+    {
+      PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+      goto done;
+    }
+
+  _filename_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszFilename, SQL_NTS);
+  if (_filename_u8 == NULL && lpszFilename)
+    {
+      PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+      goto done;
+    }
+
+  retcode = SQLWritePrivateProfileString (_section_u8, _entry_u8, _string_u8, _filename_u8);
+
+done:
+  MEM_FREE (_section_u8);
+  MEM_FREE (_entry_u8);
+  MEM_FREE (_string_u8);
+  MEM_FREE (_filename_u8);
+
+  return retcode;
+}
+
+BOOL INSTAPI
+SQLSetKeywordValue (LPCSTR lpszSection,
+    LPCSTR lpszEntry, LPSTR lpszString, int cbString)
+{
+  return SQLWritePrivateProfileString (lpszSection,
+    lpszEntry, lpszString, "odbc.ini");
+}
+
+BOOL INSTAPI
+SQLSetKeywordValueW (LPCWSTR lpszSection,
+    LPCWSTR lpszEntry, LPWSTR lpszString, int cbString)
+{
+  return SQLWritePrivateProfileStringW (lpszSection,
+    lpszEntry, lpszString, L"odbc.ini");
 }

@@ -75,6 +75,7 @@
 #include <iodbc.h>
 #include <iodbcinst.h>
 #include <iodbcadm.h>
+#include <unicode.h>
 
 #include "iodbc_error.h"
 #include "dlf.h"
@@ -84,6 +85,7 @@
 #endif
 
 extern BOOL ValidDSN (LPCSTR lpszDSN);
+extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 
 #define CALL_DRVCONN_DIALBOX(path) \
 	if ((handle = DLL_OPEN(path)) != NULL) \
@@ -94,15 +96,23 @@ extern BOOL ValidDSN (LPCSTR lpszDSN);
 		DLL_CLOSE(handle); \
 	}
 
+#define CALL_DRVCONN_DIALBOXW(path) \
+	if ((handle = DLL_OPEN(path)) != NULL) \
+	{ \
+		if ((pDrvConnW = (pDrvConnWFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
+		  pDrvConn(parent, dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+      retcode = TRUE; \
+		DLL_CLOSE(handle); \
+	}
 
-BOOL
-CreateDataSource (HWND parent, LPCSTR lpszDSN)
+BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 {
   char dsn[1024] = { 0 };
   UWORD config = ODBC_USER_DSN;
   BOOL retcode = FALSE;
   void *handle;
   pDrvConnFunc pDrvConn;
+  pDrvConnWFunc pDrvConnW;
 #ifdef __APPLE__
   CFStringRef libname = NULL;
   CFBundleRef bundle;
@@ -112,27 +122,31 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN)
 
   /* Load the Admin dialbox function */
 #ifdef __APPLE__
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {
-      /* Search for the drvproxy library */
-      liburl = CFBundleCopyExecutableURL (bundle);
+      /* Search for the iODBCadm library */
+      liburl =
+	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+	  NULL, NULL);
       if (liburl
 	  && (libname =
 	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	{
-	  CFStringGetCString (libname, name, sizeof (name),
-	      kCFStringEncodingASCII);
-	  CALL_DRVCONN_DIALBOX (name);
+          CFStringGetCString (libname, name, sizeof (name),
+            kCFStringEncodingASCII);
+          STRCAT (name, "/Contents/MacOS/iODBCadm");
+	  if (waMode == 'A') { CALL_DRVCONN_DIALBOX (name); }
+          else { CALL_DRVCONN_DIALBOXW (name); }
 	}
       if (liburl)
 	CFRelease (liburl);
       if (libname)
 	CFRelease (libname);
-      CFRelease (bundle);
     }
 #else
-  CALL_DRVCONN_DIALBOX ("libiodbcadm.so");
+  if (waMode == 'A') { CALL_DRVCONN_DIALBOX ("libiodbcadm.so"); }
+  else { CALL_DRVCONN_DIALBOXW ("libiodbcadm.so"); }
 #endif
 
   return retcode;
@@ -140,7 +154,7 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN)
 
 
 BOOL INSTAPI
-SQLCreateDataSource (HWND hwndParent, LPCSTR lpszDSN)
+SQLCreateDataSource_Internal (HWND hwndParent, SQLPOINTER lpszDSN, SQLCHAR waMode)
 {
   BOOL retcode = FALSE;
 
@@ -152,14 +166,37 @@ SQLCreateDataSource (HWND hwndParent, LPCSTR lpszDSN)
       goto quit;
     }
 
-  if ((!lpszDSN && !ValidDSN (lpszDSN)) || (!lpszDSN && !STRLEN (lpszDSN)))
+  if (waMode == 'A')
     {
-      PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
-      goto quit;
+      if ((!lpszDSN && !ValidDSN (lpszDSN)) || (!lpszDSN && !STRLEN (lpszDSN)))
+        {
+          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+          goto quit;
+        }
+    }
+  else
+    {
+      if ((!lpszDSN && !ValidDSNW (lpszDSN)) || (!lpszDSN && !WCSLEN (lpszDSN)))
+        {
+          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+          goto quit;
+        }
     }
 
-  retcode = CreateDataSource (hwndParent, lpszDSN);
+  retcode = CreateDataSource (hwndParent, lpszDSN, waMode);
 
 quit:
   return retcode;
+}
+
+BOOL INSTAPI
+SQLCreateDataSource (HWND hwndParent, LPCSTR lpszDSN)
+{
+  return SQLCreateDataSource_Internal(hwndParent, (SQLPOINTER)lpszDSN, 'A');
+}
+
+BOOL INSTAPI
+SQLCreateDataSourceW (HWND hwndParent, LPCWSTR lpszDSN)
+{
+  return SQLCreateDataSource_Internal(hwndParent, (SQLPOINTER)lpszDSN, 'W');
 }
