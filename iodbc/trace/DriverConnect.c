@@ -94,21 +94,21 @@ _trace_connstr_hidepwd (SQLCHAR *str)
 	  break;
 
 	case 0:
-	  if (*ptr == 'P')
+	  if (toupper(*ptr) == 'P')
 	    state = 1;
 	  else if (strchr ("\'\"{", *ptr))
 	    state = -1;		/* in string */
 	  break;
 
 	case 1:
-	  if (*ptr == 'W')
+	  if (toupper(*ptr) == 'W')
 	    state = 2;
 	  else
 	    state = 0;
 	  break;
 
 	case 2:
-	  if (*ptr == 'D')
+	  if (toupper(*ptr) == 'D')
 	    state = 3;
 	  else
 	    state = 0;
