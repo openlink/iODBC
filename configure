@@ -840,7 +840,7 @@ fi
 
 PACKAGE=libiodbc
 
-VERSION=2.50.4
+VERSION=3.0.0
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -2358,10 +2358,62 @@ else
 fi
 
 
+echo $ac_n "checking for NSCreateObjectFileImageFromFile""... $ac_c" 1>&6
+echo "configure:2363: checking for NSCreateObjectFileImageFromFile" >&5
+if eval "test \"`echo '$''{'ac_cv_func_NSCreateObjectFileImageFromFile'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2368 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char NSCreateObjectFileImageFromFile(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char NSCreateObjectFileImageFromFile();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_NSCreateObjectFileImageFromFile) || defined (__stub___NSCreateObjectFileImageFromFile)
+choke me
+#else
+NSCreateObjectFileImageFromFile();
+#endif
+
+; return 0; }
+EOF
+if { (eval echo configure:2391: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_func_NSCreateObjectFileImageFromFile=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_func_NSCreateObjectFileImageFromFile=no"
+fi
+rm -f conftest*
+fi
+
+if eval "test \"`echo '$ac_cv_func_'NSCreateObjectFileImageFromFile`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  cat >> confdefs.h <<\EOF
+#define HAVE_DYLD 1
+EOF
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
 
 
 echo $ac_n "checking for underscore before symbols""... $ac_c" 1>&6
-echo "configure:2365: checking for underscore before symbols" >&5
+echo "configure:2417: checking for underscore before symbols" >&5
 if eval "test \"`echo '$''{'libltdl_cv_uscore'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2383,7 +2435,7 @@ if test x"$libltdl_cv_uscore" = xyes; then
   if test x"$ac_cv_func_dlopen" = xyes ||
      test x"$ac_cv_lib_dl_dlopen" = xyes ; then
 	echo $ac_n "checking whether we have to add an underscore for dlsym""... $ac_c" 1>&6
-echo "configure:2387: checking whether we have to add an underscore for dlsym" >&5
+echo "configure:2439: checking whether we have to add an underscore for dlsym" >&5
 if eval "test \"`echo '$''{'libltdl_cv_need_uscore'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2392,7 +2444,7 @@ else
 
 else
   cat > conftest.$ac_ext <<EOF
-#line 2396 "configure"
+#line 2448 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -2456,7 +2508,7 @@ main ()
 }
 
 EOF
-if { (eval echo configure:2460: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:2512: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
 then
   libltdl_cv_need_uscore=no
 else
@@ -2489,7 +2541,7 @@ fi
 ##########################################################################
 
 echo $ac_n "checking for iODBC mode""... $ac_c" 1>&6
-echo "configure:2493: checking for iODBC mode" >&5
+echo "configure:2545: checking for iODBC mode" >&5
 # Check whether --enable-odbc3 or --disable-odbc3 was given.
 if test "${enable_odbc3+set}" = set; then
   enableval="$enable_odbc3"
@@ -2509,11 +2561,11 @@ fi
 
 if test "x$odbcmode" = "x3"
 then
-	lib_version=3:1:0
+	lib_version=3:0:1
 	CFLAGS="$CFLAGS -DODBCVER=0x0350" 
 	echo "$ac_t""ODBC 3.x compatible mode" 1>&6
 else
-	lib_version=2:50:0; 
+	lib_version=2:51:0; 
 	CFLAGS="$CFLAGS -DODBCVER=0x0250" 
 	echo "$ac_t""ODBC 2.x compatible mode" 1>&6
 fi
@@ -2532,7 +2584,7 @@ fi
 #  to GNU specifications
 #
 echo $ac_n "checking system config directory""... $ac_c" 1>&6
-echo "configure:2536: checking system config directory" >&5
+echo "configure:2588: checking system config directory" >&5
 sysinidir=`eval echo $sysconfdir`
 case "$sysinidir" in
 NONE*) 
@@ -2551,7 +2603,7 @@ echo "$ac_t""$sysinidir" 1>&6
 #  Now allow to overrule this directory with a custom setting
 #
 echo $ac_n "checking for iODBC ini directory""... $ac_c" 1>&6
-echo "configure:2555: checking for iODBC ini directory" >&5
+echo "configure:2607: checking for iODBC ini directory" >&5
 # Check whether --with-iodbc-inidir or --without-iodbc-inidir was given.
 if test "${with_iodbc_inidir+set}" = set; then
   withval="$with_iodbc_inidir"
