@@ -1,3 +1,47 @@
+2004-02-23 13:21  source
+
+	* Remove config.nice when making distributions (pvk)
+	
+2004-02-23 12:51  source
+
+	* Added --include-deps
+	* Print comment on using --enable-maintainer-mode
+	  (pvk)
+	
+2004-02-23 12:51  source
+
+	* Updated version information in preparation of final release (pvk)
+	
+2004-02-23 12:50  source
+
+	* Fixed problem building iodbctest program on Mac OS X (th)
+	
+2004-02-23 12:50  source
+
+	* Removed Framework build (th)
+	
+2004-02-23 12:41  source
+
+	* Check for pbxbuild (jaguar) or xcodebuild (panther)
+	  (th)
+	
+2004-02-23 11:53  source
+
+	* Updated copyright string (pvk)
+	
+2004-02-23 11:41  source
+
+	* Added support for config.nice script (pvk)
+	
+2004-02-23 11:40  source
+
+	* Removed debug code (pvk)
+	
+2004-02-23 11:37  source
+
+	* Automatically regenerate libiodb.spec script when configure.in
+	  changes (pvk)
+	
 2004-02-20 17:14  source
 
 	* Added --with-layout to simplify installation layouts for different
