@@ -146,7 +146,7 @@ currently maintained by OpenLink Software under a LGPL or BSD license
 %prep
 %setup
 %build
-./configure --prefix=/usr --enable-odbc3 --with-iodbc-inidir=/etc --enable-pthreads
+./configure --prefix=/usr --mandir=%{_mandir} --enable-odbc3 --with-iodbc-inidir=/etc --enable-pthreads
 make
 
 %install
@@ -164,7 +164,8 @@ export LIBRARY_PATH
 #
 #  Install binaries, include files and libraries
 #
-make install prefix=$RPM_BUILD_ROOT/usr
+#make install prefix=$RPM_BUILD_ROOT 
+%makeinstall
 
 #
 #  Install the sample odbc.ini and odbcinst.ini files
@@ -206,6 +207,7 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) %doc etc/odbcinst.ini.sample
 %attr(0644, root, root) /usr/include/iodbcext.h
 %attr(0644, root, root) /usr/include/iodbcinst.h
+%attr(0644, root, root) /usr/include/iodbcunix.h
 %attr(0644, root, root) /usr/include/isqlext.h
 %attr(0644, root, root) /usr/include/isql.h
 %attr(0644, root, root) /usr/include/isqltypes.h
@@ -213,7 +215,6 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) /usr/include/sqltypes.h
 %attr(0644, root, root) /usr/include/sqlucode.h
 %attr(0644, root, root) /usr/include/sqlext.h
-%attr(0644, root, root) /usr/include/sqlunix.h
 %attr(0755, root, root) /usr/bin/iodbc-config
 %attr(0644, root, root) /usr/lib/libiodbc.a
 %attr(0644, root, root) /usr/lib/libiodbc.la
