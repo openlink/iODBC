@@ -165,6 +165,12 @@ AC_HELP_STRING([--with-layout=LAYOUT], [Choose installation layout])dnl
   esac
 ], [IODBC_LAYOUT=unset]) 
 
+
+#
+#  Defaults for Layout
+#
+install_libodbc=true
+
 case ${IODBC_LAYOUT} in
   unset)					# No Layout set
 	iodbc_layout="default"
@@ -181,6 +187,7 @@ case ${IODBC_LAYOUT} in
 	iodbc_layout="Debian"
 	test "x$prefix" = xNONE && prefix=/usr
 	inidir=/etc
+	install_libodbc=false
 	;;
 
   [[Gg]][[Ee]][[Nn]][[Tt]][[Oo]][[Oo]])		# Gentoo
@@ -188,6 +195,7 @@ case ${IODBC_LAYOUT} in
 	test "x$prefix" = xNONE && prefix=/usr
 	includedir='${prefix}/include/iodbc'
 	inidir=/etc/iodbc
+	install_libodbc=false
 	;;
 
   [[Rr]][[Ee]][[Dd]][[Hh]][[Aa]][[Tt]])		# RedHat
@@ -537,6 +545,28 @@ AC_DEFINE_UNQUOTED(SYS_ODBCINST_INI, "$inidir/odbcinst.ini",
 
 ##########################################################################
 ##									##
+##  Create libodbc.so if requested                     			##
+##									##
+##########################################################################
+
+AC_MSG_CHECKING(for libodbc.so link)
+AC_ARG_ENABLE(libodbc, [dnl
+AC_HELP_STRING([--enable-libodbc], [install extra libodbc.so library (default)])
+AC_HELP_STRING([--disable-libodbc], [do not install extra libodbc.so library ])dnl
+],
+[ case "${enableval}" in
+    yes) install_libodbc=true ;;
+    no)  install_libodbc=false ;;
+    *) AC_MSG_ERROR(bad value ${enableval} for --enable-libodbc) ;;
+  esac
+],[]) 
+AC_MSG_RESULT([$install_libodbc])
+
+AM_CONDITIONAL(INSTALL_LIBODBC, [test x$install_libodbc = xtrue])
+
+
+##########################################################################
+##									##
 ##  Checkout pthread situation						##
 ##									##
 ##########################################################################
@@ -715,4 +745,5 @@ echo "Extensions"
 echo "AC_HELP_STRING(ODBC Version, 	[${odbcmode}])"
 echo "AC_HELP_STRING(GUI Extensions,	[${USE_GUI}])"
 echo "AC_HELP_STRING(ThreadSafe,	[${USE_PTHREADS}])"
+echo "AC_HELP_STRING(Install libodbc.so,	[${install_libodbc}])"
 echo ""

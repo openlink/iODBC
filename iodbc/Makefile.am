@@ -101,5 +101,7 @@ EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com \
 #  Add symbolic link for libodbc.so as some apps need this
 #
 install-exec-hook:
+if INSTALL_LIBODBC
 	$(SHELL) $(srcdir)/install_libodbc.sh $(DESTDIR)$(libdir)
+endif
 
