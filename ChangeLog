@@ -5,6 +5,7 @@ June 25, 1999, V2.50.3:
       standards
     * Some small bug fixes
     * Added AutoReqProv flag to RPM .spec file
+    * Changed types for SQLHENV, SQLHDBC, SQLHSTMT
 
 April 26, 1999, V2.50.2:
     * Small code cleanups (pvk)
