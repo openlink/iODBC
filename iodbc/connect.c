@@ -126,10 +126,16 @@ _iodbcdm_SetConnectOption_init (
   ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
+  int retinfo = 0;
 
   SQLINTEGER strLength = 0;
   void *ptr = (void *) vParam;
   void *_vParam = NULL;
+
+  if (fOption >= 1000)
+    {
+      retinfo = 1;		/* Change SQL_ERROR -> SQL_SUCCESS_WITH_INFO */
+    }
 
   if ((penv->unicode_driver && waMode != 'W')
       || (!penv->unicode_driver && waMode == 'W'))
@@ -220,6 +226,9 @@ _iodbcdm_SetConnectOption_init (
       PUSHSQLERR (pdbc->herr, en_IM004);
       return SQL_SUCCESS_WITH_INFO;
     }
+
+  if (retcode != SQL_SUCCESS && retinfo)
+    return SQL_SUCCESS_WITH_INFO;
 
   return retcode;
 }
