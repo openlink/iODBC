@@ -324,7 +324,11 @@ AC_CHECK_FUNC(dladdr, AC_DEFINE(HAVE_DLADDR, 1, [Define to 1 if you have the `dl
 [AC_CHECK_LIB(dl, dladdr, [AC_DEFINE(HAVE_DLADDR, 1, [Define to 1 if you have the `dladdr' function]) LIBADD_DL="-ldl"],[])]
 )
  
-AC_CHECK_TYPES([Dl_info])
+AC_CHECK_TYPE([Dl_info],
+  [AC_DEFINE(HAVE_DL_INFO, 1, [Define to 1 if you have the Dl_info structure])],
+  [],
+  [#include <dlfcn.h>]
+)
 
 
 ##########################################################################
