@@ -1,3 +1,12 @@
+Feb 1 2000, V3.0.2:
+    * Fixed deadlock problem in SQLNumResultCols
+    * Small code fix in SQLDatasources
+
+Jan 28 2000, V3.0.1:
+    * Added thread support into Driver Manager
+    * Added code to allow Threaded application to call non-threaded driver
+    * Small code fixes and cleanups
+
 Dec 16 1999, V3.0.0:
     * Added initial support for ODBC 3.x API and the ODBC 3.x to 2.x
       translation layer
