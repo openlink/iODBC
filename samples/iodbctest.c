@@ -334,7 +334,7 @@ ODBC_Errors (char *where)
   while (i < 5 && SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
 	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s (%ld)\n",
+      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s\n",
 	  i, buf, (long) native_error, sqlstate);
     }
 
@@ -345,7 +345,7 @@ ODBC_Errors (char *where)
   while (i < 5 && SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
 	  sqlstate, &native_error, buf, sizeof (buf), NULL) == SQL_SUCCESS)
     {
-      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s (%ld)\n",
+      fprintf (stderr, "%d: %s (%ld), SQLSTATE=%s\n",
 	  i, buf, (long) native_error, sqlstate);
     }
 #endif
