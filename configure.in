@@ -1,4 +1,4 @@
-AC_PREREQ(2.13)
+AC_PREREQ(2.50)
 AC_REVISION($Id$)
 #
 #  configure.in
@@ -24,8 +24,9 @@ AC_REVISION($Id$)
 ##  Initialization							##
 ##									##
 ##########################################################################
-AC_INIT(isql.h)
-AM_INIT_AUTOMAKE(libiodbc,3.0.2)
+AC_INIT
+AC_CONFIG_SRCDIR([isql.h])
+AM_INIT_AUTOMAKE(libiodbc,3.0.3)
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
@@ -58,7 +59,7 @@ AC_PROG_CC
 AC_PROG_CC_C_O
 AC_PROG_CC_STDC
 AC_PROG_CPP
-AC_LANG_C
+AC_LANG([C])
 
 
 ##########################################################################
@@ -232,7 +233,7 @@ AC_ARG_ENABLE(odbc3,
 
 if test "x$odbcmode" = "x3"
 then
-	lib_version=3:2:1
+	lib_version=3:3:1
 	CFLAGS="$CFLAGS -DODBCVER=0x0350" 
 	AC_MSG_RESULT(ODBC 3.x compatible mode)
 else
@@ -321,10 +322,12 @@ AC_ARG_WITH(pthreads,
 ##  Generate Makefiles etc.						##
 ##									##
 ##########################################################################
-AC_OUTPUT([
+AC_CONFIG_FILES([
     Makefile 
     samples/Makefile
     iodbc-config
-], [
+])
+AC_CONFIG_COMMANDS([default],[
     chmod 755 iodbc-config
 ])
+AC_OUTPUT

@@ -39,7 +39,7 @@ include_HEADERS		= isql.h isqlext.h isqltypes.h \
 bin_SCRIPTS		= iodbc-config
 
 noinst_SCRIPTS		= config.guess config.sub configure \
-			  install-sh ltconfig ltmain.sh missing mkinstalldirs
+			  install-sh ltmain.sh missing mkinstalldirs
 
 EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
 			  iodbc.def iodbc.exp libiodbc.spec main.c \
