@@ -180,7 +180,7 @@ ODBC_Connect (char *connStr)
   SQLTCHAR dsn[33];
   SQLTCHAR desc[255];
   SQLTCHAR driverInfo[255];
-  SQLTCHAR outdsn[255];
+  SQLTCHAR outdsn[1024];
   SQLSMALLINT len1, len2;
   int status;
 #ifdef UNICODE
