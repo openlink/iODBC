@@ -2554,19 +2554,20 @@ SQLGetDescRecW (
 }
 
 
-RETCODE SQL_API
-SQLSetDescRec (SQLHDESC arg0,
-    SQLSMALLINT arg1,
-    SQLSMALLINT arg2,
-    SQLSMALLINT arg3,
-    SQLINTEGER arg4,
-    SQLSMALLINT arg5,
-    SQLSMALLINT arg6,
-    SQLPOINTER arg7,
-    SQLINTEGER * arg8,
-    SQLINTEGER * arg9)
+static RETCODE
+SQLSetDescRec_Internal (
+  SQLHDESC		  DescriptorHandle,
+  SQLSMALLINT		  RecNumber,
+  SQLSMALLINT		  Type,
+  SQLSMALLINT		  SubType,
+  SQLINTEGER		  Length,
+  SQLSMALLINT		  Precision,
+  SQLSMALLINT		  Scale,
+  SQLPOINTER		  Data,
+  SQLINTEGER		* StringLength,
+  SQLINTEGER		* Indicator)
 {
-  DESC (desc, arg0);
+  DESC (desc, DescriptorHandle);
   HPROC hproc;
   RETCODE retcode;
 
@@ -2578,9 +2579,39 @@ SQLSetDescRec (SQLHDESC arg0,
     }
 
   CALL_DRIVER (desc->hdbc, desc, retcode, hproc, en_SetDescRec,
-      (desc->dhdesc, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9));
+      (desc->dhdesc, RecNumber, Type, SubType, Length, Precision, Scale, 
+       Data, StringLength, Indicator));
 
   return retcode;
+}
+
+
+RETCODE SQL_API
+SQLSetDescRec (
+  SQLHDESC		  DescriptorHandle,
+  SQLSMALLINT		  RecNumber,
+  SQLSMALLINT		  Type,
+  SQLSMALLINT		  SubType,
+  SQLINTEGER		  Length,
+  SQLSMALLINT		  Precision,
+  SQLSMALLINT		  Scale,
+  SQLPOINTER		  Data,
+  SQLINTEGER		* StringLength,
+  SQLINTEGER		* Indicator)
+{
+  ENTER_DESC (DescriptorHandle,
+    trace_SQLSetDescRec (TRACE_ENTER,
+  	DescriptorHandle, RecNumber, Type, SubType, Length, Precision,
+  	Scale, Data, StringLength, Indicator));
+
+  retcode = SQLSetDescRec_Internal (
+  	DescriptorHandle, RecNumber, Type, SubType, Length, Precision,
+  	Scale, Data, StringLength, Indicator);
+
+  LEAVE_DESC (DescriptorHandle,
+    trace_SQLSetDescRec (TRACE_LEAVE,
+  	DescriptorHandle, RecNumber, Type, SubType, Length, Precision,
+  	Scale, Data, StringLength, Indicator));
 }
 
 
