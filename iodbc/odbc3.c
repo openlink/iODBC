@@ -1059,6 +1059,22 @@ SQLSetStmtAttr (SQLHSTMT statementHandle,
 	    }
 	  stmt->row_status_allocated = SQL_TRUE;
 
+	  /*
+	   *  Tell the driver the rowset size has changed
+	   */
+	  hproc = _iodbcdm_getproc (stmt->hdbc, en_SetStmtOption);
+	  if (hproc)
+	    {
+	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_SetStmtOption,
+		  (stmt->dhstmt, SQL_ROWSET_SIZE, stmt->row_array_size));
+	      return retcode;
+	    }
+	  else
+	    {
+	      PUSHSQLERR (stmt->herr, en_IM001);
+	      return SQL_ERROR;
+	    }
+
 	  return SQL_SUCCESS;
 	}
 
