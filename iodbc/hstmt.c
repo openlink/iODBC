@@ -333,8 +333,6 @@ SQLAllocStmt_Internal (
 		      NULL));
 	      if (rc1 != SQL_SUCCESS && rc1 != SQL_SUCCESS_WITH_INFO)
 		{		/* no descriptor returned from the driver */
-		  pstmt->type = 0;
-		  MEM_FREE (pstmt);
 		  for (j = 0; j < i + 1; j++)
 		    {
 		      pstmt->imp_desc[j]->type = 0;
