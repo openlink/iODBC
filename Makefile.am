@@ -77,16 +77,18 @@ EXTRA_DIST		= \
 	README.MACOSX \
 	acinclude.m4 \
 	mac/Makefile \
+	mac/link-inclibs.sh \
 	mac/README.MYODBC \
 	mac/myodbc.configure.diff \
 	mac/framework-include.sh \
+	mac/iodbc.exp \
+	mac/iodbcinst.exp \
 	mac/iODBC/English.lproj/InfoPlist.strings \
 	mac/iODBC/iODBC.pbproj/project.pbxproj \
 	mac/iODBCinst/English.lproj/InfoPlist.strings \
 	mac/iODBCinst/iODBCinst.pbproj/project.pbxproj \
 	mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
-	mac/iodbc.exp \
-	mac/iodbcinst.exp \
+	mac/iODBCtestw/iODBCtestw.pbproj/project.pbxproj \
 	debian/changelog \
 	debian/control \
 	debian/copyright \
