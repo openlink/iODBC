@@ -242,6 +242,18 @@ case $OS in
 	$BUILD
 	;;
 
+    powerpc-apple-darwin8*)
+	PREFIX=/usr/local/iODBC.darwin
+	CONFLAGS="--disable-shared --with-pic"
+	CFLAGS="-O -m32"
+	export CFLAGS CONFLAGS PREFIX
+	$BUILD 32
+
+	CFLAGS="-O -m64"
+	export CFLAGS
+	$BUILD 64
+	;;
+
     *)
 	CFLAGS="-O"
 	export CFLAGS
