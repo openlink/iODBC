@@ -49,3 +49,13 @@ linux-rpm:
 	make dist VERSION=2.50
 	cp libiodbc-2.50.tar.gz /usr/src/redhat/SOURCES
 	rpm -ba libiodbc.spec
+
+#
+#  Create a tar file containing the library and include files
+#
+binary-tar:
+	mkdir @build@
+	make install prefix=`pwd`/@build@
+	tar cvf @build@.tar @build@
+	gzip -9v @build@.tar
+	rm -rf @build@
