@@ -33,7 +33,8 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 
 noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci
-include_HEADERS		= isql.h isqlext.h isqltypes.h
+include_HEADERS		= isql.h isqlext.h isqltypes.h \
+			  sql.h sqlext.h sqltypes.h
 
 noinst_SCRIPTS		= config.guess config.sub configure \
 			  install-sh ltconfig ltmain.sh missing mkinstalldirs
