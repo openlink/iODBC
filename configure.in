@@ -25,7 +25,7 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT(isql.h)
-AM_INIT_AUTOMAKE(libiodbc,3.0.0)
+AM_INIT_AUTOMAKE(libiodbc,3.0.1)
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
@@ -231,11 +231,11 @@ AC_ARG_ENABLE(odbc3,
 
 if test "x$odbcmode" = "x3"
 then
-	lib_version=3:0:1
+	lib_version=3:1:1
 	CFLAGS="$CFLAGS -DODBCVER=0x0350" 
 	AC_MSG_RESULT(ODBC 3.x compatible mode)
 else
-	lib_version=2:51:0; 
+	lib_version=2:52:0; 
 	CFLAGS="$CFLAGS -DODBCVER=0x0250" 
 	AC_MSG_RESULT(ODBC 2.x compatible mode)
 fi
