@@ -30,6 +30,13 @@
 #include <sqlext.h>
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#ifdef _MAC
+#include <getfpn.h>
+#endif /* _MAC */
+
 
 static int
 upper_strneq (
@@ -115,38 +122,112 @@ readtoken (
 }
 
 
-#if	!defined(WINDOWS) && !defined(WIN32) && !defined(OS2)
+#if !defined(WINDOWS) && !defined(WIN32) && !defined(OS2) && !defined(_MAC)
 #include <pwd.h>
 #define UNIX_PWD
 #endif
 
+/*
+ * Algorithm for resolving an odbc.ini reference
+ * 
+ * For UNIX :    1. Check for $ODBCINI variable, if exists return $ODBCINI.
+ *               2. Check for $HOME/.odbc.ini or ~/.odbc.ini file, if exists 
+ *                  return it.
+ *               3. Check for SYS_ODBC_INI build variable, if exists return 
+ *                  it. (ie : /etc/odbc.ini).
+ *               4. No odbc.ini presence, return NULL.
+ *
+ * For WINDOWS, WIN32, OS2 :
+ *               1. Check for the system odbc.ini file, if exists return it.
+ *               2. No odbc.ini presence, return NULL.
+ *
+ * For VMS:      1. Check for $ODBCINI variable, if exists return $ODBCINI.
+ *               2. Check for SYS$LOGIN:ODBC.INI file, if exists return it.
+ *               3. No odbc.ini presence, return NULL.
+ *
+ * For Mac:      1. On powerPC, file is ODBC Preferences PPC
+ *                  On 68k, file is ODBC Preferences
+ *               2. Check for ...:System Folder:Preferences:ODBC Preferences 
+ *                  file, if exists return it.
+ *               3. No odbc.ini presence, return NULL.
+ *
+ * For MacX:     1. Check for $ODBCINI variable, if exists return $ODBCINI.
+ *               2. Check for $HOME/.odbc.ini or ~/.odbc.ini file, if exists 
+ *                  return it.
+ *               3. Check for $HOME/Library/Preferences/ODBC.preference or 
+ *                  ~/.odbc.ini file, if exists return it.
+ *               4. Check for SYS_ODBC_INI build variable, if exists return 
+ *                  it. (ie : /etc/odbc.ini).
+ *               5. Check for /System/Library/Preferences/ODBC.preference 
+ *                  file, if exists return it.
+ *               6. No odbc.ini presence, return NULL.
+ */
 char *
 _iodbcdm_getinifile (char *buf, int size)
 {
+#ifdef _MAC
+  OSErr result;
+  long fldrDid;
+  short fldrRef;
+#endif /* _MAC */
   int i, j;
   char *ptr;
 
+#ifdef _MAC
+#  ifdef __POWERPC__
+  j = STRLEN (":ODBC Preferences PPC") + 1;
+#  else
+  j = STRLEN (":ODBC Preferences") + 1;
+#  endif /* __POWERPC__ */
+#else
   j = STRLEN ("/odbc.ini") + 1;
+#endif /* _MAC */
 
   if (size < j)
+    return NULL;
+
+#if !defined(UNIX_PWD)
+#  ifdef _MAC
+  result =
+      FindFolder (kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder,
+      &fldrRef, &fldrDid);
+  if (result != noErr)
+    return NULL;
+  ptr = get_full_pathname (fldrDid, fldrRef);
+
+  i = (ptr) ? STRLEN (ptr) : 0;
+  if (i == 0 || i > size - j)
     {
+      if (ptr)
+	free (ptr);
       return NULL;
     }
 
-#if	!defined(UNIX_PWD)
+#    ifdef __POWERPC__
+  STRCPY (buf, ptr);
+  STRCAT (buf, ":ODBC Preferences PPC");
+#    else
+  STRCPY (buf, ptr);
+  STRCAT (buf, ":ODBC Preferences");
+#    endif /* __POWERPC__ */
+  free (ptr);
+
+  return buf;
+
+#  else	/* else _MAC */
+
   /*
    *  On Windows, there is only one place to look
    */
   i = GetWindowsDirectory ((LPSTR) buf, size);
 
   if (i == 0 || i > size - j)
-    {
-      return NULL;
-    }
+    return NULL;
 
-  sprintf (buf + i, "/odbc.ini");
+  snprintf (buf + i, size - i, "/odbc.ini");
 
   return buf;
+#  endif /* _MAC */
 #else
   /*
    *  1. Check $ODBCINI environment variable
@@ -155,7 +236,7 @@ _iodbcdm_getinifile (char *buf, int size)
     {
       STRNCPY (buf, ptr, size);
 
-      if (access (buf, 4) == 0)
+      if (access (buf, R_OK) == 0)
 	return buf;
     }
 
@@ -165,9 +246,9 @@ _iodbcdm_getinifile (char *buf, int size)
    */
   STRNCPY (buf, "SYS$LOGIN:ODBC.INI", size);
 
-  if (access (buf, 4) == 0)
+  if (access (buf, R_OK) == 0)
     return buf;
-#else
+#  else	/* else VMS */
   /*
    *  2b. Check either $HOME/.odbc.ini or ~/.odbc.ini
    */
@@ -181,20 +262,49 @@ _iodbcdm_getinifile (char *buf, int size)
 
   if (ptr != NULL)
     {
-      sprintf (buf, "%s/.odbc.ini", ptr);
+      snprintf (buf, size, "%s/.odbc.ini", ptr);
 
-      if (access (buf, 4) == 0)
+      if (access (buf, R_OK) == 0)
 	return buf;
+
+#   ifdef _MACX
+      /*
+       * Try to check the ~/Library/Preferences/ODBC.preference
+       */
+      snprintf (buf, size, "%s" ODBC_INI_APP, ptr);
+
+      if (access (buf, R_OK) == 0)
+	return buf;
+#   endif /* _MACX */
     }
 
-#endif /* VMS */
+#  endif /* VMS */
 
   /*
    *  3. Try SYS_ODBC_INI as the last resort
    */
+  if ((ptr = getenv ("SYSODBCINI")) != NULL)
+    {
+      STRNCPY (buf, ptr, size);
+
+      if (access (buf, R_OK) == 0)
+	return buf;
+    }
+
   STRNCPY (buf, SYS_ODBC_INI, size);
-  if (access (buf, 4) == 0)
+
+  if (access (buf, R_OK) == 0)
     return buf;
+
+# ifdef _MACX
+  /*
+   * Try to check the /System/Library/Preferences/ODBC.preference
+   */
+  snprintf (buf, size, "/System%s", ODBC_INI_APP);
+
+  if (access (buf, R_OK) == 0)
+    return buf;
+# endif	/* _MACX */
 
   /*
    *  No ini file found or accessable
@@ -217,8 +327,7 @@ _iodbcdm_getkeyvalbydsn (
     int size)
 {
   char buf[1024];
-  char dsntk[SQL_MAX_DSN_LENGTH + 3] =
-  {'[', '\0'};
+  char dsntk[SQL_MAX_DSN_LENGTH + 3] = {'[', '\0'};
   char token[1024];		/* large enough */
   FILE *file;
   char pathbuf[1024];
@@ -282,9 +391,7 @@ _iodbcdm_getkeyvalbydsn (
       str = fgets (buf, sizeof (buf), file);
 
       if (str == NULL)
-	{
 	  break;
-	}
 
       if (*str == '[')
 	{
@@ -299,9 +406,7 @@ _iodbcdm_getkeyvalbydsn (
 		  defaultdsn = DSN_DEFAULT;
 		}
 	      else
-		{
 		  dsnid = DSN_NOMATCH;
-		}
 
 	      continue;
 	    }
@@ -369,8 +474,7 @@ _iodbcdm_getkeyvalinstr (
     char *value,
     int size)
 {
-  char token[1024] =
-  {'\0'};
+  char token[1024] = {'\0'};
   int flag = 0;
 
   if (cnstr == NULL || value == NULL
@@ -394,9 +498,7 @@ _iodbcdm_getkeyvalinstr (
       cnstr = readtoken (cnstr, token);
 
       if (*token == '\0')
-	{
 	  break;
-	}
 
       if (STREQ (token, ";"))
 	{
@@ -407,27 +509,19 @@ _iodbcdm_getkeyvalinstr (
       switch (flag)
 	{
 	case 0:
-	  if (upper_strneq (token, keywd, strlen (keywd)))
-	    {
+	  if (upper_strneq (token, keywd, STRLEN (keywd)))
 	      flag = 1;
-	    }
 	  break;
 
 	case 1:
 	  if (STREQ (token, "="))
-	    {
 	      flag = 2;
-	    }
 	  break;
 
 	case 2:
-	  if (size < strlen (token) + 1)
-	    {
+	  if (size < STRLEN (token) + 1)
 	      return NULL;
-	    }
-
 	  STRNCPY (value, token, size);
-
 	  return value;
 
 	default:
