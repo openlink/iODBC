@@ -28,14 +28,14 @@
 # ----------------------------------------------------------------------
 Summary: iODBC Driver Manager
 name: libiodbc
-version: 2.50.4
+version: 3.0.0
 release: 1
 Group: Libraries
 Vendor: Ke Jin 
 Packager: OpenLink Software <iodbc@openlinksw.com>
 Copyright: LGPL
-URL: http://www.openlinksw.com/iodbc/
-Source: libiodbc-%{PACKAGE_VERSION}.tar.gz
+URL: http://www.iodbc.org/
+Source: http://www.iodbc.org/dist/libiodbc-%{PACKAGE_VERSION}.tar.gz
 #Prefix: /
 BuildRoot:/tmp/libiodbc.root
 AutoReqProv: yes
@@ -69,7 +69,7 @@ currently maintained by OpenLink Software under an LGPL license.
 %prep
 %setup
 %build
-./configure --prefix=/usr --enable-odbc3
+./configure --prefix=/usr --enable-odbc3 --with-iodbc-inidir=/etc
 make
 
 %install
@@ -86,7 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files 
-%attr(0644, root, root) /usr/lib/libiodbc.so.3.0.1
+%attr(0755, root, root) /usr/lib/libiodbc.so.2
+%attr(0755, root, root) /usr/lib/libiodbc.so.2.1.0
 %attr(0644, root, root) %config /etc/odbc.ini
 # %attr(0644, root, root) %config /etc/odbcinst.ini
 
@@ -98,5 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0644, root, root) /usr/include/sql.h
 %attr(0644, root, root) /usr/include/sqlext.h
 %attr(0644, root, root) /usr/include/sqltypes.h
-%attr(0644, root, root) /usr/lib/libiodbc.so
+%attr(0755, root, root) /usr/bin/iodbc-config
+%attr(0755, root, root) /usr/lib/libiodbc.so
 %attr(0644, root, root) /usr/lib/libiodbc.a
+%attr(0644, root, root) /usr/lib/libiodbc.la
