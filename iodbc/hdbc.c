@@ -890,7 +890,7 @@ _iodbcdm_transact (
       hproc = _iodbcdm_getproc (pdbc, en_EndTran);
       if (hproc != SQL_NULL_HPROC)
 	{
-	  CALL_DRIVER (pdbc, pdbc, retcode, hproc, en_EndTran,
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_EndTran,
 	      (SQL_HANDLE_DBC, pdbc->dhdbc, fType));
 	}
       else
