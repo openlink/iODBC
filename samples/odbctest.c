@@ -109,7 +109,13 @@ DB_Connect (char *connStr)
 	/*
 	 *  Remove trailing '\n'
 	 */
-	dataSource[strlen ((char *) dataSource) - 1] = '\0';
+	dataSource[strlen (dataSource) - 1] = '\0';
+
+	/*
+	 * Check if the user wants to quit
+	 */
+	if (!strcmp (dataSource, "quit") || !strcmp (dataSource, "exit"))
+	  return -1;
 
 	/*
 	 *  If the user entered something other than a ?
@@ -379,18 +385,24 @@ DB_Test ()
 	    case SQL_TINYINT:
 	    case SQL_SMALLINT:
 	    case SQL_INTEGER:
+	    case SQL_BIGINT:
 	      displayWidth = colPrecision + 1;	/* sign */
 	      break;
 	    case SQL_DOUBLE:
 	    case SQL_DECIMAL:
 	    case SQL_NUMERIC:
 	    case SQL_FLOAT:
+	    case SQL_REAL:
 	      displayWidth = colPrecision + 2;  /* sign, comma */
 	      break;
 	    case SQL_DATE:
+	      displayWidth = 10;
+	      break;
 	    case SQL_TIME:
+	      displayWidth = 8;
+	      break;
 	    case SQL_TIMESTAMP:
-	      displayWidth = colPrecision;  
+	      displayWidth = 19;
 	      break;
 	    default:
 	      displayWidths[colNum-1] = 0;	/* skip other data types */
@@ -485,9 +497,17 @@ DB_Test ()
 int
 main (int argc, char **argv)
 {
-  puts ("OpenLink ODBC Demonstration program");
-  puts ("This program shows an interactive SQL processor\n");
+  printf ("iODBC Demonstration program\n");
+  printf ("This program shows an interactive SQL processor\n");
 
+  /*
+   *  Show a usage string when the user asks for this
+   */
+  if (argc == 2 && !strcmp (argv[1], "-?"))
+    {
+      fprintf (stderr, "\nUsage:\n  odbctest [\"DSN=xxxx;UID=xxxx;PWD=xxxx\"]\n");
+      exit(0);
+    }
 
   /*
    *  If we can connect to this datasource, run the test program
