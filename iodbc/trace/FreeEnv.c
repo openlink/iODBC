@@ -81,7 +81,4 @@ trace_SQLFreeEnv(int trace_leave, int retcode,
 
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_ENV, henv);
-
-  if (trace_leave)
-    trace_stop ();
 }

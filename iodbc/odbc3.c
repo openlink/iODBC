@@ -303,21 +303,36 @@ SQLAllocHandleStd (
 
 /**** SQLFreeHandle ****/
 
+extern unsigned long _iodbc_env_counter;
+
 static RETCODE
 _SQLFreeHandle_ENV (
   SQLSMALLINT		  handleType,
   SQLHANDLE		  handle)
 {
-  ENTER_HENV ((SQLHENV) handle,
-      trace_SQLFreeHandle (TRACE_ENTER, handleType, handle));
+  int retcode = SQL_SUCCESS;
+
+  ODBC_LOCK ();
+
+  TRACE (trace_SQLFreeHandle (TRACE_ENTER, handleType, handle));
 
   retcode = SQLFreeEnv_Internal ((SQLHENV) handle);
 
-  LEAVE_HENV ((SQLHENV) handle,
-      trace_SQLFreeHandle (TRACE_LEAVE, handleType, handle);
-      MEM_FREE (handle);
-  );
+  TRACE (trace_SQLFreeHandle (TRACE_LEAVE, handleType, handle));
+
+  MEM_FREE (handle);
+
+  /*
+   *  Close trace after last environment handle is freed
+   */
+  if (--_iodbc_env_counter == 0)
+    trace_stop();
+
+  ODBC_UNLOCK ();
+
+  return retcode;
 }
+
 
 static RETCODE
 _SQLFreeHandle_DBC (

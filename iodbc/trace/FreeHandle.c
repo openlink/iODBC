@@ -83,7 +83,4 @@ trace_SQLFreeHandle (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handletype (HandleType);
   _trace_handle (HandleType, Handle);
-
-  if (HandleType == SQL_HANDLE_ENV && trace_leave)
-    trace_stop ();
 }

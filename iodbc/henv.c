@@ -127,6 +127,7 @@ _iodbcdm_env_settracing (GENV_t *genv)
   return;
 }
 
+unsigned long _iodbc_env_counter = 0;
 
 SQLRETURN 
 SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
@@ -161,7 +162,8 @@ SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
   /*
    * Initialize tracing 
    */
-  _iodbcdm_env_settracing (genv);
+  if (++_iodbc_env_counter == 1)
+    _iodbcdm_env_settracing (genv);
 
   return retcode;
 }
@@ -237,6 +239,12 @@ SQLFreeEnv (SQLHENV henv)
   TRACE (trace_SQLFreeEnv (TRACE_LEAVE, henv));
 
   MEM_FREE (genv);
+
+  /*
+   *  Close trace after last environment handle is freed
+   */
+  if (--_iodbc_env_counter == 0)
+    trace_stop();
 
   ODBC_UNLOCK ();
 
