@@ -73,6 +73,11 @@
 #ifndef _IODBCUNIX_H
 #define _IODBCUNIX_H
 
+/*
+ *  Standard header files
+ */
+#include <stdlib.h>
+#include <unistd.h>
 
 /*
  *  Windows-style declarations
@@ -98,6 +103,11 @@
 #endif
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /*
  *  Windows-style typedefs
  */
@@ -111,6 +121,10 @@ typedef DWORD *			LPDWORD;
 
 #if !defined(BOOL) && !defined(_OBJC_OBJC_H_)
 typedef int			BOOL;
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* _IODBCUNIX_H */
