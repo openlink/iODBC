@@ -362,10 +362,10 @@ typedef GUID 			SQLGUID;
 #else
 typedef struct tagSQLGUID
   {
-    DWORD	Data1;
-    WORD	Data2;
-    WORD	Data3;
-    BYTE	Data4[8];	/* BYTE */
+    unsigned int	Data1;
+    unsigned short	Data2;
+    unsigned short	Data3;
+    unsigned char	Data4[8];	/* BYTE */
   }
 SQLGUID;
 #endif	/* GUID_DEFINED */
