@@ -20,7 +20,7 @@
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 AUTOMAKE_OPTIONS	= gnu dist-shar dist-zip dist-tarZ 1.4-p2
-SUBDIRS			= admin bin etc include iodbc samples
+SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
 
 EXTRA_DIST             = IAFA-PACKAGE 
 
