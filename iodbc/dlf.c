@@ -52,7 +52,7 @@ static char sccsid[] = "@(#)dynamic load interface -- HP/UX dl(shl)";
 void *
 dlopen (char *path, int mode)
 {
-  return (void *) shl_load ((char *) (path), BIND_DEFERRED, 0L);
+  return (void *) shl_load ((char *) (path), BIND_IMMEDIATE | BIND_NONFATAL, 0L);
 }
 
 
@@ -96,9 +96,20 @@ dlerror ()
 int
 dlclose (void *hdll)
 {
+  struct shl_descriptor d;
+
+  /*
+   *  As HP/UX does not use a reference counter for unloading, 
+   *  we can only unload the driver when it is loaded once.
+   */
+  if (shl_gethandle_r ((shl_t) hdll, &d) < 0 || d.ref_count > 1)
+  {
+    return 0;
+  }
+
   return shl_unload ((shl_t) hdll);
 }
-#endif /* end of HP/UX Seection */
+#endif /* end of HP/UX Section */
 
 
 /*********************************
