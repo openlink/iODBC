@@ -150,4 +150,3 @@ _SQLSetConnectAttrA
 _SQLSetDescFieldA
 _SQLSetStmtAttrA
 _iodbc_version
-_iodbc_libname
