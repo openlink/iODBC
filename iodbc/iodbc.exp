@@ -8,6 +8,7 @@ SQLBindParameter
 SQLBrowseConnect
 SQLBulkOperations
 SQLCancel
+SQLCloseCursor
 SQLColAttribute
 SQLColAttributes
 SQLColumnPrivileges

@@ -1718,4 +1718,92 @@ SQLBindParam (
   return SQLBindParameter (hstmt, ipar, SQL_PARAM_INPUT, fCType, fSqlType, cbParamDef, ibScale, rgbValue, SQL_MAX_OPTION_STRING_LENGTH, pcbValue);
 }
 
+
+SQLRETURN SQL_API
+SQLCloseCursor (SQLHSTMT hstmt)
+{
+  STMT (pstmt, hstmt);
+  DBC_t FAR *pdbc;
+  HPROC hproc = SQL_NULL_HPROC;
+  SQLRETURN retcode;
+
+  if (!IS_VALID_HSTMT (pstmt))
+    {
+      return SQL_INVALID_HANDLE;
+    }
+  CLEAR_ERRORS (pstmt);
+
+  pdbc = (DBC_t FAR *) (pstmt->hdbc);
+
+  /* check state */
+  if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
+    {
+      PUSHSQLERR (pstmt->herr, en_S1010);
+
+      return SQL_ERROR;
+    }
+  else if (pstmt->state < en_stmt_cursoropen)
+    {
+      PUSHSQLERR (pstmt->herr, en_24000);
+
+      return SQL_ERROR;
+    }
+
+  hproc = _iodbcdm_getproc (pstmt->hdbc, en_CloseCursor);
+
+  if (hproc)
+    {
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_CloseCursor,
+	  (pstmt->dhstmt));
+    }
+
+  if (hproc == SQL_NULL_HPROC)
+    {
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
+
+      if (hproc == SQL_NULL_HPROC)
+	{
+	  PUSHSQLERR (pstmt->herr, en_IM001);
+
+	  return SQL_ERROR;
+	}
+
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt,
+	  (pstmt->dhstmt, SQL_CLOSE));
+    }
+
+  if (retcode != SQL_SUCCESS
+      && retcode != SQL_SUCCESS_WITH_INFO)
+    {
+      return retcode;
+    }
+
+  /*
+   *  State transition
+   */
+  pstmt->cursor_state = en_stmt_cursor_no;
+
+  switch (pstmt->state)
+    {
+    case en_stmt_allocated:
+    case en_stmt_prepared:
+      break;
+
+    case en_stmt_executed:
+    case en_stmt_cursoropen:
+    case en_stmt_fetched:
+    case en_stmt_xfetched:
+      if (pstmt->prep_state)
+	pstmt->state = en_stmt_prepared;
+      else
+	pstmt->state = en_stmt_allocated;
+      break;
+
+    default:
+      break;
+    }
+
+  return retcode;
+}
+
 #endif	/* ODBCVER >= 0x0300 */
