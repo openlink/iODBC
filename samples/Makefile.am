@@ -73,12 +73,12 @@ INCLUDES		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
 #
 iodbctest_SOURCES	= iodbctest.c
 iodbctest_LDADD		= ../iodbc/libiodbc.la
-iodbctest_LDFLAGS	= # -static
+iodbctest_LDFLAGS	= -static
 
 iodbctestw_CFLAGS	= -DUNICODE
 iodbctestw_SOURCES	= iodbctest.c
 iodbctestw_LDADD	= ../iodbc/libiodbc.la
-iodbctestw_LDFLAGS	= # -static
+iodbctestw_LDFLAGS	= -static
 
 EXTRA_DIST		= Makefile.sample 
 
