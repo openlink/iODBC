@@ -46,6 +46,6 @@ EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com \
 #  Create Linux RPM's
 #
 linux-rpm:
-	make dist
-	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
-	rpm -ba -v libiodbc.spec
+	make dist VERSION=2.50
+	cp libiodbc-2.50.tar.gz /usr/src/redhat/SOURCES
+	rpm -ba libiodbc.spec
