@@ -423,6 +423,13 @@ SQLGetInfo (
       return SQL_SUCCESS;
     }
 
+  /*
+   *  This was a temp value in ODBC 2
+   */
+  if (((ENV_t FAR *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2 && 
+	  fInfoType == SQL_OJ_CAPABILITIES)
+      fInfoType = 65003;
+
   hproc = _iodbcdm_getproc (pdbc, en_GetInfo);
 
   if (hproc == SQL_NULL_HPROC)
