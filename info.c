@@ -41,6 +41,9 @@
 #include	<stdio.h>
 #include	<ctype.h>
 
+extern char*   _iodbcdm_getinifile (char *buf, int size);
+extern char*   _iodbcdm_getkeyvalbydsn();
+
 #define SECT1			"ODBC Data Sources"
 #define SECT2			"Default"
 #define MAX_ENTRIES		1024
