@@ -86,7 +86,7 @@ GetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
   int len = 0;
   PCONFIG pCfg;
 
-  lpszRetBuffer[cbRetBuffer - 1] = 0;
+  lpszRetBuffer[0] = 0;
 
   /* If error during reading the file */
   if (_iodbcdm_cfg_search_init (&pCfg, lpszFilename, FALSE))
