@@ -1,9 +1,8 @@
 #
-#  Makefile.am
+#  Makefile.mac
 #
 #  The iODBC driver manager.
 #  
-#  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
 #  Copyright (C) 1996-2002 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
@@ -66,63 +65,42 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
-SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
 
-EXTRA_DIST             = \
-	IAFA-PACKAGE \
-	LICENSE LICENSE.LGPL LICENSE.BSD \
-	README.MACOSX \
-	mac/Makefile \
-	mac/iODBC/English.lproj/InfoPlist.strings \
-	mac/iODBC/iODBC.pbproj/project.pbxproj \
-	mac/iODBCinst/English.lproj/InfoPlist.strings \
-	mac/iODBCinst/iODBCinst.pbproj/project.pbxproj \
-	mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
-	mac/iodbc.exp \
-	mac/iodbcinst.exp 
-
-
-# ----------------------------------------------------------------------
-#
-#  Maintainers only
-# 
-# ----------------------------------------------------------------------
-
-MAINTAINERCLEANFILES	= Makefile.in aclocal.m4 configure
-
-
-if MAINTAINER_MODE
-
-#
-#  Create Linux RPM's
-#
-linux-rpm:
-	$(MAKE) dist
-	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
-	rpm -ba admin/libiodbc.spec
-
-#
-#  Create a tar file containing the library and include files
-#
-binary-tar:
-	-mkdir @build@
-	$(MAKE) install prefix=`pwd`/@build@
-	tar cvf @build@.tar @build@
-	gzip -9vf @build@.tar
-	rm -rf @build@
-
-#
-#  Create a source snapshot package
-#
-snapshot:
-	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
+all: iODBC iODBCinst iODBCtest
 
 
 #
-#  Create an official release package
+#  Build the libraries 
 #
-release:
-	$(MAKE) distcheck
+.PHONY: iODBC iODBCinst
+iODBC:
+	cd iODBC; pbxbuild build -buildstyle Deployment
 
-endif
+iODBCinst:
+	cd iODBCinst; pbxbuild build -buildstyle Deployment
+
+#
+#  Build the test program
+#
+.PHONY: iODBCtest
+iODBCtest:
+	cd iODBCtest; pbxbuild build -buildstyle Deployment
+
+
+#
+#  Install libraries in /Library/Frameworks
+#
+install:
+#	cd iODBC;     sudo pbxbuild install -buildstyle Deployment DSTROOT=/
+#	cd iODBCinst; sudo pbxbuild install -buildstyle Deployment DSTROOT=/
+	cd iODBC;     pbxbuild install -buildstyle Deployment DSTROOT=$(HOME)
+	cd iODBCinst; pbxbuild install -buildstyle Deployment DSTROOT=$(HOME)
+
+
+#
+#  Clean out the targets
+#
+clean:
+	cd iODBC;     pbxbuild clean
+	cd iODBCinst; pbxbuild clean
+	cd iODBCtest; pbxbuild clean
