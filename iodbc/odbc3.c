@@ -1708,14 +1708,38 @@ SQLFetchScroll (SQLHSTMT statementHandle,
       LEAVE_STMT (stmt, SQL_ERROR);
     }
 
+  /* check state */
+  if (stmt->asyn_on == en_NullProc)
+    {
+      switch (stmt->state)
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	case en_stmt_fetched:
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  PUSHSQLERR (stmt->herr, en_S1010);
+	  return SQL_ERROR;
+
+	default:
+	  break;
+	}
+    }
+  else if (stmt->asyn_on != en_FetchScroll)
+    {
+      PUSHSQLERR (stmt->herr, en_S1010);
+      return SQL_ERROR;
+    }
+
   hproc = _iodbcdm_getproc (stmt->hdbc, en_FetchScroll);
   if (hproc)
     {
       CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_FetchScroll,
 	  (stmt->dhstmt, fetchOrientation, fetchOffset));
-      LEAVE_STMT (stmt, retcode);
     }
-
+  else
+    {
   if (!stmt->row_status_ptr)
     {
       PUSHSQLERR (stmt->herr, en_HYC00);
@@ -1730,13 +1754,60 @@ SQLFetchScroll (SQLHSTMT statementHandle,
 	  LEAVE_STMT (stmt, SQL_ERROR);
 	}
       retcode = _iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
-	  stmt->fetch_bookmark_ptr ? *((SQLINTEGER *) stmt->fetch_bookmark_ptr) : 0,
-	  stmt->rows_fetched_ptr, stmt->row_status_ptr);
+	      stmt->
+	      fetch_bookmark_ptr ? *((SQLINTEGER *) stmt->fetch_bookmark_ptr)
+	      : 0, stmt->rows_fetched_ptr, stmt->row_status_ptr);
     }
   else
     retcode =
 	_iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
 	fetchOffset, stmt->rows_fetched_ptr, stmt->row_status_ptr);
+
+    }
+
+  /* state transition */
+  if (stmt->asyn_on == en_FetchScroll)
+    {
+      switch (retcode)
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	case SQL_ERROR:
+	  stmt->asyn_on = en_NullProc;
+	  break;
+
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
+    }
+
+  switch (stmt->state)
+    {
+    case en_stmt_cursoropen:
+    case en_stmt_xfetched:
+      switch (retcode)
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	  stmt->state = en_stmt_xfetched;
+	  stmt->cursor_state = en_stmt_cursor_xfetched;
+	  break;
+
+	case SQL_STILL_EXECUTING:
+	  stmt->asyn_on = en_FetchScroll;
+	  break;
+
+	default:
+	  break;
+	}
+      break;
+
+    default:
+      break;
+    }
 
   LEAVE_STMT (stmt, retcode);
 }
