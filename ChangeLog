@@ -1,7 +1,26 @@
+June 25, 1999, V2.50.3:
+    * Renamed public header files to conform to ODBC standard 
+    * System wide iodbc.ini can now be set with --with-odbc-inidir=,
+      default is set to $sysconfdir/odbc.ini to comply with GNU 
+      standards
+    * Some small bug fixes
+    * Added AutoReqProv flag to RPM .spec file
+
+April 26, 1999, V2.50.2:
+    * Small code cleanups (pvk)
+    * Wrote new handle validation checks to make the driver manager more
+      resistant to handle misuse (pvk)
+    * Rewrote all function prototypes to conform to ODBC 2.51 standard (pvk)
+    * Use the internal form of the handle instead of the external
+      representation (pvk)
+    * Removed 2 copyright sccs stamps and comments as requested by Ke Jin (pvk)
+    * Added rudementary SQLGetPrivateProfileString call (pvk)
+    * Added support for VMS (ps)
+
 January 18, 1999, V2.50:
-	* Added autoconf/automake/libtool support
-	* Licensing moved to LGPL 
-	* Added OpenLink code enhancements and bug fixes
+    * Added autoconf/automake/libtool support
+    * Licensing moved to LGPL 
+    * Added OpenLink code enhancements and bug fixes
 
 ------------------------------------------------------------------------
 Original Changelog from Ke Jin
