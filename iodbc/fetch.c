@@ -38,14 +38,14 @@
 
 #include	<itrace.h>
 
-RETCODE SQL_API 
-SQLFetch (HSTMT hstmt)
+SQLRETURN SQL_API 
+SQLFetch (SQLHSTMT hstmt)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC) 
     {
       return SQL_INVALID_HANDLE;
     }
@@ -146,17 +146,17 @@ SQLFetch (HSTMT hstmt)
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLExtendedFetch (
-    HSTMT hstmt,
-    UWORD fFetchType,
-    SDWORD irow,
-    UDWORD FAR * pcrow,
-    UWORD FAR * rgfRowStatus)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fFetchType,
+    SQLINTEGER irow,
+    SQLUINTEGER FAR * pcrow,
+    SQLUSMALLINT FAR * rgfRowStatus)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -260,18 +260,18 @@ SQLExtendedFetch (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLGetData (
-    HSTMT hstmt,
-    UWORD icol,
-    SWORD fCType,
-    PTR rgbValue,
-    SDWORD cbValueMax,
-    SDWORD FAR * pcbValue)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLSMALLINT fCType,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
   int sqlstat = en_00000;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
@@ -409,15 +409,14 @@ SQLGetData (
 }
 
 
-RETCODE SQL_API 
-SQLMoreResults (HSTMT hstmt)
+SQLRETURN SQL_API 
+SQLMoreResults (SQLHSTMT hstmt)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -536,16 +535,16 @@ SQLMoreResults (HSTMT hstmt)
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLSetPos (
-    HSTMT hstmt,
-    UWORD irow,
-    UWORD fOption,
-    UWORD fLock)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT irow,
+    SQLUSMALLINT fOption,
+    SQLUSMALLINT fLock)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
   int sqlstat = en_00000;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)

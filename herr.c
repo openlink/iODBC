@@ -87,7 +87,7 @@ _iodbcdm_pushsqlerr (
     }
 
   if (idx == 64)
-    /* over wirte the top entry to prevent error stack blow out */
+    /* overwrite the top entry to prevent error stack blow out */
     {
       perr->code = code;
       perr->msg = msg;
@@ -175,21 +175,21 @@ _iodbcdm_getsqlerrmsg (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLError (
-    HENV henv,
-    HDBC hdbc,
-    HSTMT hstmt,
-    UCHAR FAR * szSqlstate,
-    SDWORD FAR * pfNativeError,
-    UCHAR FAR * szErrorMsg,
-    SWORD cbErrorMsgMax,
-    SWORD FAR * pcbErrorMsg)
+    SQLHENV henv,
+    SQLHDBC hdbc,
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlstate,
+    SQLINTEGER FAR * pfNativeError,
+    SQLCHAR FAR * szErrorMsg,
+    SQLSMALLINT cbErrorMsgMax,
+    SQLSMALLINT FAR * pcbErrorMsg)
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HDBC thdbc;
+  HDBC thdbc = SQL_NULL_HDBC;
 
   HENV dhenv = SQL_NULL_HENV;
   HDBC dhdbc = SQL_NULL_HDBC;
@@ -202,7 +202,7 @@ SQLError (
   char FAR *ststr = NULL;
 
   int handle = 0;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   if (hstmt != SQL_NULL_HSTMT)	/* retrive stmt err */
     {
@@ -220,7 +220,7 @@ SQLError (
   else if (hdbc != SQL_NULL_HDBC)	/* retrive dbc err */
     {
       herr = pdbc->herr;
-      thdbc = hdbc;
+      thdbc = pdbc;
       if (thdbc == SQL_NULL_HDBC)
 	{
 	  return SQL_INVALID_HANDLE;

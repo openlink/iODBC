@@ -41,12 +41,12 @@
 static void 
 do_cursoropen (STMT_t FAR * pstmt)
 {
-  RETCODE retcode;
+  SQLRETURN retcode;
   SWORD ncol;
 
   pstmt->state = en_stmt_executed;
 
-  retcode = SQLNumResultCols (pstmt, &ncol);
+  retcode = SQLNumResultCols ((SQLHSTMT) pstmt, &ncol);
 
   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
     {
@@ -64,12 +64,12 @@ do_cursoropen (STMT_t FAR * pstmt)
 }
 
 
-RETCODE SQL_API 
-SQLExecute (HSTMT hstmt)
+SQLRETURN SQL_API 
+SQLExecute (SQLHSTMT hstmt)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   int sqlstat = en_00000;
 
@@ -173,7 +173,7 @@ SQLExecute (HSTMT hstmt)
 	  {
 	  case SQL_SUCCESS:
 	  case SQL_SUCCESS_WITH_INFO:
-	    do_cursoropen (hstmt);
+	    do_cursoropen (pstmt);
 	    break;
 
 	  case SQL_NEED_DATA:
@@ -221,17 +221,17 @@ SQLExecute (HSTMT hstmt)
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLExecDirect (
-    HSTMT hstmt,
-    UCHAR FAR * szSqlStr,
-    SDWORD cbSqlStr)
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlStr,
+    SQLINTEGER cbSqlStr)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
 
   int sqlstat = en_00000;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -323,7 +323,7 @@ SQLExecDirect (
 	 {
 	 case SQL_SUCCESS:
 	 case SQL_SUCCESS_WITH_INFO:
-	   do_cursoropen (hstmt);
+	   do_cursoropen (pstmt);
 	   break;
 
 	 case SQL_NEED_DATA:
@@ -350,15 +350,15 @@ SQLExecDirect (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLPutData (
-    HSTMT hstmt,
-    PTR rgbValue,
-    SDWORD cbValue)
+    SQLHSTMT hstmt,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValue)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -467,14 +467,14 @@ SQLPutData (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLParamData (
-    HSTMT hstmt,
-    PTR FAR * prgbValue)
+    SQLHSTMT hstmt,
+    SQLPOINTER FAR * prgbValue)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -580,7 +580,7 @@ SQLParamData (
 
 	       case en_ExecDirect:
 	       case en_Execute:
-		 do_cursoropen (hstmt);
+		 do_cursoropen (pstmt);
 		 break;
 
 	       default:
@@ -606,14 +606,14 @@ SQLParamData (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLNumParams (
-    HSTMT hstmt,
-    SWORD FAR * pcpar)
+    SQLHSTMT hstmt,
+    SQLSMALLINT FAR * pcpar)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -682,18 +682,18 @@ SQLNumParams (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLDescribeParam (
-    HSTMT hstmt,
-    UWORD ipar,
-    SWORD FAR * pfSqlType,
-    UDWORD FAR * pcbColDef,
-    SWORD FAR * pibScale,
-    SWORD FAR * pfNullable)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT ipar,
+    SQLSMALLINT FAR * pfSqlType,
+    SQLUINTEGER FAR * pcbColDef,
+    SQLSMALLINT FAR * pibScale,
+    SQLSMALLINT FAR * pfNullable)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {

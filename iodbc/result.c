@@ -38,18 +38,18 @@
 
 #include	<itrace.h>
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLBindCol (
-    HSTMT hstmt,
-    UWORD icol,
-    SWORD fCType,
-    PTR rgbValue,
-    SDWORD cbValueMax,
-    SDWORD FAR * pcbValue)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLSMALLINT fCType,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -115,16 +115,16 @@ SQLBindCol (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLGetCursorName (
-    HSTMT hstmt,
-    UCHAR FAR * szCursor,
-    SWORD cbCursorMax,
-    SWORD FAR * pcbCursor)
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCursor,
+    SQLSMALLINT cbCursorMax,
+    SQLSMALLINT FAR * pcbCursor)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -172,14 +172,14 @@ SQLGetCursorName (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLRowCount (
-    HSTMT hstmt,
-    SDWORD FAR * pcrow)
+    SQLHSTMT hstmt,
+    SQLINTEGER FAR * pcrow)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -213,14 +213,14 @@ SQLRowCount (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLNumResultCols (
-    HSTMT hstmt,
-    SWORD FAR * pccol)
+    SQLHSTMT hstmt,
+    SQLSMALLINT FAR * pccol)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
   SWORD ccol;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
@@ -299,25 +299,24 @@ SQLNumResultCols (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLDescribeCol (
-    HSTMT hstmt,
-    UWORD icol,
-    UCHAR FAR * szColName,
-    SWORD cbColNameMax,
-    SWORD FAR * pcbColName,
-    SWORD FAR * pfSqlType,
-    UDWORD FAR * pcbColDef,
-    SWORD FAR * pibScale,
-    SWORD FAR * pfNullable)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLCHAR FAR * szColName,
+    SQLSMALLINT cbColNameMax,
+    SQLSMALLINT FAR * pcbColName,
+    SQLSMALLINT FAR * pfSqlType,
+    SQLUINTEGER FAR * pcbColDef,
+    SQLSMALLINT FAR * pibScale,
+    SQLSMALLINT FAR * pfNullable)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -410,19 +409,19 @@ SQLDescribeCol (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLColAttributes (
-    HSTMT hstmt,
-    UWORD icol,
-    UWORD fDescType,
-    PTR rgbDesc,
-    SWORD cbDescMax,
-    SWORD FAR * pcbDesc,
-    SDWORD FAR * pfDesc)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLUSMALLINT fDescType,
+    SQLPOINTER rgbDesc,
+    SQLSMALLINT cbDescMax,
+    SQLSMALLINT FAR * pcbDesc,
+    SQLINTEGER FAR * pfDesc)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
   int sqlstat = en_00000;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)

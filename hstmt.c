@@ -38,15 +38,15 @@
 
 #include	<itrace.h>
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLAllocStmt (
-    HDBC hdbc,
-    HSTMT FAR * phstmt)
+    SQLHDBC hdbc,
+    SQLHSTMT FAR * phstmt)
 {
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   STMT_t FAR *pstmt = NULL;
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
 
 #if (ODBCVER >= 0x0300)
   if (hdbc == SQL_NULL_HDBC || pdbc->type != SQL_HANDLE_DBC)
@@ -97,7 +97,7 @@ SQLAllocStmt (
 
   /* initiate the object */
   pstmt->herr = SQL_NULL_HERR;
-  pstmt->hdbc = hdbc;
+  pstmt->hdbc = (HSTMT) hdbc;
   pstmt->state = en_stmt_allocated;
   pstmt->cursor_state = en_stmt_cursor_no;
   pstmt->prep_state = 0;
@@ -145,7 +145,7 @@ SQLAllocStmt (
   pstmt->next = pdbc->hstmt;
   pdbc->hstmt = pstmt;
 
-  *phstmt = (HSTMT) pstmt;
+  *phstmt = (SQLHSTMT) pstmt;
 
   /* state transition */
   pdbc->state = en_dbc_hstmt;
@@ -154,7 +154,7 @@ SQLAllocStmt (
 }
 
 
-RETCODE 
+SQLRETURN 
 _iodbcdm_dropstmt (HSTMT hstmt)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
@@ -191,23 +191,23 @@ _iodbcdm_dropstmt (HSTMT hstmt)
     }
 
   _iodbcdm_freesqlerrlist (pstmt->herr);
-  MEM_FREE (hstmt);
+
+  MEM_FREE (pstmt);
 
   return SQL_SUCCESS;
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLFreeStmt (
-    HSTMT hstmt,
-    UWORD fOption)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fOption)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  STMT_t FAR *tpstmt;
   DBC_t FAR *pdbc;
 
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -279,7 +279,7 @@ SQLFreeStmt (
      {
      case SQL_DROP:
        /* delet this object (ignore return) */
-       _iodbcdm_dropstmt (hstmt);
+       _iodbcdm_dropstmt (pstmt);
        break;
 
      case SQL_CLOSE:
@@ -326,16 +326,16 @@ SQLFreeStmt (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLSetStmtOption (
-    HSTMT hstmt,
-    UWORD fOption,
-    UDWORD vParam)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fOption,
+    SQLUINTEGER vParam)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
   int sqlstat = en_00000;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -433,16 +433,16 @@ SQLSetStmtOption (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLGetStmtOption (
-    HSTMT hstmt,
-    UWORD fOption,
-    PTR pvParam)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fOption,
+    SQLPOINTER pvParam)
 {
   STMT_t FAR *pstmt = (STMT_t *) hstmt;
   HPROC hproc;
   int sqlstat = en_00000;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -505,12 +505,12 @@ SQLGetStmtOption (
 }
 
 
-RETCODE SQL_API 
-SQLCancel (HSTMT hstmt)
+SQLRETURN SQL_API 
+SQLCancel (SQLHSTMT hstmt)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {

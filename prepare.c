@@ -38,16 +38,16 @@
 
 #include	<itrace.h>
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLPrepare (
-    HSTMT hstmt,
-    UCHAR FAR * szSqlStr,
-    SDWORD cbSqlStr)
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlStr,
+    SQLINTEGER cbSqlStr)
 {
   STMT_t FAR *pstmt = (STMT_t *) hstmt;
 
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
@@ -164,16 +164,16 @@ SQLPrepare (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLSetCursorName (
-    HSTMT hstmt,
-    UCHAR FAR * szCursor,
-    SWORD cbCursor)
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szCursor,
+    SQLSMALLINT cbCursor)
 {
   STMT_t FAR *pstmt = (STMT_t *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
 
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
@@ -250,24 +250,24 @@ SQLSetCursorName (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLBindParameter (
-    HSTMT hstmt,
-    UWORD ipar,
-    SWORD fParamType,
-    SWORD fCType,
-    SWORD fSqlType,
-    UDWORD cbColDef,
-    SWORD ibScale,
-    PTR rgbValue,
-    SDWORD cbValueMax,
-    SDWORD FAR * pcbValue)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT ipar,
+    SQLSMALLINT fParamType,
+    SQLSMALLINT fCType,
+    SQLSMALLINT fSqlType,
+    SQLUINTEGER cbColDef,
+    SQLSMALLINT ibScale,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc = SQL_NULL_HPROC;
 
   int sqlstat = en_00000;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -369,15 +369,15 @@ SQLBindParameter (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLParamOptions (
-    HSTMT hstmt,
-    UDWORD crow,
-    UDWORD FAR * pirow)
+    SQLHSTMT hstmt,
+    SQLUINTEGER crow,
+    SQLUINTEGER FAR * pirow)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -414,17 +414,17 @@ SQLParamOptions (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLSetScrollOptions (
-    HSTMT hstmt,
-    UWORD fConcurrency,
-    SDWORD crowKeyset,
-    UWORD crowRowset)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT fConcurrency,
+    SQLINTEGER crowKeyset,
+    SQLUSMALLINT crowRowset)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   HPROC hproc;
   int sqlstat = en_00000;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
@@ -499,16 +499,16 @@ SQLSetScrollOptions (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLSetParam (
-    HSTMT hstmt,
-    UWORD ipar,
-    SWORD fCType,
-    SWORD fSqlType,
-    UDWORD cbColDef,
-    SWORD ibScale,
-    PTR rgbValue,
-    SDWORD FAR * pcbValue)
+    SQLHSTMT hstmt,
+    SQLUSMALLINT ipar,
+    SQLSMALLINT fCType,
+    SQLSMALLINT fSqlType,
+    SQLUINTEGER cbColDef,
+    SQLSMALLINT ibScale,
+    SQLPOINTER rgbValue,
+    SQLINTEGER FAR * pcbValue)
 {
   return SQLBindParameter (hstmt,
       ipar,

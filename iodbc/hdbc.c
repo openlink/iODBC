@@ -39,10 +39,10 @@
 #include	<itrace.h>
 #include	<stdio.h>
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLAllocConnect (
-    HENV henv,
-    HDBC FAR * phdbc)
+    SQLHENV henv,
+    SQLHDBC FAR * phdbc)
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
   DBC_t FAR *pdbc;
@@ -52,7 +52,6 @@ SQLAllocConnect (
 #else
   if (henv == SQL_NULL_HENV)
 #endif
-
     {
       return SQL_INVALID_HANDLE;
     }
@@ -75,14 +74,14 @@ SQLAllocConnect (
       return SQL_ERROR;
     }
 
-#if (ODBCVER >= 0x0300)
+#if (ODBCVER >= 0x0300) 
   pdbc->type = SQL_HANDLE_DBC;
 #endif
 
   /* insert this dbc entry into the link list */
   pdbc->next = genv->hdbc;
   genv->hdbc = pdbc;
-  pdbc->genv = henv;
+  pdbc->genv = genv;
 
   pdbc->henv = SQL_NULL_HENV;
   pdbc->hstmt = SQL_NULL_HSTMT;
@@ -105,14 +104,14 @@ SQLAllocConnect (
   pdbc->cb_commit = (SWORD) SQL_CB_DELETE;
   pdbc->cb_rollback = (SWORD) SQL_CB_DELETE;
 
-  *phdbc = (HDBC) pdbc;
+  *phdbc = (SQLHDBC) pdbc;
 
   return SQL_SUCCESS;
 }
 
 
-RETCODE SQL_API 
-SQLFreeConnect (HDBC hdbc)
+SQLRETURN SQL_API 
+SQLFreeConnect (SQLHDBC hdbc)
 {
   GENV_t FAR *genv;
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
@@ -133,9 +132,7 @@ SQLFreeConnect (HDBC hdbc)
 
   genv = (GENV_t FAR *) pdbc->genv;
 
-  for (tpdbc = (DBC_t FAR *) genv->hdbc;
-      tpdbc != NULL;
-      tpdbc = tpdbc->next)
+  for (tpdbc = (DBC_t FAR *) genv->hdbc; tpdbc != NULL; tpdbc = tpdbc->next)
     {
       if (pdbc == tpdbc)
 	{
@@ -159,7 +156,7 @@ SQLFreeConnect (HDBC hdbc)
       MEM_FREE (pdbc->tfile);
     }
 
-  SQLSetConnectOption (pdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF);
+  SQLSetConnectOption ((SQLHDBC) pdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF);
 
   MEM_FREE (pdbc);
 
@@ -167,18 +164,17 @@ SQLFreeConnect (HDBC hdbc)
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLSetConnectOption (
-    HDBC hdbc,
-    UWORD fOption,
-    UDWORD vParam)
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption,
+    SQLUINTEGER vParam)
 {
-  GENV_t FAR *genv;
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   STMT_t FAR *pstmt;
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   if (hdbc == SQL_NULL_HDBC)
     {
@@ -502,17 +498,16 @@ SQLSetConnectOption (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLGetConnectOption (
-    HDBC hdbc,
-    UWORD fOption,
-    PTR pvParam)
+    SQLHDBC hdbc,
+    SQLUSMALLINT fOption,
+    SQLPOINTER pvParam)
 {
-  GENV_t FAR *genv;
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   int sqlstat = en_00000;
   HPROC hproc = SQL_NULL_HPROC;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hdbc == SQL_NULL_HDBC)
     {
@@ -630,7 +625,7 @@ SQLGetConnectOption (
 }
 
 
-static RETCODE 
+static SQLRETURN 
 _iodbcdm_transact (
     HDBC hdbc,
     UWORD fType)
@@ -638,7 +633,7 @@ _iodbcdm_transact (
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   STMT_t FAR *pstmt;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   /* check state */
   switch (pdbc->state)
@@ -752,22 +747,22 @@ _iodbcdm_transact (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLTransact (
-    HENV henv,
-    HDBC hdbc,
-    UWORD fType)
+    SQLHENV henv,
+    SQLHDBC hdbc,
+    SQLUSMALLINT fType)
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   HERR herr;
-  RETCODE retcode;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   if (hdbc != SQL_NULL_HDBC)
     {
       herr = pdbc->herr;
     }
-  else if (henv != SQL_NULL_HENV)
+  else if (genv != SQL_NULL_HENV)
     {
       herr = genv->herr;
     }
@@ -777,8 +772,7 @@ SQLTransact (
     }
 
   /* check argument */
-  if (fType != SQL_COMMIT
-      && fType != SQL_ROLLBACK)
+  if (fType != SQL_COMMIT && fType != SQL_ROLLBACK)
     {
       PUSHSQLERR (herr, en_S1012);
 
@@ -787,7 +781,7 @@ SQLTransact (
 
   if (hdbc != SQL_NULL_HDBC)
     {
-      retcode = _iodbcdm_transact (hdbc, fType);
+      retcode = _iodbcdm_transact (pdbc, fType);
     }
   else
     {
@@ -795,12 +789,11 @@ SQLTransact (
 	  pdbc != NULL;
 	  pdbc = pdbc->next)
 	{
-	  retcode |= _iodbcdm_transact (hdbc, fType);
+	  retcode |= _iodbcdm_transact (pdbc, fType);
 	}
     }
 
-  if (retcode != SQL_SUCCESS
-      && retcode != SQL_SUCCESS_WITH_INFO)
+  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
       /* fail on one of the connection */
       return SQL_ERROR;

@@ -36,8 +36,8 @@
 
 #include	<itrace.h>
 
-RETCODE SQL_API 
-SQLAllocEnv (HENV FAR * phenv)
+SQLRETURN SQL_API 
+SQLAllocEnv (SQLHENV FAR * phenv)
 {
   GENV_t FAR *genv;
 
@@ -50,7 +50,7 @@ SQLAllocEnv (HENV FAR * phenv)
       return SQL_ERROR;
     }
 
-#if (ODBCVER >= 0x0300 )
+#if (ODBCVER >= 0x0300)
   genv->type = SQL_HANDLE_ENV;
 #endif
 
@@ -58,14 +58,14 @@ SQLAllocEnv (HENV FAR * phenv)
   genv->hdbc = SQL_NULL_HDBC;	/* driver's dbc list */
   genv->herr = SQL_NULL_HERR;	/* err list          */
 
-  *phenv = (HENV) genv;
+  *phenv = (SQLHENV) genv;
 
   return SQL_SUCCESS;
 }
 
 
-RETCODE SQL_API 
-SQLFreeEnv (HENV henv)
+SQLRETURN SQL_API 
+SQLFreeEnv (SQLHENV henv)
 {
   GENV_t FAR *genv = (GENV_t *) henv;
 
@@ -83,7 +83,7 @@ SQLFreeEnv (HENV henv)
 
   _iodbcdm_freesqlerrlist (genv->herr);
 
-  MEM_FREE (henv);
+  MEM_FREE (genv);
 
   return SQL_SUCCESS;
 }

@@ -70,16 +70,16 @@ SectSorter (const void *p1, const void *p2)
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLDataSources (
-    HENV henv,
-    UWORD fDir,
-    UCHAR FAR * szDSN,
-    SWORD cbDSNMax,
-    SWORD FAR * pcbDSN,
-    UCHAR FAR * szDesc,
-    SWORD cbDescMax,
-    SWORD FAR * pcbDesc)
+    SQLHENV henv,
+    SQLUSMALLINT fDir,
+    SQLCHAR FAR * szDSN,
+    SQLSMALLINT cbDSNMax,
+    SQLSMALLINT FAR * pcbDSN,
+    SQLCHAR FAR * szDesc,
+    SQLSMALLINT cbDescMax,
+    SQLSMALLINT FAR * pcbDesc)
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
   char *path;
@@ -101,8 +101,7 @@ SQLDataSources (
 
       return SQL_ERROR;
     }
-  if (fDir != SQL_FETCH_FIRST
-      && fDir != SQL_FETCH_NEXT)
+  if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
 
@@ -206,16 +205,16 @@ SQLDataSources (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLDrivers (
-    HENV henv,
-    UWORD fDir,
-    UCHAR FAR * szDrvDesc,
-    SWORD cbDrvDescMax,
-    SWORD FAR * pcbDrvDesc,
-    UCHAR FAR * szDrvAttr,
-    SWORD cbDrvAttrMax,
-    SWORD FAR * pcbDrvAttr)
+    SQLHENV henv,
+    SQLUSMALLINT fDir,
+    SQLCHAR FAR * szDrvDesc,
+    SQLSMALLINT cbDrvDescMax,
+    SQLSMALLINT FAR * pcbDrvDesc,
+    SQLCHAR FAR * szDrvAttr,
+    SQLSMALLINT cbDrvAttrMax,
+    SQLSMALLINT FAR * pcbDrvAttr)
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
 
@@ -231,7 +230,7 @@ SQLDrivers (
       return SQL_ERROR;
     }
 
-  if (fDir != SQL_FETCH_FIRST || fDir != SQL_FETCH_NEXT)
+  if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
 
@@ -243,20 +242,20 @@ SQLDrivers (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLGetInfo (
-    HDBC hdbc,
-    UWORD fInfoType,
-    PTR rgbInfoValue,
-    SWORD cbInfoValueMax,
-    SWORD FAR * pcbInfoValue)
+    SQLHDBC hdbc,
+    SQLUSMALLINT fInfoType,
+    SQLPOINTER rgbInfoValue,
+    SQLSMALLINT cbInfoValueMax,
+    SQLSMALLINT FAR * pcbInfoValue)
 {
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   ENV_t FAR *penv;
   STMT_t FAR *pstmt = NULL;
   STMT_t FAR *tpstmt;
   HPROC hproc;
-  RETCODE retcode = SQL_SUCCESS;
+  SQLRETURN retcode = SQL_SUCCESS;
 
   DWORD dword;
   int size = 0, len = 0;
@@ -430,15 +429,15 @@ SQLGetInfo (
 }
 
 
-RETCODE SQL_API 
+SQLRETURN SQL_API 
 SQLGetFunctions (
-    HDBC hdbc,
-    UWORD fFunc,
-    UWORD FAR * pfExists)
+    SQLHDBC hdbc,
+    SQLUSMALLINT fFunc,
+    SQLUSMALLINT FAR * pfExists)
 {
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   HPROC hproc;
-  RETCODE retcode;
+  SQLRETURN retcode;
 
   if (hdbc == SQL_NULL_HDBC)
     {
