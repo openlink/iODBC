@@ -68,11 +68,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef _MACX
+#if defined(__APPLE__) && !defined(NO_FRAMEWORKS)
+#  include <iODBC/iodbc.h>
 #  include <iODBCinst/iodbcinst.h>
+#  include <iODBC/sqlucode.h>
+#  include <iODBC/sqltypes.h>
 #else
 #  include <iodbc.h>
 #  include <iodbcinst.h>
+#  include <sqlucode.h>
+#  include <sqltypes.h>
 #endif
 
 #ifndef	_IODBCADM_H
@@ -91,12 +96,20 @@ SQLRETURN SQL_API iodbcdm_drvconn_dialboxw (HWND hwnd, LPWSTR szInOutConnStr,
 
 SQLRETURN SQL_API _iodbcdm_drvchoose_dialbox (HWND hwnd, LPSTR szInOutDrvStr,
     DWORD cbInOutDrvStr, int *sqlStat);
+SQLRETURN SQL_API _iodbcdm_drvchoose_dialboxw (HWND hwnd, LPWSTR szInOutConnStr,
+    DWORD cbInOutConnStr, int FAR * sqlStat);
+
 SQLRETURN SQL_API _iodbcdm_trschoose_dialbox (HWND hwnd, LPSTR szInOutDrvStr,
     DWORD cbInOutDrvStr, int *sqlStat);
+SQLRETURN SQL_API _iodbcdm_trschoose_dialboxw (HWND hwnd, LPWSTR szInOutDrvStr,
+    DWORD cbInOutDrvStr, int FAR * sqlStat);
 
 void SQL_API _iodbcdm_errorbox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
+void SQL_API _iodbcdm_errorboxw (HWND hwnd, LPCWSTR szDSN, LPCWSTR szText);
 void SQL_API _iodbcdm_messagebox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
+void SQL_API _iodbcdm_messageboxw (HWND hwnd, LPCWSTR szDSN, LPCWSTR szText);
 BOOL SQL_API _iodbcdm_confirmbox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
+BOOL SQL_API _iodbcdm_confirmboxw (HWND hwnd, LPCWSTR szDSN, LPCWSTR szText);
 void _iodbcdm_nativeerrorbox (HWND hwnd, HENV henv, HDBC hdbc, HSTMT hstmt);
 
 SQLRETURN SQL_API _iodbcdm_admin_dialbox (HWND hwnd);
@@ -107,4 +120,7 @@ typedef SQLRETURN SQL_API (*pTrsChooseFunc) (HWND hwnd, LPSTR szInOutDrvStr,
 typedef SQLRETURN SQL_API (*pDrvConnFunc) (HWND hwnd, LPSTR szInOutConnStr,
     DWORD cbInOutConnStr, int *sqlStat, SQLUSMALLINT fDriverCompletion,
     UWORD * config);
+typedef SQLRETURN SQL_API (*pDrvConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
+    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT *fDriverCompletion, 
+    UWORD *config);
 #endif

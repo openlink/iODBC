@@ -74,7 +74,75 @@
 
 #include <herr.h>
 #include <unicode.h>
+#include <dlproc.h>
 
+#ifndef WIN32
+#include <unistd.h>
+
+typedef SQLRETURN SQL_API (*pDriverConnFunc) (HWND hwnd, LPSTR szInOutConnStr,
+    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
+typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
+    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
+
+#define CALL_DRVCONN_DIALBOXW(path, a) \
+  { \
+    char *_path_u8 = (a == 'A') ? NULL : dm_SQL_W2A ((wchar_t*)path, SQL_NTS); \
+    if ((handle = DLL_OPEN((a == 'A') ? (char*)path : _path_u8)) != NULL) \
+      { \
+        if ((pDrvConnW = (pDriverConnWFunc)DLL_PROC(handle, "_iodbcdm_drvconn_dialboxw")) != NULL) \
+          { \
+            SQLSetConfigMode (*config); \
+            if (pDrvConnW (hwnd, szInOutConnStr, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
+              { \
+                MEM_FREE (_path_u8); \
+                DLL_CLOSE(handle); \
+                retcode = SQL_SUCCESS; \
+                goto quit; \
+              } \
+            else \
+              { \
+                MEM_FREE (_path_u8); \
+                DLL_CLOSE(handle); \
+                retcode = SQL_NO_DATA_FOUND; \
+                goto quit; \
+              } \
+          } \
+        else \
+          { \
+            if ((pDrvConn = (pDriverConnFunc)DLL_PROC(handle, "_iodbcdm_drvconn_dialbox")) != NULL) \
+              { \
+                char *_szinoutconstr_u8 = malloc (cbInOutConnStr + 1); \
+                wchar_t *_prvw; char *_prvu8; \
+                for (_prvw = szInOutConnStr, _prvu8 = _szinoutconstr_u8 ; \
+                  *_prvw != L'\0' ; _prvw += WCSLEN (_prvw) + 1, \
+                  _prvu8 += STRLEN (_prvu8) + 1) \
+                  dm_StrCopyOut2_W2A (_prvw, _prvu8, cbInOutConnStr, NULL); \
+                *_prvu8 = '\0'; \
+                SQLSetConfigMode (*config); \
+                if (pDrvConn (hwnd, _szinoutconstr_u8, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
+                  { \
+                    dm_StrCopyOut2_A2W (_szinoutconstr_u8, szInOutConnStr, cbInOutConnStr, NULL); \
+                    MEM_FREE (_path_u8); \
+                    MEM_FREE (_szinoutconstr_u8); \
+                    DLL_CLOSE(handle); \
+                    retcode = SQL_SUCCESS; \
+                    goto quit; \
+                  } \
+                else \
+                  { \
+                    MEM_FREE (_path_u8); \
+                    MEM_FREE (_szinoutconstr_u8); \
+                    DLL_CLOSE(handle); \
+                    retcode = SQL_NO_DATA_FOUND; \
+                    goto quit; \
+                  } \
+              } \
+          } \
+        DLL_CLOSE(handle); \
+      } \
+    MEM_FREE (_path_u8); \
+  }
+#endif
 
 SQLRETURN SQL_API
 iodbcdm_drvconn_dialbox (
@@ -83,57 +151,31 @@ iodbcdm_drvconn_dialbox (
     DWORD cbInOutConnStr,
     int * sqlStat,
     SQLUSMALLINT fDriverCompletion,
-	 UWORD *config)
+    UWORD *config)
 {
   RETCODE retcode = SQL_ERROR;
-  TDSNCHOOSER choose_t;
+  wchar_t *_string_w = NULL;
 
-  /* Check input parameters */
-  if (!szInOutConnStr || cbInOutConnStr < 1)
-    goto quit;
-
-  /* Display the DSN chooser dialog box */
-  create_dsnchooser (hwnd, &choose_t);
-
-  /* Check output parameters */
-  if (choose_t.dsn)
+  if (cbInOutConnStr > 0)
     {
-      /* Change the config mode */
-      switch (choose_t.type_dsn)
-	{
-	case USER_DSN:
-	  *config = ODBC_USER_DSN;
-	  break;
-	case SYSTEM_DSN:
-	  *config = ODBC_SYSTEM_DSN;
-	  break;
-	};
-
-      /* Try to copy the DSN */
-      if (cbInOutConnStr > STRLEN (choose_t.dsn) + STRLEN ("DSN="))
-	{
-#ifdef _MAC
-	  STRCPY (szInOutConnStr, "DSN=");
-	  STRCAT (szInOutConnStr, choose_t.dsn);
-#else
-	  sprintf (szInOutConnStr, "DSN=%s", choose_t.dsn);
-#endif
-	  retcode = SQL_SUCCESS;
-	}
-      else
-	{
-	  if (sqlStat)
-#if (ODBCVER>=0x3000)
-	    *sqlStat = en_HY092;
-#else
-	    *sqlStat = en_S1000;
-#endif
-	}
+      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+          goto done;
     }
-  else
-    retcode = SQL_NO_DATA_FOUND;
 
-quit:
+  dm_StrCopyOut2_A2W (szInOutConnStr, _string_w,
+    cbInOutConnStr * sizeof(wchar_t), NULL);
+
+  retcode = iodbcdm_drvconn_dialboxw (hwnd, _string_w,
+    cbInOutConnStr, sqlStat, fDriverCompletion, config);
+
+  if (retcode == SQL_SUCCESS)
+    {
+      dm_StrCopyOut2_W2A (_string_w, szInOutConnStr, cbInOutConnStr - 1, NULL);
+    }
+
+done:
+  MEM_FREE (_string_w);
+
   return retcode;
 }
 
@@ -145,28 +187,197 @@ iodbcdm_drvconn_dialboxw (
     DWORD cbInOutConnStr,
     int * sqlStat,
     SQLUSMALLINT fDriverCompletion,
-    UWORD *config)
+	 UWORD *config)
 {
   RETCODE retcode = SQL_ERROR;
-  LPSTR _szInOutConnStr = NULL;
+  TDSNCHOOSER choose_t;
+  wchar_t *string = NULL, *prov, *prov1, *szDSN = NULL, *szDriver = NULL;
+  wchar_t tokenstr[4096], drvbuf[4096];
+  char *_szdriver_u8 = NULL;
+  HDLL handle;
+  pDriverConnFunc pDrvConn;
+  pDriverConnWFunc pDrvConnW;
+  int i;
+#ifdef __APPLE__
+  CFStringRef libname = NULL;
+  CFBundleRef bundle = NULL;
+  CFURLRef liburl = NULL;
+  char name[1024] = { '\0' };
+#endif
 
   /* Check input parameters */
   if (!szInOutConnStr || cbInOutConnStr < 1)
     goto quit;
 
-  if ((_szInOutConnStr =
-	  malloc (cbInOutConnStr * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+  /* Transform the string connection to list of key pairs */
+  string = (wchar_t*) malloc((cbInOutConnStr + 1) * sizeof(wchar_t));
+  if (string == NULL)
     {
-      *sqlStat = en_S1001;
+      if (sqlStat)
+#if (ODBCVER>=0x3000)
+        *sqlStat = en_HY092;
+#else
+        *sqlStat = en_S1000;
+#endif
+      retcode = SQL_ERROR;
       goto quit;
     }
 
-  retcode = iodbcdm_drvconn_dialbox (hwnd, _szInOutConnStr,
-      cbInOutConnStr * UTF8_MAX_CHAR_LEN, sqlStat, fDriverCompletion, config);
+  /* Conversion to the list of key pairs */
+  wcsncpy (string, szInOutConnStr, cbInOutConnStr);
+  string[WCSLEN (string) + 1] = L'\0';
+  for (i = WCSLEN (string) - 1 ; i >= 0 ; i--)
+    if (string[i] == L';') string[i] = L'\0';
 
-  MEM_FREE (_szInOutConnStr);
+  /* Look for the DSN and DRIVER keyword */
+  for (prov = string ; *prov != L'\0' ; prov += WCSLEN (prov) + 1)
+    {
+      if (!wcsncasecmp (prov, L"DSN=", WCSLEN (L"DSN=")))
+        {
+          szDSN = prov + WCSLEN (L"DSN=");
+          continue;
+        }
+      if (!wcsncasecmp (prov, L"DRIVER=", WCSLEN (L"DRIVER=")))
+        {
+          szDriver = prov + WCSLEN (L"DRIVER=");
+          continue;
+        }
+    }
+
+  if (!szDSN && !szDriver)
+    {
+      /* Display the DSN chooser dialog box */
+      create_dsnchooser (hwnd, &choose_t);
+
+      /* Check output parameters */
+      if (choose_t.dsn)
+        {
+          /* Change the config mode */
+          switch (choose_t.type_dsn)
+            {
+              case USER_DSN:
+                *config = ODBC_USER_DSN;
+                break;
+              case SYSTEM_DSN:
+                *config = ODBC_SYSTEM_DSN;
+                break;
+            };
+
+          /* Try to copy the DSN */
+          if (cbInOutConnStr > WCSLEN (choose_t.dsn) + WCSLEN (L"DSN=") + 1)
+            {
+              WCSCPY (string, L"DSN=");
+              WCSCAT (string, choose_t.dsn);
+              string[WCSLEN (string) + 1] = L'\0';
+              szDSN = string + WCSLEN (L"DSN=");
+              retcode = SQL_SUCCESS;
+            }
+          else
+            {
+              if (sqlStat)
+#if (ODBCVER>=0x3000)
+                *sqlStat = en_HY092;
+#else
+                *sqlStat = en_S1000;
+#endif
+            }
+        }
+      else
+        retcode = SQL_NO_DATA_FOUND;
+
+      if (choose_t.dsn)
+	free (choose_t.dsn);
+
+      if (retcode != SQL_SUCCESS)
+	goto quit;
+    }
+
+  /* Constitute the string connection */
+  for (prov = szInOutConnStr, prov1 = string, i = 0 ; *prov1 != L'\0' ;
+    prov1 += WCSLEN (prov) + 1, i += WCSLEN (prov) + 1, prov += WCSLEN (prov) + 1)
+    WCSCPY (prov, prov1);
+  *prov = L'\0';
+
+  /* Check if the driver is provided */
+  if (szDriver == NULL)
+    {
+      SQLGetPrivateProfileStringW (L"ODBC Data Sources",
+        szDSN && szDSN[0] != L'\0' ? szDSN : L"default",
+        L"", tokenstr, sizeof (tokenstr)/sizeof(wchar_t), NULL);
+      szDriver = tokenstr;
+    }
+
+  /* Call the iodbcdm_drvconn_dialbox */
+  _szdriver_u8 = dm_SQL_W2A (szDriver, SQL_NTS);
+
+  SQLSetConfigMode (ODBC_USER_DSN);
+  if (!access (_szdriver_u8, X_OK))
+    { CALL_DRVCONN_DIALBOXW (_szdriver_u8, 'A'); }
+  if (SQLGetPrivateProfileStringW (szDriver, L"Driver", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+  if (SQLGetPrivateProfileStringW (szDriver, L"Setup", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+  if (SQLGetPrivateProfileStringW (L"Default", L"Driver", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+  if (SQLGetPrivateProfileStringW (L"Default", L"Setup", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+
+  SQLSetConfigMode (ODBC_SYSTEM_DSN);
+  if (!access (_szdriver_u8, X_OK))
+    { CALL_DRVCONN_DIALBOXW (_szdriver_u8, 'A'); }
+  if (SQLGetPrivateProfileStringW (szDriver, L"Driver", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+  if (SQLGetPrivateProfileStringW (szDriver, L"Setup", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+  if (SQLGetPrivateProfileStringW (L"Default", L"Driver", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+  if (SQLGetPrivateProfileStringW (L"Default", L"Setup", L"", drvbuf,
+    sizeof (drvbuf) / sizeof(wchar_t), L"odbcinst.ini"))
+    { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
+
+  /* The last ressort, a proxy driver */
+#ifdef __APPLE__
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+  if (!bundle)
+    bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
+  if (bundle)
+    {
+      /* Search for the drvproxy library */
+      liburl =
+	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+	  NULL, NULL);
+      if (liburl && (libname =
+       CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	{
+          CFStringGetCString (libname, name, sizeof (name),
+            kCFStringEncodingASCII);
+          STRCAT (name, "/Contents/MacOS/iODBCdrvproxy");
+          CALL_DRVCONN_DIALBOXW (name, 'A');
+	}
+    }
+#else
+  CALL_DRVCONN_DIALBOXW ("libdrvproxy.so", 'A');
+#endif /* __APPLE__ */
+
+  if (sqlStat)
+    *sqlStat = en_IM003;
 
 quit:
+#ifdef __APPLE__
+  if (liburl) CFRelease (liburl);
+  if (libname) CFRelease (libname);
+#endif
+
+  MEM_FREE (string);
+  MEM_FREE (_szdriver_u8);
+
   return retcode;
 }
 
@@ -177,6 +388,37 @@ _iodbcdm_drvchoose_dialbox (
     LPSTR szInOutConnStr,
     DWORD cbInOutConnStr,
     int * sqlStat)
+{
+  RETCODE retcode = SQL_ERROR;
+  wchar_t *_string_w = NULL;
+  WORD len;
+
+  if (cbInOutConnStr > 0)
+    {
+      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+          goto done;
+    }
+
+  retcode = _iodbcdm_drvchoose_dialboxw (hwnd, _string_w,
+    cbInOutConnStr * sizeof(wchar_t), sqlStat);
+
+  if (retcode == SQL_SUCCESS)
+    {
+      dm_StrCopyOut2_W2A (_string_w, szInOutConnStr, cbInOutConnStr - 1, &len);
+    }
+
+done:
+  MEM_FREE (_string_w);
+
+  return retcode;
+}
+
+
+SQLRETURN SQL_API
+_iodbcdm_drvchoose_dialboxw (HWND hwnd,
+    LPWSTR szInOutConnStr,
+    DWORD cbInOutConnStr,
+    int FAR * sqlStat)
 {
   RETCODE retcode = SQL_ERROR;
   TDRIVERCHOOSER choose_t;
@@ -190,9 +432,10 @@ _iodbcdm_drvchoose_dialbox (
   /* Check output parameters */
   if (choose_t.driver)
     {
-      if (cbInOutConnStr > STRLEN (choose_t.driver) + STRLEN ("DRIVER="))
+      if (cbInOutConnStr > WCSLEN (choose_t.driver) + WCSLEN (L"DRIVER="))
 	{
-	  sprintf (szInOutConnStr, "DRIVER=%s", choose_t.driver);
+          WCSCPY (szInOutConnStr, L"DRIVER=");
+          WCSCAT (szInOutConnStr, choose_t.driver);
 	  retcode = SQL_SUCCESS;
 	}
       else
@@ -239,6 +482,38 @@ _iodbcdm_trschoose_dialbox (
     HWND hwnd,
     LPSTR szInOutConnStr,
     DWORD cbInOutConnStr,
+    int FAR * sqlStat)
+{
+  RETCODE retcode = SQL_ERROR;
+  wchar_t *_string_w = NULL;
+  WORD len;
+
+  if (cbInOutConnStr > 0)
+    {
+      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+          goto done;
+    }
+
+  retcode = _iodbcdm_trschoose_dialboxw (hwnd, _string_w,
+    cbInOutConnStr * sizeof(wchar_t), sqlStat);
+
+  if (retcode == SQL_SUCCESS)
+    {
+      dm_StrCopyOut2_W2A (_string_w, szInOutConnStr, cbInOutConnStr - 1, &len);
+    }
+
+done:
+  MEM_FREE (_string_w);
+
+  return retcode;
+}
+
+
+SQLRETURN SQL_API
+_iodbcdm_trschoose_dialboxw (
+    HWND hwnd,
+    LPWSTR szInOutConnStr,
+    DWORD cbInOutConnStr,
     int * sqlStat)
 {
   RETCODE retcode = SQL_ERROR;
@@ -254,9 +529,10 @@ _iodbcdm_trschoose_dialbox (
   if (choose_t.translator)
     {
       if (cbInOutConnStr >
-	  STRLEN (choose_t.translator) + STRLEN ("TranslationName="))
+          WCSLEN (choose_t.translator) + WCSLEN (L"TranslationName="))
 	{
-	  sprintf (szInOutConnStr, "TranslationName=%s", choose_t.translator);
+          WCSCPY (szInOutConnStr, L"TranslationName");
+          WCSCAT (szInOutConnStr, choose_t.translator);
 	  retcode = SQL_SUCCESS;
 	}
       else
@@ -279,3 +555,5 @@ _iodbcdm_trschoose_dialbox (
 quit:
   return retcode;
 }
+
+

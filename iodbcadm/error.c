@@ -120,12 +120,35 @@ _iodbcdm_errorbox (
 
 
 void SQL_API
+_iodbcdm_errorboxw (
+    HWND hwnd,
+    LPCWSTR szDSN,
+    LPCWSTR szText)
+{
+  wchar_t msg[4096];
+
+  if (SQLInstallerErrorW (1, NULL, msg, sizeof (msg) / sizeof(wchar_t), NULL) == SQL_SUCCESS)
+    create_errorw (hwnd, szDSN, szText, msg);
+}
+
+
+void SQL_API
 _iodbcdm_messagebox (
     HWND	hwnd,
     LPCSTR	szDSN,
     LPCSTR	szText)
 {
   create_message (hwnd, szDSN, szText);
+}
+
+
+void SQL_API
+_iodbcdm_messageboxw (
+    HWND hwnd,
+    LPCWSTR szDSN,
+    LPCWSTR szText)
+{
+  create_messagew (hwnd, szDSN, szText);
 }
 
 
@@ -137,3 +160,14 @@ _iodbcdm_confirmbox (
 {
   return create_confirm (hwnd, (SQLPOINTER) szDSN, (SQLPOINTER) szText);
 }
+
+
+BOOL SQL_API
+_iodbcdm_confirmboxw (
+    HWND hwnd,
+	 LPCWSTR szDSN,
+	 LPCWSTR szText)
+{
+  return create_confirmw (hwnd, (SQLPOINTER)szDSN, (SQLPOINTER)szText);
+}
+

@@ -87,21 +87,23 @@
 #ifndef	_GUI_H
 #define _GUI_H
 
-#ifdef _MACX
-BOOL create_confirmadm (HWND hwnd, LPCSTR dsn, LPCSTR text);
-#else
 BOOL create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text);
+BOOL create_confirmw (HWND hwnd, LPCWSTR dsn, LPCWSTR text);
+
+#if 0
+ void create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
+     TLOGIN * log_t);
 #endif
 
-void create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
-    TLOGIN * log_t);
 void create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t);
 void create_driverchooser (HWND hwnd, TDRIVERCHOOSER * choose_t);
 void create_translatorchooser (HWND hwnd, TTRANSLATORCHOOSER * choose_t);
 void create_administrator (HWND hwnd);
 void create_error (HWND hwnd, LPCSTR dsn, LPCSTR text, LPCSTR errmsg);
+void create_errorw (HWND hwnd, LPCWSTR dsn, LPCWSTR text, LPCWSTR errmsg);
 void create_message (HWND hwnd, LPCSTR dsn, LPCSTR text);
-LPSTR create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add);
+void create_messagew (HWND hwnd, LPCWSTR dsn, LPCWSTR text);
+LPSTR create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add, BOOL user);
 LPSTR create_filedsn (HWND hwnd);
 LPSTR create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout);
 

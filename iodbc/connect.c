@@ -90,7 +90,7 @@
 
 #include <unicode.h>
 
-#if defined(__APPLE__) && defined(GUI)
+#if defined(__APPLE__)
 #include <Carbon/Carbon.h>
 #endif
 
@@ -1167,6 +1167,12 @@ SQLDriverConnect_Internal (
   char *_dsn_u8 = NULL;
   char *_drv_u8 = NULL;
   UWORD config;
+#ifdef __APPLE__
+  CFStringRef libname = NULL;
+  CFBundleRef bundle = NULL;
+  CFURLRef liburl = NULL;
+  char name[1024] = { 0 };
+#endif
 
   HPROC dialproc = SQL_NULL_HPROC;
 
@@ -1229,28 +1235,58 @@ SQLDriverConnect_Internal (
       /* Get data source dialog box function from
        * current executable */
       /* Not really sure here, but should load that from the iodbcadm */
+      if (waMode == 'A') strncpy ((char*)prov, szConnStrIn, sizeof(prov));
+      else wcsncpy (prov, szConnStrIn, sizeof(prov) / sizeof(wchar_t));
+
+      ODBC_UNLOCK (); 
+#ifdef __APPLE__
+      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+      if (bundle)
+        {
+          /* Search for the drvproxy library */
+          liburl =
+  	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+	      NULL, NULL);
+          if (liburl
+              && (libname =
+                  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+            {
+              CFStringGetCString (libname, name, sizeof (name),
+                kCFStringEncodingASCII);
+              STRCAT (name, "/Contents/MacOS/iODBCadm");
+              hdll = _iodbcdm_dllopen (name);
+#else
       hdll = _iodbcdm_dllopen ("libiodbcadm.so");
+#endif
 
-      /* Check if there is a DSN provided */
-      if (dsn == NULL && drv == NULL)
-	{
-	  if (waMode != 'W')
-	    dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
-	  else
-	    dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
+	      if (waMode != 'W')
+	        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
+	      else
+	        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
 
-	  if (dialproc == SQL_NULL_HPROC)
-	    {
-	      sqlstat = en_IM008;
-	      break;
-	    }
+	      if (dialproc == SQL_NULL_HPROC)
+	        {
+	          sqlstat = en_IM008;
+	          break;
+	        }
 
-	  retcode = dialproc (hwnd,	/* window or display handle */
-	      prov,		/* input/output dsn buf */
-	      sizeof (prov) / sizeof (SQLWCHAR),	/* buf size */
-	      &sqlstat,		/* error code */
-	      fDriverCompletion,	/* type of completion */
-	      &config);		/* config mode */
+	      retcode = dialproc (hwnd,	/* window or display handle */
+	          prov,		        /* input/output dsn buf */
+                  sizeof (prov) / (waMode == 'A' ? 1 : sizeof (SQLWCHAR)), /* buf size */
+	          &sqlstat,		/* error code */
+	          fDriverCompletion,	/* type of completion */
+	          &config);		/* config mode */
+
+#ifdef __APPLE__
+            }
+          if (liburl)
+            CFRelease (liburl);
+          if (libname)
+            CFRelease (libname);
+        }
+#endif
+
+          ODBC_LOCK ();
 
 	  if (retcode != SQL_SUCCESS)
 	    {
@@ -1275,7 +1311,6 @@ SQLDriverConnect_Internal (
 	  else
 	    dsn = _iodbcdm_getkeyvalinstrw (prov, WCSLEN (prov),
 		L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (SQLWCHAR));
-	}
       break;
 
     default:
