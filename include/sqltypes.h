@@ -327,16 +327,24 @@ SQL_INTERVAL_STRUCT;
  *  The ODBC C types for SQL_C_SBIGINT and SQL_C_UBIGINT
  */
 #if (ODBCVER >= 0x0300)
+
 #if (_MSC_VER >= 900)
 #  define ODBCINT64 		__int64
-#else
-#define ODBCINT64     long long
 #endif
+
+#ifndef ODBCINT64
+# if (SIZEOF_LONG == 8)
+#   define ODBCINT64		long
+# else
+#   define ODBCINT64		long long
+# endif
+#endif /* ODBCINT64 */
 
 #if defined (ODBCINT64)
 typedef signed   ODBCINT64	SQLBIGINT;
 typedef unsigned ODBCINT64	SQLUBIGINT;
 #endif	/* ODBCINT64 */
+
 #endif	/* ODBCVER >= 0x0300 */
 
 
