@@ -81,6 +81,10 @@
 #include <config.h>
 #endif
 
+#ifndef VERSION
+#define VERSION	"3.0.6"
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -107,8 +111,36 @@
 /*
  *  If not defined, use this as the system default odbc.ini file
  */
+/*
+ *  If not defined, use this as the system default odbc.ini file
+ */
 #ifndef SYS_ODBC_INI
-#define SYS_ODBC_INI "/etc/odbc.ini"
+# ifdef _BE
+# 	define SYS_ODBC_INI "/boot/beos/etc/odbc.ini"
+# elif defined(_MAC)
+# 	ifdef __POWERPC__
+# 		define SYS_ODBC_INI "Boot:System Folder:Preferences:ODBC Preferences PPC"
+# 	else
+# 		define SYS_ODBC_INI "Boot:System Folder:Preferences:ODBC Preferences"
+# 	endif
+# elif defined(_MACX)
+# 	define SYS_ODBC_INI "/etc/odbc.ini"
+# 	define ODBC_INI_APP "/Library/Preferences/ODBC.preference"
+# else
+# 	define SYS_ODBC_INI "/etc/odbc.ini"
+# endif
+#endif
+
+#if !defined(SYS_ODBCINST_INI) && !defined(ODBCINST_INI_APP)
+#  if defined(__BEOS__)
+#    define SYS_ODBCINST_INI	"/boot/beos/etc/odbcinst.ini"
+#  elif defined(macintosh)
+#  elif defined(__APPLE__)
+#    define SYS_ODBCINST_INI	"/etc/odbcinst.ini"
+#    define ODBCINST_INI_APP	"/Library/Preferences/ODBC Installer.preference"
+#  else
+#    define SYS_ODBCINST_INI	"/etc/odbcinst.ini"
+#  endif
 #endif
 
 #endif /* _UNIX_ */
