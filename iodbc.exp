@@ -54,5 +54,4 @@ SQLStatistics
 SQLTablePrivileges
 SQLTables
 SQLTransact
-
 SQLGetPrivateProfileString
