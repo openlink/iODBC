@@ -1664,10 +1664,10 @@ print_string:
   trace_emit ("\t\t%-15.15s   %p\n",
   	"SQLPOINTER", rgbInfoValue);
   if (waMode == 'A')
-    trace_emit_string ((SQLCHAR *) rgbInfoValue, SQL_NTS, 0);
+    trace_emit_string ((SQLCHAR *) rgbInfoValue, pcbInfoValue ? *pcbInfoValue : SQL_NTS, 0);
   else
     {
-      SQLCHAR *str_u8 = dm_SQL_W2A ((SQLWCHAR *) rgbInfoValue, SQL_NTS);
+      SQLCHAR *str_u8 = dm_SQL_W2A ((SQLWCHAR *) rgbInfoValue, pcbInfoValue ? *pcbInfoValue : SQL_NTS);
       trace_emit_string (str_u8, SQL_NTS, 1);
       free (str_u8);
     }
