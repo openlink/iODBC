@@ -9,18 +9,31 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 #ifndef _INTRINSIC_SQL_H
 #define _INTRINSIC_SQL_H
+
+#ifdef WIN32
+#define SQL_API			__stdcall
+#else
+#define FAR
+#define EXPORT
+#define CALLBACK
+#define SQL_API			EXPORT CALLBACK
+#endif
 
 typedef unsigned char UCHAR;
 typedef long int SDWORD;
@@ -29,18 +42,12 @@ typedef unsigned long int UDWORD;
 typedef unsigned short int UWORD;
 
 typedef void FAR *PTR;
-
 typedef void FAR *HENV;
 typedef void FAR *HDBC;
 typedef void FAR *HSTMT;
 
 typedef signed short RETCODE;
 
-#ifdef WIN32
-#define SQL_API			__stdcall
-#else
-#define SQL_API			EXPORT CALLBACK
-#endif
 
 #define ODBCVER			0x0200
 

@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -48,10 +52,6 @@ extern	RETCODE	_iodbcdm_driverunload();
 static	char sccsid[] 
 	= "@(#)iODBC driver manager " VERSION ", Copyright(c) 1995 by Ke Jin";
 
-static RETCODE 
-_iodbcdm_driverload (
-    char FAR * path,
-    HDBC hdbc)
 /* - Load driver share library( or increase its reference count 
  *   if it has already been loaded by another active connection)
  * - Call driver's SQLAllocEnv() (for the first reference only)
@@ -59,6 +59,10 @@ _iodbcdm_driverload (
  * - Call driver's SQLSetConnectOption() (set login time out)
  * - Increase the bookkeeping reference count
  */
+static RETCODE 
+_iodbcdm_driverload (
+    char FAR * path,
+    HDBC hdbc)
 {
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   GENV_t FAR *genv;
@@ -75,18 +79,15 @@ _iodbcdm_driverload (
       return SQL_ERROR;
     }
 
-  if (hdbc == SQL_NULL_HDBC
-      || pdbc->genv == SQL_NULL_HENV)
+  if (hdbc == SQL_NULL_HDBC || pdbc->genv == SQL_NULL_HENV)
     {
       return SQL_INVALID_HANDLE;
     }
 
   genv = (GENV_t FAR *) pdbc->genv;
 
+  /* This will either load the driver dll or increase its reference count */
   hdll = _iodbcdm_dllopen ((char FAR *) path);
-  /* This will either load the
-   * driver dll or increase its
-   * reference count */
 
   if (hdll == SQL_NULL_HDLL)
     {
@@ -105,29 +106,31 @@ _iodbcdm_driverload (
 	}
       else
 	{
-	  _iodbcdm_dllclose (hdll);
-	  /* this will not unload the driver
-	   * but only decrease its internal
+	  /* 
+  	   * this will not unload the driver but only decrease its internal
 	   * reference count 
 	   */
+	  _iodbcdm_dllclose (hdll);
 	}
     }
 
   if (penv == NULL)
     {
-      /* find out whether this dll has already 
-       * been loaded on another connection */
-      for (penv = (ENV_t FAR *) genv->henv;
+      /* 
+       * find out whether this dll has already been loaded on another 
+       * connection 
+       */
+      for (penv = (ENV_t FAR *) genv->henv; 
 	  penv != NULL;
 	  penv = (ENV_t FAR *) penv->next)
 	{
 	  if (penv->hdll == hdll)
 	    {
-	      _iodbcdm_dllclose (hdll);
-	      /* this will not unload the driver
-	       * but only decrease its internal
+	      /* 
+  	       * this will not unload the driver but only decrease its internal
 	       * reference count 
 	       */
+	      _iodbcdm_dllclose (hdll);
 	      break;
 	    }
 	}
@@ -289,8 +292,6 @@ _iodbcdm_driverload (
 }
 
 
-RETCODE 
-_iodbcdm_driverunload (HDBC hdbc)
 /* - Call driver's SQLFreeConnect()
  * - Call driver's SQLFreeEnv() ( for the last reference only)
  * - Unload the share library( or decrease its reference
@@ -298,6 +299,8 @@ _iodbcdm_driverunload (HDBC hdbc)
  * - decrease bookkeeping reference count
  * - state transition to allocated
  */
+RETCODE 
+_iodbcdm_driverunload (HDBC hdbc)
 {
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   ENV_t FAR *penv;
@@ -316,8 +319,7 @@ _iodbcdm_driverunload (HDBC hdbc)
   penv = (ENV_t FAR *) pdbc->henv;
   genv = (GENV_t FAR *) pdbc->genv;
 
-  if (penv == NULL
-      || penv->hdll == SQL_NULL_HDLL)
+  if (penv == NULL || penv->hdll == SQL_NULL_HDLL)
     {
       return SQL_SUCCESS;
     }
@@ -376,7 +378,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 
       _iodbcdm_dllclose (penv->hdll);
 
-      penv->hdll == SQL_NULL_HDLL;
+      penv->hdll = SQL_NULL_HDLL;
 
       for (tpenv = (ENV_t FAR *) genv->henv;
 	  tpenv != NULL;
@@ -510,8 +512,7 @@ _iodbcdm_dbcdelayset (HDBC hdbc)
     }
 
   /* check error code for driver's SQLSetConnectOption() call */
-  if (retcode != SQL_SUCCESS
-      && retcode != SQL_SUCCESS_WITH_INFO)
+  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
       PUSHSQLERR (pdbc->herr, en_IM006);
 
@@ -574,8 +575,7 @@ _iodbcdm_settracing (HDBC hdbc, char *dsn, int dsnlen)
       ptr = (char FAR *) (SQL_OPT_TRACE_FILE_DEFAULT);
     }
 
-  setopterr |= SQLSetConnectOption (hdbc,
-      SQL_OPT_TRACEFILE, (UDWORD) (ptr));
+  setopterr |= SQLSetConnectOption (hdbc, SQL_OPT_TRACEFILE, (UDWORD) (ptr));
 
   ptr = _iodbcdm_getkeyvalbydsn (dsn, dsnlen, "Trace",
       (char FAR *) buf, sizeof (buf));
@@ -606,6 +606,8 @@ _iodbcdm_settracing (HDBC hdbc, char *dsn, int dsnlen)
 	      SQL_OPT_TRACE, opt);
 	}
     }
+
+  return setopterr;
 }
 
 
@@ -711,13 +713,6 @@ SQLConnect (
 	  szUID, cbUID,
 	  szAuthStr, cbAuthStr))
 
-#if 0
-      retcode = hproc (pdbc->dhdbc,
-      szDSN, cbDSN,
-      szUID, cbUID,
-      szAuthStr, cbAuthStr);
-#endif
-
   if (retcode != SQL_SUCCESS
       && retcode != SQL_SUCCESS_WITH_INFO)
     {
@@ -764,8 +759,8 @@ SQLDriverConnect (
   char dsnbuf[SQL_MAX_DSN_LENGTH + 1];
   UCHAR cnstr2drv[1024];
 
-  HPROC hproc,
-   dialproc;
+  HPROC hproc;
+  HPROC dialproc;
 
   int sqlstat = en_00000;
   RETCODE retcode = SQL_SUCCESS;
@@ -806,7 +801,7 @@ SQLDriverConnect (
 
      case SQL_DRIVER_COMPLETE:
      case SQL_DRIVER_COMPLETE_REQUIRED:
-       if (dsn != NULL)
+       if (dsn != NULL || drv != NULL)
 	 {
 	   break;
 	 }
@@ -933,15 +928,7 @@ SQLDriverConnect (
 	  szConnStrOut, cbConnStrOutMax,
 	  pcbConnStrOut, fDriverCompletion))
 
-#if 0
-      retcode = hproc (pdbc->dhdbc, hwnd,
-      szConnStrIn, cbConnStrIn,
-      szConnStrOut, cbConnStrOutMax,
-      pcbConnStrOut, fDriverCompletion);
-#endif
-
-  if (retcode != SQL_SUCCESS
-      && retcode != SQL_SUCCESS_WITH_INFO)
+  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
       /* don't unload driver here for retrive 
        * error message from driver */
@@ -985,8 +972,8 @@ SQLBrowseConnect (
   char dsnbuf[SQL_MAX_DSN_LENGTH + 1];
   UCHAR cnstr2drv[1024];
 
-  HPROC hproc,
-   dialproc;
+  HPROC hproc;
+  HPROC dialproc;
 
   int sqlstat = en_00000;
   RETCODE retcode = SQL_SUCCESS;
@@ -998,8 +985,7 @@ SQLBrowseConnect (
     }
 
   /* check arguments */
-  if ((cbConnStrIn < 0 && cbConnStrIn != SQL_NTS)
-      || cbConnStrOutMax < 0)
+  if ((cbConnStrIn < 0 && cbConnStrIn != SQL_NTS) || cbConnStrOutMax < 0)
     {
       PUSHSQLERR (pdbc->herr, en_S1090);
 
@@ -1082,13 +1068,6 @@ SQLBrowseConnect (
 	  szConnStrIn, cbConnStrIn,
 	  szConnStrOut, cbConnStrOutMax,
 	  pcbConnStrOut))
-
-#if 0
-      retcode = hproc (pdbc->dhdbc, hwnd,
-      szConnStrIn, cbConnStrIn,
-      szConnStrOut, cbConnStrOutMax,
-      pcbConnStrOut);
-#endif
 
   switch (retcode)
      {
@@ -1177,12 +1156,7 @@ SQLDisconnect (HDBC hdbc)
   CALL_DRIVER (hdbc, retcode, hproc, en_Disconnect, (
 	  pdbc->dhdbc))
 
-#if 0
-      retcode = hproc (pdbc->dhdbc);
-#endif
-
-  if (retcode == SQL_SUCCESS
-      || retcode == SQL_SUCCESS_WITH_INFO)
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
     {
       /* diff from MS specs. We disallow
        * driver SQLDisconnect() return
@@ -1201,10 +1175,6 @@ SQLDisconnect (HDBC hdbc)
     {
       _iodbcdm_dropstmt (pdbc->hstmt);
     }
-
-#if 0
-  retcode = _iodbcdm_driverunload (hdbc);
-#endif
 
   /* state transition */
   if (retcode == SQL_SUCCESS)
@@ -1240,8 +1210,7 @@ SQLNativeSql (
     {
       sqlstat = en_S1009;
     }
-  else if (cbSqlStrIn < 0
-      && cbSqlStrIn != SQL_NTS)
+  else if (cbSqlStrIn < 0 && cbSqlStrIn != SQL_NTS)
     {
       sqlstat = en_S1090;
     }
@@ -1271,22 +1240,8 @@ SQLNativeSql (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (hdbc, retcode, hproc, en_NativeSql, (
-	  pdbc->dhdbc,
-	  szSqlStrIn,
-	  cbSqlStrIn,
-	  szSqlStr,
-	  cbSqlStrMax,
-	  pcbSqlStr))
-
-#if 0
-      retcode = hproc (pdbc->dhdbc,
-      szSqlStrIn,
-      cbSqlStrIn,
-      szSqlStr,
-      cbSqlStrMax,
-      pcbSqlStr);
-#endif
+  CALL_DRIVER (hdbc, retcode, hproc, en_NativeSql,
+    (pdbc->dhdbc, szSqlStrIn, cbSqlStrIn, szSqlStr, cbSqlStrMax, pcbSqlStr))
 
   return retcode;
 }

@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -44,8 +48,7 @@ do_cursoropen (STMT_t FAR * pstmt)
 
   retcode = SQLNumResultCols (pstmt, &ncol);
 
-  if (retcode == SQL_SUCCESS
-      || retcode == SQL_SUCCESS_WITH_INFO)
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
     {
       if (ncol)
 	{
@@ -70,8 +73,7 @@ SQLExecute (HSTMT hstmt)
 
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -143,12 +145,8 @@ SQLExecute (HSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc,
-      en_Execute, (pstmt->dhstmt))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Execute,
+    (pstmt->dhstmt))
 
   /* stmt state transition */
   if (pstmt->asyn_on == en_Execute)
@@ -235,8 +233,7 @@ SQLExecDirect (
   int sqlstat = en_00000;
   RETCODE retcode = SQL_SUCCESS;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -299,13 +296,8 @@ SQLExecDirect (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ExecDirect, (
-	  pstmt->dhstmt, szSqlStr, cbSqlStr))
-
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, szSqlStr, cbSqlStr);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ExecDirect,
+    (pstmt->dhstmt, szSqlStr, cbSqlStr))
 
   /* stmt state transition */
   if (pstmt->asyn_on == en_ExecDirect)
@@ -368,16 +360,14 @@ SQLPutData (
   HPROC hproc;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
 
   /* check argument value */
-  if (rgbValue == NULL
-      && (cbValue != SQL_DEFAULT_PARAM
-	  && cbValue != SQL_NULL_DATA))
+  if (rgbValue == NULL && 
+	(cbValue != SQL_DEFAULT_PARAM && cbValue != SQL_NULL_DATA))
     {
       PUSHSQLERR (pstmt->herr, en_S1009);
 
@@ -411,12 +401,8 @@ SQLPutData (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_PutData, (
-	  pstmt->dhstmt, rgbValue, cbValue))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, rgbValue, cbValue);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_PutData,
+    (pstmt->dhstmt, rgbValue, cbValue))
 
   /* state transition */
   if (pstmt->asyn_on == en_PutData)
@@ -490,8 +476,7 @@ SQLParamData (
   HPROC hproc;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -525,12 +510,8 @@ SQLParamData (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ParamData, (
-	  pstmt->dhstmt, prgbValue))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, prgbValue);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ParamData,
+    (pstmt->dhstmt, prgbValue))
 
   /* state transition */
   if (pstmt->asyn_on == en_ParamData)
@@ -634,8 +615,7 @@ SQLNumParams (
   HPROC hproc;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -675,13 +655,8 @@ SQLNumParams (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_NumParams, (
-	  pstmt->dhstmt, pcpar))
-
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, pcpar);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_NumParams,
+    (pstmt->dhstmt, pcpar))
 
   /* state transition */
   if (pstmt->asyn_on == en_NumParams)
@@ -720,8 +695,7 @@ SQLDescribeParam (
   HPROC hproc;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -767,22 +741,8 @@ SQLDescribeParam (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_DescribeParam, (
-	  pstmt->dhstmt,
-	  ipar,
-	  pfSqlType,
-	  pcbColDef,
-	  pibScale,
-	  pfNullable))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      ipar,
-      pfSqlType,
-      pcbColDef,
-      pibScale,
-      pfNullable);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_DescribeParam,
+    (pstmt->dhstmt, ipar, pfSqlType, pcbColDef, pibScale, pfNullable))
 
   /* state transition */
   if (pstmt->asyn_on == en_DescribeParam)

@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -60,8 +64,7 @@ SQLDataSources (
       return SQL_ERROR;
     }
 
-  if (fDir != SQL_FETCH_FIRST
-      && fDir != SQL_FETCH_NEXT)
+  if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
 
@@ -92,17 +95,14 @@ SQLDrivers (
       return SQL_INVALID_HANDLE;
     }
 
-  if (cbDrvDescMax < 0
-      || cbDrvAttrMax < 0
-      || cbDrvAttrMax == 1)
+  if (cbDrvDescMax < 0 || cbDrvAttrMax < 0 || cbDrvAttrMax == 1)
     {
       PUSHSQLERR (genv->herr, en_S1090);
 
       return SQL_ERROR;
     }
 
-  if (fDir != SQL_FETCH_FIRST
-      || fDir != SQL_FETCH_NEXT)
+  if (fDir != SQL_FETCH_FIRST || fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
 
@@ -130,13 +130,10 @@ SQLGetInfo (
   RETCODE retcode = SQL_SUCCESS;
 
   DWORD dword;
-  int size = 0,
-   len = 0;
-  char buf[16] =
-  {'\0'};
+  int size = 0, len = 0;
+  char buf[16] = {'\0'};
 
-  if (hdbc == SQL_NULL_HDBC
-      || pdbc->henv == SQL_NULL_HENV)
+  if (hdbc == SQL_NULL_HDBC || pdbc->henv == SQL_NULL_HENV)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -188,8 +185,7 @@ SQLGetInfo (
       return retcode;
     }
 
-  if (pdbc->state == en_dbc_allocated
-      || pdbc->state == en_dbc_needdata)
+  if (pdbc->state == en_dbc_allocated || pdbc->state == en_dbc_needdata)
     {
       PUSHSQLERR (pdbc->herr, en_08003);
 
@@ -270,20 +266,8 @@ SQLGetInfo (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (hdbc, retcode, hproc, en_GetInfo, (
-	  pdbc->dhdbc,
-	  fInfoType,
-	  rgbInfoValue,
-	  cbInfoValueMax,
-	  pcbInfoValue))
-
-#if 0
-      retcode = hproc (pdbc->dhdbc,
-      fInfoType,
-      rgbInfoValue,
-      cbInfoValueMax,
-      pcbInfoValue);
-#endif
+  CALL_DRIVER (hdbc, retcode, hproc, en_GetInfo,
+    (pdbc->dhdbc, fInfoType, rgbInfoValue, cbInfoValueMax, pcbInfoValue))
 
   if (retcode == SQL_ERROR
       && fInfoType == SQL_DRIVER_ODBC_VER)
@@ -356,12 +340,8 @@ SQLGetFunctions (
 
   if (hproc != SQL_NULL_HPROC)
     {
-      CALL_DRIVER (hdbc, retcode, hproc, en_GetFunctions, (
-	      pdbc->dhdbc, fFunc, pfExists))
-
-#if 0
-	  retcode = hproc (pdbc->dhdbc, fFunc, pfExists);
-#endif
+      CALL_DRIVER (hdbc, retcode, hproc, en_GetFunctions,
+	(pdbc->dhdbc, fFunc, pfExists))
 
       return retcode;
     }

@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -44,8 +48,7 @@ SQLAllocConnect (
   DBC_t FAR *pdbc;
 
 #if (ODBCVER >= 0x0300)
-  if (henv == SQL_NULL_HENV
-      || genv->type != SQL_HANDLE_ENV)
+  if (henv == SQL_NULL_HENV || genv->type != SQL_HANDLE_ENV)
 #else
   if (henv == SQL_NULL_HENV)
 #endif
@@ -183,9 +186,8 @@ SQLSetConnectOption (
     }
 
   /* check option */
-  if (fOption < SQL_CONN_OPT_MIN
-      || (fOption > SQL_CONN_OPT_MAX
-	  && fOption < SQL_CONNECT_OPT_DRVR_START))
+  if (fOption < SQL_CONN_OPT_MIN || 
+	(fOption > SQL_CONN_OPT_MAX && fOption < SQL_CONNECT_OPT_DRVR_START))
     {
       PUSHSQLERR (pdbc->herr, en_S1092);
 
@@ -196,8 +198,7 @@ SQLSetConnectOption (
   switch (pdbc->state)
      {
      case en_dbc_allocated:
-       if (fOption == SQL_TRANSLATE_DLL
-	   || fOption == SQL_TRANSLATE_OPTION)
+       if (fOption == SQL_TRANSLATE_DLL || fOption == SQL_TRANSLATE_OPTION)
 	 {
 	   /* This two options are only meaningful
 	    * for specified driver. So, has to be
@@ -207,8 +208,7 @@ SQLSetConnectOption (
 	   break;
 	 }
 
-       if (fOption >= SQL_CONNECT_OPT_DRVR_START
-	   && pdbc->henv == SQL_NULL_HENV)
+       if (fOption >= SQL_CONNECT_OPT_DRVR_START && pdbc->henv == SQL_NULL_HENV)
 	 /* An option only meaningful for drivers
 	  * is passed before loading a driver.
 	  * We classify this as an invalid option error.
@@ -241,8 +241,7 @@ SQLSetConnectOption (
       pstmt != NULL && sqlstat == en_00000;
       pstmt = (STMT_t FAR *) pstmt->next)
     {
-      if (pstmt->state >= en_stmt_needdata
-	  || pstmt->asyn_on != en_NullProc)
+      if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
 	{
 	  sqlstat = en_S1010;
 	}
@@ -349,8 +348,7 @@ SQLSetConnectOption (
      * and only meaningful for driver manager. 
      */
     {
-      if (vParam == 0UL
-	  || ((char FAR *) vParam)[0] == 0)
+      if (vParam == 0UL || ((char FAR *) vParam)[0] == 0)
 	{
 	  PUSHSQLERR (pdbc->herr, en_S1009);
 
@@ -404,15 +402,10 @@ SQLSetConnectOption (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (hdbc, retcode, hproc, en_SetConnectOption, (
-	      pdbc->dhdbc, fOption, vParam))
+      CALL_DRIVER (hdbc, retcode, hproc, en_SetConnectOption, 
+        (pdbc->dhdbc, fOption, vParam))
 
-#if 0
-	  retcode = hproc (pdbc->dhdbc, fOption, vParam);
-#endif
-
-      if (retcode != SQL_SUCCESS
-	  && retcode != SQL_SUCCESS_WITH_INFO)
+      if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	{
 	  return retcode;
 	}
@@ -527,9 +520,8 @@ SQLGetConnectOption (
     }
 
   /* check option */
-  if (fOption < SQL_CONN_OPT_MIN
-      || (fOption > SQL_CONN_OPT_MAX
-	  && fOption < SQL_CONNECT_OPT_DRVR_START))
+  if (fOption < SQL_CONN_OPT_MIN || 
+	(fOption > SQL_CONN_OPT_MAX && fOption < SQL_CONNECT_OPT_DRVR_START))
     {
       PUSHSQLERR (pdbc->herr, en_S1092);
 
@@ -605,12 +597,8 @@ SQLGetConnectOption (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (hdbc, retcode, hproc, en_GetConnectOption, (
-	      pdbc->dhdbc, fOption, pvParam))
-
-#if 0
-	  retcode = hproc (pdbc->dhdbc, fOption, pvParam);
-#endif
+      CALL_DRIVER (hdbc, retcode, hproc, en_GetConnectOption,
+	(pdbc->dhdbc, fOption, pvParam))
 
       return retcode;
     }
@@ -690,16 +678,11 @@ _iodbcdm_transact (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (hdbc, retcode, hproc, en_Transact, (
-	  SQL_NULL_HENV, pdbc->dhdbc, fType))
-
-#if 0
-      retcode = hproc (SQL_NULL_HENV, pdbc->dhdbc, fType);
-#endif
+  CALL_DRIVER (hdbc, retcode, hproc, en_Transact,
+    (SQL_NULL_HENV, pdbc->dhdbc, fType))
 
   /* state transition */
-  if (retcode != SQL_SUCCESS
-      && retcode != SQL_SUCCESS_WITH_INFO)
+  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
       return retcode;
     }

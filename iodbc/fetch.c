@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -41,8 +45,7 @@ SQLFetch (HSTMT hstmt)
   HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -80,11 +83,8 @@ SQLFetch (HSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Fetch, (pstmt->dhstmt))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Fetch,
+    (pstmt->dhstmt))
 
   /* state transition */
   if (pstmt->asyn_on == en_Fetch)
@@ -158,15 +158,13 @@ SQLExtendedFetch (
   HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
 
   /* check fetch type */
-  if (fFetchType < SQL_FETCH_NEXT
-      || fFetchType > SQL_FETCH_BOOKMARK)
+  if (fFetchType < SQL_FETCH_NEXT || fFetchType > SQL_FETCH_BOOKMARK)
     {
       /* Unlike MS driver manager(i.e. DM),
        * we don't check driver's ODBC version 
@@ -211,20 +209,8 @@ SQLExtendedFetch (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ExtendedFetch, (
-	  pstmt->dhstmt,
-	  fFetchType,
-	  irow,
-	  pcrow,
-	  rgfRowStatus))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      fFetchType,
-      irow,
-      pcrow,
-      rgfRowStatus);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ExtendedFetch,
+    (pstmt->dhstmt, fFetchType, irow, pcrow, rgfRowStatus))
 
   /* state transition */
   if (pstmt->asyn_on == en_ExtendedFetch)
@@ -288,8 +274,7 @@ SQLGetData (
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -384,22 +369,8 @@ SQLGetData (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_GetData, (
-	  pstmt->dhstmt,
-	  icol,
-	  fCType,
-	  rgbValue,
-	  cbValueMax,
-	  pcbValue))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      icol,
-      fCType,
-      rgbValue,
-      cbValueMax,
-      pcbValue);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_GetData,
+    (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue))
 
   /* state transition */
   if (pstmt->asyn_on == en_GetData)
@@ -487,11 +458,8 @@ SQLMoreResults (HSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_MoreResults, (pstmt->dhstmt))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_MoreResults,
+    (pstmt->dhstmt))
 
   /* state transition */
   if (pstmt->asyn_on == en_MoreResults)
@@ -580,15 +548,13 @@ SQLSetPos (
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
 
   /* check argument value */
-  if (fOption > SQL_ADD
-      || fLock > SQL_LOCK_UNLOCK)
+  if (fOption > SQL_ADD || fLock > SQL_LOCK_UNLOCK)
     {
       PUSHSQLERR (pstmt->herr, en_S1009);
     }
@@ -638,18 +604,8 @@ SQLSetPos (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_SetPos, (
-	  pstmt->dhstmt,
-	  irow,
-	  fOption,
-	  fLock))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      irow,
-      fOption,
-      fLock);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_SetPos,
+    (pstmt->dhstmt, irow, fOption, fLock))
 
   /* state transition */
   if (pstmt->asyn_on == en_SetPos)

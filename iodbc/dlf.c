@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<dlf.h>
@@ -99,6 +103,7 @@ dlclose (void *hdll)
 
 #ifdef	DLDAPI_AIX_LOAD
 #define	DLDAPI_DEFINED
+#include 	<sys/types.h>
 #include	<sys/ldr.h>
 #include	<sys/stat.h>
 #include	<nlist.h>
@@ -162,11 +167,8 @@ typedef struct obj
     int (*pentry) ();		/* entry point of this share library */
     int refn;			/* number of reference */
     hent_t htab[HTAB_SIZE];
-    struct obj *
-     next;
-  }indent:Standard input:150: Warning: old style assignment ambiguity in "=*".  Assuming "= *"
-
-
+    struct obj * next;
+  }
 obj_t;
 
 static char *errmsg = 0;
@@ -214,8 +216,7 @@ clean_htab (hent_t * ht)
 static int 
 hash (char *sym)
 {
-  int a,
-   key;
+  int a, key;
   double f;
 
   if (!sym || !*sym)
@@ -310,36 +311,6 @@ dlopen (char *file, int mode)
 
   errno = 0;
   errmsg = 0;
-
-#if 0
-  if (file[0] != '/' && file[0] != '.')
-    {
-      for (;;)
-	{
-	  sprintf (buf, "/lib/%s", file);
-
-	  if (stat (buf, &st))
-	    {
-	      file = buf;
-	      break;
-	    }
-
-	  sprintf (buf, "/usr/lib/%s", file);
-
-	  if (stat (buf, &st))
-	    {
-	      file = buf;
-	      break;
-	    }
-
-	  if (stat (file, &st))
-	    break;
-
-	  return 0;
-	}
-    }
-  else
-#endif
 
   if (stat (file, &st))
     return 0;

@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -139,12 +143,11 @@ SQLGetTypeInfo (
     SWORD fSqlType)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -157,10 +160,8 @@ SQLGetTypeInfo (
 	  break;
 	}
 
-      if (fSqlType < SQL_TYPE_MIN
-	  && fSqlType > SQL_TYPE_DRIVER_START)
-	/* Note: SQL_TYPE_DRIVER_START is a nagtive 
-	 * number So, we use ">" */
+      /* Note: SQL_TYPE_DRIVER_START is a negative number So, we use ">" */
+      if (fSqlType < SQL_TYPE_MIN && fSqlType > SQL_TYPE_DRIVER_START)
 	{
 	  sqlstat = en_S1004;
 	  break;
@@ -193,12 +194,8 @@ SQLGetTypeInfo (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc,
-      en_GetTypeInfo, (pstmt->dhstmt, fSqlType))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, fSqlType);
-#endif
+  CALL_DRIVER ( pstmt->hdbc, retcode, hproc, en_GetTypeInfo, 
+    (pstmt->dhstmt, fSqlType))
 
   return _iodbcdm_cata_state_tr (hstmt, en_GetTypeInfo, retcode);
 }
@@ -218,12 +215,11 @@ SQLSpecialColumns (
     UWORD fNullable)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -238,8 +234,7 @@ SQLSpecialColumns (
 	  break;
 	}
 
-      if (fColType != SQL_BEST_ROWID
-	  && fColType != SQL_ROWVER)
+      if (fColType != SQL_BEST_ROWID && fColType != SQL_ROWVER)
 	{
 	  sqlstat = en_S1097;
 	  break;
@@ -253,8 +248,7 @@ SQLSpecialColumns (
 	  break;
 	}
 
-      if (fNullable != SQL_NO_NULLS
-	  && fNullable != SQL_NULLABLE)
+      if (fNullable != SQL_NO_NULLS && fNullable != SQL_NULLABLE)
 	{
 	  sqlstat = en_S1099;
 	  break;
@@ -299,19 +293,6 @@ SQLSpecialColumns (
 	  fScope,
 	  fNullable))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      fColType,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName,
-      fScope,
-      fNullable);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_SpecialColumns, retcode);
 }
 
@@ -329,12 +310,11 @@ SQLStatistics (
     UWORD fAccuracy)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -349,15 +329,13 @@ SQLStatistics (
 	  break;
 	}
 
-      if (fUnique != SQL_INDEX_UNIQUE
-	  && fUnique != SQL_INDEX_ALL)
+      if (fUnique != SQL_INDEX_UNIQUE && fUnique != SQL_INDEX_ALL)
 	{
 	  sqlstat = en_S1100;
 	  break;
 	}
 
-      if (fAccuracy != SQL_ENSURE
-	  && fAccuracy != SQL_QUICK)
+      if (fAccuracy != SQL_ENSURE && fAccuracy != SQL_QUICK)
 	{
 	  sqlstat = en_S1101;
 	  break;
@@ -402,18 +380,6 @@ SQLStatistics (
 	  fUnique,
 	  fAccuracy))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName,
-      fUnique,
-      fAccuracy);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_Statistics, retcode);
 }
 
@@ -431,12 +397,11 @@ SQLTables (
     SWORD cbTableType)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -491,18 +456,6 @@ SQLTables (
 	  szTableType,
 	  cbTableType))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName,
-      szTableType,
-      cbTableType);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_Tables, retcode);
 }
 
@@ -520,12 +473,11 @@ SQLColumnPrivileges (
     SWORD cbColumnName)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -580,18 +532,6 @@ SQLColumnPrivileges (
 	  szColumnName,
 	  cbColumnName))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName,
-      szColumnName,
-      cbColumnName);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_ColumnPrivileges, retcode);
 }
 
@@ -609,12 +549,11 @@ SQLColumns (
     SWORD cbColumnName)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -669,18 +608,6 @@ SQLColumns (
 	  szColumnName,
 	  cbColumnName))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName,
-      szColumnName,
-      cbColumnName);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_Columns, retcode);
 }
 
@@ -702,12 +629,11 @@ SQLForeignKeys (
     SWORD cbFkTableName)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -768,22 +694,6 @@ SQLForeignKeys (
 	  szFkTableName,
 	  cbFkTableName))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szPkTableQualifier,
-      cbPkTableQualifier,
-      szPkTableOwner,
-      cbPkTableOwner,
-      szPkTableName,
-      cbPkTableName,
-      szFkTableQualifier,
-      cbFkTableQualifier,
-      szFkTableOwner,
-      cbFkTableOwner,
-      szFkTableName,
-      cbFkTableName);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_ForeignKeys, retcode);
 }
 
@@ -799,12 +709,11 @@ SQLPrimaryKeys (
     SWORD cbTableName)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -856,16 +765,6 @@ SQLPrimaryKeys (
 	  szTableName,
 	  cbTableName))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_PrimaryKeys, retcode);
 }
 
@@ -883,12 +782,11 @@ SQLProcedureColumns (
     SWORD cbColumnName)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -943,18 +841,6 @@ SQLProcedureColumns (
 	  szColumnName,
 	  cbColumnName))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szProcQualifier,
-      cbProcQualifier,
-      szProcOwner,
-      cbProcOwner,
-      szProcName,
-      cbProcName,
-      szColumnName,
-      cbColumnName);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_ProcedureColumns, retcode);
 }
 
@@ -970,12 +856,11 @@ SQLProcedures (
     SWORD cbProcName)
 {
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -1027,16 +912,6 @@ SQLProcedures (
 	  szProcName,
 	  cbProcName))
 
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szProcQualifier,
-      cbProcQualifier,
-      szProcOwner,
-      cbProcOwner,
-      szProcName,
-      cbProcName);
-#endif
-
   return _iodbcdm_cata_state_tr (hstmt, en_Procedures, retcode);
 }
 
@@ -1053,12 +928,11 @@ SQLTablePrivileges (
 {
 
   STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -1101,24 +975,9 @@ SQLTablePrivileges (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_TablePrivileges, (
-	  pstmt->dhstmt,
-	  szTableQualifier,
-	  cbTableQualifier,
-	  szTableOwner,
-	  cbTableOwner,
-	  szTableName,
-	  cbTableName))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szTableQualifier,
-      cbTableQualifier,
-      szTableOwner,
-      cbTableOwner,
-      szTableName,
-      cbTableName);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_TablePrivileges,
+    (pstmt->dhstmt, szTableQualifier, cbTableQualifier, szTableOwner,
+	cbTableOwner, szTableName, cbTableName))
 
   return _iodbcdm_cata_state_tr (hstmt, en_TablePrivileges, retcode);
 }

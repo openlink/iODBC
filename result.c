@@ -9,15 +9,19 @@
  *  
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com> 
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include	<config.h>
@@ -47,8 +51,7 @@ SQLBindCol (
   HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -89,8 +92,7 @@ SQLBindCol (
     }
 
   /* check state */
-  if (pstmt->state > en_stmt_needdata
-      || pstmt->asyn_on != en_NullProc)
+  if (pstmt->state > en_stmt_needdata || pstmt->asyn_on != en_NullProc)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
       return SQL_ERROR;
@@ -106,22 +108,8 @@ SQLBindCol (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_BindCol, (
-	  pstmt->dhstmt,
-	  icol,
-	  fCType,
-	  rgbValue,
-	  cbValueMax,
-	  pcbValue))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      icol,
-      fCType,
-      rgbValue,
-      cbValueMax,
-      pcbValue);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_BindCol,
+    (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue))
 
   return retcode;
 }
@@ -138,8 +126,7 @@ SQLGetCursorName (
   HPROC hproc;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -153,8 +140,7 @@ SQLGetCursorName (
     }
 
   /* check state */
-  if (pstmt->state >= en_stmt_needdata
-      || pstmt->asyn_on != en_NullProc)
+  if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
@@ -179,18 +165,8 @@ SQLGetCursorName (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_GetCursorName, (
-	  pstmt->dhstmt,
-	  szCursor,
-	  cbCursorMax,
-	  pcbCursor))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      szCursor,
-      cbCursorMax,
-      pcbCursor);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_GetCursorName,
+    (pstmt->dhstmt, szCursor, cbCursorMax, pcbCursor))
 
   return retcode;
 }
@@ -205,8 +181,7 @@ SQLRowCount (
   HPROC hproc;
   RETCODE retcode;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -231,12 +206,8 @@ SQLRowCount (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_RowCount, (
-	  pstmt->dhstmt, pcrow))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, pcrow);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_RowCount,
+    (pstmt->dhstmt, pcrow))
 
   return retcode;
 }
@@ -252,8 +223,7 @@ SQLNumResultCols (
   RETCODE retcode;
   SWORD ccol;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -285,12 +255,8 @@ SQLNumResultCols (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_NumResultCols, (
-	  pstmt->dhstmt, &ccol))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt, &ccol);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_NumResultCols,
+    (pstmt->dhstmt, &ccol))
 
   /* state transition */
   if (pstmt->asyn_on == en_NumResultCols)
@@ -404,28 +370,9 @@ SQLDescribeCol (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_DescribeCol, (
-	  pstmt->dhstmt,
-	  icol,
-	  szColName,
-	  cbColNameMax,
-	  pcbColName,
-	  pfSqlType,
-	  pcbColDef,
-	  pibScale,
-	  pfNullable))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      icol,
-      szColName,
-      cbColNameMax,
-      pcbColName,
-      pfSqlType,
-      pcbColDef,
-      pibScale,
-      pfNullable);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_DescribeCol,
+    (pstmt->dhstmt, icol, szColName, cbColNameMax, pcbColName,
+      pfSqlType, pcbColDef, pibScale, pfNullable))
 
   /* state transition */
   if (pstmt->asyn_on == en_DescribeCol)
@@ -478,8 +425,7 @@ SQLColAttributes (
   RETCODE retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT
-      || pstmt->hdbc == SQL_NULL_HDBC)
+  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -538,24 +484,8 @@ SQLColAttributes (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ColAttributes, (
-	  pstmt->dhstmt,
-	  icol,
-	  fDescType,
-	  rgbDesc,
-	  cbDescMax,
-	  pcbDesc,
-	  pfDesc))
-
-#if 0
-      retcode = hproc (pstmt->dhstmt,
-      icol,
-      fDescType,
-      rgbDesc,
-      cbDescMax,
-      pcbDesc,
-      pfDesc);
-#endif
+  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ColAttributes,
+    (pstmt->dhstmt, icol, fDescType, rgbDesc, cbDescMax, pcbDesc, pfDesc))
 
   /* state transition */
   if (pstmt->asyn_on == en_ColAttributes)
