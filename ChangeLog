@@ -1,3 +1,27 @@
+2005-02-04 17:20  source
+
+	* Finalized 3.52.2 release (pvk)
+
+2005-02-04 17:18  source
+
+	* Put in final release stamp (pvk)
+
+2005-02-04 16:34  source
+
+	* Added Mac OS X specific iodbc-config script for framework link (pvk)
+
+2005-02-01 16:00  source
+
+	* Ignore build directories (pvk)
+
+2005-02-01 15:59  source
+
+	* Updated version number to 3.52.2 (pvk)
+
+2005-02-01 15:38  source
+
+	* Added Port.OpenLink script to package distribution (pvk)
+
 2005-02-01 14:48  source
 
 	* Fixed iODBC initialization code
