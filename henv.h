@@ -126,7 +126,7 @@ typedef struct
     HPROC dllproc_tab[SQL_EXT_API_LAST + 1];	/* driver api calls  */
 
     HENV dhenv;			/* driver env handle    */
-    HDLL hdll;			/* drvier share library handle */
+    HDLL hdll;			/* driver share library handle */
   }
 ENV_t;
 
@@ -147,7 +147,7 @@ ENV_t;
  *    connections to a same data source(i.e. call same share library)
  *    will share one instance environment object.
  *
- *  - ODBC drvier manager knows about their own environemnt handle,
+ *  - ODBC driver manager knows about their own environment handle,
  *    a void pointer point to a driver defined object. Every driver
  *    keeps one of its own environment object and driver manager
  *    keeps address of it by the 'dhenv' field in the instance
