@@ -75,4 +75,5 @@ SQLStatistics
 SQLTablePrivileges
 SQLTables
 SQLTransact
-SQLGetPrivateProfileString
+version
+libname
