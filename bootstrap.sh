@@ -116,18 +116,48 @@ fi
 #
 echo "Running libtoolize ..."
 libtoolize --force --copy
+if test $? -ne 0
+then
+    echo
+    echo "Bootstrap script aborting ..."
+    exit 1
+fi
 
 echo "Running aclocal ..."
 aclocal
+if test $? -ne 0
+then
+    echo
+    echo "Bootstrap script aborting ..."
+    exit 1
+fi
 
 echo "Running autoheader ..."
 autoheader
+if test $? -ne 0
+then
+    echo
+    echo "Bootstrap script aborting ..."
+    exit 1
+fi
 
 echo "Running automake ..."
 automake --add-missing --copy --include-deps
+if test $? -ne 0
+then
+    echo
+    echo "Bootstrap script aborting ..."
+    exit 1
+fi
 
 echo "Running autoconf ..."
 autoconf
+if test $? -ne 0
+then
+    echo
+    echo "Bootstrap script aborting ..."
+    exit 1
+fi
 
 
 echo
