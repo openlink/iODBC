@@ -20,4 +20,5 @@
 #  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 EXTRA_DIST = \
-	odbc.ini.sample
+	odbc.ini.sample \
+	odbcinst.ini.sample
