@@ -83,11 +83,11 @@ iodbctestw_LDFLAGS	= # -static
 EXTRA_DIST		= Makefile.sample 
 
 install-exec-hook:
-	$(mkinstalldirs) ${pkgdatadir}/samples
-	cp $(srcdir)/iodbctest.c ${pkgdatadir}/samples/iodbctest.c
-	cp $(srcdir)/Makefile.sample ${pkgdatadir}/samples/Makefile
+	$(mkinstalldirs) ${DESTDIR}${pkgdatadir}/samples
+	cp $(srcdir)/iodbctest.c ${DESTDIR}${pkgdatadir}/samples/iodbctest.c
+	cp $(srcdir)/Makefile.sample ${DESTDIR}${pkgdatadir}/samples/Makefile
 
 uninstall-hook:
-	rm -f ${pkgdatadir}/samples/iodbctest.c
-	rm -f ${pkgdatadir}/samples/Makefile
-	rmdir ${pkgdatadir}/samples
+	rm -f ${DESTDIR}${pkgdatadir}/samples/iodbctest.c
+	rm -f ${DESTDIR}${pkgdatadir}/samples/Makefile
+	rmdir ${DESTDIR}${pkgdatadir}/samples
