@@ -213,7 +213,7 @@ readtoken (
  *                  ~/.odbc.ini file, if exists return it.
  *               4. Check for SYS_ODBC_INI build variable, if exists return 
  *                  it. (ie : /etc/odbc.ini).
- *               5. Check for /System/Library/Preferences/ODBC.preference 
+ *               5. Check for /Library/Preferences/ODBC.preference 
  *                  file, if exists return it.
  *               6. No odbc.ini presence, return NULL.
  */
@@ -353,9 +353,9 @@ _iodbcdm_getinifile (char *buf, int size)
 
 # ifdef _MACX
   /*
-   * Try to check the /System/Library/Preferences/ODBC.preference
+   * Try to check the /Library/Preferences/ODBC.preference
    */
-  snprintf (buf, size, "/System%s", ODBC_INI_APP);
+  snprintf (buf, size, "%s", ODBC_INI_APP);
 
   if (access (buf, R_OK) == 0)
     return buf;
