@@ -179,14 +179,14 @@ typedef enum
   }
 sqlstcode_t;
 
-typedef void FAR *HERR;
+typedef void *HERR;
 #define SQL_NULL_HERR	((HERR)NULL)
 
 typedef struct
   {
     sqlstcode_t code;
-    char FAR *stat;
-    char FAR *msg;
+    char *stat;
+    char *msg;
   }
 sqlerrmsg_t;
 
@@ -194,7 +194,7 @@ typedef struct sqlerr
   {
     sqlstcode_t code;
     int idx;
-    char FAR *msg;
+    char *msg;
     struct sqlerr *next;
   }
 sqlerr_t;

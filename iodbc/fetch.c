@@ -122,9 +122,9 @@ SQLFetch_Internal (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 #if (ODBCVER >= 0x0300)
-  if (((ENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->henv)->dodbc_ver ==
+  if (((ENV_t *) ((DBC_t *) pstmt->hdbc)->henv)->dodbc_ver ==
       SQL_OV_ODBC2
-      && ((GENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->genv)->odbc_ver ==
+      && ((GENV_t *) ((DBC_t *) pstmt->hdbc)->genv)->odbc_ver ==
       SQL_OV_ODBC3)
     {				
 	/* 
@@ -238,8 +238,8 @@ _iodbcdm_ExtendedFetch (
     SQLHSTMT hstmt,
     SQLUSMALLINT fFetchType,
     SQLINTEGER irow, 
-    SQLUINTEGER FAR * pcrow, 
-    SQLUSMALLINT FAR * rgfRowStatus)
+    SQLUINTEGER * pcrow, 
+    SQLUSMALLINT * rgfRowStatus)
 {
   STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
@@ -354,8 +354,8 @@ SQLExtendedFetch (
   SQLHSTMT		  hstmt, 
   SQLUSMALLINT		  fFetchType, 
   SQLINTEGER		  irow, 
-  SQLUINTEGER FAR	* pcrow, 
-  SQLUSMALLINT FAR	* rgfRowStatus)
+  SQLUINTEGER 		* pcrow, 
+  SQLUSMALLINT 		* rgfRowStatus)
 {
   ENTER_STMT (hstmt,
     trace_SQLExtendedFetch (TRACE_ENTER,
@@ -380,11 +380,11 @@ SQLGetData_Internal (
   SQLSMALLINT		  fCType,
   SQLPOINTER		  rgbValue,
   SQLINTEGER		  cbValueMax,
-  SQLINTEGER FAR	* pcbValue)
+  SQLINTEGER 		* pcbValue)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -572,7 +572,7 @@ SQLGetData (SQLHSTMT hstmt,
     SQLSMALLINT fCType,
     SQLPOINTER rgbValue,
     SQLINTEGER cbValueMax,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLGetData (TRACE_ENTER, 

@@ -77,10 +77,10 @@
 #include "iodbc_error.h"
 
 extern BOOL GetAvailableDrivers ( LPCSTR lpszInfFile, LPSTR lpszBuf,
-    WORD cbBufMax,WORD FAR *pcbBufOut,BOOL infFile);
+    WORD cbBufMax,WORD *pcbBufOut,BOOL infFile);
 
 BOOL INSTAPI
-SQLGetInstalledDrivers (LPSTR lpszBuf, WORD cbBufMax, WORD FAR *pcbBufOut)
+SQLGetInstalledDrivers (LPSTR lpszBuf, WORD cbBufMax, WORD *pcbBufOut)
 {
   char path[1024] = { 0 };
 

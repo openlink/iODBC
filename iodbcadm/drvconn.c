@@ -80,7 +80,7 @@ iodbcdm_drvconn_dialbox (
     HWND hwnd,
     LPSTR szInOutConnStr,
     DWORD cbInOutConnStr,
-    int FAR * sqlStat,
+    int * sqlStat,
     SQLUSMALLINT fDriverCompletion, 
 	 UWORD *config)
 {
@@ -142,7 +142,7 @@ iodbcdm_drvconn_dialboxw (
     HWND hwnd,
     LPWSTR szInOutConnStr,
     DWORD cbInOutConnStr,
-    int FAR * sqlStat,
+    int * sqlStat,
     SQLUSMALLINT fDriverCompletion, 
 	 UWORD *config)
 {
@@ -174,7 +174,7 @@ _iodbcdm_drvchoose_dialbox (
     HWND hwnd,
     LPSTR szInOutConnStr,
     DWORD cbInOutConnStr,
-    int FAR * sqlStat)
+    int * sqlStat)
 {
   RETCODE retcode = SQL_ERROR;
   TDRIVERCHOOSER choose_t;
@@ -237,7 +237,7 @@ _iodbcdm_trschoose_dialbox (
     HWND hwnd,
     LPSTR szInOutConnStr,
     DWORD cbInOutConnStr,
-    int FAR * sqlStat)
+    int * sqlStat)
 {
   RETCODE retcode = SQL_ERROR;
   TTRANSLATORCHOOSER choose_t;

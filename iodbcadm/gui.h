@@ -105,7 +105,7 @@ LPSTR create_filedsn (HWND hwnd);
 LPSTR create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout);
 
 typedef SQLRETURN SQL_API (*pSQLGetInfoFunc) (SQLHDBC hdbc, SQLUSMALLINT fInfoType,
-    SQLPOINTER rgbInfoValue, SQLSMALLINT cbInfoValueMax, SQLSMALLINT FAR * pcbInfoValue);
+    SQLPOINTER rgbInfoValue, SQLSMALLINT cbInfoValueMax, SQLSMALLINT * pcbInfoValue);
 typedef SQLRETURN SQL_API (*pSQLAllocHandle) (SQLSMALLINT hdl_type, SQLHANDLE hdl_in,
     SQLHANDLE *hdl_out);
 typedef SQLRETURN SQL_API (*pSQLAllocEnv) (SQLHENV *henv);

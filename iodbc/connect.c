@@ -122,7 +122,7 @@ _iodbcdm_SetConnectOption_init (SQLHDBC hdbc,
     UCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -229,11 +229,11 @@ _iodbcdm_getInfo_init (SQLHDBC hdbc,
     SQLUSMALLINT fInfoType,
     SQLPOINTER rgbInfoValue,
     SQLSMALLINT cbInfoValueMax,
-    SQLSMALLINT FAR * pcbInfoValue,
+    SQLSMALLINT * pcbInfoValue,
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -273,14 +273,14 @@ _iodbcdm_getInfo_init (SQLHDBC hdbc,
  */
 SQLRETURN
 _iodbcdm_driverload (
-    char FAR * path,
+    char * path,
     HDBC hdbc,
     SWORD thread_safe,
     UCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  GENV_t FAR *genv;
-  ENV_t FAR *penv = NULL;
+  GENV_t *genv;
+  ENV_t *penv = NULL;
   HDLL hdll;
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
@@ -297,10 +297,10 @@ _iodbcdm_driverload (
       return SQL_INVALID_HANDLE;
     }
 
-  genv = (GENV_t FAR *) pdbc->genv;
+  genv = (GENV_t *) pdbc->genv;
 
   /* This will either load the driver dll or increase its reference count */
-  hdll = _iodbcdm_dllopen ((char FAR *) path);
+  hdll = _iodbcdm_dllopen ((char *) path);
 
   if (hdll == SQL_NULL_HDLL)
     {
@@ -309,7 +309,7 @@ _iodbcdm_driverload (
       return SQL_ERROR;
     }
 
-  penv = (ENV_t FAR *) (pdbc->henv);
+  penv = (ENV_t *) (pdbc->henv);
 
   if (penv != NULL)
     {
@@ -334,9 +334,9 @@ _iodbcdm_driverload (
        * find out whether this dll has already been loaded on another
        * connection
        */
-      for (penv = (ENV_t FAR *) genv->henv;
+      for (penv = (ENV_t *) genv->henv;
 	  penv != NULL;
-	  penv = (ENV_t FAR *) penv->next)
+	  penv = (ENV_t *) penv->next)
 	{
 	  if (penv->hdll == hdll)
 	    {
@@ -355,7 +355,7 @@ _iodbcdm_driverload (
 	  int i;
 
 	  /* create a new dll env instance */
-	  penv = (ENV_t FAR *) MEM_ALLOC (sizeof (ENV_t));
+	  penv = (ENV_t *) MEM_ALLOC (sizeof (ENV_t));
 
 	  if (penv == NULL)
 	    {
@@ -461,7 +461,7 @@ _iodbcdm_driverload (
 	    }
 
 	  /* insert into dll env list */
-	  penv->next = (ENV_t FAR *) genv->henv;
+	  penv->next = (ENV_t *) genv->henv;
 	  genv->henv = penv;
 
 	  /* initiate this new env entry */
@@ -570,9 +570,9 @@ SQLRETURN
 _iodbcdm_driverunload (HDBC hdbc)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv;
-  ENV_t FAR *tpenv;
-  GENV_t FAR *genv;
+  ENV_t *penv;
+  ENV_t *tpenv;
+  GENV_t *genv;
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -582,8 +582,8 @@ _iodbcdm_driverunload (HDBC hdbc)
     }
 
   /* no pointer check will be performed in this function */
-  penv = (ENV_t FAR *) pdbc->henv;
-  genv = (GENV_t FAR *) pdbc->genv;
+  penv = (ENV_t *) pdbc->henv;
+  genv = (GENV_t *) pdbc->genv;
 
   if (penv == NULL || penv->hdll == SQL_NULL_HDLL)
     {
@@ -646,9 +646,9 @@ _iodbcdm_driverunload (HDBC hdbc)
 
       penv->hdll = SQL_NULL_HDLL;
 
-      for (tpenv = (ENV_t FAR *) genv->henv;
+      for (tpenv = (ENV_t *) genv->henv;
 	  tpenv != NULL;
-	  tpenv = (ENV_t FAR *) penv->next)
+	  tpenv = (ENV_t *) penv->next)
 	{
 	  if (tpenv == penv)
 	    {
@@ -829,7 +829,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
   /* MS SDK Guide specifies driver path can't longer than 255. */
   char driver[1024] = { '\0' };
   char buf[256];
-  ENV_t FAR *penv = NULL;
+  ENV_t *penv = NULL;
   HPROC hproc = SQL_NULL_HPROC;
   SWORD thread_safe;
   void * _szDSN = NULL;
@@ -911,7 +911,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
   MEM_FREE(_szDSN);
   _szDSN = NULL;
 
-  retcode = _iodbcdm_driverload ((char FAR *)driver, pdbc, thread_safe, waMode);
+  retcode = _iodbcdm_driverload ((char *)driver, pdbc, thread_safe, waMode);
 
   switch (retcode)
     {
@@ -1009,11 +1009,11 @@ SQLConnect_Internal (SQLHDBC hdbc,
 SQLRETURN SQL_API
 SQLConnect (
   SQLHDBC		  hdbc,
-  SQLCHAR FAR		* szDSN,
+  SQLCHAR 		* szDSN,
   SQLSMALLINT		  cbDSN,
-  SQLCHAR FAR		* szUID,
+  SQLCHAR 		* szUID,
   SQLSMALLINT		  cbUID,
-  SQLCHAR FAR		* szAuthStr,
+  SQLCHAR 		* szAuthStr,
   SQLSMALLINT		  cbAuthStr)
 {
   ENTER_HDBC (hdbc, 1,
@@ -1041,11 +1041,11 @@ SQLConnect (
 SQLRETURN SQL_API
 SQLConnectA (
   SQLHDBC		  hdbc,
-  SQLCHAR FAR		* szDSN,
+  SQLCHAR 		* szDSN,
   SQLSMALLINT		  cbDSN,
-  SQLCHAR FAR		* szUID,
+  SQLCHAR 		* szUID,
   SQLSMALLINT		  cbUID,
-  SQLCHAR FAR		* szAuthStr,
+  SQLCHAR 		* szAuthStr,
   SQLSMALLINT		  cbAuthStr)
 {
   ENTER_HDBC (hdbc, 1,
@@ -1072,11 +1072,11 @@ SQLConnectA (
 
 SQLRETURN SQL_API
 SQLConnectW (SQLHDBC hdbc,
-    SQLWCHAR FAR * szDSN,
+    SQLWCHAR * szDSN,
     SQLSMALLINT cbDSN,
-    SQLWCHAR FAR * szUID,
+    SQLWCHAR * szUID,
     SQLSMALLINT cbUID,
-    SQLWCHAR FAR * szAuthStr,
+    SQLWCHAR * szAuthStr,
     SQLSMALLINT cbAuthStr)
 {
   ENTER_HDBC (hdbc, 1,
@@ -1123,7 +1123,7 @@ SQLDriverConnect_Internal (
   SQLWCHAR prov[1024];
   SWORD thread_safe;
   char buf[1024];
-  ENV_t FAR *penv = NULL;
+  ENV_t *penv = NULL;
   HPROC hproc = SQL_NULL_HPROC;
   void *_ConnStrIn = NULL;
   void *_ConnStrOut = NULL;
@@ -1447,11 +1447,11 @@ end:
 SQLRETURN SQL_API
 SQLDriverConnect (SQLHDBC hdbc,
     SQLHWND hwnd,
-    SQLCHAR FAR * szConnStrIn,
+    SQLCHAR * szConnStrIn,
     SQLSMALLINT cbConnStrIn,
-    SQLCHAR FAR * szConnStrOut,
+    SQLCHAR * szConnStrOut,
     SQLSMALLINT cbConnStrOutMax,
-    SQLSMALLINT FAR * pcbConnStrOut,
+    SQLSMALLINT * pcbConnStrOut,
     SQLUSMALLINT fDriverCompletion)
 {
   ENTER_HDBC (hdbc, 1,
@@ -1483,11 +1483,11 @@ SQLDriverConnect (SQLHDBC hdbc,
 SQLRETURN SQL_API
 SQLDriverConnectA (SQLHDBC hdbc,
     SQLHWND hwnd,
-    SQLCHAR FAR * szConnStrIn,
+    SQLCHAR * szConnStrIn,
     SQLSMALLINT cbConnStrIn,
-    SQLCHAR FAR * szConnStrOut,
+    SQLCHAR * szConnStrOut,
     SQLSMALLINT cbConnStrOutMax,
-    SQLSMALLINT FAR * pcbConnStrOut,
+    SQLSMALLINT * pcbConnStrOut,
     SQLUSMALLINT fDriverCompletion)
 {
   ENTER_HDBC (hdbc, 1,
@@ -1519,11 +1519,11 @@ SQLDriverConnectA (SQLHDBC hdbc,
 SQLRETURN SQL_API
 SQLDriverConnectW (SQLHDBC hdbc,
     SQLHWND hwnd,
-    SQLWCHAR FAR * szConnStrIn,
+    SQLWCHAR * szConnStrIn,
     SQLSMALLINT cbConnStrIn,
-    SQLWCHAR FAR * szConnStrOut,
+    SQLWCHAR * szConnStrOut,
     SQLSMALLINT cbConnStrOutMax,
-    SQLSMALLINT FAR * pcbConnStrOut,
+    SQLSMALLINT * pcbConnStrOut,
     SQLUSMALLINT fDriverCompletion)
 {
   ENTER_HDBC (hdbc, 1,
@@ -1557,7 +1557,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
     SQLPOINTER szConnStrIn,
     SQLSMALLINT cbConnStrIn,
     SQLPOINTER szConnStrOut,
-    SQLSMALLINT cbConnStrOutMax, SQLSMALLINT FAR * pcbConnStrOut,
+    SQLSMALLINT cbConnStrOutMax, SQLSMALLINT * pcbConnStrOut,
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
@@ -1566,7 +1566,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
   char dsnbuf[SQL_MAX_DSN_LENGTH * UTF8_MAX_CHAR_LEN + 1];
   char buf[1024];
   SWORD thread_safe;
-  ENV_t FAR *penv = NULL;
+  ENV_t *penv = NULL;
   HPROC hproc = SQL_NULL_HPROC;
   void * _ConnStrIn = NULL;
   void * _ConnStrOut = NULL;
@@ -1765,11 +1765,11 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
 
 SQLRETURN SQL_API
 SQLBrowseConnect (SQLHDBC hdbc,
-    SQLCHAR FAR * szConnStrIn,
+    SQLCHAR * szConnStrIn,
     SQLSMALLINT cbConnStrIn,
-    SQLCHAR FAR * szConnStrOut,
+    SQLCHAR * szConnStrOut,
     SQLSMALLINT cbConnStrOutMax,
-    SQLSMALLINT FAR * pcbConnStrOut)
+    SQLSMALLINT * pcbConnStrOut)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLBrowseConnect (TRACE_ENTER,
@@ -1793,11 +1793,11 @@ SQLBrowseConnect (SQLHDBC hdbc,
 
 SQLRETURN SQL_API
 SQLBrowseConnectA (SQLHDBC hdbc,
-    SQLCHAR FAR * szConnStrIn,
+    SQLCHAR * szConnStrIn,
     SQLSMALLINT cbConnStrIn,
-    SQLCHAR FAR * szConnStrOut,
+    SQLCHAR * szConnStrOut,
     SQLSMALLINT cbConnStrOutMax,
-    SQLSMALLINT FAR * pcbConnStrOut)
+    SQLSMALLINT * pcbConnStrOut)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLBrowseConnect (TRACE_ENTER,
@@ -1821,11 +1821,11 @@ SQLBrowseConnectA (SQLHDBC hdbc,
 
 SQLRETURN SQL_API
 SQLBrowseConnectW (SQLHDBC hdbc,
-    SQLWCHAR FAR * szConnStrIn,
+    SQLWCHAR * szConnStrIn,
     SQLSMALLINT cbConnStrIn,
-    SQLWCHAR FAR * szConnStrOut,
+    SQLWCHAR * szConnStrOut,
     SQLSMALLINT cbConnStrOutMax,
-    SQLSMALLINT FAR * pcbConnStrOut)
+    SQLSMALLINT * pcbConnStrOut)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLBrowseConnectW (TRACE_ENTER,
@@ -1851,7 +1851,7 @@ static SQLRETURN
 SQLDisconnect_Internal (SQLHDBC hdbc)
 {
   CONN (pdbc, hdbc);
-  STMT_t FAR *pstmt;
+  STMT_t *pstmt;
   SQLRETURN retcode;
   HPROC hproc = SQL_NULL_HPROC;
 
@@ -1864,9 +1864,9 @@ SQLDisconnect_Internal (SQLHDBC hdbc)
     }
 
   /* check stmt(s) state */
-  for (pstmt = (STMT_t FAR *) pdbc->hstmt;
+  for (pstmt = (STMT_t *) pdbc->hstmt;
       pstmt != NULL && sqlstat == en_00000;
-      pstmt = (STMT_t FAR *) pstmt->next)
+      pstmt = (STMT_t *) pstmt->next)
     {
       if (pstmt->state >= en_stmt_needdata
 	  || pstmt->asyn_on != en_NullProc)
@@ -1945,13 +1945,13 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
     SQLINTEGER cbSqlStrIn,
     SQLPOINTER szSqlStr,
     SQLINTEGER cbSqlStrMax,
-    SQLINTEGER FAR * pcbSqlStr,
+    SQLINTEGER * pcbSqlStr,
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   void * _SqlStrIn = NULL;
   void * _SqlStr = NULL;
@@ -2056,11 +2056,11 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
 SQLRETURN SQL_API
 SQLNativeSql (
     SQLHDBC hdbc,
-    SQLCHAR FAR * szSqlStrIn,
+    SQLCHAR * szSqlStrIn,
     SQLINTEGER cbSqlStrIn,
-    SQLCHAR FAR * szSqlStr,
+    SQLCHAR * szSqlStr,
     SQLINTEGER cbSqlStrMax,
-    SQLINTEGER FAR * pcbSqlStr)
+    SQLINTEGER * pcbSqlStr)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLNativeSql (TRACE_ENTER,
@@ -2085,11 +2085,11 @@ SQLNativeSql (
 SQLRETURN SQL_API
 SQLNativeSqlA (
     SQLHDBC hdbc,
-    SQLCHAR FAR * szSqlStrIn,
+    SQLCHAR * szSqlStrIn,
     SQLINTEGER cbSqlStrIn,
-    SQLCHAR FAR * szSqlStr,
+    SQLCHAR * szSqlStr,
     SQLINTEGER cbSqlStrMax,
-    SQLINTEGER FAR * pcbSqlStr)
+    SQLINTEGER * pcbSqlStr)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLNativeSql (TRACE_ENTER,
@@ -2114,11 +2114,11 @@ SQLNativeSqlA (
 SQLRETURN SQL_API
 SQLNativeSqlW (
     SQLHDBC hdbc,
-    SQLWCHAR FAR * szSqlStrIn,
+    SQLWCHAR * szSqlStrIn,
     SQLINTEGER cbSqlStrIn,
-    SQLWCHAR FAR * szSqlStr,
+    SQLWCHAR * szSqlStr,
     SQLINTEGER cbSqlStrMax,
-    SQLINTEGER FAR * pcbSqlStr)
+    SQLINTEGER * pcbSqlStr)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLNativeSqlW (TRACE_ENTER,

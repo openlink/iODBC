@@ -135,10 +135,10 @@ SQLDataSources_Internal (
   SQLUSMALLINT		  fDir,
   SQLPOINTER		  szDSN,
   SQLSMALLINT		  cbDSNMax,
-  SQLSMALLINT FAR	* pcbDSN,
+  SQLSMALLINT 		* pcbDSN,
   SQLPOINTER		  szDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR	* pcbDesc,
+  SQLSMALLINT 		* pcbDesc,
   SQLCHAR		  waMode)
 {
   GENV (genv, henv);
@@ -284,12 +284,12 @@ SQLRETURN SQL_API
 SQLDataSources (
   SQLHENV		  henv,
   SQLUSMALLINT		  fDir,
-  SQLCHAR FAR		* szDSN,
+  SQLCHAR 		* szDSN,
   SQLSMALLINT		  cbDSNMax,
-  SQLSMALLINT FAR	* pcbDSN,
-  SQLCHAR FAR		* szDesc,
+  SQLSMALLINT 		* pcbDSN,
+  SQLCHAR 		* szDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR 	* pcbDesc)
+  SQLSMALLINT 	 	* pcbDesc)
 {
   ENTER_HENV (henv,
     trace_SQLDataSources (TRACE_ENTER,
@@ -318,12 +318,12 @@ SQLRETURN SQL_API
 SQLDataSourcesA (
   SQLHENV		  henv,
   SQLUSMALLINT		  fDir,
-  SQLCHAR FAR		* szDSN,
+  SQLCHAR 		* szDSN,
   SQLSMALLINT		  cbDSNMax,
-  SQLSMALLINT FAR	* pcbDSN,
-  SQLCHAR FAR		* szDesc,
+  SQLSMALLINT 		* pcbDSN,
+  SQLCHAR 		* szDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR 	* pcbDesc)
+  SQLSMALLINT 	 	* pcbDesc)
 {
   ENTER_HENV (henv,
     trace_SQLDataSources (TRACE_ENTER,
@@ -352,12 +352,12 @@ SQLRETURN SQL_API
 SQLDataSourcesW (
   SQLHENV		  henv,
   SQLUSMALLINT		  fDir,
-  SQLWCHAR FAR		* szDSN,
+  SQLWCHAR 		* szDSN,
   SQLSMALLINT		  cbDSNMax,
-  SQLSMALLINT FAR	* pcbDSN,
-  SQLWCHAR FAR		* szDesc,
+  SQLSMALLINT 		* pcbDSN,
+  SQLWCHAR 		* szDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR	* pcbDesc)
+  SQLSMALLINT 		* pcbDesc)
 {
   SQLCHAR *_DSN = NULL;  
   SQLCHAR *_Desc = NULL;
@@ -418,10 +418,10 @@ SQLDrivers_Internal (
   SQLUSMALLINT		  fDir,
   SQLPOINTER		  szDrvDesc,
   SQLSMALLINT		  cbDrvDescMax,
-  SQLSMALLINT FAR	* pcbDrvDesc,
+  SQLSMALLINT 		* pcbDrvDesc,
   SQLPOINTER		  szDrvAttr,
   SQLSMALLINT		  cbDrvAttrMax,
-  SQLSMALLINT FAR	* pcbDrvAttr,
+  SQLSMALLINT 		* pcbDrvAttr,
   SQLCHAR		  waMode)
 {
   GENV (genv, henv);
@@ -569,12 +569,12 @@ SQLRETURN SQL_API
 SQLDrivers (
   SQLHENV		  henv,
   SQLUSMALLINT		  fDir,
-  SQLCHAR FAR		* szDrvDesc,
+  SQLCHAR 		* szDrvDesc,
   SQLSMALLINT		  cbDrvDescMax,
-  SQLSMALLINT FAR	* pcbDrvDesc,
-  SQLCHAR FAR		* szDrvAttr,
+  SQLSMALLINT 		* pcbDrvDesc,
+  SQLCHAR 		* szDrvAttr,
   SQLSMALLINT		  cbDrvAttrMax,
-  SQLSMALLINT FAR	* pcbDrvAttr)
+  SQLSMALLINT 		* pcbDrvAttr)
 {
   ENTER_HENV (henv,
     trace_SQLDrivers (TRACE_ENTER,
@@ -603,12 +603,12 @@ SQLRETURN SQL_API
 SQLDriversA (
   SQLHENV		  henv,
   SQLUSMALLINT		  fDir,
-  SQLCHAR FAR 		* szDrvDesc,
+  SQLCHAR  		* szDrvDesc,
   SQLSMALLINT		  cbDrvDescMax,
-  SQLSMALLINT FAR 	* pcbDrvDesc,
-  SQLCHAR FAR 		* szDrvAttr,
+  SQLSMALLINT 	 	* pcbDrvDesc,
+  SQLCHAR  		* szDrvAttr,
   SQLSMALLINT		  cbDrvAttrMax,
-  SQLSMALLINT FAR 	* pcbDrvAttr)
+  SQLSMALLINT 	 	* pcbDrvAttr)
 {
   ENTER_HENV (henv,
     trace_SQLDrivers (TRACE_ENTER,
@@ -636,12 +636,12 @@ SQLDriversA (
 SQLRETURN SQL_API
 SQLDriversW (SQLHENV henv,
     SQLUSMALLINT fDir,
-    SQLWCHAR FAR * szDrvDesc,
+    SQLWCHAR * szDrvDesc,
     SQLSMALLINT cbDrvDescMax,
-    SQLSMALLINT FAR * pcbDrvDesc,
-    SQLWCHAR FAR * szDrvAttr,
+    SQLSMALLINT * pcbDrvDesc,
+    SQLWCHAR * szDrvAttr,
     SQLSMALLINT cbDrvAttrMax,
-    SQLSMALLINT FAR * pcbDrvAttr)
+    SQLSMALLINT * pcbDrvAttr)
 {
   SQLCHAR *_Driver = NULL;  
   SQLCHAR *_Attrs = NULL;
@@ -702,13 +702,13 @@ SQLGetInfo_Internal (
     SQLUSMALLINT fInfoType,
     SQLPOINTER rgbInfoValue,
     SQLSMALLINT cbInfoValueMax,
-    SQLSMALLINT FAR * pcbInfoValue,
+    SQLSMALLINT * pcbInfoValue,
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv = pdbc->henv;
-  STMT_t FAR *pstmt = NULL;
-  STMT_t FAR *tpstmt;
+  ENV_t *penv = pdbc->henv;
+  STMT_t *pstmt = NULL;
+  STMT_t *tpstmt;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _InfoValue = NULL;
@@ -774,12 +774,12 @@ SQLGetInfo_Internal (
 	  if (waMode != 'W')
 	    {
 	      STRNCPY (rgbInfoValue, buf, len);
-	      ((char FAR *) rgbInfoValue)[len] = '\0';
+	      ((char *) rgbInfoValue)[len] = '\0';
 	    }
 	  else
 	    {
 	      WCSNCPY (rgbInfoValue, buf, len);
-	      ((wchar_t FAR *) rgbInfoValue)[len] = L'\0';
+	      ((wchar_t *) rgbInfoValue)[len] = L'\0';
 	    }
 	}
 
@@ -806,13 +806,13 @@ SQLGetInfo_Internal (
       break;
 
     case SQL_DRIVER_HENV:
-      penv = (ENV_t FAR *) (pdbc->henv);
+      penv = (ENV_t *) (pdbc->henv);
       dword = (DWORD) (penv->dhenv);
       size = sizeof (dword);
       break;
 
     case SQL_DRIVER_HLIB:
-      penv = (ENV_t FAR *) (pdbc->henv);
+      penv = (ENV_t *) (pdbc->henv);
       dword = (DWORD) (penv->hdll);
       size = sizeof (dword);
       break;
@@ -820,10 +820,10 @@ SQLGetInfo_Internal (
     case SQL_DRIVER_HSTMT:
       if (rgbInfoValue != NULL)
 	{
-	  pstmt = *((STMT_t FAR **) rgbInfoValue);
+	  pstmt = *((STMT_t **) rgbInfoValue);
 	}
 
-      for (tpstmt = (STMT_t FAR *) (pdbc->hstmt);
+      for (tpstmt = (STMT_t *) (pdbc->hstmt);
 	  tpstmt != NULL;
 	  tpstmt = tpstmt->next)
 	{
@@ -878,7 +878,7 @@ SQLGetInfo_Internal (
   /*
    *  This was a temp value in ODBC 2
    */
-  if (((ENV_t FAR *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2 && 
+  if (((ENV_t *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2 && 
 	  fInfoType == SQL_OJ_CAPABILITIES)
       fInfoType = 65003;
 #endif /* ODBCVER >= 0x0300 */
@@ -982,7 +982,7 @@ SQLGetInfo_Internal (
                 }
 
 	      STRNCPY (rgbInfoValue, buf, len);
-	      ((char FAR *) rgbInfoValue)[len] = '\0';
+	      ((char *) rgbInfoValue)[len] = '\0';
 	    }
 
           if (pcbInfoValue != NULL)
@@ -1086,7 +1086,7 @@ SQLGetInfo (SQLHDBC hdbc,
   SQLUSMALLINT		  fInfoType,
   SQLPOINTER		  rgbInfoValue,
   SQLSMALLINT		  cbInfoValueMax,
-  SQLSMALLINT FAR	* pcbInfoValue)
+  SQLSMALLINT 		* pcbInfoValue)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLGetInfo (TRACE_ENTER,
@@ -1113,7 +1113,7 @@ SQLGetInfoA (SQLHDBC hdbc,
   SQLUSMALLINT		  fInfoType,
   SQLPOINTER		  rgbInfoValue,
   SQLSMALLINT		  cbInfoValueMax,
-  SQLSMALLINT FAR	* pcbInfoValue)
+  SQLSMALLINT 		* pcbInfoValue)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLGetInfo (TRACE_ENTER,
@@ -1141,7 +1141,7 @@ SQLGetInfoW (
   SQLUSMALLINT		  fInfoType,
   SQLPOINTER		  rgbInfoValue,
   SQLSMALLINT		  cbInfoValueMax,
-  SQLSMALLINT FAR	* pcbInfoValue)
+  SQLSMALLINT 		* pcbInfoValue)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLGetInfoW (TRACE_ENTER,
@@ -1186,7 +1186,7 @@ static SQLRETURN
 SQLGetFunctions_Internal (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fFunc,
-  SQLUSMALLINT FAR	* pfExists)
+  SQLUSMALLINT 		* pfExists)
 {
   CONN (pdbc, hdbc);
   HPROC hproc;
@@ -1242,7 +1242,7 @@ SQLGetFunctions_Internal (
    *  mapped by the driver manager.
    */
 #if (ODBCVER >= 0x0300)
-  if (((ENV_t FAR *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2)
+  if (((ENV_t *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2)
     {
       switch (fFunc)
 	{
@@ -1362,7 +1362,7 @@ SQLRETURN SQL_API
 SQLGetFunctions (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fFunc,
-  SQLUSMALLINT FAR	* pfExists)
+  SQLUSMALLINT 		* pfExists)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLGetFunctions (TRACE_ENTER,

@@ -1251,7 +1251,7 @@ SQLRETURN SQL_API SQLSetParam (
     SQLUINTEGER cbParamDef,
     SQLSMALLINT ibScale,
     SQLPOINTER rgbValue,
-    SQLINTEGER FAR * pcbValue);
+    SQLINTEGER * pcbValue);
 
 #ifdef __cplusplus
 }

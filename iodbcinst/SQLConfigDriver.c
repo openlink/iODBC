@@ -111,7 +111,7 @@
 
 BOOL INSTAPI
 SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
-    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR *pcbMsgOut)
+    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD *pcbMsgOut)
 {
   PCONFIG pCfg;
   BOOL retcode = FALSE;

@@ -76,10 +76,10 @@
 #include "iodbc_error.h"
 
 extern BOOL InstallDriverPath ( LPSTR lpszPath, WORD cbPathMax,
-    WORD FAR * pcbPathOut,LPSTR envname);
+    WORD * pcbPathOut,LPSTR envname);
 
 BOOL INSTAPI
-SQLInstallDriverManager (LPSTR lpszPath, WORD cbPathMax, WORD FAR *pcbPathOut)
+SQLInstallDriverManager (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut)
 {
   BOOL retcode = FALSE;
 

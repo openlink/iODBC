@@ -118,11 +118,11 @@
 	else ret = SQL_NO_DATA;
 #endif
 
-extern SQLRETURN _iodbcdm_trschoose_dialbox(HWND, LPSTR, DWORD, int FAR*);
+extern SQLRETURN _iodbcdm_trschoose_dialbox(HWND, LPSTR, DWORD, int *);
 
 BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
-    WORD FAR *pcbNameOut, LPSTR lpszPath, WORD cbPathMax,
-    WORD FAR *pcbPathOut, DWORD FAR *pvOption)
+    WORD *pcbNameOut, LPSTR lpszPath, WORD cbPathMax,
+    WORD *pcbPathOut, DWORD *pvOption)
 {
   pConfigTranslatorFunc pConfigTranslator;
   pTrsChooseFunc pTrsChoose;
@@ -249,11 +249,11 @@ SQLGetTranslator (
     HWND hwnd,
     LPSTR lpszName,
     WORD cbNameMax,
-    WORD FAR * pcbNameOut,
+    WORD * pcbNameOut,
     LPSTR lpszPath,
     WORD cbPathMax,
-    WORD FAR * pcbPathOut,
-    DWORD FAR * pvOption)
+    WORD * pcbPathOut,
+    DWORD * pvOption)
 {
   BOOL retcode = FALSE;
 

@@ -164,10 +164,10 @@ _iodbcdm_pushsqlerr (
 }
 
 
-static char FAR *
+static char *
 _iodbcdm_getsqlstate (
     HERR herr,
-    void FAR * tab)
+    void * tab)
 {
   sqlerr_t *perr = (sqlerr_t *) herr;
   sqlerrmsg_t *ptr;
@@ -175,7 +175,7 @@ _iodbcdm_getsqlstate (
 
   if (herr == SQL_NULL_HERR || tab == NULL)
     {
-      return (char FAR *) NULL;
+      return (char *) NULL;
     }
 
   perr_code = perr->code;
@@ -191,18 +191,18 @@ _iodbcdm_getsqlstate (
     {
       if (ptr->code == perr_code)
 	{
-	  return (char FAR *) (ptr->stat);
+	  return (char *) (ptr->stat);
 	}
     }
 
-  return (char FAR *) NULL;
+  return (char *) NULL;
 }
 
 
-static char FAR *
+static char *
 _iodbcdm_getsqlerrmsg (
     HERR herr,
-    void FAR * errtab)
+    void * errtab)
 {
   sqlerr_t *perr = (sqlerr_t *) herr;
   sqlerrmsg_t *ptr;
@@ -228,11 +228,11 @@ _iodbcdm_getsqlerrmsg (
     {
       if (ptr->code == perr->code)
 	{
-	  return (char FAR *) ptr->msg;
+	  return (char *) ptr->msg;
 	}
     }
 
-  return (char FAR *) NULL;
+  return (char *) NULL;
 }
 
 
@@ -242,10 +242,10 @@ _iodbcdm_sqlerror (
   SQLHDBC		  hdbc,
   SQLHSTMT		  hstmt,
   SQLPOINTER		  szSqlstate,
-  SQLINTEGER		  FAR * pfNativeError,
+  SQLINTEGER	  	* pfNativeError,
   SQLPOINTER		  szErrorMsg,
   SQLSMALLINT		  cbErrorMsgMax,
-  SQLSMALLINT FAR	* pcbErrorMsg,
+  SQLSMALLINT 		* pcbErrorMsg,
   int		  	  bDelete,
   SQLCHAR		  waMode)
 {
@@ -293,7 +293,7 @@ _iodbcdm_sqlerror (
       handleType = SQL_HANDLE_STMT;
       handle3 = hstmt;
       dhandle3 = pstmt->dhstmt;
-      perr_rec = &((STMT_t FAR*)pstmt)->err_rec;
+      perr_rec = &((STMT_t *)pstmt)->err_rec;
 #endif      
       dhstmt = pstmt->dhstmt;
       handle = 3;
@@ -311,7 +311,7 @@ _iodbcdm_sqlerror (
       handleType = SQL_HANDLE_DBC;
       handle3 = hdbc;
       dhandle3 = pdbc->dhdbc;
-      perr_rec = &((DBC_t FAR*)pdbc)->err_rec;
+      perr_rec = &((DBC_t *)pdbc)->err_rec;
 #endif      
       dhdbc = pdbc->dhdbc;
       handle = 2;
@@ -353,8 +353,8 @@ _iodbcdm_sqlerror (
   if (herr == SQL_NULL_HERR)	/* no err on drv mng */
     {
       /* call driver */
-      unicode_driver = ((ENV_t FAR *) ((DBC_t FAR *)thdbc)->henv)->unicode_driver;
-      dodbc_ver = ((ENV_t FAR *) ((DBC_t FAR *)thdbc)->henv)->dodbc_ver;
+      unicode_driver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->unicode_driver;
+      dodbc_ver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->dodbc_ver;
 
       if ((unicode_driver && waMode != 'W') 
           || (!unicode_driver && waMode == 'W'))
@@ -526,8 +526,8 @@ _iodbcdm_sqlerror (
       int len;
 
       /* get sql state  string */
-      ststr = (char FAR *) _iodbcdm_getsqlstate (herr,
-	  (void FAR *) sqlerrmsg_tab);
+      ststr = (char *) _iodbcdm_getsqlstate (herr,
+	  (void *) sqlerrmsg_tab);
 
       if (ststr == NULL)
 	{
@@ -573,11 +573,11 @@ _iodbcdm_sqlerror (
       char msgbuf[256] = {'\0'};
 
       /* get sql state message */
-      errmsg = _iodbcdm_getsqlerrmsg (herr, (void FAR *) sqlerrmsg_tab);
+      errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
 
       if (errmsg == NULL)
 	{
-	  errmsg = (char FAR *) "";
+	  errmsg = (char *) "";
 	}
 
 #if defined(HAVE_SNPRINTF)
@@ -641,11 +641,11 @@ SQLError (
   SQLHENV		  henv,
   SQLHDBC		  hdbc,
   SQLHSTMT		  hstmt,
-  SQLCHAR FAR		* szSqlstate,
-  SQLINTEGER FAR	* pfNativeError,
-  SQLCHAR FAR		* szErrorMsg,
+  SQLCHAR 		* szSqlstate,
+  SQLINTEGER 		* pfNativeError,
+  SQLCHAR 		* szErrorMsg,
   SQLSMALLINT		  cbErrorMsgMax,
-  SQLSMALLINT FAR	* pcbErrorMsg)
+  SQLSMALLINT 		* pcbErrorMsg)
 {
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -686,11 +686,11 @@ SQLErrorA (
   SQLHENV		  henv,
   SQLHDBC 		  hdbc,
   SQLHSTMT 		  hstmt,
-  SQLCHAR FAR		* szSqlstate,
-  SQLINTEGER FAR	* pfNativeError,
-  SQLCHAR FAR		* szErrorMsg,
+  SQLCHAR 		* szSqlstate,
+  SQLINTEGER 		* pfNativeError,
+  SQLCHAR 		* szErrorMsg,
   SQLSMALLINT		  cbErrorMsgMax,
-  SQLSMALLINT FAR	* pcbErrorMsg)
+  SQLSMALLINT 		* pcbErrorMsg)
 {
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -731,11 +731,11 @@ SQLErrorW (
   SQLHENV		  henv,
   SQLHDBC		  hdbc,
   SQLHSTMT		  hstmt,
-  SQLWCHAR FAR		* szSqlstate,
-  SQLINTEGER FAR	* pfNativeError,
-  SQLWCHAR FAR		* szErrorMsg,
+  SQLWCHAR 		* szSqlstate,
+  SQLINTEGER 		* pfNativeError,
+  SQLWCHAR 		* szErrorMsg,
   SQLSMALLINT		  cbErrorMsgMax,
-  SQLSMALLINT FAR	* pcbErrorMsg)
+  SQLSMALLINT 		* pcbErrorMsg)
 {
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -885,8 +885,8 @@ SQLGetDiagRec_Internal (
       if (Sqlstate != NULL)
 	{
 	  int len;
-	  char *ststr = (char FAR *) _iodbcdm_getsqlstate (curr_err,
-	      (void FAR *) sqlerrmsg_tab);
+	  char *ststr = (char *) _iodbcdm_getsqlstate (curr_err,
+	      (void *) sqlerrmsg_tab);
 
 	  if (ststr == NULL)
 	    {
@@ -928,11 +928,11 @@ SQLGetDiagRec_Internal (
 
 	  /* get sql state message */
 	  errmsg =
-	      _iodbcdm_getsqlerrmsg (curr_err, (void FAR *) sqlerrmsg_tab);
+	      _iodbcdm_getsqlerrmsg (curr_err, (void *) sqlerrmsg_tab);
 
 	  if (errmsg == NULL)
 	    {
-	      errmsg = (char FAR *) "";
+	      errmsg = (char *) "";
 	    }
 
 #if defined(HAVE_SNPRINTF)
@@ -977,9 +977,9 @@ SQLGetDiagRec_Internal (
 	}
       RecNumber -= nRecs;
 
-      if (((DBC_t FAR *)hdbc)->henv)
+      if (((DBC_t *)hdbc)->henv)
         unicode_driver = 
-		((ENV_t FAR *) ((DBC_t FAR *)hdbc)->henv)->unicode_driver;
+		((ENV_t *) ((DBC_t *)hdbc)->henv)->unicode_driver;
 
       if ((unicode_driver && waMode != 'W') 
           || (!unicode_driver && waMode == 'W'))
@@ -1366,7 +1366,7 @@ SQLGetDiagField_Internal (
     }
 
   if (con != NULL && con->henv != SQL_NULL_HENV)
-    unicode_driver = ((ENV_t FAR *) con->henv)->unicode_driver;
+    unicode_driver = ((ENV_t *) con->henv)->unicode_driver;
 
   switch (nRecNumber)
     {
@@ -1445,7 +1445,7 @@ SQLGetDiagField_Internal (
 	case SQL_DIAG_RETURNCODE:
 
 	  if (pDiagInfoPtr)
-	    *((SQLRETURN *) pDiagInfoPtr) = ((GENV_t FAR *) Handle)->rc;
+	    *((SQLRETURN *) pDiagInfoPtr) = ((GENV_t *) Handle)->rc;
 	  {
 	    return SQL_SUCCESS;
 	  }
@@ -1472,7 +1472,7 @@ SQLGetDiagField_Internal (
 		      (*(SQLINTEGER *) pDiagInfoPtr) += error_rec_count (err);
                     }
 		  else if (((ENV_t *) con->henv)->dodbc_ver == SQL_OV_ODBC2 &&
-		      ((GENV_t FAR *) Handle)->rc)
+		      ((GENV_t *) Handle)->rc)
 		    {		/* ODBC2 drivers can only have one error */
 		      (*(SQLINTEGER *) pDiagInfoPtr) = 1;
 		    }
@@ -1562,7 +1562,7 @@ SQLGetDiagField_Internal (
 
 		isInt = 0;
 		szval =
-		    _iodbcdm_getsqlerrmsg (rec, (void FAR *) sqlerrmsg_tab);
+		    _iodbcdm_getsqlerrmsg (rec, (void *) sqlerrmsg_tab);
 		break;
 
 	      case SQL_DIAG_NATIVE:
@@ -1598,7 +1598,7 @@ SQLGetDiagField_Internal (
 	      case SQL_DIAG_SQLSTATE:
 
 		isInt = 0;
-		szval = _iodbcdm_getsqlstate (rec, (void FAR *) sqlerrmsg_tab);
+		szval = _iodbcdm_getsqlstate (rec, (void *) sqlerrmsg_tab);
 		break;
 
 	      default:
@@ -1620,7 +1620,7 @@ SQLGetDiagField_Internal (
 		    if (pDiagInfoPtr)
 		      {
 		        STRNCPY (pDiagInfoPtr, szval, len1);
-		        *(((SQLCHAR FAR *) pDiagInfoPtr) + len1) = 0;
+		        *(((SQLCHAR *) pDiagInfoPtr) + len1) = 0;
 		      }
 		  }
 		else

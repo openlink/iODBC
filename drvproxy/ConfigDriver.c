@@ -78,7 +78,7 @@ BOOL INSTAPI
 ConfigDriver (HWND hwndParent,
     WORD fRequest,
     LPCSTR lpszDriver,
-    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
+    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD * pcbMsgOut)
 {
   char *curr, *cour;
   char driverread[4096] = { 0 };

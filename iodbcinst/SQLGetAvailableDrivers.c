@@ -79,7 +79,7 @@
 
 BOOL
 GetAvailableDrivers (LPCSTR lpszInfFile, LPSTR lpszBuf, WORD cbBufMax,
-    WORD FAR *pcbBufOut, BOOL infFile)
+    WORD *pcbBufOut, BOOL infFile)
 {
   int sect_len = 0;
   WORD curr = 0;
@@ -163,7 +163,7 @@ quit:
 
 BOOL INSTAPI
 SQLGetAvailableDrivers (LPCSTR lpszInfFile, LPSTR lpszBuf, WORD cbBufMax,
-    WORD FAR *pcbBufOut)
+    WORD *pcbBufOut)
 {
   BOOL retcode = FALSE;
   WORD lenBufOut;

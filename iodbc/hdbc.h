@@ -93,7 +93,7 @@ typedef struct DBC
     HERR herr;
     SQLRETURN rc;
 
-    struct DBC FAR * next;
+    struct DBC * next;
 
     HENV genv;			/* back point to global env object */
 
@@ -118,7 +118,7 @@ typedef struct DBC
     SWORD cb_commit;
     SWORD cb_rollback;
 
-    wchar_t FAR * current_qualifier;
+    wchar_t * current_qualifier;
     char current_qualifier_WA;
 
     SWORD dbc_cip;			/* Call in Progess flag */
@@ -130,7 +130,7 @@ DBC_t;
 
 
 #define IS_VALID_HDBC(x) \
-	((x) != SQL_NULL_HDBC && ((DBC_t FAR *)(x))->type == SQL_HANDLE_DBC)
+	((x) != SQL_NULL_HDBC && ((DBC_t *)(x))->type == SQL_HANDLE_DBC)
 
 
 #define ENTER_HDBC(hdbc, holdlock, trace) \

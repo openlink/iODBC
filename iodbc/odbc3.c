@@ -96,11 +96,11 @@
 /*
  *  Externals
  */
-SQLRETURN SQLAllocEnv_Internal (SQLHENV FAR * phenv, int odbc_ver);
+SQLRETURN SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver);
 SQLRETURN SQLFreeEnv_Internal (SQLHENV henv);
-SQLRETURN SQLAllocConnect_Internal (SQLHENV henv, SQLHDBC FAR * phdbc);
+SQLRETURN SQLAllocConnect_Internal (SQLHENV henv, SQLHDBC * phdbc);
 SQLRETURN SQLFreeConnect_Internal (SQLHDBC hdbc);
-SQLRETURN SQLAllocStmt_Internal (SQLHDBC hdbc, SQLHSTMT FAR * phstmt);
+SQLRETURN SQLAllocStmt_Internal (SQLHDBC hdbc, SQLHSTMT * phstmt);
 SQLRETURN SQLFreeStmt_Internal (SQLHSTMT hstmt, SQLUSMALLINT fOption);
 SQLRETURN SQLTransact_Internal (SQLHENV henv, SQLHDBC hdbc, SQLUSMALLINT fType);
 
@@ -141,7 +141,7 @@ SQLAllocHandle_Internal (
 	CONN (con, inputHandle);
 	HPROC hproc = SQL_NULL_HPROC;
 	RETCODE retcode;
-	DESC_t FAR *new_desc;
+	DESC_t *new_desc;
 
 	if (((ENV_t *)(con->henv))->dodbc_ver == SQL_OV_ODBC2)
 	  {
@@ -162,7 +162,7 @@ SQLAllocHandle_Internal (
 	    return SQL_ERROR;
 	  }
 
-	new_desc = (DESC_t FAR *) MEM_ALLOC (sizeof (DESC_t));
+	new_desc = (DESC_t *) MEM_ALLOC (sizeof (DESC_t));
 	if (!new_desc)
 	  {
 	    PUSHSQLERR (con->herr, en_HY001);
@@ -352,7 +352,7 @@ _SQLFreeHandle_DESC (
   CONN (pdbc, pdesc->hdbc);
   HPROC hproc;
   RETCODE retcode = SQL_SUCCESS;
-  DESC_t FAR *curr_desc;
+  DESC_t *curr_desc;
 
   if (IS_VALID_HSTMT (pdesc->hstmt))
     {				/* the desc handle is implicit */
@@ -691,7 +691,7 @@ SQLGetStmtAttr_Internal (
 {
   STMT (stmt, statementHandle);
   CONN (pdbc, stmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -771,7 +771,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_ROW_ARRAY_SIZE:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -812,7 +812,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_FETCH_BOOKMARK_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -833,7 +833,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_ROWS_FETCHED_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -854,7 +854,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_METADATA_ID:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -875,7 +875,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_PARAMS_PROCESSED_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -896,7 +896,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_PARAMSET_SIZE:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -917,7 +917,7 @@ SQLGetStmtAttr_Internal (
 
     case SQL_ATTR_ROW_STATUS_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -953,7 +953,7 @@ SQLGetStmtAttr_Internal (
     case SQL_ATTR_USE_BOOKMARKS:
     case SQL_ATTR_MAX_LENGTH:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1093,7 +1093,7 @@ SQLSetStmtAttr_Internal (
 {
   STMT (stmt, statementHandle);
   CONN (pdbc, stmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
@@ -1230,7 +1230,7 @@ SQLSetStmtAttr_Internal (
 
     case SQL_ATTR_ROWS_FETCHED_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
 
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
@@ -1252,7 +1252,7 @@ SQLSetStmtAttr_Internal (
 
     case SQL_ATTR_FETCH_BOOKMARK_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_SetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1273,7 +1273,7 @@ SQLSetStmtAttr_Internal (
 
     case SQL_ATTR_PARAMS_PROCESSED_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_SetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1294,7 +1294,7 @@ SQLSetStmtAttr_Internal (
 
     case SQL_ATTR_PARAMSET_SIZE:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_SetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1315,7 +1315,7 @@ SQLSetStmtAttr_Internal (
 
     case SQL_ATTR_ROW_ARRAY_SIZE:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_SetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1415,7 +1415,7 @@ SQLSetStmtAttr_Internal (
 
     case SQL_ATTR_ROW_STATUS_PTR:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_SetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1455,7 +1455,7 @@ SQLSetStmtAttr_Internal (
     case SQL_ROWSET_SIZE:
     case SQL_ATTR_MAX_LENGTH:
 
-      if (((ENV_t FAR *) ((DBC_t FAR *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
+      if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
             penv->unicode_driver, en_SetStmtAttr, (stmt->dhstmt, Attribute, 
@@ -1629,7 +1629,7 @@ SQLSetConnectAttr_Internal (
   SQLCHAR		  waMode)
 {
   CONN (con, connectionHandle);
-  ENV_t FAR *penv = con->henv;
+  ENV_t *penv = con->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ValuePtr = NULL;
@@ -1781,7 +1781,7 @@ SQLGetConnectAttr_Internal (
   SQLCHAR 		  waMode)
 {
   CONN (con, connectionHandle);
-  ENV_t FAR *penv = con->henv;
+  ENV_t *penv = con->henv;
   HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode = SQL_SUCCESS;
   void * _Value = NULL;
@@ -1989,7 +1989,7 @@ SQLGetDescField_Internal (
 {
   DESC (desc, descriptorHandle);
   CONN (pdbc, desc->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * valueOut = ValuePtr;
@@ -2202,7 +2202,7 @@ SQLSetDescField_Internal (
 {
   DESC (desc, descriptorHandle);
   CONN (pdbc, desc->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ValuePtr = NULL;
@@ -2341,7 +2341,7 @@ SQLGetDescRec_Internal (
 {
   DESC (desc, descriptorHandle);
   CONN (pdbc, desc->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * nameOut = Name;
@@ -2681,8 +2681,8 @@ SQLColAttribute_Internal (
 {
   STMT (stmt, statementHandle);
   CONN (pdbc, stmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
-  GENV_t FAR *genv = pdbc->genv;
+  ENV_t *penv = pdbc->henv;
+  GENV_t *genv = pdbc->genv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * charAttrOut = CharacterAttributePtr;
@@ -2875,7 +2875,7 @@ SQLColAttribute_Internal (
 	  if (CharacterAttributePtr)
 	    {
 	      STRNCPY (CharacterAttributePtr, szval, len1);
-	      ((SQLCHAR FAR *) CharacterAttributePtr)[len1] = 0;
+	      ((SQLCHAR *) CharacterAttributePtr)[len1] = 0;
 	    }
 	  if (StringLengthPtr)
 	    *StringLengthPtr = len;
@@ -3375,7 +3375,7 @@ SQLBindParam (
     SQLUINTEGER cbParamDef,
     SQLSMALLINT ibScale,
     SQLPOINTER rgbValue,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   return SQLBindParameter (hstmt, ipar, SQL_PARAM_INPUT, fCType, fSqlType, cbParamDef, ibScale, rgbValue, SQL_MAX_OPTION_STRING_LENGTH, pcbValue);
 }
@@ -3385,11 +3385,11 @@ static SQLRETURN
 SQLCloseCursor_Internal (SQLHSTMT hstmt)
 {
   STMT (pstmt, hstmt);
-  DBC_t FAR *pdbc;
+  DBC_t *pdbc;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  pdbc = (DBC_t FAR *) (pstmt->hdbc);
+  pdbc = (DBC_t *) (pstmt->hdbc);
 
   /* check state */
   if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)

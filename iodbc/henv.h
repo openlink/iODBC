@@ -129,7 +129,7 @@ ENV_t;
 
 
 #define IS_VALID_HENV(x) \
-	((x) != SQL_NULL_HENV && ((GENV_t FAR *)(x))->type == SQL_HANDLE_ENV)
+	((x) != SQL_NULL_HENV && ((GENV_t *)(x))->type == SQL_HANDLE_ENV)
 
 
 #define ENTER_HENV(henv, trace) \

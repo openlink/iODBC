@@ -87,15 +87,15 @@
 #elif defined(DLDAPI_AIX_LOAD)
 #include <dlfcn.h>
 #elif defined(DLDAPI_VMS_IODBC)
-extern void FAR *iodbc_dlopen (char FAR * path, int mode);
-extern void FAR *iodbc_dlsym (void FAR * hdll, char FAR * sym);
-extern char FAR *iodbc_dlerror ();
-extern int iodbc_dlclose (void FAR * hdll);
+extern void *iodbc_dlopen (char * path, int mode);
+extern void *iodbc_dlsym (void * hdll, char * sym);
+extern char *iodbc_dlerror ();
+extern int iodbc_dlclose (void * hdll);
 #else
-extern void FAR *dlopen (char FAR * path, int mode);
-extern void FAR *dlsym (void FAR * hdll, char FAR * sym);
-extern char FAR *dlerror ();
-extern int dlclose (void FAR * hdll);
+extern void *dlopen (char * path, int mode);
+extern void *dlsym (void * hdll, char * sym);
+extern char *dlerror ();
+extern int dlclose (void * hdll);
 #endif
 
 

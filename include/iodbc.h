@@ -210,26 +210,26 @@
 #define SYSERR		(-1)
 
 #ifndef	NULL
-#define NULL		((void FAR*)0UL)
+#define NULL		((void *)0UL)
 #endif
 
 /*
  *  Map generic pointer to internal pointer 
  */
 #define STMT(stmt, var) \
-	STMT_t FAR *stmt = (STMT_t FAR *)var
+	STMT_t *stmt = (STMT_t *)var
 
 #define CONN(con, var) \
-	DBC_t FAR *con = (DBC_t FAR *)var
+	DBC_t *con = (DBC_t *)var
 
 #define GENV(genv, var) \
-	GENV_t FAR *genv = (GENV_t FAR *)var
+	GENV_t *genv = (GENV_t *)var
 
 #define ENVR(env, var) \
-	ENV_t FAR *env = (ENV_t FAR *)var
+	ENV_t *env = (ENV_t *)var
 
 #define DESC(desc, var) \
-	DESC_t FAR *desc = (DESC_t FAR *)var
+	DESC_t *desc = (DESC_t *)var
 
 #define NEW_VAR(type, var) \
 	type *var = (type *)MEM_ALLOC(sizeof(type))

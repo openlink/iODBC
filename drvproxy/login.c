@@ -78,7 +78,7 @@
 
 SQLRETURN SQL_API
 _iodbcdm_loginbox (HWND hwnd,
-    LPSTR szInOutConnStr, DWORD cbInOutConnStr, int FAR * sqlStat)
+    LPSTR szInOutConnStr, DWORD cbInOutConnStr, int * sqlStat)
 {
   RETCODE retcode = SQL_ERROR;
   char *szUID = NULL, *szPWD = NULL, *szDSN = NULL, *curr;

@@ -130,8 +130,8 @@ typedef struct STMT
     SQLUINTEGER bind_type;
 
 #if (ODBCVER >= 0x0300)
-    DESC_t FAR * imp_desc[4];
-    DESC_t FAR * desc[4];
+    DESC_t * imp_desc[4];
+    DESC_t * desc[4];
     SQLUINTEGER row_array_size;
     SQLPOINTER fetch_bookmark_ptr, params_processed_ptr;
     SQLUINTEGER paramset_size;
@@ -152,8 +152,8 @@ STMT_t;
 
 #define IS_VALID_HSTMT(x) \
 	((x) != SQL_NULL_HSTMT && \
-	 ((STMT_t FAR *)(x))->type == SQL_HANDLE_STMT && \
-	 ((STMT_t FAR *)(x))->hdbc != SQL_NULL_HDBC)
+	 ((STMT_t *)(x))->type == SQL_HANDLE_STMT && \
+	 ((STMT_t *)(x))->hdbc != SQL_NULL_HDBC)
 
 
 #define ENTER_STMT(hstmt, trace) \
@@ -225,7 +225,7 @@ void _iodbcdm_ConvBindData (STMT_t *pstmt);
 SQLRETURN _iodbcdm_BindColumn (STMT_t *pstmt, BIND_t *pbind);
 int _iodbcdm_UnBindColumn (STMT_t *pstmt, BIND_t *pbind);
 void _iodbcdm_RemoveBind (STMT_t *pstmt);
-void _iodbcdm_do_cursoropen (STMT_t FAR * pstmt);
+void _iodbcdm_do_cursoropen (STMT_t * pstmt);
 SQLSMALLINT _iodbcdm_map_sql_type (int type, int odbcver);
 SQLSMALLINT _iodbcdm_map_c_type (int type, int odbcver);
 
@@ -234,8 +234,8 @@ SQLRETURN SQL_API _iodbcdm_ExtendedFetch (
     SQLHSTMT hstmt, 
     SQLUSMALLINT fFetchType, 
     SQLINTEGER irow, 
-    SQLUINTEGER FAR *pcrow, 
-    SQLUSMALLINT FAR *rgfRowStatus);
+    SQLUINTEGER *pcrow, 
+    SQLUSMALLINT *rgfRowStatus);
 
 SQLRETURN SQL_API _iodbcdm_SetPos (
     SQLHSTMT hstmt, 
@@ -245,7 +245,7 @@ SQLRETURN SQL_API _iodbcdm_SetPos (
 
 SQLRETURN SQL_API _iodbcdm_NumResultCols (
     SQLHSTMT hstmt,
-    SQLSMALLINT FAR * pccol);
+    SQLSMALLINT * pccol);
 
 SQLRETURN SQLGetStmtOption_Internal (
   SQLHSTMT	hstmt, 

@@ -154,10 +154,10 @@ _iodbcdm_drvopt_free (SQLHDBC hdbc)
 SQLRETURN 
 SQLAllocConnect_Internal (
     SQLHENV henv,
-    SQLHDBC FAR * phdbc)
+    SQLHDBC * phdbc)
 {
   GENV (genv, henv);
-  DBC_t FAR *pdbc;
+  DBC_t *pdbc;
 
   if (phdbc == NULL)
     {
@@ -165,7 +165,7 @@ SQLAllocConnect_Internal (
       return SQL_ERROR;
     }
 
-  pdbc = (DBC_t FAR *) MEM_ALLOC (sizeof (DBC_t));
+  pdbc = (DBC_t *) MEM_ALLOC (sizeof (DBC_t));
 
   if (pdbc == NULL)
     {
@@ -219,7 +219,7 @@ SQLAllocConnect_Internal (
 
 
 SQLRETURN SQL_API
-SQLAllocConnect (SQLHENV henv, SQLHDBC FAR * phdbc)
+SQLAllocConnect (SQLHENV henv, SQLHDBC * phdbc)
 {
   GENV (genv, henv);
   SQLRETURN retcode = SQL_SUCCESS;
@@ -247,9 +247,9 @@ SQLAllocConnect (SQLHENV henv, SQLHDBC FAR * phdbc)
 SQLRETURN
 SQLFreeConnect_Internal (SQLHDBC hdbc)
 {
-  GENV_t FAR *genv;
+  GENV_t *genv;
   CONN (pdbc, hdbc);
-  DBC_t FAR *tpdbc;
+  DBC_t *tpdbc;
 
   /* check state */
   if (pdbc->state != en_dbc_allocated)
@@ -258,9 +258,9 @@ SQLFreeConnect_Internal (SQLHDBC hdbc)
       return SQL_ERROR;
     }
 
-  genv = (GENV_t FAR *) pdbc->genv;
+  genv = (GENV_t *) pdbc->genv;
 
-  for (tpdbc = (DBC_t FAR *) genv->hdbc; tpdbc != NULL; tpdbc = tpdbc->next)
+  for (tpdbc = (DBC_t *) genv->hdbc; tpdbc != NULL; tpdbc = tpdbc->next)
     {
       if (pdbc == tpdbc)
 	{
@@ -315,8 +315,8 @@ _iodbcdm_SetConnectOption (
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv = pdbc->henv;
-  STMT_t FAR *pstmt;
+  ENV_t *penv = pdbc->henv;
+  STMT_t *pstmt;
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
@@ -373,9 +373,9 @@ _iodbcdm_SetConnectOption (
     }
 
   /* check state of statement handle(s) */
-  for (pstmt = (STMT_t FAR *) pdbc->hstmt;
+  for (pstmt = (STMT_t *) pdbc->hstmt;
       pstmt != NULL && sqlstat == en_00000;
-      pstmt = (STMT_t FAR *) pstmt->next)
+      pstmt = (STMT_t *) pstmt->next)
     {
       if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
 	{
@@ -436,9 +436,9 @@ _iodbcdm_SetConnectOption (
       SQLCHAR *_vParam;
       SQLCHAR *tmp = NULL;
 
-      if (((char FAR *)vParam) == NULL 
-          || (waMode != 'W' && ((char FAR *) vParam)[0] == '\0')
-          || (waMode == 'W' && ((wchar_t FAR *) vParam)[0] == L'\0'))
+      if (((char *)vParam) == NULL 
+          || (waMode != 'W' && ((char *) vParam)[0] == '\0')
+          || (waMode == 'W' && ((wchar_t *) vParam)[0] == L'\0'))
 	{
 	  PUSHSQLERR (pdbc->herr, en_S1009);
 	  return SQL_ERROR;
@@ -751,7 +751,7 @@ _iodbcdm_GetConnectOption (
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
@@ -1081,7 +1081,7 @@ _iodbcdm_transact (
     UWORD fType)
 {
   CONN (pdbc, hdbc);
-  STMT_t FAR *pstmt;
+  STMT_t *pstmt;
   HPROC hproc;
   SQLRETURN retcode;
 
@@ -1101,7 +1101,7 @@ _iodbcdm_transact (
       break;
     }
 
-  for (pstmt = (STMT_t FAR *) (pdbc->hstmt);
+  for (pstmt = (STMT_t *) (pdbc->hstmt);
       pstmt != NULL;
       pstmt = pstmt->next)
     {
@@ -1148,7 +1148,7 @@ _iodbcdm_transact (
 
   pdbc->state = en_dbc_hstmt;
 
-  for (pstmt = (STMT_t FAR *) (pdbc->hstmt);
+  for (pstmt = (STMT_t *) (pdbc->hstmt);
       pstmt != NULL;
       pstmt = pstmt->next)
     {
@@ -1252,7 +1252,7 @@ SQLTransact_Internal (
     }
   else
     {
-      for (pdbc = (DBC_t FAR *) (genv->hdbc); pdbc != NULL; pdbc = pdbc->next)
+      for (pdbc = (DBC_t *) (genv->hdbc); pdbc != NULL; pdbc = pdbc->next)
 	{
 	  retcode |= _iodbcdm_transact (pdbc, fType);
 	}

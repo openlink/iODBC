@@ -97,7 +97,7 @@ SQLPrepare_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -237,7 +237,7 @@ SQLPrepare_Internal (
 
 SQLRETURN SQL_API
 SQLPrepare (SQLHSTMT hstmt,
-    SQLCHAR FAR * szSqlStr,
+    SQLCHAR * szSqlStr,
     SQLINTEGER cbSqlStr)
 {
   ENTER_STMT (hstmt,
@@ -252,7 +252,7 @@ SQLPrepare (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLPrepareA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szSqlStr,
+    SQLCHAR * szSqlStr,
     SQLINTEGER cbSqlStr)
 {
   ENTER_STMT (hstmt,
@@ -267,7 +267,7 @@ SQLPrepareA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLPrepareW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szSqlStr,
+    SQLWCHAR * szSqlStr,
     SQLINTEGER cbSqlStr)
 {
   ENTER_STMT (hstmt,
@@ -289,7 +289,7 @@ SQLSetCursorName_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -387,7 +387,7 @@ SQLSetCursorName_Internal (
 
 SQLRETURN SQL_API
 SQLSetCursorName (SQLHSTMT hstmt,
-    SQLCHAR FAR * szCursor,
+    SQLCHAR * szCursor,
     SQLSMALLINT cbCursor)
 {
   ENTER_STMT (hstmt,
@@ -402,7 +402,7 @@ SQLSetCursorName (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLSetCursorNameA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szCursor,
+    SQLCHAR * szCursor,
     SQLSMALLINT cbCursor)
 {
   ENTER_STMT (hstmt,
@@ -418,7 +418,7 @@ SQLSetCursorNameA (SQLHSTMT hstmt,
 SQLRETURN SQL_API
 SQLSetCursorNameW (
   SQLHSTMT		  hstmt,
-  SQLWCHAR FAR		* szCursor,
+  SQLWCHAR 		* szCursor,
   SQLSMALLINT		  cbCursor)
 {
   ENTER_STMT (hstmt,
@@ -442,11 +442,11 @@ SQLBindParameter_Internal (
     SQLSMALLINT ibScale,
     SQLPOINTER rgbValue,
     SQLINTEGER cbValueMax,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLSMALLINT nCType;
   SQLSMALLINT nSqlType;
@@ -612,7 +612,7 @@ SQLBindParameter (
     SQLSMALLINT ibScale,
     SQLPOINTER rgbValue,
     SQLINTEGER cbValueMax,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLBindParameter (TRACE_ENTER,
@@ -634,7 +634,7 @@ static SQLRETURN
 SQLParamOptions_Internal (
   SQLHSTMT		  hstmt,
   SQLUINTEGER		  crow,
-  SQLUINTEGER FAR	* pirow)
+  SQLUINTEGER 		* pirow)
 {
   STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
@@ -693,7 +693,7 @@ SQLRETURN SQL_API
 SQLParamOptions(
   SQLHSTMT		  hstmt,
   SQLUINTEGER		  crow,
-  SQLUINTEGER FAR	* pirow)
+  SQLUINTEGER 		* pirow)
 {
   ENTER_STMT (hstmt,
     trace_SQLParamOptions (TRACE_ENTER, hstmt, crow, pirow));
@@ -934,7 +934,7 @@ SQLSetParam (
     SQLUINTEGER cbColDef,
     SQLSMALLINT ibScale,
     SQLPOINTER rgbValue,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   return SQLBindParameter (hstmt,
       ipar,

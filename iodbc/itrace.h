@@ -97,14 +97,14 @@ extern int ODBCSharedTraceFlag;
 #define CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ) \
     { \
 	ret = proc plist; \
-	if (errHandle) ((GENV_t FAR *)(errHandle))->rc = ret; \
+	if (errHandle) ((GENV_t *)(errHandle))->rc = ret; \
     }
 
 
 #define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
     {\
-	DBC_t FAR*	pdbc = (DBC_t FAR*)(hdbc);\
-	ENV_t FAR*      penv = (ENV_t FAR*)(pdbc->henv);\
+	DBC_t * pdbc = (DBC_t *)(hdbc);\
+	ENV_t * penv = (ENV_t *)(pdbc->henv);\
 \
 	if (!penv->thread_safe)\
 	    MUTEX_LOCK (penv->drv_lock);\

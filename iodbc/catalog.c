@@ -92,7 +92,7 @@
  */
 static SQLRETURN
 _iodbcdm_cata_state_ok (
-    STMT_t FAR * pstmt,
+    STMT_t * pstmt,
     int fidx)
 {
   int sqlstat = en_00000;
@@ -137,7 +137,7 @@ _iodbcdm_cata_state_ok (
  */
 static SQLRETURN
 _iodbcdm_cata_state_tr (
-    STMT_t FAR * pstmt,
+    STMT_t * pstmt,
     int fidx,
     SQLRETURN result)
 {
@@ -193,7 +193,7 @@ SQLGetTypeInfo_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -308,7 +308,7 @@ SQLSpecialColumns_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -420,11 +420,11 @@ SQLSpecialColumns_Internal (
 SQLRETURN SQL_API
 SQLSpecialColumns (SQLHSTMT hstmt,
     SQLUSMALLINT fColType,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
     SQLUSMALLINT fScope,
     SQLUSMALLINT fNullable)
@@ -464,11 +464,11 @@ SQLSpecialColumns (SQLHSTMT hstmt,
 SQLRETURN SQL_API
 SQLSpecialColumnsA (SQLHSTMT hstmt,
     SQLUSMALLINT fColType,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
     SQLUSMALLINT fScope,
     SQLUSMALLINT fNullable)
@@ -508,11 +508,11 @@ SQLSpecialColumnsA (SQLHSTMT hstmt,
 SQLRETURN SQL_API
 SQLSpecialColumnsW (SQLHSTMT hstmt,
     SQLUSMALLINT fColType,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName,
     SQLUSMALLINT fScope,
     SQLUSMALLINT fNullable)
@@ -564,7 +564,7 @@ SQLStatistics_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -668,11 +668,11 @@ SQLStatistics_Internal (
 
 SQLRETURN SQL_API
 SQLStatistics (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
     SQLUSMALLINT fUnique,
     SQLUSMALLINT fAccuracy)
@@ -708,11 +708,11 @@ SQLStatistics (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLStatisticsA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
     SQLUSMALLINT fUnique,
     SQLUSMALLINT fAccuracy)
@@ -748,11 +748,11 @@ SQLStatisticsA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLStatisticsW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName,
     SQLUSMALLINT fUnique,
     SQLUSMALLINT fAccuracy)
@@ -801,7 +801,7 @@ SQLTables_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -898,13 +898,13 @@ SQLTables_Internal (
 
 SQLRETURN SQL_API
 SQLTables (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLCHAR FAR * szTableType,
+    SQLCHAR * szTableType,
     SQLSMALLINT cbTableType)
 {
   ENTER_STMT (hstmt,
@@ -935,13 +935,13 @@ SQLTables (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLTablesA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLCHAR FAR * szTableType,
+    SQLCHAR * szTableType,
     SQLSMALLINT cbTableType)
 {
   ENTER_STMT (hstmt,
@@ -972,13 +972,13 @@ SQLTablesA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLTablesW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLWCHAR FAR * szTableType,
+    SQLWCHAR * szTableType,
     SQLSMALLINT cbTableType)
 {
   ENTER_STMT (hstmt,
@@ -1022,7 +1022,7 @@ SQLColumnPrivileges_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -1120,13 +1120,13 @@ SQLColumnPrivileges_Internal (
 
 SQLRETURN SQL_API
 SQLColumnPrivileges (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLCHAR FAR * szColumnName,
+    SQLCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -1156,13 +1156,13 @@ SQLColumnPrivileges (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLColumnPrivilegesA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLCHAR FAR * szColumnName,
+    SQLCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -1192,13 +1192,13 @@ SQLColumnPrivilegesA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLColumnPrivilegesW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLWCHAR FAR * szColumnName,
+    SQLWCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -1241,7 +1241,7 @@ SQLColumns_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -1338,13 +1338,13 @@ SQLColumns_Internal (
 
 SQLRETURN SQL_API
 SQLColumns (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLCHAR FAR * szColumnName,
+    SQLCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -1375,13 +1375,13 @@ SQLColumns (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLColumnsA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLCHAR FAR * szColumnName,
+    SQLCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -1412,13 +1412,13 @@ SQLColumnsA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLColumnsW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName,
-    SQLWCHAR FAR * szColumnName,
+    SQLWCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -1466,7 +1466,7 @@ SQLForeignKeys_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -1579,17 +1579,17 @@ SQLForeignKeys_Internal (
 
 SQLRETURN SQL_API
 SQLForeignKeys (SQLHSTMT hstmt,
-    SQLCHAR FAR * szPkTableQualifier,
+    SQLCHAR * szPkTableQualifier,
     SQLSMALLINT cbPkTableQualifier,
-    SQLCHAR FAR * szPkTableOwner,
+    SQLCHAR * szPkTableOwner,
     SQLSMALLINT cbPkTableOwner,
-    SQLCHAR FAR * szPkTableName,
+    SQLCHAR * szPkTableName,
     SQLSMALLINT cbPkTableName,
-    SQLCHAR FAR * szFkTableQualifier,
+    SQLCHAR * szFkTableQualifier,
     SQLSMALLINT cbFkTableQualifier,
-    SQLCHAR FAR * szFkTableOwner,
+    SQLCHAR * szFkTableOwner,
     SQLSMALLINT cbFkTableOwner,
-    SQLCHAR FAR * szFkTableName,
+    SQLCHAR * szFkTableName,
     SQLSMALLINT cbFkTableName)
 {
   ENTER_STMT (hstmt,
@@ -1626,17 +1626,17 @@ SQLForeignKeys (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLForeignKeysA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szPkTableQualifier,
+    SQLCHAR * szPkTableQualifier,
     SQLSMALLINT cbPkTableQualifier,
-    SQLCHAR FAR * szPkTableOwner,
+    SQLCHAR * szPkTableOwner,
     SQLSMALLINT cbPkTableOwner,
-    SQLCHAR FAR * szPkTableName,
+    SQLCHAR * szPkTableName,
     SQLSMALLINT cbPkTableName,
-    SQLCHAR FAR * szFkTableQualifier,
+    SQLCHAR * szFkTableQualifier,
     SQLSMALLINT cbFkTableQualifier,
-    SQLCHAR FAR * szFkTableOwner,
+    SQLCHAR * szFkTableOwner,
     SQLSMALLINT cbFkTableOwner,
-    SQLCHAR FAR * szFkTableName,
+    SQLCHAR * szFkTableName,
     SQLSMALLINT cbFkTableName)
 {
   ENTER_STMT (hstmt,
@@ -1673,17 +1673,17 @@ SQLForeignKeysA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLForeignKeysW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szPkTableQualifier,
+    SQLWCHAR * szPkTableQualifier,
     SQLSMALLINT cbPkTableQualifier,
-    SQLWCHAR FAR * szPkTableOwner,
+    SQLWCHAR * szPkTableOwner,
     SQLSMALLINT cbPkTableOwner,
-    SQLWCHAR FAR * szPkTableName,
+    SQLWCHAR * szPkTableName,
     SQLSMALLINT cbPkTableName,
-    SQLWCHAR FAR * szFkTableQualifier,
+    SQLWCHAR * szFkTableQualifier,
     SQLSMALLINT cbFkTableQualifier,
-    SQLWCHAR FAR * szFkTableOwner,
+    SQLWCHAR * szFkTableOwner,
     SQLSMALLINT cbFkTableOwner,
-    SQLWCHAR FAR * szFkTableName,
+    SQLWCHAR * szFkTableName,
     SQLSMALLINT cbFkTableName)
 {
   ENTER_STMT (hstmt,
@@ -1731,7 +1731,7 @@ SQLPrimaryKeys_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -1820,11 +1820,11 @@ SQLPrimaryKeys_Internal (
 
 SQLRETURN SQL_API
 SQLPrimaryKeys (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName)
 {
   ENTER_STMT (hstmt,
@@ -1852,11 +1852,11 @@ SQLPrimaryKeys (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLPrimaryKeysA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName)
 {
   ENTER_STMT (hstmt,
@@ -1884,11 +1884,11 @@ SQLPrimaryKeysA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLPrimaryKeysW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName)
 {
   ENTER_STMT (hstmt,
@@ -1929,7 +1929,7 @@ SQLProcedureColumns_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -2026,13 +2026,13 @@ SQLProcedureColumns_Internal (
 
 SQLRETURN SQL_API
 SQLProcedureColumns (SQLHSTMT hstmt,
-    SQLCHAR FAR * szProcQualifier,
+    SQLCHAR * szProcQualifier,
     SQLSMALLINT cbProcQualifier,
-    SQLCHAR FAR * szProcOwner,
+    SQLCHAR * szProcOwner,
     SQLSMALLINT cbProcOwner,
-    SQLCHAR FAR * szProcName,
+    SQLCHAR * szProcName,
     SQLSMALLINT cbProcName,
-    SQLCHAR FAR * szColumnName,
+    SQLCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -2063,13 +2063,13 @@ SQLProcedureColumns (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLProcedureColumnsA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szProcQualifier,
+    SQLCHAR * szProcQualifier,
     SQLSMALLINT cbProcQualifier,
-    SQLCHAR FAR * szProcOwner,
+    SQLCHAR * szProcOwner,
     SQLSMALLINT cbProcOwner,
-    SQLCHAR FAR * szProcName,
+    SQLCHAR * szProcName,
     SQLSMALLINT cbProcName,
-    SQLCHAR FAR * szColumnName,
+    SQLCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -2100,13 +2100,13 @@ SQLProcedureColumnsA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLProcedureColumnsW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szProcQualifier,
+    SQLWCHAR * szProcQualifier,
     SQLSMALLINT cbProcQualifier,
-    SQLWCHAR FAR * szProcOwner,
+    SQLWCHAR * szProcOwner,
     SQLSMALLINT cbProcOwner,
-    SQLWCHAR FAR * szProcName,
+    SQLWCHAR * szProcName,
     SQLSMALLINT cbProcName,
-    SQLWCHAR FAR * szColumnName,
+    SQLWCHAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
   ENTER_STMT (hstmt,
@@ -2148,7 +2148,7 @@ SQLProcedures_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -2237,11 +2237,11 @@ SQLProcedures_Internal (
 
 SQLRETURN SQL_API
 SQLProcedures (SQLHSTMT hstmt,
-    SQLCHAR FAR * szProcQualifier,
+    SQLCHAR * szProcQualifier,
     SQLSMALLINT cbProcQualifier,
-    SQLCHAR FAR * szProcOwner,
+    SQLCHAR * szProcOwner,
     SQLSMALLINT cbProcOwner,
-    SQLCHAR FAR * szProcName,
+    SQLCHAR * szProcName,
     SQLSMALLINT cbProcName)
 {
   ENTER_STMT (hstmt,
@@ -2269,11 +2269,11 @@ SQLProcedures (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLProceduresA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szProcQualifier,
+    SQLCHAR * szProcQualifier,
     SQLSMALLINT cbProcQualifier,
-    SQLCHAR FAR * szProcOwner,
+    SQLCHAR * szProcOwner,
     SQLSMALLINT cbProcOwner,
-    SQLCHAR FAR * szProcName,
+    SQLCHAR * szProcName,
     SQLSMALLINT cbProcName)
 {
   ENTER_STMT (hstmt,
@@ -2301,11 +2301,11 @@ SQLProceduresA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLProceduresW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szProcQualifier,
+    SQLWCHAR * szProcQualifier,
     SQLSMALLINT cbProcQualifier,
-    SQLWCHAR FAR * szProcOwner,
+    SQLWCHAR * szProcOwner,
     SQLSMALLINT cbProcOwner,
-    SQLWCHAR FAR * szProcName,
+    SQLWCHAR * szProcName,
     SQLSMALLINT cbProcName)
 {
   ENTER_STMT (hstmt,
@@ -2344,7 +2344,7 @@ SQLTablePrivileges_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -2433,11 +2433,11 @@ SQLTablePrivileges_Internal (
 
 SQLRETURN SQL_API
 SQLTablePrivileges (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName)
 {
   ENTER_STMT (hstmt,
@@ -2465,11 +2465,11 @@ SQLTablePrivileges (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLTablePrivilegesA (SQLHSTMT hstmt,
-    SQLCHAR FAR * szTableQualifier,
+    SQLCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLCHAR FAR * szTableOwner,
+    SQLCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLCHAR FAR * szTableName,
+    SQLCHAR * szTableName,
     SQLSMALLINT cbTableName)
 {
   ENTER_STMT (hstmt,
@@ -2497,11 +2497,11 @@ SQLTablePrivilegesA (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLTablePrivilegesW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szTableQualifier,
+    SQLWCHAR * szTableQualifier,
     SQLSMALLINT cbTableQualifier,
-    SQLWCHAR FAR * szTableOwner,
+    SQLWCHAR * szTableOwner,
     SQLSMALLINT cbTableOwner,
-    SQLWCHAR FAR * szTableName,
+    SQLWCHAR * szTableName,
     SQLSMALLINT cbTableName)
 {
   ENTER_STMT (hstmt,

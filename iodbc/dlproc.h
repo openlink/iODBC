@@ -76,9 +76,9 @@
 #include <dlf.h>
 
 #if defined(_MAC)
-typedef SQLRETURN (FAR * HPROC) (...);
+typedef SQLRETURN (* HPROC) (...);
 #else
-typedef SQLRETURN (FAR * HPROC) ();
+typedef SQLRETURN (* HPROC) ();
 #endif
 
 #ifdef	DLDAPI_SVR4_DLFCN
@@ -102,9 +102,9 @@ typedef void *HDLL;
 #endif
 
 extern HPROC _iodbcdm_getproc (HDBC hdbc, int idx);
-extern HDLL _iodbcdm_dllopen (char FAR * dll);
-extern HPROC _iodbcdm_dllproc (HDLL hdll, char FAR * sym);
-extern char FAR *_iodbcdm_dllerror ();
+extern HDLL _iodbcdm_dllopen (char * dll);
+extern HPROC _iodbcdm_dllproc (HDLL hdll, char * sym);
+extern char *_iodbcdm_dllerror ();
 extern int _iodbcdm_dllclose (HDLL hdll);
 
 #define	SQL_NULL_HDLL	((HDLL)NULL)

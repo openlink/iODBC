@@ -103,8 +103,8 @@ typedef struct DESC_s {
 
 #define IS_VALID_HDESC(x) \
 	((x) != SQL_NULL_HDESC && \
-	 ((DESC_t FAR *)(x))->type == SQL_HANDLE_DESC && \
-	 ((DESC_t FAR *)(x))->hdbc != SQL_NULL_HDBC)
+	 ((DESC_t *)(x))->type == SQL_HANDLE_DESC && \
+	 ((DESC_t *)(x))->hdbc != SQL_NULL_HDBC)
 
 
 #define ENTER_DESC(hdesc, trace) \

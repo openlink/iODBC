@@ -104,10 +104,10 @@ static const SQLINTEGER desc_attrs[4] =
 SQLRETURN
 SQLAllocStmt_Internal (
     SQLHDBC hdbc,
-    SQLHSTMT FAR * phstmt)
+    SQLHSTMT * phstmt)
 {
   CONN (pdbc, hdbc);
-  STMT_t FAR *pstmt = NULL;
+  STMT_t *pstmt = NULL;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int i;
@@ -136,7 +136,7 @@ SQLAllocStmt_Internal (
       return SQL_INVALID_HANDLE;
     }
 
-  pstmt = (STMT_t FAR *) MEM_ALLOC (sizeof (STMT_t));
+  pstmt = (STMT_t *) MEM_ALLOC (sizeof (STMT_t));
 
   if (pstmt == NULL)
     {
@@ -176,8 +176,8 @@ SQLAllocStmt_Internal (
   pstmt->params_processed_ptr = NULL;
   pstmt->paramset_size = 0;
   pstmt->rows_fetched_ptr = NULL;
-  if (((ENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC2 && 
-     ((GENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->genv)->odbc_ver == SQL_OV_ODBC3)
+  if (((ENV_t *) ((DBC_t *) pstmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC2 && 
+     ((GENV_t *) ((DBC_t *) pstmt->hdbc)->genv)->odbc_ver == SQL_OV_ODBC3)
     {				/* if it's a odbc3 app calling odbc2 driver */
       pstmt->row_status_ptr =
 	  MEM_ALLOC (sizeof (SQLUINTEGER) * pstmt->row_array_size);
@@ -245,7 +245,7 @@ SQLAllocStmt_Internal (
        */
       for (i = 0; i < 4; i++)
 	{
-	  pstmt->imp_desc[i] = (DESC_t FAR *) MEM_ALLOC (sizeof (DESC_t));
+	  pstmt->imp_desc[i] = (DESC_t *) MEM_ALLOC (sizeof (DESC_t));
 	  if (pstmt->imp_desc[i] == NULL)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_HY001);
@@ -297,7 +297,7 @@ SQLAllocStmt_Internal (
 		  break;
 		}
 
-	      pstmt->imp_desc[i] = (DESC_t FAR *) MEM_ALLOC (sizeof (DESC_t));
+	      pstmt->imp_desc[i] = (DESC_t *) MEM_ALLOC (sizeof (DESC_t));
 	      if (pstmt->imp_desc[i] == NULL)
 		{		/* memory allocation error */
 		  PUSHSQLERR (pdbc->herr, en_HY001);
@@ -386,7 +386,7 @@ alloc_stmt_failed:
 SQLRETURN SQL_API 
 SQLAllocStmt (
     SQLHDBC hdbc,
-    SQLHSTMT FAR * phstmt)
+    SQLHSTMT * phstmt)
 {
   ENTER_HDBC (hdbc, 1,
     trace_SQLAllocStmt (TRACE_ENTER, hdbc, phstmt));
@@ -402,8 +402,8 @@ SQLRETURN
 _iodbcdm_dropstmt (HSTMT hstmt)
 {
   STMT (pstmt, hstmt);
-  STMT_t FAR *tpstmt;
-  DBC_t FAR *pdbc;
+  STMT_t *tpstmt;
+  DBC_t *pdbc;
 
   if (!IS_VALID_HSTMT (pstmt))
     {
@@ -411,9 +411,9 @@ _iodbcdm_dropstmt (HSTMT hstmt)
     }
   CLEAR_ERRORS (pstmt);
 
-  pdbc = (DBC_t FAR *) (pstmt->hdbc);
+  pdbc = (DBC_t *) (pstmt->hdbc);
 
-  for (tpstmt = (STMT_t FAR *) pdbc->hstmt;
+  for (tpstmt = (STMT_t *) pdbc->hstmt;
       tpstmt != NULL;
       tpstmt = tpstmt->next)
     {
@@ -472,12 +472,12 @@ SQLFreeStmt_Internal (
     SQLUSMALLINT fOption)
 {
   STMT (pstmt, hstmt);
-  DBC_t FAR *pdbc;
+  DBC_t *pdbc;
 
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  pdbc = (DBC_t FAR *) (pstmt->hdbc);
+  pdbc = (DBC_t *) (pstmt->hdbc);
 
   /* check option */
   switch (fOption)

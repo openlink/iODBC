@@ -83,14 +83,14 @@
 #define FILE_DSN		2
 
 SQLRETURN SQL_API iodbcdm_drvconn_dialbox (HWND hwnd, LPSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
+    DWORD cbInOutConnStr, int * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
 SQLRETURN SQL_API iodbcdm_drvconn_dialboxw (HWND hwnd, LPWSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
+    DWORD cbInOutConnStr, int * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
 
 SQLRETURN SQL_API _iodbcdm_drvchoose_dialbox (HWND hwnd, LPSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int FAR * sqlStat);
+    DWORD cbInOutDrvStr, int * sqlStat);
 SQLRETURN SQL_API _iodbcdm_trschoose_dialbox (HWND hwnd, LPSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int FAR * sqlStat);
+    DWORD cbInOutDrvStr, int * sqlStat);
 
 void SQL_API _iodbcdm_errorbox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
 void SQL_API _iodbcdm_messagebox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
@@ -101,8 +101,8 @@ SQLRETURN SQL_API _iodbcdm_admin_dialbox (HWND hwnd);
 
 typedef SQLRETURN SQL_API (*pAdminBoxFunc) (HWND hwnd);
 typedef SQLRETURN SQL_API (*pTrsChooseFunc) (HWND hwnd, LPSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int FAR * sqlStat);
+    DWORD cbInOutDrvStr, int * sqlStat);
 typedef SQLRETURN SQL_API (*pDrvConnFunc) (HWND hwnd, LPSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
+    DWORD cbInOutConnStr, int * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
 
 #endif

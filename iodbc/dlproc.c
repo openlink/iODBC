@@ -97,13 +97,13 @@ HPROC
 _iodbcdm_getproc (HDBC hdbc, int idx)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv;
-  HPROC FAR *phproc;
+  ENV_t *penv;
+  HPROC *phproc;
 
   if (idx <= 0 || idx >= __LAST_API_FUNCTION__)
     return SQL_NULL_HPROC;
 
-  penv = (ENV_t FAR *) (pdbc->henv);
+  penv = (ENV_t *) (pdbc->henv);
 
   if (penv == NULL)
     return SQL_NULL_HPROC;
@@ -118,14 +118,14 @@ _iodbcdm_getproc (HDBC hdbc, int idx)
 
 
 HDLL
-_iodbcdm_dllopen (char FAR * path)
+_iodbcdm_dllopen (char * path)
 {
   return (HDLL) DLL_OPEN (path);
 }
 
 
 HPROC
-_iodbcdm_dllproc (HDLL hdll, char FAR * sym)
+_iodbcdm_dllproc (HDLL hdll, char * sym)
 {
   return (HPROC) DLL_PROC (hdll, sym);
 }

@@ -95,11 +95,11 @@ SQLBindCol_Internal (
     SQLSMALLINT fCType,
     SQLPOINTER rgbValue,
     SQLINTEGER cbValueMax,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   STMT(pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLSMALLINT nCType;
   SQLRETURN retcode;
@@ -222,7 +222,7 @@ SQLBindCol (
     SQLSMALLINT fCType,
     SQLPOINTER rgbValue,
     SQLINTEGER cbValueMax,
-    SQLINTEGER FAR * pcbValue)
+    SQLINTEGER * pcbValue)
 {
   ENTER_STMT (hstmt,
       trace_SQLBindCol (TRACE_ENTER,
@@ -240,14 +240,14 @@ SQLBindCol (
 SQLRETURN SQL_API
 SQLGetCursorName_Internal (
   SQLHSTMT 		  hstmt,
-  SQLCHAR FAR 		* szCursor,
+  SQLCHAR 		* szCursor,
   SQLSMALLINT 		  cbCursorMax,
-  SQLSMALLINT FAR 	* pcbCursor,
+  SQLSMALLINT 		* pcbCursor,
   char			  waMode)
 {
   STMT(pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * cursorOut = szCursor;
@@ -346,9 +346,9 @@ SQLGetCursorName_Internal (
 SQLRETURN SQL_API
 SQLGetCursorName (
   SQLHSTMT 		  hstmt,
-  SQLCHAR FAR 		* szCursor,
+  SQLCHAR 		* szCursor,
   SQLSMALLINT 		  cbCursorMax,
-  SQLSMALLINT FAR 	* pcbCursor)
+  SQLSMALLINT 		* pcbCursor)
 {
   ENTER_STMT (hstmt,
     trace_SQLGetCursorName (TRACE_ENTER,
@@ -370,9 +370,9 @@ SQLGetCursorName (
 SQLRETURN SQL_API
 SQLGetCursorNameA (
   SQLHSTMT 		  hstmt,
-  SQLCHAR FAR 		* szCursor,
+  SQLCHAR 		* szCursor,
   SQLSMALLINT 		  cbCursorMax,
-  SQLSMALLINT FAR 	* pcbCursor)
+  SQLSMALLINT 	 	* pcbCursor)
 {
   ENTER_STMT (hstmt,
     trace_SQLGetCursorName (TRACE_ENTER,
@@ -393,9 +393,9 @@ SQLGetCursorNameA (
 
 SQLRETURN SQL_API
 SQLGetCursorNameW (SQLHSTMT hstmt,
-    SQLWCHAR FAR * szCursor,
+    SQLWCHAR * szCursor,
     SQLSMALLINT cbCursorMax,
-    SQLSMALLINT FAR * pcbCursor)
+    SQLSMALLINT * pcbCursor)
 {
   ENTER_STMT (hstmt,
     trace_SQLGetCursorNameW (TRACE_ENTER,
@@ -417,7 +417,7 @@ SQLGetCursorNameW (SQLHSTMT hstmt,
 static SQLRETURN 
 SQLRowCount_Internal (
   SQLHSTMT		  hstmt,
-  SQLINTEGER FAR	* pcrow)
+  SQLINTEGER 		* pcrow)
 {
   STMT(pstmt, hstmt);
   HPROC hproc;
@@ -453,7 +453,7 @@ SQLRowCount_Internal (
 SQLRETURN SQL_API
 SQLRowCount (
   SQLHSTMT		  hstmt,
-  SQLINTEGER FAR	* pcrow)
+  SQLINTEGER 		* pcrow)
 {
   ENTER_STMT (hstmt,
     trace_SQLRowCount (TRACE_ENTER, hstmt, pcrow));
@@ -468,7 +468,7 @@ SQLRowCount (
 SQLRETURN SQL_API
 _iodbcdm_NumResultCols (
     SQLHSTMT hstmt,
-    SQLSMALLINT FAR * pccol)
+    SQLSMALLINT * pccol)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
@@ -549,7 +549,7 @@ _iodbcdm_NumResultCols (
 SQLRETURN SQL_API
 SQLNumResultCols (
   SQLHSTMT		  hstmt,
-  SQLSMALLINT FAR	* pccol)
+  SQLSMALLINT 		* pccol)
 {
   ENTER_STMT (hstmt,
     trace_SQLNumResultCols (TRACE_ENTER, hstmt, pccol));
@@ -611,17 +611,17 @@ SQLDescribeCol_Internal (
     SQLUSMALLINT icol,
     SQLPOINTER szColName,
     SQLSMALLINT cbColNameMax,
-    SQLSMALLINT FAR * pcbColName,
-    SQLSMALLINT FAR * pfSqlType,
-    SQLUINTEGER FAR * pcbColDef,
-    SQLSMALLINT FAR * pibScale,
-    SQLSMALLINT FAR * pfNullable,
+    SQLSMALLINT * pcbColName,
+    SQLSMALLINT * pfSqlType,
+    SQLUINTEGER * pcbColDef,
+    SQLSMALLINT * pibScale,
+    SQLSMALLINT * pfNullable,
     SQLCHAR waMode)
 {
   STMT(pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
-  GENV_t FAR *genv = pdbc->genv;
+  ENV_t *penv = pdbc->henv;
+  GENV_t *genv = pdbc->genv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ColName = NULL;
@@ -779,13 +779,13 @@ SQLDescribeCol_Internal (
 SQLRETURN SQL_API
 SQLDescribeCol (SQLHSTMT hstmt,
     SQLUSMALLINT icol,
-    SQLCHAR FAR * szColName,
+    SQLCHAR * szColName,
     SQLSMALLINT cbColNameMax,
-    SQLSMALLINT FAR * pcbColName,
-    SQLSMALLINT FAR * pfSqlType,
-    SQLUINTEGER FAR * pcbColDef,
-    SQLSMALLINT FAR * pibScale,
-    SQLSMALLINT FAR * pfNullable)
+    SQLSMALLINT * pcbColName,
+    SQLSMALLINT * pfSqlType,
+    SQLUINTEGER * pcbColDef,
+    SQLSMALLINT * pibScale,
+    SQLSMALLINT * pfNullable)
 {
   ENTER_STMT (hstmt,
     trace_SQLDescribeCol (TRACE_ENTER, 
@@ -822,13 +822,13 @@ SQLDescribeCol (SQLHSTMT hstmt,
 SQLRETURN SQL_API
 SQLDescribeColA (SQLHSTMT hstmt,
     SQLUSMALLINT icol,
-    SQLCHAR FAR * szColName,
+    SQLCHAR * szColName,
     SQLSMALLINT cbColNameMax,
-    SQLSMALLINT FAR * pcbColName,
-    SQLSMALLINT FAR * pfSqlType,
-    SQLUINTEGER FAR * pcbColDef,
-    SQLSMALLINT FAR * pibScale,
-    SQLSMALLINT FAR * pfNullable)
+    SQLSMALLINT * pcbColName,
+    SQLSMALLINT * pfSqlType,
+    SQLUINTEGER * pcbColDef,
+    SQLSMALLINT * pibScale,
+    SQLSMALLINT * pfNullable)
 {
   ENTER_STMT (hstmt,
     trace_SQLDescribeCol (TRACE_ENTER, 
@@ -866,13 +866,13 @@ SQLRETURN SQL_API
 SQLDescribeColW (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  icol,
-  SQLWCHAR FAR		* szColName,
+  SQLWCHAR 		* szColName,
   SQLSMALLINT		  cbColNameMax,
-  SQLSMALLINT FAR	* pcbColName,
-  SQLSMALLINT FAR	* pfSqlType,
-  SQLUINTEGER FAR	* pcbColDef,
-  SQLSMALLINT FAR	* pibScale,
-  SQLSMALLINT FAR	* pfNullable)
+  SQLSMALLINT 		* pcbColName,
+  SQLSMALLINT 		* pfSqlType,
+  SQLUINTEGER 		* pcbColDef,
+  SQLSMALLINT 		* pibScale,
+  SQLSMALLINT 		* pfNullable)
 {
   ENTER_STMT (hstmt,
     trace_SQLDescribeColW (TRACE_ENTER, 
@@ -913,13 +913,13 @@ SQLColAttributes_Internal (
     SQLUSMALLINT fDescType,
     SQLPOINTER rgbDesc,
     SQLSMALLINT cbDescMax,
-    SQLSMALLINT FAR * pcbDesc,
-    SQLINTEGER FAR * pfDesc,
+    SQLSMALLINT * pcbDesc,
+    SQLINTEGER * pfDesc,
     SQLCHAR waMode)
 {
   STMT(pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _Desc = NULL;
@@ -1199,8 +1199,8 @@ SQLColAttributes (
   SQLUSMALLINT		  fDescType,
   SQLPOINTER		  rgbDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR	* pcbDesc,
-  SQLINTEGER FAR	* pfDesc)
+  SQLSMALLINT 		* pcbDesc,
+  SQLINTEGER 		* pfDesc)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttributes (TRACE_ENTER,
@@ -1235,8 +1235,8 @@ SQLColAttributesA (
   SQLUSMALLINT		  fDescType,
   SQLPOINTER		  rgbDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR	* pcbDesc,
-  SQLINTEGER FAR	* pfDesc)
+  SQLSMALLINT 		* pcbDesc,
+  SQLINTEGER i		* pfDesc)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttributes (TRACE_ENTER,
@@ -1271,8 +1271,8 @@ SQLColAttributesW (
   SQLUSMALLINT		  fDescType,
   SQLPOINTER		  rgbDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT FAR	* pcbDesc,
-  SQLINTEGER FAR	* pfDesc)
+  SQLSMALLINT 		* pcbDesc,
+  SQLINTEGER 		* pfDesc)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttributesW (TRACE_ENTER,

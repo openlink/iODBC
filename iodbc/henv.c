@@ -100,7 +100,7 @@ static void Done_iODBC();
 
 
 static void
-_iodbcdm_env_settracing (GENV_t FAR *genv)
+_iodbcdm_env_settracing (GENV_t *genv)
 {
   char buf[1024];
 
@@ -126,9 +126,9 @@ _iodbcdm_env_settracing (GENV_t FAR *genv)
 
 
 SQLRETURN 
-SQLAllocEnv_Internal (SQLHENV FAR * phenv, int odbc_ver)
+SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
 {
-  GENV_t FAR *genv;
+  GENV_t *genv;
   int retcode = SQL_SUCCESS;
 
   /* 
@@ -171,14 +171,14 @@ SQLAllocEnv_Internal (SQLHENV FAR * phenv, int odbc_ver)
 
 
 SQLRETURN SQL_API
-SQLAllocEnv (SQLHENV FAR * phenv)
+SQLAllocEnv (SQLHENV * phenv)
 {
   GENV_t *genv;
   int retcode = SQL_SUCCESS;
 
   retcode = SQLAllocEnv_Internal (phenv, SQL_OV_ODBC2);
 
-  genv = (GENV_t FAR *) *phenv;
+  genv = (GENV_t *) *phenv;
 
   /*
    * Start tracing

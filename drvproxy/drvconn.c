@@ -78,7 +78,7 @@
 
 SQLRETURN SQL_API
 _iodbcdm_drvconn_dialbox (HWND hwnd,
-    LPSTR szInOutConnStr, DWORD cbInOutConnStr, int FAR * sqlStat,
+    LPSTR szInOutConnStr, DWORD cbInOutConnStr, int * sqlStat,
 	 SQLUSMALLINT fDriverCompletion, UWORD *config)
 {
   RETCODE retcode = SQL_ERROR;

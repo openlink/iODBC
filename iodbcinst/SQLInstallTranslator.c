@@ -84,14 +84,14 @@
 #endif
 
 extern BOOL InstallDriverPath (LPSTR lpszPath, WORD cbPathMax,
-    WORD FAR *pcbPathOut,LPSTR envname);
-extern BOOL InstallDriverPathLength (WORD FAR * pcbPathOut,LPSTR envname);
+    WORD *pcbPathOut,LPSTR envname);
+extern BOOL InstallDriverPathLength (WORD * pcbPathOut,LPSTR envname);
 
 
 BOOL INSTAPI
 SQLInstallTranslator (LPCSTR lpszInfFile, LPCSTR lpszTranslator,
     LPCSTR lpszPathIn, LPSTR lpszPathOut, WORD cbPathOutMax,
-    WORD FAR *pcbPathOut, WORD fRequest, LPDWORD lpdwUsageCount)
+    WORD *pcbPathOut, WORD fRequest, LPDWORD lpdwUsageCount)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
   BOOL retcode = FALSE;

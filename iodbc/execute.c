@@ -89,7 +89,7 @@
 #include <itrace.h>
 
 void
-_iodbcdm_do_cursoropen (STMT_t FAR * pstmt)
+_iodbcdm_do_cursoropen (STMT_t * pstmt)
 {
   SQLRETURN retcode;
   SWORD ncol;
@@ -291,7 +291,7 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t FAR *penv = pdbc->henv;
+  ENV_t *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
@@ -436,7 +436,7 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
 
 
 SQLRETURN SQL_API
-SQLExecDirect (SQLHSTMT hstmt, SQLCHAR FAR * szSqlStr, SQLINTEGER cbSqlStr)
+SQLExecDirect (SQLHSTMT hstmt, SQLCHAR * szSqlStr, SQLINTEGER cbSqlStr)
 {
   ENTER_STMT (hstmt,
     trace_SQLExecDirect (TRACE_ENTER, hstmt, szSqlStr, cbSqlStr));
@@ -449,7 +449,7 @@ SQLExecDirect (SQLHSTMT hstmt, SQLCHAR FAR * szSqlStr, SQLINTEGER cbSqlStr)
 
 
 SQLRETURN SQL_API
-SQLExecDirectA (SQLHSTMT hstmt, SQLCHAR FAR * szSqlStr, SQLINTEGER cbSqlStr)
+SQLExecDirectA (SQLHSTMT hstmt, SQLCHAR * szSqlStr, SQLINTEGER cbSqlStr)
 {
   ENTER_STMT (hstmt,
     trace_SQLExecDirect (TRACE_ENTER, hstmt, szSqlStr, cbSqlStr));
@@ -462,7 +462,7 @@ SQLExecDirectA (SQLHSTMT hstmt, SQLCHAR FAR * szSqlStr, SQLINTEGER cbSqlStr)
 
 
 SQLRETURN SQL_API
-SQLExecDirectW (SQLHSTMT hstmt, SQLWCHAR FAR * szSqlStr, SQLINTEGER cbSqlStr)
+SQLExecDirectW (SQLHSTMT hstmt, SQLWCHAR * szSqlStr, SQLINTEGER cbSqlStr)
 {
   ENTER_STMT (hstmt,
     trace_SQLExecDirectW (TRACE_ENTER, hstmt, szSqlStr, cbSqlStr));
@@ -597,7 +597,7 @@ SQLPutData (SQLHSTMT hstmt, SQLPOINTER rgbValue, SQLINTEGER cbValue)
 
 
 static SQLRETURN
-SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER FAR * prgbValue)
+SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
@@ -726,7 +726,7 @@ SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER FAR * prgbValue)
 
 
 SQLRETURN SQL_API
-SQLParamData (SQLHSTMT hstmt, SQLPOINTER FAR * prgbValue)
+SQLParamData (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLParamData (TRACE_ENTER, hstmt, prgbValue));
@@ -739,7 +739,7 @@ SQLParamData (SQLHSTMT hstmt, SQLPOINTER FAR * prgbValue)
 
 
 static SQLRETURN
-SQLNumParams_Internal (SQLHSTMT hstmt, SQLSMALLINT FAR * pcpar)
+SQLNumParams_Internal (SQLHSTMT hstmt, SQLSMALLINT * pcpar)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
@@ -812,7 +812,7 @@ SQLNumParams_Internal (SQLHSTMT hstmt, SQLSMALLINT FAR * pcpar)
 
 
 SQLRETURN SQL_API
-SQLNumParams (SQLHSTMT hstmt, SQLSMALLINT FAR * pcpar)
+SQLNumParams (SQLHSTMT hstmt, SQLSMALLINT * pcpar)
 {
   ENTER_STMT (hstmt,
     trace_SQLNumParams (TRACE_ENTER, hstmt, pcpar));
@@ -827,13 +827,13 @@ SQLNumParams (SQLHSTMT hstmt, SQLSMALLINT FAR * pcpar)
 static SQLRETURN
 SQLDescribeParam_Internal (SQLHSTMT hstmt,
     SQLUSMALLINT ipar,
-    SQLSMALLINT FAR * pfSqlType,
-    SQLUINTEGER FAR * pcbColDef,
-    SQLSMALLINT FAR * pibScale, SQLSMALLINT FAR * pfNullable)
+    SQLSMALLINT * pfSqlType,
+    SQLUINTEGER * pcbColDef,
+    SQLSMALLINT * pibScale, SQLSMALLINT * pfNullable)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  GENV_t FAR *genv = pdbc->genv;
+  GENV_t *genv = pdbc->genv;
 
   HPROC hproc;
   SQLRETURN retcode;
@@ -917,10 +917,10 @@ SQLRETURN SQL_API
 SQLDescribeParam (
   SQLHSTMT		  hstmt,
   SQLUSMALLINT		  ipar,
-  SQLSMALLINT FAR	* pfSqlType,
-  SQLUINTEGER FAR	* pcbColDef,
-  SQLSMALLINT FAR	* pibScale,
-  SQLSMALLINT FAR	* pfNullable)
+  SQLSMALLINT 		* pfSqlType,
+  SQLUINTEGER 		* pcbColDef,
+  SQLSMALLINT 		* pibScale,
+  SQLSMALLINT 		* pfNullable)
 {
   ENTER_STMT (hstmt,
     trace_SQLDescribeParam (TRACE_ENTER,

@@ -177,5 +177,5 @@ static const sqlerrmsg_t sqlerrmsg_tab[] =
   { en_sqlstat_total,   NULL,	     NULL  }
 };
 
-static char FAR*	sqlerrhd = "[iODBC][Driver Manager]";
+static char *	sqlerrhd = "[iODBC][Driver Manager]";
 

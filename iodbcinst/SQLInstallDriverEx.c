@@ -90,11 +90,11 @@
 #endif
 
 extern BOOL InstallDriverPath ( LPSTR lpszPath,WORD cbPathMax,
-    WORD FAR * pcbPathOut,LPSTR envname);
+    WORD * pcbPathOut,LPSTR envname);
 
 
 BOOL
-InstallDriverPathLength (WORD FAR *pcbPathOut, LPSTR envname)
+InstallDriverPathLength (WORD *pcbPathOut, LPSTR envname)
 {
 #ifdef _MAC
   OSErr result;

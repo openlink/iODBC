@@ -91,7 +91,7 @@
 
 
 BOOL
-InstallDriverPath (LPSTR lpszPath, WORD cbPathMax, WORD FAR *pcbPathOut,
+InstallDriverPath (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut,
     LPSTR envname)
 {
 #ifdef _MAC
@@ -228,7 +228,7 @@ quit:
 
 BOOL INSTAPI
 SQLInstallDriver (LPCSTR lpszInfFile, LPCSTR lpszDriver, LPSTR lpszPath,
-    WORD cbPathMax, WORD FAR *pcbPathOut)
+    WORD cbPathMax, WORD *pcbPathOut)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
   BOOL retcode = FALSE;

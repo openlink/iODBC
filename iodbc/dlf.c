@@ -599,8 +599,8 @@ dlsym (void *hdl, char *sym)
 
 #include <windows.h>
 
-void FAR *
-dlopen (char FAR * dll, int mode)
+void *
+dlopen (char * dll, int mode)
 {
   HINSTANCE hint;
 
@@ -616,18 +616,18 @@ dlopen (char FAR * dll, int mode)
       return NULL;
     }
 
-  return (void FAR *) hint;
+  return (void *) hint;
 }
 
 
-void FAR *
-dlsym (void FAR * hdll, char FAR * sym)
+void *
+dlsym (void * hdll, char * sym)
 {
-  return (void FAR *) GetProcAddress (hdll, sym);
+  return (void *) GetProcAddress (hdll, sym);
 }
 
 
-char FAR *
+char *
 dlerror ()
 {
   return 0L;			/* unimplemented yet */
@@ -635,7 +635,7 @@ dlerror ()
 
 
 int
-dlclose (void FAR * hdll)
+dlclose (void * hdll)
 {
   FreeLibrary ((HINSTANCE) hdll);
 }
@@ -1030,8 +1030,8 @@ NSMakePrivateModulePublic (NSModule module)
 /*
  * dlopen() the MacOS X version of the FreeBSD dlopen() interface.
  */
-void FAR *
-dlopen (char FAR * path, int mode)
+void *
+dlopen (char * path, int mode)
 {
   void *retval;
   struct stat stat_buf;
@@ -1213,8 +1213,8 @@ dlopen (char FAR * path, int mode)
 /*
  * dlsym() the MacOS X version of the FreeBSD dlopen() interface.
  */
-void FAR *
-dlsym (void FAR * handle, char FAR * symbol)
+void *
+dlsym (void * handle, char * symbol)
 {
   struct dlopen_handle *dlopen_handle, *p;
   char symbol2[1024];
@@ -1277,14 +1277,14 @@ dlsym (void FAR * handle, char FAR * symbol)
 /*
  * dlerror() the MacOS X version of the FreeBSD dlopen() interface.
  */
-char FAR *
+char *
 dlerror (void)
 {
   const char *p;
 
   p = (const char *) dlerror_pointer;
   dlerror_pointer = NULL;
-  return (char FAR*)(p);
+  return (char *)(p);
 }
 
 
@@ -1292,7 +1292,7 @@ dlerror (void)
  * dlclose() the MacOS X version of the FreeBSD dlopen() interface.
  */
 int
-dlclose (void FAR * handle)
+dlclose (void * handle)
 {
   struct dlopen_handle *p, *q;
   unsigned long options;

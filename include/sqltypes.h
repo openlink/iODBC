@@ -200,18 +200,18 @@ typedef unsigned char		SQLVARCHAR;
 /*
  *  Generic pointer types
  */
-typedef void FAR *              PTR;
-typedef void FAR *              SQLPOINTER;
-typedef void FAR *		SQLHANDLE;
+typedef void *              	PTR;
+typedef void *              	SQLPOINTER;
+typedef void *			SQLHANDLE;
 /* typedef SQLINTEGER		SQLHANDLE; */
 
 
 /*
  *  Handles
  */
-typedef void FAR *		HENV;
-typedef void FAR *		HDBC;
-typedef void FAR *		HSTMT;
+typedef void *			HENV;
+typedef void *			HDBC;
+typedef void *			HSTMT;
 
 typedef SQLHANDLE		SQLHENV;
 typedef SQLHANDLE		SQLHDBC;
