@@ -785,20 +785,20 @@ static SQLRETURN
 _iodbcdm_con_settracing (HDBC hdbc, char *dsn, int dsnlen, UCHAR waMode)
 {
   SQLUINTEGER trace = SQL_OPT_TRACE_OFF;
-  char buf[4096];
+  char buf[1024];
 
   /* Get the TraceFile keyword value from the ODBC section */
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if ((SQLGetPrivateProfileString (dsn, "TraceFile", "", buf,
-	      sizeof (buf) / sizeof (SQLTCHAR), "odbc.ini") == 0 || !buf[0]))
+  if ((SQLGetPrivateProfileString (dsn, "TraceFile", "", 
+	buf, sizeof (buf), "odbc.ini") == 0 || !buf[0]))
     STRCPY (buf, SQL_OPT_TRACE_FILE_DEFAULT);
 
   trace_set_filename (buf);	/* UTF-8 */
 
   /* Get the Trace keyword value from the ODBC section */
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if (SQLGetPrivateProfileString (dsn, "Trace", "", buf,
-	  sizeof (buf) / sizeof (SQLTCHAR), "odbc.ini")
+  if (SQLGetPrivateProfileString (dsn, "Trace", "", 
+	buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "yes")
 	  || STRCASEEQ (buf, "1")))
     {
@@ -828,7 +828,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
   SQLRETURN retcode = SQL_SUCCESS;
   SQLRETURN setopterr = SQL_SUCCESS;
   /* MS SDK Guide specifies driver path can't longer than 255. */
-  char driver[4096] = { '\0' };
+  char driver[1024] = { '\0' };
   char buf[256];
   ENV_t FAR *penv = NULL;
   HPROC hproc = SQL_NULL_HPROC;
@@ -887,7 +887,8 @@ SQLConnect_Internal (SQLHDBC hdbc,
   thread_safe = 1;		/* Assume driver is thread safe */
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if ( SQLGetPrivateProfileString (_dsn, "ThreadManager", "", buf, sizeof(buf) / sizeof(SQLTCHAR), "odbc.ini") &&
+  if ( SQLGetPrivateProfileString (_dsn, "ThreadManager", "", 
+	buf, sizeof(buf), "odbc.ini") &&
       (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       thread_safe = 0;	/* Driver needs a thread manager */
@@ -897,7 +898,8 @@ SQLConnect_Internal (SQLHDBC hdbc,
    *  Get the name of the driver module and load it
    */
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if ( SQLGetPrivateProfileString (_dsn, "Driver", "", driver, sizeof(driver) / sizeof(SQLTCHAR), "odbc.ini") == 0)
+  if ( SQLGetPrivateProfileString (_dsn, "Driver", "", 
+	driver, sizeof(driver), "odbc.ini") == 0)
     /* No specified or default dsn section or
      * no driver specification in this dsn section */
     {
@@ -1123,7 +1125,7 @@ SQLDriverConnect_Internal (
   UCHAR cnstr2drv[1024];
   wchar_t cnstr2drvw[1024];
   SWORD thread_safe;
-  wchar_t buf[100];
+  char buf[1024];
   ENV_t FAR *penv = NULL;
   HPROC hproc = SQL_NULL_HPROC;
   void *_ConnStrIn = NULL;
@@ -1296,8 +1298,8 @@ SQLDriverConnect_Internal (
   thread_safe = 1;		/* Assume driver is thread safe */
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if (SQLGetPrivateProfileString (dsn, "ThreadManager", "", buf,
-	  sizeof (buf) / sizeof (SQLTCHAR), "odbc.ini")
+  if (SQLGetPrivateProfileString (dsn, "ThreadManager", "", 
+	buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       thread_safe = 0;		/* Driver needs a thread manager */
@@ -1309,10 +1311,10 @@ SQLDriverConnect_Internal (
   if (drv == NULL || *(char *) drv == '\0')
     {
       SQLSetConfigMode (ODBC_BOTH_DSN);
-      if (SQLGetPrivateProfileString (dsn, "Driver", "", drvbuf,
-	      sizeof (drvbuf) / sizeof (SQLTCHAR), "odbc.ini") != 0)
+      if (SQLGetPrivateProfileString (dsn, "Driver", "", 
+		buf, sizeof (buf), "odbc.ini") != 0)
 	{
-	  drv = drvbuf;
+	  drv = buf;
 	}
     }
 
@@ -1567,7 +1569,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
   void *drv, *dsn;
   char drvbuf[4096];
   char dsnbuf[SQL_MAX_DSN_LENGTH * UTF8_MAX_CHAR_LEN + 1];
-  char buf[256];
+  char buf[1024];
   SWORD thread_safe;
   ENV_t FAR *penv = NULL;
   HPROC hproc = SQL_NULL_HPROC;
@@ -1612,7 +1614,8 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
         thread_safe = 1;		/* Assume driver is thread safe */
 
         SQLSetConfigMode (ODBC_BOTH_DSN);
-        if ( SQLGetPrivateProfileString (dsn, "ThreadManager", "", buf, sizeof(buf) / sizeof(SQLTCHAR), "odbc.ini") &&
+        if ( SQLGetPrivateProfileString (dsn, "ThreadManager", "", 
+		buf, sizeof(buf), "odbc.ini") &&
             (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
           {
             thread_safe = 0;	/* Driver needs a thread manager */
@@ -1624,9 +1627,10 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
         if (drv == NULL || *(char*)drv == '\0')
           {
             SQLSetConfigMode (ODBC_BOTH_DSN);
-            if ( SQLGetPrivateProfileString (dsn, "Driver", "", drvbuf, sizeof(drvbuf) / sizeof(SQLTCHAR), "odbc.ini") != 0)
+            if ( SQLGetPrivateProfileString (dsn, "Driver", "", 
+		buf, sizeof(buf), "odbc.ini") != 0)
               {
-                drv = drvbuf;
+                drv = buf;
               }
           }
 
