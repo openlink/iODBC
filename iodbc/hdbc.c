@@ -279,8 +279,6 @@ SQLFreeConnect_Internal (SQLHDBC hdbc)
   /* free driver connect options */
   _iodbcdm_drvopt_free (pdbc);
    
-  _iodbcdm_SetConnectOption (hdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF, 'A');
-
   /*
    *  Invalidate this handle
    */
