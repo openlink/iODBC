@@ -1,6 +1,7 @@
-Feb 01 2005, V3.52.2:
+Feb 04 2005, V3.52.2:
     * Added tracing option for root without overwriting existing files
     * Added PORT.OpenLink script
+    * Added special iodbc-config script for Mac OS X framework build
     * Fixed problem starting/stopping tracing
     * Fixed SQLSetConnectAttr to return SQL_SUCCESS_WITH_INFO
       if driver cannot handle option set before connect time
