@@ -48,7 +48,7 @@ typedef void *HDLL;
 typedef void *HDLL;
 #endif
 
-extern HPROC _iodbcdm_getproc ();
+extern HPROC _iodbcdm_getproc (HDBC hdbc, int idx);
 extern HDLL _iodbcdm_dllopen (char FAR * dll);
 extern HPROC _iodbcdm_dllproc (HDLL hdll, char FAR * sym);
 extern char FAR *_iodbcdm_dllerror ();
