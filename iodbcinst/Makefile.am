@@ -77,9 +77,10 @@ INCLUDES		= \
 libiodbcinst_la_LDFLAGS	= -version-info @lib_version@ \
 			  -export-symbols $(srcdir)/iodbcinst.exp
 
-libiodbcinst_la_LIBADD	= $(LIBADD_DL) ../iodbc/dlf.lo
+libiodbcinst_la_LIBADD	= $(LIBADD_DL)
 
 libiodbcinst_la_SOURCES	= \
+	dlf.c \
 	SQLConfigDataSource.c \
 	SQLConfigDriver.c \
 	SQLGetAvailableDrivers.c \
@@ -117,5 +118,9 @@ noinst_HEADERS		= \
 	inifile.h \
 	iodbc_error.h \
 	misc.h 
+
+dlf.c: $(top_srcdir)/iodbc/dlf.c
+	ln -s $(top_srcdir)/iodbc/dlf.c dlf.c
+
 
 EXTRA_DIST		= iodbcinst.exp
