@@ -115,8 +115,8 @@ int
 ODBC_Connect (char *connStr)
 {
   short buflen;
-  char buf[257];
-  SQLCHAR dataSource[120];
+  char buf[1024];
+  SQLCHAR dataSource[1024];
   SQLCHAR dsn[33];
   SQLCHAR desc[255];
   SQLCHAR driverInfo[255];
@@ -437,7 +437,9 @@ ODBC_Test ()
 	    }
 	  if (numCols == 0)
 	    {
-	      printf ("Statement executed.\n");
+	      SQLINTEGER nrows = 0;
+	      SQLRowCount(hstmt, &nrows);
+	      printf ("Statement executed. %ld rows affected\n", nrows > 0 ? nrows : 0);
 	      goto endCursor;
 	    }
 
