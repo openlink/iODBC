@@ -25,7 +25,7 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT(isql.h)
-AM_INIT_AUTOMAKE(libiodbc,2.50.2)
+AM_INIT_AUTOMAKE(libiodbc,2.50.3)
 AC_CANONICAL_HOST
 
 
@@ -159,7 +159,7 @@ NONE*)
        sysinidir=/etc
        ;;
 *)
-       sysinidir=$sysconfdir
+       sysinidir=`eval echo $sysconfdir`
        ;;
 esac
 AC_MSG_RESULT($sysinidir)
