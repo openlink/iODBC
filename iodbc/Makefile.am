@@ -32,7 +32,7 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
 			  itrace.c misc.c prepare.c result.c odbc3.c 
 
-noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
+noinst_HEADERS		= iodbc.h dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h
 
 EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com

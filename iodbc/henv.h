@@ -26,7 +26,7 @@
 #ifndef	_HENV_H
 #define	_HENV_H
 
-#include <config.h>
+#include <iodbc.h>
 #include <dlproc.h>
 
 #include <sql.h>

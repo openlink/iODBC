@@ -25,7 +25,7 @@
  */
 #ifndef	_DLF_H
 #define _DLF_H
-#include <config.h>
+#include <iodbc.h>
 
 #if defined(HAVE_LIBDL)
 #define DLDAPI_SVR4_DLFCN
