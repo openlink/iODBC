@@ -611,6 +611,7 @@ _iodbcdm_SetPos (SQLHSTMT hstmt,
   if (fOption > SQL_ADD || fLock > SQL_LOCK_UNLOCK)
     {
       PUSHSQLERR (pstmt->herr, en_S1009);
+      return SQL_ERROR;
     }
 
   /* check state */
