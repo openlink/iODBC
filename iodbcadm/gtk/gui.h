@@ -160,7 +160,8 @@ void filedsn_filelist_select(GtkWidget* widget, gint row, gint column, GdkEvent 
 void filedsn_filelist_unselect(GtkWidget* widget, gint row, gint column, GdkEvent *event, TDSNCHOOSER *choose_t);
 void filedsn_dirlist_select(GtkWidget* widget, gint row, gint column, GdkEvent *event, TDSNCHOOSER *choose_t);
 void filedsn_lookin_clicked(GtkWidget* widget, void **array);
-void adddrivers_to_list(GtkWidget* widget, BOOL isTrs);
+void adddrivers_to_list(GtkWidget* widget, GtkWidget* dlg);
+void addtranslators_to_list(GtkWidget* widget, GtkWidget* dlg);
 void adddirectories_to_list(HWND hwnd, GtkWidget* widget, LPCSTR path);
 void addfiles_to_list(HWND hwnd, GtkWidget* widget, LPCSTR path);
 void addlistofdir_to_optionmenu(GtkWidget* widget, LPCSTR path, TDSNCHOOSER *choose_t);

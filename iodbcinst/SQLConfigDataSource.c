@@ -89,21 +89,21 @@
 	{ \
 		if ((pConfigDSN = (pConfigDSNFunc)DLL_PROC(handle, "ConfigDSN")) != NULL) \
 		{ \
-	  	if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
-	  	{ \
-	    	DLL_CLOSE(handle); \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	} \
-			else \
-			{ \
-				PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	DLL_CLOSE(handle); \
-	    	retcode = FALSE; \
-	    	goto done; \
-			} \
+	  	  if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
+	  	  { \
+	    	  DLL_CLOSE(handle); \
+	    	  retcode = TRUE; \
+	    	  goto done; \
+	  	  } \
+		  else \
+		  { \
+		    PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	 DLL_CLOSE(handle); \
+	    	 retcode = FALSE; \
+	    	 goto done; \
+		  } \
 		} \
-		DLL_CLOSE(handle); \
+	  DLL_CLOSE(handle); \
 	}
 #endif
 

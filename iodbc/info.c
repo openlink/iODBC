@@ -75,6 +75,10 @@
 
 #include <sql.h>
 #include <sqlext.h>
+#include <sqlucode.h>
+#include <iodbcinst.h>
+
+#include <unicode.h>
 
 #include <dlproc.h>
 
@@ -88,12 +92,16 @@
 #include <stdio.h>
 #include <ctype.h>
 
-extern char *_iodbcdm_getinifile (char *buf, int size);
+#ifdef WIN32
+#define SECT1			"ODBC 32 bit Data Sources"
+#define SECT2			"ODBC 32 bit Drivers"
+#else
+#define SECT1			"ODBC Data Sources"
+#define SECT2			"ODBC Drivers"
+#endif
 
-#define SECT1			"[ODBC Data Sources]"
-#define SECT2			"Default"
-#define SECT3			"ODBC Data Sources"
 #define MAX_ENTRIES		1024
+
 
 static int
 stricmp (const char *s1, const char *s2)
@@ -110,6 +118,7 @@ stricmp (const char *s1, const char *s2)
   return (*s2) ? -1 : 0;
 }
 
+
 static int
 SectSorter (const void *p1, const void *p2)
 {
@@ -121,62 +130,45 @@ SectSorter (const void *p1, const void *p2)
 
 
 SQLRETURN SQL_API
-SQLDataSources (
-    SQLHENV henv,
-    SQLUSMALLINT fDir,
-    SQLCHAR FAR * szDSN,
-    SQLSMALLINT cbDSNMax,
-    SQLSMALLINT FAR * pcbDSN,
-    SQLCHAR FAR * szDesc,
-    SQLSMALLINT cbDescMax,
-    SQLSMALLINT FAR * pcbDesc)
+SQLDataSources_Internal (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLPOINTER		  szDSN,
+  SQLSMALLINT		  cbDSNMax,
+  SQLSMALLINT FAR	* pcbDSN,
+  SQLPOINTER		  szDesc,
+  SQLSMALLINT		  cbDescMax,
+  SQLSMALLINT FAR	* pcbDesc,
+  SQLCHAR		  waMode)
 {
   GENV (genv, henv);
-  char *path;
-  char buf[1024];
-  FILE *fp;
-  int i;
+  char buffer[4096], desc[1024], *ptr;
+  int i, j, usernum;
   static int cur_entry = -1;
   static int num_entries = 0;
-  static char **sect = NULL;
-
-  ODBC_LOCK ();
-  if (!IS_VALID_HENV (genv))
-    {
-      ODBC_UNLOCK ();
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (genv);
+  static void **sect = NULL;
+  SQLUSMALLINT fDirOld = fDir;
 
   /* check argument */
   if (cbDSNMax < 0 || cbDescMax < 0)
     {
       PUSHSQLERR (genv->herr, en_S1090);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
-  if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
+  if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT &&
+      fDir != SQL_FETCH_FIRST_USER && fDir != SQL_FETCH_FIRST_SYSTEM)
     {
       PUSHSQLERR (genv->herr, en_S1103);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
-  if (cur_entry < 0 || fDir == SQL_FETCH_FIRST)
+  if (cur_entry < 0 || fDir == SQL_FETCH_FIRST ||
+      fDir == SQL_FETCH_FIRST_USER || fDir == SQL_FETCH_FIRST_SYSTEM)
     {
       cur_entry = 0;
       num_entries = 0;
 
-      /* 
-       *  Open the odbc.ini file
-       */
-      path = (char *) _iodbcdm_getinifile (buf, sizeof (buf));
-      if ((fp = fopen (path, "r")) == NULL)
-	{
-	  ODBC_UNLOCK ();
-	  return SQL_NO_DATA_FOUND;
-	}
       /*
        *  Free old section list
        */
@@ -187,72 +179,71 @@ SQLDataSources (
 	      free (sect[i]);
 	  free (sect);
 	}
-      if ((sect = (char **) calloc (MAX_ENTRIES, sizeof (char *))) == NULL)
+      if ((sect = (void **) calloc (MAX_ENTRIES, sizeof (void *))) == NULL)
 	{
-	  fclose (fp);
 	  PUSHSQLERR (genv->herr, en_S1011);
-	  ODBC_UNLOCK ();
 	  return SQL_ERROR;
 	}
 
-      /* Finds the section heading [ODBC Data Sources] */
-      while (1)
-	{
-	  char *str;
+      if (fDirOld == SQL_FETCH_FIRST)
+        fDir = SQL_FETCH_FIRST_USER;
 
-	  str = fgets (buf, sizeof (buf), fp);
+      do {
+        SQLSetConfigMode (fDir == SQL_FETCH_FIRST_SYSTEM ? ODBC_SYSTEM_DSN : ODBC_USER_DSN);
+        SQLGetPrivateProfileString (SECT1, NULL, "", buffer, sizeof(buffer) / sizeof(SQLTCHAR), "odbc.ini");
 
-	  if (str == NULL)
-	    break;
+        /* For each datasources */
+        for(ptr = buffer, i = 1 ; *ptr && i ; ptr += STRLEN(ptr) + 1)
+          {
+            /* Add this section to the datasources list */
+            if (fDirOld == SQL_FETCH_FIRST && fDir == SQL_FETCH_FIRST_SYSTEM)
+              {
+                for(j = 0 ; j<usernum ; j++)
+                  {
+                    if(STREQ(sect[j<<1], ptr))
+                      j = usernum;
+                  }
+                if(j == usernum + 1)
+                  continue;
+              }
 
-	  if (strcmp (str, SECT1) >= 0)
-	    break;
-	}
+            if ((num_entries << 1) >= MAX_ENTRIES)
+              {
+                i = 0;
+                break;
+              }			/* Skip the rest */
 
-      /*
-       *  Build a dynamic list of sections
-       */
-      while (1)
-	{
-	  char *str, *p;
+            /* Copy the datasource name */
+            sect[num_entries<<1] = STRDUP (ptr);
 
-	  str = fgets (buf, sizeof (buf), fp);
+            /* ... and its description */
+            SQLSetConfigMode (fDir == SQL_FETCH_FIRST_SYSTEM ? ODBC_SYSTEM_DSN : ODBC_USER_DSN);
+            SQLGetPrivateProfileString (SECT1, ptr, "", desc, sizeof(desc) / sizeof(SQLTCHAR), "odbc.ini");
+            sect[(num_entries++<<1) + 1] = STRDUP (desc);
+          }
 
-	  if (str == NULL || *str == '[')
-	    break;
+        switch(fDir)
+          {
+            case SQL_FETCH_FIRST_USER:
+              fDir = SQL_FETCH_FIRST_SYSTEM;
+              usernum = num_entries;
+              break;
+            case SQL_FETCH_FIRST_SYSTEM:
+              fDir = SQL_FETCH_FIRST;
+              break;
+          };
+      } while (fDir!=SQL_FETCH_FIRST && fDirOld==SQL_FETCH_FIRST);
 
-	  if (*str == '\n')
-	    continue;
-
-	  for (p = str; *p; p++)
-	    {
-	      if (*p == '=' || *p == '\n')
-		{
-		  *p = '\0';
-
-		  /*
-		   *  Trim whitespace from the right
-		   */
-		  for (; p > str && (*(p - 1) == ' ' || *(p - 1) == '\t');)
-		    *--p = '\0';
-		  break;
-		}
-	    }
-
-	  /* Add this section to the comma separated list */
-
-	  if (num_entries >= MAX_ENTRIES)
-	    break;		/* Skip the rest */
-
-	  sect[num_entries++] = (char *) strdup (str);
-	}
-      fclose (fp);
+      fDir = fDirOld;
 
       /*
        *  Sort all entries so we can present a nice list
        */
       if (num_entries > 1)
-	qsort (sect, num_entries, sizeof (char *), SectSorter);
+	{
+          qsort (sect, num_entries, sizeof (char **) + sizeof (char **),
+            SectSorter);
+	}
     }
 
   /*
@@ -261,118 +252,476 @@ SQLDataSources (
   if (cur_entry >= num_entries)
     {
       cur_entry = 0;		/* Next time, start all over again */
-      ODBC_UNLOCK ();
       return SQL_NO_DATA_FOUND;
     }
 
   /*
    *  Copy DSN information 
    */
-  STRNCPY (szDSN, sect[cur_entry], cbDSNMax);
+  STRNCPY (szDSN, sect[cur_entry << 1], cbDSNMax);
 
   if (pcbDSN)
-    *pcbDSN = strlen (sect[cur_entry]);
-
+    *pcbDSN = STRLEN (szDSN);
 
   /*
-   *  And find the type description that goes with this entry
+   *  And find the description that goes with this entry
    */
-#if 0
-  _iodbcdm_getkeyvalbydsn (sect[cur_entry], strlen (sect[cur_entry]),
-      "Description", szDesc, cbDescMax);
-#else
-  _iodbcdm_getkeyvalbydsn (SECT3, strlen (SECT3),
-      sect[cur_entry], szDesc, cbDescMax);
-#endif
+  STRNCPY (szDesc, sect[(cur_entry << 1) + 1], cbDescMax);
 
   if (pcbDesc)
-    *pcbDesc = strlen(szDesc);
-
+    *pcbDesc = STRLEN (szDesc);
 
   /*
    *  Next record
    */
   cur_entry++;
 
-  ODBC_UNLOCK ();
   return SQL_SUCCESS;
 }
 
 
 SQLRETURN SQL_API
-SQLDrivers (
-    SQLHENV henv,
-    SQLUSMALLINT fDir,
-    SQLCHAR FAR * szDrvDesc,
-    SQLSMALLINT cbDrvDescMax,
-    SQLSMALLINT FAR * pcbDrvDesc,
-    SQLCHAR FAR * szDrvAttr,
-    SQLSMALLINT cbDrvAttrMax,
-    SQLSMALLINT FAR * pcbDrvAttr)
+SQLDataSources (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLCHAR FAR		* szDSN,
+  SQLSMALLINT		  cbDSNMax,
+  SQLSMALLINT FAR	* pcbDSN,
+  SQLCHAR FAR		* szDesc,
+  SQLSMALLINT		  cbDescMax,
+  SQLSMALLINT FAR 	* pcbDesc)
+{
+  ENTER_HENV (henv,
+    trace_SQLDataSources (TRACE_ENTER,
+    	henv,
+	fDir,
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc));
+
+  retcode = SQLDataSources_Internal (
+  	henv, 
+	fDir, 
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc, 
+	'A');
+
+  LEAVE_HENV (henv,
+    trace_SQLDataSources (TRACE_LEAVE,
+    	henv,
+	fDir,
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc));
+}
+
+
+SQLRETURN SQL_API
+SQLDataSourcesA (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLCHAR FAR		* szDSN,
+  SQLSMALLINT		  cbDSNMax,
+  SQLSMALLINT FAR	* pcbDSN,
+  SQLCHAR FAR		* szDesc,
+  SQLSMALLINT		  cbDescMax,
+  SQLSMALLINT FAR 	* pcbDesc)
+{
+  ENTER_HENV (henv,
+    trace_SQLDataSources (TRACE_ENTER,
+    	henv,
+	fDir,
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc));
+
+  retcode = SQLDataSources_Internal(
+  	henv, 
+	fDir, 
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc, 
+	'A');
+
+  LEAVE_HENV (henv,
+    trace_SQLDataSources (TRACE_LEAVE,
+    	henv,
+	fDir,
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc));
+}
+
+
+SQLRETURN SQL_API
+SQLDataSourcesW (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLWCHAR FAR		* szDSN,
+  SQLSMALLINT		  cbDSNMax,
+  SQLSMALLINT FAR	* pcbDSN,
+  SQLWCHAR FAR		* szDesc,
+  SQLSMALLINT		  cbDescMax,
+  SQLSMALLINT FAR	* pcbDesc)
+{
+  char *_DSN = NULL;  
+  char *_Desc = NULL;
+
+  ENTER_HENV (henv,
+    trace_SQLDataSourcesW (TRACE_ENTER,
+    	henv,
+	fDir,
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc));
+
+  if (cbDSNMax > 0)
+    {
+      if ((_DSN = malloc (cbDSNMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+	{
+	  PUSHSQLERR (genv->herr, en_S1001);
+	  return SQL_ERROR;
+	}
+    }
+
+  if (cbDescMax > 0)
+    {
+      if ((_Desc = malloc (cbDescMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+	{
+	  PUSHSQLERR (genv->herr, en_S1001);
+	  return SQL_ERROR;
+	}
+    }
+
+  retcode = SQLDataSources_Internal (
+  	henv, 
+	fDir, 
+	_DSN, cbDSNMax * UTF8_MAX_CHAR_LEN, pcbDSN, 
+	_Desc, cbDescMax * UTF8_MAX_CHAR_LEN, pcbDesc, 
+	'W');
+
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    {
+      dm_StrCopyOut2_U8toW (_DSN, szDSN, cbDSNMax, pcbDSN);
+      dm_StrCopyOut2_U8toW (_Desc, szDesc, cbDescMax, pcbDesc);
+    }
+
+  MEM_FREE (_DSN);
+  MEM_FREE (_Desc);
+
+  LEAVE_HENV (henv,
+    trace_SQLDataSourcesW (TRACE_LEAVE,
+    	henv,
+	fDir,
+	szDSN, cbDSNMax, pcbDSN,
+	szDesc, cbDescMax, pcbDesc));
+}
+
+
+SQLRETURN SQL_API
+SQLDrivers_Internal (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLPOINTER		  szDrvDesc,
+  SQLSMALLINT		  cbDrvDescMax,
+  SQLSMALLINT FAR	* pcbDrvDesc,
+  SQLPOINTER		  szDrvAttr,
+  SQLSMALLINT		  cbDrvAttrMax,
+  SQLSMALLINT FAR	* pcbDrvAttr,
+  SQLCHAR		  waMode)
 {
   GENV (genv, henv);
+  char buffer[4096], desc[1024], *ptr;
+  int i, j, usernum;
+  static int cur_entry = -1;
+  static int num_entries = 0;
+  static void **sect = NULL;
+  SQLUSMALLINT fDirOld = fDir;
 
-  ODBC_LOCK ();
-  if (!IS_VALID_HENV (genv))
-    {
-      ODBC_UNLOCK ();
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (genv);
-
-  if (cbDrvDescMax < 0 || cbDrvAttrMax < 0 || cbDrvAttrMax == 1)
+  /* check argument */
+  if (cbDrvDescMax < 0 || cbDrvAttrMax < 0)
     {
       PUSHSQLERR (genv->herr, en_S1090);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
   if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
-  if (!szDrvDesc || !szDrvAttr || !cbDrvDescMax || !cbDrvAttrMax)
+
+  if (cur_entry < 0 || fDir == SQL_FETCH_FIRST)
     {
-      PUSHSQLERR (genv->herr, en_01004);
-      ODBC_UNLOCK ();
-      return SQL_SUCCESS_WITH_INFO;
+      cur_entry = 0;
+      num_entries = 0;
+
+      /*
+      *  Free old section list
+      */
+      if (sect)
+	{
+	  for (i = 0; i < MAX_ENTRIES; i++)
+	    if (sect[i])
+	      free (sect[i]);
+	  free (sect);
+	}
+      if ((sect = (void **) calloc (MAX_ENTRIES, sizeof (void *))) == NULL)
+	{
+	  PUSHSQLERR (genv->herr, en_S1011);
+	  return SQL_ERROR;
+	}
+
+      if (fDirOld == SQL_FETCH_FIRST)
+        fDir = SQL_FETCH_FIRST_USER;
+
+      do {
+        SQLSetConfigMode (fDir == SQL_FETCH_FIRST_SYSTEM ? ODBC_SYSTEM_DSN : ODBC_USER_DSN);
+        SQLGetPrivateProfileString (SECT2, NULL, "", buffer, sizeof(buffer) / sizeof(SQLTCHAR), "odbcinst.ini");
+
+        /* For each datasources */
+        for(ptr = buffer, i = 1 ; *ptr && i ; ptr += STRLEN(ptr) + 1)
+          {
+            /* Add this section to the datasources list */
+            if (fDirOld == SQL_FETCH_FIRST && fDir == SQL_FETCH_FIRST_SYSTEM)
+              {
+                for(j = 0 ; j<usernum ; j++)
+                  {
+                    if(STREQ(sect[j<<1], ptr))
+                      j = usernum;
+                  }
+                if(j == usernum + 1)
+                  continue;
+              }
+
+            if ((num_entries << 1) >= MAX_ENTRIES)
+              {
+                i = 0;
+                break;
+              }			/* Skip the rest */
+
+            /* ... and its description */
+            SQLSetConfigMode (fDir == SQL_FETCH_FIRST_SYSTEM ? ODBC_SYSTEM_DSN : ODBC_USER_DSN);
+            SQLGetPrivateProfileString (SECT2, ptr, "", desc, sizeof(desc) / sizeof(SQLTCHAR), "odbcinst.ini");
+
+            /* Check if the driver is installed */
+				if(!STRCASEEQ(desc, "Installed"))
+				  continue;
+
+            /* Copy the driver name */
+            sect[num_entries<<1] = STRDUP (ptr);
+            sect[(num_entries++<<1) + 1] = STRDUP (desc);
+          }
+
+        switch(fDir)
+          {
+            case SQL_FETCH_FIRST_USER:
+              fDir = SQL_FETCH_FIRST_SYSTEM;
+              usernum = num_entries;
+              break;
+            case SQL_FETCH_FIRST_SYSTEM:
+              fDir = SQL_FETCH_FIRST;
+              break;
+          };
+      } while (fDir!=SQL_FETCH_FIRST && fDirOld==SQL_FETCH_FIRST);
+
+      fDir = fDirOld;
+
+      /*
+       *  Sort all entries so we can present a nice list
+       */
+      if (num_entries > 1)
+	{
+          qsort (sect, num_entries, sizeof (char **) + sizeof (char **),
+            SectSorter);
+	}
     }
 
-/*********************/
-  ODBC_UNLOCK ();
-  return SQL_NO_DATA_FOUND;
+  /*
+   *  Try to get to the next item
+   */
+  if (cur_entry >= num_entries)
+    {
+      cur_entry = 0;		/* Next time, start all over again */
+      return SQL_NO_DATA_FOUND;
+    }
+
+  /*
+   *  Copy Driver information 
+   */
+  STRNCPY (szDrvDesc, sect[cur_entry << 1], cbDrvDescMax);
+
+  if (pcbDrvDesc)
+    *pcbDrvDesc = STRLEN (szDrvDesc);
+
+  /*
+   *  And find the description that goes with this entry
+   */
+  STRNCPY (szDrvAttr, sect[(cur_entry << 1) + 1], cbDrvAttrMax);
+
+  if (pcbDrvAttr)
+    *pcbDrvAttr = STRLEN (szDrvAttr);
+
+  /*
+   *  Next record
+   */
+  cur_entry++;
+
+  return SQL_SUCCESS;
 }
 
 
 SQLRETURN SQL_API
-SQLGetInfo (
+SQLDrivers (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLCHAR FAR		* szDrvDesc,
+  SQLSMALLINT		  cbDrvDescMax,
+  SQLSMALLINT FAR	* pcbDrvDesc,
+  SQLCHAR FAR		* szDrvAttr,
+  SQLSMALLINT		  cbDrvAttrMax,
+  SQLSMALLINT FAR	* pcbDrvAttr)
+{
+  ENTER_HENV (henv,
+    trace_SQLDrivers (TRACE_ENTER,
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
+
+  retcode = SQLDrivers_Internal(
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr, 
+	'A');
+
+  LEAVE_HENV (henv,
+    trace_SQLDrivers (TRACE_LEAVE,
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
+}
+
+
+SQLRETURN SQL_API
+SQLDriversA (
+  SQLHENV		  henv,
+  SQLUSMALLINT		  fDir,
+  SQLCHAR FAR 		* szDrvDesc,
+  SQLSMALLINT		  cbDrvDescMax,
+  SQLSMALLINT FAR 	* pcbDrvDesc,
+  SQLCHAR FAR 		* szDrvAttr,
+  SQLSMALLINT		  cbDrvAttrMax,
+  SQLSMALLINT FAR 	* pcbDrvAttr)
+{
+  ENTER_HENV (henv,
+    trace_SQLDrivers (TRACE_ENTER,
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
+
+  retcode = SQLDrivers_Internal(
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr, 
+	'A');
+
+  LEAVE_HENV (henv,
+    trace_SQLDrivers (TRACE_LEAVE,
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
+}
+
+
+SQLRETURN SQL_API
+SQLDriversW (SQLHENV henv,
+    SQLUSMALLINT fDir,
+    SQLWCHAR FAR * szDrvDesc,
+    SQLSMALLINT cbDrvDescMax,
+    SQLSMALLINT FAR * pcbDrvDesc,
+    SQLWCHAR FAR * szDrvAttr,
+    SQLSMALLINT cbDrvAttrMax,
+    SQLSMALLINT FAR * pcbDrvAttr)
+{
+  char *_Driver = NULL;  
+  char *_Attrs = NULL;
+
+  ENTER_HENV (henv,
+    trace_SQLDrivers (TRACE_ENTER,
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
+
+  if (cbDrvDescMax > 0)
+    {
+      if ((_Driver = malloc (cbDrvDescMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+	{
+	  PUSHSQLERR (genv->herr, en_S1001);
+	  return SQL_ERROR;
+	}
+    }
+
+  if (cbDrvAttrMax > 0)
+    {
+      if ((_Attrs = malloc (cbDrvAttrMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+	{
+	  PUSHSQLERR (genv->herr, en_S1001);
+	  return SQL_ERROR;
+	}
+    }
+
+  retcode = SQLDrivers_Internal (
+  	henv, 
+	fDir, 
+	_Driver, cbDrvDescMax * UTF8_MAX_CHAR_LEN, pcbDrvDesc, 
+	_Attrs, cbDrvAttrMax * UTF8_MAX_CHAR_LEN, pcbDrvAttr, 
+	'W');
+
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    {
+      dm_StrCopyOut2_U8toW (_Driver, szDrvDesc, cbDrvDescMax, pcbDrvDesc);
+      dm_StrCopyOut2_U8toW (_Attrs, szDrvAttr, cbDrvAttrMax, pcbDrvAttr);
+    }
+
+  MEM_FREE (_Driver);
+  MEM_FREE (_Attrs);
+
+  LEAVE_HENV (henv,
+    trace_SQLDriversW (TRACE_LEAVE,
+  	henv, 
+	fDir, 
+	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
+	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
+}
+
+
+SQLRETURN SQL_API
+SQLGetInfo_Internal (
     SQLHDBC hdbc,
     SQLUSMALLINT fInfoType,
     SQLPOINTER rgbInfoValue,
     SQLSMALLINT cbInfoValueMax,
-    SQLSMALLINT FAR * pcbInfoValue)
+    SQLSMALLINT FAR * pcbInfoValue,
+    SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t FAR *penv;
+  ENV_t FAR *penv = pdbc->henv;
   STMT_t FAR *pstmt = NULL;
   STMT_t FAR *tpstmt;
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
+  void * _InfoValue = NULL;
+  void * infoValueOut = rgbInfoValue;
 
   DWORD dword;
-  int size = 0, len = 0;
-  char buf[16] =
-  {'\0'};
-
-  ENTER_HDBC(pdbc);
+  int size = 0, len = 0, ret = 0;
+  wchar_t buf[16] = {'\0'};
 
   if (cbInfoValueMax < 0)
     {
       PUSHSQLERR (pdbc->herr, en_S1090);
-
-      LEAVE_HDBC (pdbc, SQL_ERROR);
+      return SQL_ERROR;
     }
 
 #if (ODBCVER < 0x0300)
@@ -381,20 +730,38 @@ SQLGetInfo (
 	  && fInfoType < SQL_INFO_DRIVER_START))
     {
       PUSHSQLERR (pdbc->herr, en_S1096);
-
-      LEAVE_HDBC (pdbc, SQL_ERROR);
+      return SQL_ERROR;
     }
 #endif
-  if (fInfoType == SQL_ODBC_VER)
+  if (fInfoType == SQL_ODBC_VER 
+#if (ODBCVER >= 0x0300)
+  	|| fInfoType == SQL_DM_VER
+#endif
+	)
     {
-      sprintf (buf, "%02d.%02d",
-	  (ODBCVER) >> 8, 0x00FF & (ODBCVER));
+#if (ODBCVER >= 0x0300)
+      if (fInfoType == SQL_DM_VER)
+	sprintf ((char*)buf, "%02d.%02d.%04d.%04d", 
+	  	SQL_SPEC_MAJOR, SQL_SPEC_MINOR, IODBC_BUILD / 10000, IODBC_BUILD % 10000);
+      else
+#endif
+	sprintf ((char*)buf, "%02d.%02d.0000", SQL_SPEC_MAJOR, SQL_SPEC_MINOR);
+      if(waMode == 'W')
+        {
+          wchar_t *prov = dm_SQL_U8toW((char*)buf, SQL_NTS);
+          if(prov)
+            {
+              WCSNCPY(buf, prov, sizeof(buf)/sizeof(wchar_t));
+              free(prov);
+            }
+          else 
+            buf[0] = L'\0';
+        }
 
 
-      if (rgbInfoValue != NULL
-	  && cbInfoValueMax > 0)
+      if (rgbInfoValue != NULL  && cbInfoValueMax > 0)
 	{
-	  len = STRLEN (buf);
+	  len = (waMode != 'W' ? STRLEN (buf) : WCSLEN(buf));
 
 	  if (len > cbInfoValueMax - 1)
 	    {
@@ -404,8 +771,16 @@ SQLGetInfo (
 	      retcode = SQL_SUCCESS_WITH_INFO;
 	    }
 
-	  STRNCPY (rgbInfoValue, buf, len);
-	  ((char FAR *) rgbInfoValue)[len] = '\0';
+	  if (waMode != 'W')
+	    {
+	      STRNCPY (rgbInfoValue, buf, len);
+	      ((char FAR *) rgbInfoValue)[len] = '\0';
+	    }
+	  else
+	    {
+	      WCSNCPY (rgbInfoValue, buf, len);
+	      ((wchar_t FAR *) rgbInfoValue)[len] = L'\0';
+	    }
 	}
 
       if (pcbInfoValue != NULL)
@@ -413,14 +788,14 @@ SQLGetInfo (
 	  *pcbInfoValue = (SWORD) len;
 	}
 
-      LEAVE_HDBC (pdbc, retcode);
+      return retcode;
     }
 
   if (pdbc->state == en_dbc_allocated || pdbc->state == en_dbc_needdata)
     {
       PUSHSQLERR (pdbc->herr, en_08003);
 
-      LEAVE_HDBC (pdbc, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   switch (fInfoType)
@@ -462,15 +837,26 @@ SQLGetInfo (
 	{
 	  PUSHSQLERR (pdbc->herr, en_S1009);
 
-	  LEAVE_HDBC (pdbc, SQL_ERROR);
+	  return SQL_ERROR;
 	}
 
       dword = (DWORD) (pstmt->dhstmt);
       size = sizeof (dword);
       break;
 
-    default:
+    case SQL_DRIVER_NAME:
+    case SQL_DRIVER_ODBC_VER:
+    case SQL_DRIVER_VER:
+    case SQL_ODBC_INTERFACE_CONFORMANCE:
       break;
+
+    default:
+      /* NOTE : this was before the switch, just move here to let some informations going through */
+      if (pdbc->state == en_dbc_allocated || pdbc->state == en_dbc_needdata)
+	{
+	  PUSHSQLERR (pdbc->herr, en_08003);
+	  return SQL_ERROR;
+	}
     }
 
   if (size)
@@ -485,7 +871,7 @@ SQLGetInfo (
 	  *(pcbInfoValue) = (SWORD) size;
 	}
 
-      LEAVE_HDBC (pdbc, SQL_SUCCESS);
+      return SQL_SUCCESS;
     }
 
 #if (ODBCVER >= 0x0300)
@@ -497,48 +883,285 @@ SQLGetInfo (
       fInfoType = 65003;
 #endif /* ODBCVER >= 0x0300 */
 
-  hproc = _iodbcdm_getproc (pdbc, en_GetInfo);
+  if ((penv->unicode_driver && waMode != 'W') 
+      || (!penv->unicode_driver && waMode == 'W'))
+    {
+      switch(fInfoType)
+        {
+        case SQL_ACCESSIBLE_PROCEDURES:
+        case SQL_ACCESSIBLE_TABLES:
+        case SQL_CATALOG_NAME:
+        case SQL_CATALOG_NAME_SEPARATOR:
+        case SQL_CATALOG_TERM:
+        case SQL_COLLATION_SEQ:
+        case SQL_COLUMN_ALIAS:
+        case SQL_DATA_SOURCE_NAME:
+        case SQL_DATA_SOURCE_READ_ONLY:
+        case SQL_DATABASE_NAME:
+        case SQL_DBMS_NAME:
+        case SQL_DBMS_VER:
+        case SQL_DESCRIBE_PARAMETER:
+        case SQL_DRIVER_NAME:
+        case SQL_DRIVER_ODBC_VER:
+        case SQL_DRIVER_VER:
+        case SQL_ODBC_VER:
+        case SQL_EXPRESSIONS_IN_ORDERBY:
+        case SQL_IDENTIFIER_QUOTE_CHAR:
+        case SQL_INTEGRITY:
+        case SQL_KEYWORDS:
+        case SQL_LIKE_ESCAPE_CLAUSE:
+        case SQL_MAX_ROW_SIZE_INCLUDES_LONG:
+        case SQL_MULT_RESULT_SETS:
+        case SQL_MULTIPLE_ACTIVE_TXN:
+        case SQL_NEED_LONG_DATA_LEN:
+        case SQL_ORDER_BY_COLUMNS_IN_SELECT:
+        case SQL_PROCEDURE_TERM:
+        case SQL_PROCEDURES:
+        case SQL_ROW_UPDATES:
+        case SQL_SCHEMA_TERM:
+        case SQL_SEARCH_PATTERN_ESCAPE:
+        case SQL_SERVER_NAME:
+        case SQL_SPECIAL_CHARACTERS:
+        case SQL_TABLE_TERM:
+        case SQL_USER_NAME:
+        case SQL_XOPEN_CLI_YEAR:
+        case SQL_OUTER_JOINS:
+          if (waMode != 'W')  
+            {
+            /* ansi=>unicode*/
+              if ((_InfoValue = malloc(cbInfoValueMax * sizeof(wchar_t) + 1)) == NULL)
+	        {
+                  PUSHSQLERR (pdbc->herr, en_HY001);
+                  return SQL_ERROR;
+                }
+              cbInfoValueMax *=  sizeof(wchar_t);
+            }
+          else
+            {
+            /* unicode=>ansi*/
+              if ((_InfoValue = malloc(cbInfoValueMax + 1)) == NULL)
+	        {
+                  PUSHSQLERR (pdbc->herr, en_HY001);
+                  return SQL_ERROR;
+                }
+              cbInfoValueMax /=  sizeof(wchar_t);
+            }
+          infoValueOut = _InfoValue;
+          break;
+        }
+    }
+
+  CALL_UDRIVER(hdbc, pdbc, retcode, hproc, penv->unicode_driver, 
+    en_GetInfo, (pdbc->dhdbc, fInfoType, infoValueOut, cbInfoValueMax, 
+    pcbInfoValue));
 
   if (hproc == SQL_NULL_HPROC)
     {
       PUSHSQLERR (pdbc->herr, en_IM001);
-
-      LEAVE_HDBC (pdbc, SQL_ERROR);
+      return SQL_ERROR;
     }
 
-  CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetInfo,
-      (pdbc->dhdbc, fInfoType, rgbInfoValue, cbInfoValueMax, pcbInfoValue));
-
-  if (retcode == SQL_ERROR
-      && fInfoType == SQL_DRIVER_ODBC_VER)
+  if (retcode == SQL_ERROR  && fInfoType == SQL_DRIVER_ODBC_VER)
     {
-      STRCPY (buf, "01.00");
+      if (waMode != 'W')
+        {
+          STRCPY (buf, "01.00");
 
-      if (rgbInfoValue != NULL
-	  && cbInfoValueMax > 0)
-	{
-	  len = STRLEN (buf);
-
-	  if (len < cbInfoValueMax - 1)
+          if (rgbInfoValue != NULL && cbInfoValueMax > 0)
 	    {
-	      len = cbInfoValueMax - 1;
-	      PUSHSQLERR (pdbc->herr, en_01004);
+	      len = STRLEN (buf);
+
+	      if (len > cbInfoValueMax - 1)
+	        {
+	          len = cbInfoValueMax - 1;
+                  ret = -1;
+	        }
+              else
+                {
+                  ret = 0;
+                }
+
+	      STRNCPY (rgbInfoValue, buf, len);
+	      ((char FAR *) rgbInfoValue)[len] = '\0';
 	    }
 
-	  STRNCPY (rgbInfoValue, buf, len);
-	  ((char FAR *) rgbInfoValue)[len] = '\0';
-	}
+          if (pcbInfoValue != NULL)
+            *pcbInfoValue = (SWORD) len;
+        }
+      else
+        {
+          ret = dm_StrCopyOut2_A2W ("01.00", rgbInfoValue, 
+            cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+          if (pcbInfoValue)
+            *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
+        }
 
-      if (pcbInfoValue != NULL)
-	{
-	  *pcbInfoValue = (SWORD) len;
-	}
+       if (ret == -1)
+         {
+           PUSHSQLERR (pdbc->herr, en_01004);
+           retcode = SQL_SUCCESS_WITH_INFO;
+         }
+       else
+         {
+           retcode = SQL_SUCCESS;
+         }
 
-      /* what should we return in this case ???? */
     }
+  else if (rgbInfoValue 
+          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+          &&  ((penv->unicode_driver && waMode != 'W') 
+              || (!penv->unicode_driver && waMode == 'W')))
+    {
+      switch(fInfoType)
+        {
+        case SQL_ACCESSIBLE_PROCEDURES:
+        case SQL_ACCESSIBLE_TABLES:
+        case SQL_CATALOG_NAME:
+        case SQL_CATALOG_NAME_SEPARATOR:
+        case SQL_CATALOG_TERM:
+        case SQL_COLLATION_SEQ:
+        case SQL_COLUMN_ALIAS:
+        case SQL_DATA_SOURCE_NAME:
+        case SQL_DATA_SOURCE_READ_ONLY:
+        case SQL_DATABASE_NAME:
+        case SQL_DBMS_NAME:
+        case SQL_DBMS_VER:
+        case SQL_DESCRIBE_PARAMETER:
+        case SQL_DRIVER_NAME:
+        case SQL_DRIVER_ODBC_VER:
+        case SQL_DRIVER_VER:
+        case SQL_ODBC_VER:
+        case SQL_EXPRESSIONS_IN_ORDERBY:
+        case SQL_IDENTIFIER_QUOTE_CHAR:
+        case SQL_INTEGRITY:
+        case SQL_KEYWORDS:
+        case SQL_LIKE_ESCAPE_CLAUSE:
+        case SQL_MAX_ROW_SIZE_INCLUDES_LONG:
+        case SQL_MULT_RESULT_SETS:
+        case SQL_MULTIPLE_ACTIVE_TXN:
+        case SQL_NEED_LONG_DATA_LEN:
+        case SQL_ORDER_BY_COLUMNS_IN_SELECT:
+        case SQL_PROCEDURE_TERM:
+        case SQL_PROCEDURES:
+        case SQL_ROW_UPDATES:
+        case SQL_SCHEMA_TERM:
+        case SQL_SEARCH_PATTERN_ESCAPE:
+        case SQL_SERVER_NAME:
+        case SQL_SPECIAL_CHARACTERS:
+        case SQL_TABLE_TERM:
+        case SQL_USER_NAME:
+        case SQL_XOPEN_CLI_YEAR:
+        case SQL_OUTER_JOINS:
+          if (waMode != 'W')
+            {
+            /* ansi<=unicode*/
+              ret = dm_StrCopyOut2_W2A (infoValueOut, rgbInfoValue, 
+                cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+            }
+          else
+            {
+            /* unicode<=ansi*/
+              ret = dm_StrCopyOut2_A2W (infoValueOut, rgbInfoValue, cbInfoValueMax, 
+                pcbInfoValue);
+              if (pcbInfoValue)
+                *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
+            }
 
-  LEAVE_HDBC (pdbc, retcode);
+          if (ret == -1)
+            {
+              PUSHSQLERR (pdbc->herr, en_01004);
+              retcode = SQL_SUCCESS_WITH_INFO;
+            }
+          break;
+        }
+    }
+  MEM_FREE(_InfoValue);
+  
+  return retcode;
 }
+
+
+SQLRETURN SQL_API
+SQLGetInfo (SQLHDBC hdbc,
+  SQLUSMALLINT		  fInfoType,
+  SQLPOINTER		  rgbInfoValue,
+  SQLSMALLINT		  cbInfoValueMax,
+  SQLSMALLINT FAR	* pcbInfoValue)
+{
+  ENTER_HDBC (hdbc, 0,
+    trace_SQLGetInfo (TRACE_ENTER,
+    	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
+
+  retcode = SQLGetInfo_Internal(
+  	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue, 
+	'A');
+
+  LEAVE_HDBC (hdbc, 0,
+    trace_SQLGetInfo (TRACE_LEAVE,
+    	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
+}
+
+
+SQLRETURN SQL_API
+SQLGetInfoA (SQLHDBC hdbc,
+  SQLUSMALLINT		  fInfoType,
+  SQLPOINTER		  rgbInfoValue,
+  SQLSMALLINT		  cbInfoValueMax,
+  SQLSMALLINT FAR	* pcbInfoValue)
+{
+  ENTER_HDBC (hdbc, 0,
+    trace_SQLGetInfo (TRACE_ENTER,
+    	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
+
+  retcode = SQLGetInfo_Internal(
+  	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue, 
+	'A');
+
+  LEAVE_HDBC (hdbc, 0,
+    trace_SQLGetInfo (TRACE_LEAVE,
+    	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
+}
+
+
+SQLRETURN SQL_API
+SQLGetInfoW (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fInfoType,
+  SQLPOINTER		  rgbInfoValue,
+  SQLSMALLINT		  cbInfoValueMax,
+  SQLSMALLINT FAR	* pcbInfoValue)
+{
+  ENTER_HDBC (hdbc, 0,
+    trace_SQLGetInfoW (TRACE_ENTER,
+    	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
+
+  retcode = SQLGetInfo_Internal (
+  	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue, 
+	'W');
+
+  LEAVE_HDBC (hdbc, 0,
+    trace_SQLGetInfoW (TRACE_LEAVE,
+    	hdbc, 
+	fInfoType, 
+	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
+}
+
 
 static int FunctionNumbers[] =
 {
@@ -558,11 +1181,12 @@ static int FunctionNumbers[] =
 
 #endif
 
-SQLRETURN SQL_API
-SQLGetFunctions (
-    SQLHDBC hdbc,
-    SQLUSMALLINT fFunc,
-    SQLUSMALLINT FAR * pfExists)
+
+static SQLRETURN 
+SQLGetFunctions_Internal (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fFunc,
+  SQLUSMALLINT FAR	* pfExists)
 {
   CONN (pdbc, hdbc);
   HPROC hproc;
@@ -573,20 +1197,17 @@ SQLGetFunctions (
   UWORD functions3[SQL_API_ODBC3_ALL_FUNCTIONS_SIZE];
 #endif
 
-
-  ENTER_HDBC (pdbc);
-
   if (pdbc->state == en_dbc_allocated
       || pdbc->state == en_dbc_needdata)
     {
       PUSHSQLERR (pdbc->herr, en_S1010);
 
-      LEAVE_HDBC (pdbc, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   if (pfExists == NULL)
     {
-      LEAVE_HDBC (pdbc, SQL_SUCCESS);
+      return SQL_SUCCESS;
     }
 
   /*
@@ -601,7 +1222,7 @@ SQLGetFunctions (
       )
     {
       *pfExists = (UWORD) 1;
-      LEAVE_HDBC (pdbc, SQL_SUCCESS);
+      return SQL_SUCCESS;
     }
 
   /*
@@ -612,7 +1233,7 @@ SQLGetFunctions (
     {
       PUSHSQLERR (pdbc->herr, en_S1095);
 
-      LEAVE_HDBC (pdbc, SQL_ERROR);
+      return SQL_ERROR;
     }
 #endif
 
@@ -643,7 +1264,7 @@ SQLGetFunctions (
 	case SQL_API_SQLGETDIAGREC:
 	case SQL_API_SQLGETDIAGFIELD:
 	  *pfExists = SQL_TRUE;
-	  LEAVE_HDBC (pdbc, SQL_SUCCESS);
+	  return SQL_SUCCESS;
 
 	case SQL_API_SQLBINDPARAM:
 	  fFunc = SQL_API_SQLBINDPARAMETER;
@@ -654,7 +1275,7 @@ SQLGetFunctions (
 	    {
 	      *pfExists = SQL_FALSE;
 
-	      LEAVE_HDBC (pdbc, SQL_SUCCESS);
+	      return SQL_SUCCESS;
 	    }
 	  break;
 	}
@@ -672,7 +1293,7 @@ SQLGetFunctions (
       CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetFunctions,
 	  (pdbc->dhdbc, fFunc, pfExists));
 
-      LEAVE_HDBC (pdbc, retcode);
+      return retcode;
     }
 
   /*
@@ -733,5 +1354,30 @@ SQLGetFunctions (
     }
 #endif
 
-  LEAVE_HDBC (pdbc, SQL_SUCCESS);
+  return SQL_SUCCESS;
+}
+
+
+SQLRETURN SQL_API
+SQLGetFunctions (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fFunc,
+  SQLUSMALLINT FAR	* pfExists)
+{
+  ENTER_HDBC (hdbc, 0,
+    trace_SQLGetFunctions (TRACE_ENTER,
+    	hdbc,
+	fFunc,
+	pfExists));
+
+  retcode = SQLGetFunctions_Internal (
+    	hdbc,
+	fFunc,
+	pfExists);
+
+  LEAVE_HDBC (hdbc, 0,
+    trace_SQLGetFunctions (TRACE_ENTER,
+    	hdbc,
+	fFunc,
+	pfExists));
 }

@@ -2,5 +2,5 @@ ConfigDriver
 ConfigDSN
 _iodbcdm_drvconn_dialbox
 _iodbcdm_loginbox
-version
-libname
+iodbc_version
+iodbc_libname

@@ -74,21 +74,62 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <iodbcadm.h>
 
 #include "iodbc_error.h"
+#include "dlf.h"
 
 extern BOOL ValidDSN (LPCSTR lpszDSN);
-extern SQLRETURN iodbcdm_drvconn_dialbox(HWND, LPSTR, DWORD, int FAR*);
+
+#define CALL_DRVCONN_DIALBOX(path) \
+	if ((handle = DLL_OPEN(path)) != NULL) \
+	{ \
+		if ((pDrvConn = (pDrvConnFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialbox")) != NULL) \
+		  pDrvConn(parent, dsn, sizeof(dsn), NULL, SQL_DRIVER_PROMPT, &config); \
+      retcode = TRUE; \
+		DLL_CLOSE(handle); \
+	}
 
 BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN)
 {
   char dsn[1024] = { 0 };
-
-#ifdef GUI
-  iodbcdm_drvconn_dialbox (parent, dsn, sizeof (dsn), NULL);
+  UWORD config = ODBC_USER_DSN;
+  BOOL retcode = FALSE;
+  void *handle;
+  pDrvConnFunc pDrvConn;
+#ifdef _MACX
+  CFStringRef libname;
+  CFBundleRef bundle;
+  CFURLRef liburl;
+  char name[1024] = { 0 };
 #endif
 
-  return TRUE;
+  /* Load the Admin dialbox function */
+#ifdef _MACX
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
+  if (bundle)
+    {
+      /* Search for the drvproxy library */
+      liburl = CFBundleCopyExcutableURL (bundle);
+      if (liburl
+	  && (libname =
+	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	{
+	  CFStringGetCString (libname, name, sizeof (name),
+	      kCFStringEncodingASCII);
+	  CALL_DRVCONN_DIALBOX (name);
+	}
+      if (liburl)
+	CFRelease (liburl);
+      if (libname)
+	CFRelease (libname);
+      CFRelease (bundle);
+    }
+#else
+  CALL_DRVCONN_DIALBOX ("libiodbcadm.so");
+#endif
+
+  return retcode;
 }
 
 

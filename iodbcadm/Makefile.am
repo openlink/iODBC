@@ -103,7 +103,6 @@ libiodbcadm_la_LIBADD	= \
 	../iodbcadm/gtk/dsnchooser.lo \
 	../iodbcadm/gtk/errorbox.lo \
 	../iodbcadm/gtk/filedsn.lo \
-	../iodbcadm/gtk/loginbox.lo \
 	../iodbcadm/gtk/messagebox.lo \
 	../iodbcadm/gtk/translatorchooser.lo \
 	@GTK_LIBS@ \
@@ -120,8 +119,7 @@ endif
 libiodbcadm_la_SOURCES	= \
 	Info.c \
 	drvconn.c \
-	error.c \
-	login.c 
+	error.c 
 
 iodbcadm_gtk_SOURCES	=
 iodbcadm_gtk_LDADD	= \

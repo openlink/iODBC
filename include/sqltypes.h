@@ -86,6 +86,18 @@ extern "C" {
 
 
 /*
+ *  Boolean support 
+ */
+#ifndef TRUE
+#define TRUE	1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+
+/*
  *  Environment specific definitions
  */
 #ifndef NEAR
@@ -137,9 +149,7 @@ typedef unsigned long DWORD;
 typedef DWORD * LPDWORD;
 typedef char * LPSTR;
 typedef const char * LPCSTR;
-typedef	WORD WPARAM;
-typedef	DWORD LPARAM;
-#ifndef BOOL
+#if !defined(BOOL) && !defined(_OBJC_OBJC_H_)
 typedef int BOOL;
 #endif
 #endif
@@ -161,6 +171,8 @@ typedef signed long             SLONG;
 typedef float                   SFLOAT;
 typedef double                  SDOUBLE;
 typedef double            	LDOUBLE; 
+typedef WORD 			WPARAM;
+typedef DWORD 			LPARAM;
 
 
 /*
@@ -215,6 +227,7 @@ typedef SQLHANDLE		SQLHDESC;
 #if defined(WIN32) || defined(OS2)
 typedef HWND			SQLHWND;
 #elif defined(macintosh)
+#include <Dialogs.h>
 typedef WindowPtr		HWND;
 typedef HWND	 		SQLHWND;
 #else
@@ -386,6 +399,33 @@ typedef struct tagSQLGUID
 SQLGUID;
 #endif	/* GUID_DEFINED */
 #endif	/* ODBCVER >= 0x0350 */
+
+
+#if defined(WIN32)
+typedef unsigned short SQLWCHAR;
+#else
+#  include <stdlib.h>
+
+#  if defined(_WCHAR_T)			|| \
+      defined(_WCHAR_T_DEFINED)		|| \
+      defined(_BSD_WCHAR_T_DEFINED_)
+typedef wchar_t SQLWCHAR;
+#  else
+#    error Please make sure your system supports the wchar_t type
+#  endif
+#endif /* WIN32 */
+
+
+#ifdef UNICODE
+typedef SQLWCHAR        SQLTCHAR;
+#else
+typedef SQLCHAR         SQLTCHAR;
+#endif  /* UNICODE */
+
+#ifndef WIN32
+  typedef SQLWCHAR *LPWSTR;
+  typedef const SQLWCHAR *LPCWSTR;
+#endif
 
 #ifdef __cplusplus
 }

@@ -133,6 +133,7 @@ typedef enum
     en_IM012,
     en_IM013,
     en_IM014,
+    en_IM015,
     en_S0001,
     en_S0002,
     en_S0011,
@@ -199,10 +200,10 @@ typedef struct sqlerr
 sqlerr_t;
 
 extern void _iodbcdm_freesqlerrlist (HERR herr);
-extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, char *sysmsg);
+extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, void *sysmsg);
 
 #define	PUSHSYSERR(list, msg)	\
-	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), 0, (char *) msg)
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), 0, msg)
 
 #define	PUSHSQLERR(list, code)	\
 	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (int)(code), NULL)

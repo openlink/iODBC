@@ -182,21 +182,21 @@ fi
 if test "$echo_libs" = "yes"; then
 	libs=""
 	if test "$lib_iodbc" = "yes"; then
-		libs="$libs -liodbc"
+		libs="$libs -liodbc -liodbcinst"
 	fi
 	echo "-L@libdir@ $libs"
 fi
 if test "$echo_staticlibs" = "yes"; then
 	libs=""
 	if test "$lib_iodbc" = "yes"; then
-		libs="@libdir@/libiodbc.a"
+		libs="@libdir@/libiodbc.a @libdir@/libiodbcinst.a"
 	fi
 	echo "$libs"
 fi
 if test "$echo_libtoollibs" = "yes"; then
 	libs=""
 	if test "$lib_iodbc" = "yes"; then
-		libs="@libdir@/libiodbc.la"
+		libs="@libdir@/libiodbc.la @libdir@/libiodbcinst.la"
 	fi
 	echo "$libs"
 fi

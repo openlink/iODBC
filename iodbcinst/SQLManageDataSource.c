@@ -72,18 +72,59 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <iodbcadm.h>
 
 #include "iodbc_error.h"
+#include "dlf.h"
 
-extern SQLRETURN _iodbcdm_admin_dialbox(HWND);
+#define CALL_ADMIN_DIALBOX(path) \
+	if ((handle = DLL_OPEN(path)) != NULL) \
+	{ \
+		if ((pAdminBox = (pAdminBoxFunc)DLL_PROC(handle, "_iodbcdm_admin_dialbox")) != NULL) \
+		  if( pAdminBox(hwndParent) == SQL_SUCCESS) \
+		    retcode = TRUE; \
+		DLL_CLOSE(handle); \
+	} \
 
 BOOL
 ManageDataSources (HWND hwndParent)
 {
-#ifdef GUI
-  _iodbcdm_admin_dialbox (hwndParent);
+  void *handle;
+  pAdminBoxFunc pAdminBox;
+  BOOL retcode = FALSE;
+#ifdef _MACX
+  CFStringRef libname;
+  CFBundleRef bundle;
+  CFURLRef liburl;
+  char name[1024] = { 0 };
 #endif
-  return TRUE;
+
+  /* Load the Admin dialbox function */
+#ifdef _MACX
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
+  if (bundle)
+    {
+      /* Search for the drvproxy library */
+      liburl = CFBundleCopyExcutableURL (bundle);
+      if (liburl
+	  && (libname =
+	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	{
+	  CFStringGetCString (libname, name, sizeof (name),
+	      kCFStringEncodingASCII);
+	  CALL_ADMIN_DIALBOX (name);
+	}
+      if (liburl)
+	CFRelease (liburl);
+      if (libname)
+	CFRelease (libname);
+      CFRelease (bundle);
+    }
+#else
+  CALL_ADMIN_DIALBOX ("libiodbcadm.so");
+#endif
+
+  return retcode;
 }
 
 

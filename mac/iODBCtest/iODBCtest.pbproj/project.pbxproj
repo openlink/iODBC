@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		014CEA520018CE5811CA2923 = {
 			buildRules = (
@@ -36,7 +36,7 @@
 //034
 		034768E8FF38A79811DB9C8B = {
 			isa = PBXExecutableFileReference;
-			path = odbctest;
+			path = iodbctest;
 			refType = 3;
 		};
 //030
@@ -68,7 +68,7 @@
 				1AB674ADFE9D54B511CA2CBB,
 			);
 			isa = PBXGroup;
-			name = odbctest;
+			name = iodbctest;
 			refType = 4;
 		};
 		08FB7795FE84155DC02AAC07 = {
@@ -96,7 +96,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = odbctest;
+				PRODUCT_NAME = iodbctest;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -104,9 +104,9 @@
 			dependencies = (
 			);
 			isa = PBXToolTarget;
-			name = odbctest;
+			name = iodbctest;
 			productInstallPath = "$(HOME)/bin";
-			productName = odbctest;
+			productName = iodbctest;
 			productReference = 034768E8FF38A79811DB9C8B;
 			shouldUseHeadermap = 1;
 		};
@@ -115,7 +115,7 @@
 			files = (
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		08FB77A1FE84155DC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -123,23 +123,23 @@
 				F535B3B902780F5F01A801DE,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		08FB77A3FE84155DC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
-				F53E598202798B4F01100A0E,
-				F53E598302798B4F01100A0E,
+				F5CD650D0497672D01A801EC,
+				F5CD65130497673F01A801EC,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		08FB77A5FE84155DC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 //080
 //081
@@ -171,14 +171,14 @@
 //F54
 		F535B3B702780F5F01A801DE = {
 			isa = PBXFileReference;
-			name = odbctest.c;
-			path = ../../samples/odbctest.c;
+			name = iodbctest.c;
+			path = ../../samples/iodbctest.c;
 			refType = 2;
 		};
 		F535B3B802780F5F01A801DE = {
 			children = (
-				F53E598002798B4F01100A0E,
-				F53E598102798B4F01100A0E,
+				F5CD65030497672D01A801EC,
+				F5CD650E0497673F01A801EC,
 			);
 			isa = PBXGroup;
 			name = Frameworks;
@@ -191,26 +191,26 @@
 			settings = {
 			};
 		};
-		F53E598002798B4F01100A0E = {
+		F5CD65030497672D01A801EC = {
 			isa = PBXFrameworkReference;
 			name = iODBC.framework;
-			path = "../iODBC/build/iODBC.framework";
-			refType = 0;
+			path = ../iODBC/build/iODBC.framework;
+			refType = 2;
 		};
-		F53E598102798B4F01100A0E = {
-			isa = PBXFrameworkReference;
-			name = iODBCinst.framework;
-			path = "../iODBCinst.framework";
-			refType = 0;
-		};
-		F53E598202798B4F01100A0E = {
-			fileRef = F53E598002798B4F01100A0E;
+		F5CD650D0497672D01A801EC = {
+			fileRef = F5CD65030497672D01A801EC;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		F53E598302798B4F01100A0E = {
-			fileRef = F53E598102798B4F01100A0E;
+		F5CD650E0497673F01A801EC = {
+			isa = PBXFrameworkReference;
+			name = iODBCinst.framework;
+			path = ../iODBCinst/build/iODBCinst.framework;
+			refType = 2;
+		};
+		F5CD65130497673F01A801EC = {
+			fileRef = F5CD650E0497673F01A801EC;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -67,20 +67,21 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-DATEBUILD		= `date +%d/%m/%Y_%T`
+DATEBUILD			= `date +%d/%m/%Y_%T`
 
 if GTK
-lib_LTLIBRARIES		= libiodbcadm-gtk.la
+noinst_LTLIBRARIES		= libiodbcadm-gtk.la
 endif
 
-INCLUDES		= \
+INCLUDES			= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcadm \
 	-I$(top_srcdir)/iodbcinst \
 	@GTK_CFLAGS@
 
-CFLAGS			= @CFLAGS@ -D__GTK__ -DDATEBUILD=\"$(DATEBUILD)\"
+AM_CFLAGS			= \
+	@CFLAGS@ -D__GTK__ -DDATEBUILD=\"$(DATEBUILD)\"
 
 libiodbcadm_gtk_la_LDFLAGS	= -static
 libiodbcadm_gtk_la_LIBADD	= @GTK_LIBS@
@@ -93,7 +94,6 @@ libiodbcadm_gtk_la_SOURCES	= \
 	dsnchooser.c \
 	errorbox.c \
 	filedsn.c \
-	loginbox.c \
 	main.c \
 	messagebox.c \
 	translatorchooser.c 
@@ -106,4 +106,4 @@ question.xpm: $(top_srcdir)/drvproxy/gtk/question.xpm
 	${RM} question.xpm
 	${LN_S} $(top_srcdir)/drvproxy/gtk/question.xpm question.xpm
 
-noinst_HEADERS	= error.xpm img.xpm odbc4.xpm gui.h
+noinst_HEADERS			= error.xpm img.xpm odbc4.xpm gui.h

@@ -79,23 +79,8 @@
 typedef struct TLOGIN {
   GtkWidget *username,*password,*mainwnd;
   char *user, *pwd;
+  BOOL ok;
 } TLOGIN;
-
-typedef struct TOPLSETUP
-{
-	GtkWidget *dsn_entry, *comment_entry, *host_entry, *db_entry;
-	GtkWidget *server_entry, *user_entry, *bufsize_entry;
-	GtkWidget *readonly_chk, *nologbox_chk, *type_cb, *protocol_cb;
-	GtkWidget *mainwnd;
-	LPSTR connstr;
-} TOPLSETUP;
-
-typedef struct TVIRTSETUP
-{
-	GtkWidget *dsn_entry, *comment_entry, *host_entry, *user_entry;
-	GtkWidget *database_cb,*mainwnd;
-	LPSTR connstr;
-} TVIRTSETUP;
 
 typedef struct TGENSETUP
 {

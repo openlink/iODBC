@@ -75,6 +75,7 @@
 
 #include <sql.h>
 #include <sqlext.h>
+#include <sqlucode.h>
 
 #include <dlproc.h>
 
@@ -84,15 +85,14 @@
 #include <hstmt.h>
 
 #include <itrace.h>
+#include <unicode.h>
 
-SQLRETURN SQL_API
-SQLFetch (SQLHSTMT hstmt)
+static SQLRETURN
+SQLFetch_Internal (SQLHSTMT hstmt)
 {
   STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
-  SQLRETURN retcode;
-
-  ENTER_STMT (pstmt);
+  SQLRETURN retcode = SQL_SUCCESS;
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -106,7 +106,11 @@ SQLFetch (SQLHSTMT hstmt)
 	case en_stmt_mustput:
 	case en_stmt_canput:
 	  PUSHSQLERR (pstmt->herr, en_S1010);
-	  LEAVE_STMT (pstmt, SQL_ERROR);
+	  return SQL_ERROR;
+
+	case en_stmt_executed_with_info:
+	  _iodbcdm_do_cursoropen (pstmt);
+	  break;
 
 	default:
 	  break;
@@ -115,7 +119,7 @@ SQLFetch (SQLHSTMT hstmt)
   else if (pstmt->asyn_on != en_Fetch)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 #if (ODBCVER >= 0x0300)
   if (((ENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->henv)->dodbc_ver ==
@@ -147,7 +151,7 @@ SQLFetch (SQLHSTMT hstmt)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
 
-	  LEAVE_STMT (pstmt, SQL_ERROR);
+	  return SQL_ERROR;
 	}
 
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Fetch,
@@ -168,7 +172,7 @@ SQLFetch (SQLHSTMT hstmt)
 
 	case SQL_STILL_EXECUTING:
 	default:
-	  LEAVE_STMT (pstmt, retcode);
+	  return retcode;
 	}
     }
 
@@ -209,7 +213,23 @@ SQLFetch (SQLHSTMT hstmt)
       break;
     }
 
-  LEAVE_STMT (pstmt, retcode);
+  return retcode;
+}
+
+
+SQLRETURN SQL_API
+SQLFetch (SQLHSTMT hstmt)
+{
+  ENTER_STMT (hstmt,
+    trace_SQLFetch (TRACE_ENTER, hstmt));
+
+  retcode = SQLFetch_Internal (hstmt);
+
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    _iodbcdm_ConvBindData (pstmt);
+
+  LEAVE_STMT (hstmt,
+    trace_SQLFetch (TRACE_LEAVE, hstmt));
 }
 
 
@@ -330,35 +350,45 @@ _iodbcdm_ExtendedFetch (
 
 
 SQLRETURN SQL_API
-SQLExtendedFetch (SQLHSTMT hstmt,
-    SQLUSMALLINT fFetchType,
-    SQLINTEGER irow, SQLUINTEGER FAR * pcrow, SQLUSMALLINT FAR * rgfRowStatus)
+SQLExtendedFetch (
+  SQLHSTMT		  hstmt, 
+  SQLUSMALLINT		  fFetchType, 
+  SQLINTEGER		  irow, 
+  SQLUINTEGER FAR	* pcrow, 
+  SQLUSMALLINT FAR	* rgfRowStatus)
 {
-  STMT (pstmt, hstmt);
-  SQLRETURN retcode;
-
-  ENTER_STMT (pstmt);
+  ENTER_STMT (hstmt,
+    trace_SQLExtendedFetch (TRACE_ENTER,
+    	hstmt, fFetchType, irow, pcrow, rgfRowStatus));
 
   retcode =
       _iodbcdm_ExtendedFetch (hstmt, fFetchType, irow, pcrow, rgfRowStatus);
 
-  LEAVE_STMT (pstmt, retcode);
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    _iodbcdm_ConvBindData (pstmt);
+
+  LEAVE_STMT (hstmt,
+    trace_SQLExtendedFetch (TRACE_LEAVE,
+    	hstmt, fFetchType, irow, pcrow, rgfRowStatus));
 }
 
 
-
-SQLRETURN SQL_API
-SQLGetData (SQLHSTMT hstmt,
-    SQLUSMALLINT icol,
-    SQLSMALLINT fCType,
-    SQLPOINTER rgbValue, SQLINTEGER cbValueMax, SQLINTEGER FAR * pcbValue)
+static SQLRETURN
+SQLGetData_Internal (
+  SQLHSTMT		  hstmt,
+  SQLUSMALLINT		  icol,
+  SQLSMALLINT		  fCType,
+  SQLPOINTER		  rgbValue,
+  SQLINTEGER		  cbValueMax,
+  SQLINTEGER FAR	* pcbValue)
 {
   STMT (pstmt, hstmt);
+  CONN (pdbc, pstmt->hdbc);
+  ENV_t FAR *penv = pdbc->henv;
   HPROC hproc;
-  SQLRETURN retcode;
+  SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
-
-  ENTER_STMT (pstmt);
+  SQLSMALLINT nCType;
 
   /* check argument */
   if (rgbValue == NULL)
@@ -412,6 +442,7 @@ SQLGetData (SQLHSTMT hstmt,
 	case SQL_C_TYPE_TIME:
 	case SQL_C_TYPE_TIMESTAMP:
 	case SQL_C_UBIGINT:
+	case SQL_C_WCHAR:
 #endif
 	  break;
 
@@ -425,7 +456,7 @@ SQLGetData (SQLHSTMT hstmt,
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   /* check state */
@@ -441,6 +472,7 @@ SQLGetData (SQLHSTMT hstmt,
 	  sqlstat = en_S1010;
 	  break;
 
+	case en_stmt_executed_with_info:
 	case en_stmt_executed:
 	case en_stmt_cursoropen:
 	  sqlstat = en_24000;
@@ -459,7 +491,7 @@ SQLGetData (SQLHSTMT hstmt,
     {
       PUSHSQLERR (pstmt->herr, sqlstat);
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   /* call driver */
@@ -468,12 +500,22 @@ SQLGetData (SQLHSTMT hstmt,
   if (hproc == SQL_NULL_HPROC)
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
+      return SQL_ERROR;
+    }
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+  /*
+   *  Convert C type to ODBC version of driver
+   */
+  nCType = _iodbcdm_map_c_type (fCType, penv->dodbc_ver);
+
+  if (!penv->unicode_driver && nCType == SQL_C_WCHAR)
+    {
+      nCType = SQL_C_CHAR;
+      cbValueMax /= sizeof(wchar_t);
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetData,
-      (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue));
+      (pstmt->dhstmt, icol, nCType, rgbValue, cbValueMax, pcbValue));
 
   /* state transition */
   if (pstmt->asyn_on == en_GetData)
@@ -489,7 +531,7 @@ SQLGetData (SQLHSTMT hstmt,
 
 	case SQL_STILL_EXECUTING:
 	default:
-	  LEAVE_STMT (pstmt, retcode);
+	  return retcode;
 	}
     }
 
@@ -508,18 +550,58 @@ SQLGetData (SQLHSTMT hstmt,
       break;
     }
 
-  LEAVE_STMT (pstmt, retcode);
+  if (!penv->unicode_driver && fCType == SQL_C_WCHAR)
+    {
+      wchar_t *buf = dm_SQL_A2W(rgbValue, SQL_NTS);
+
+      if (buf != NULL) 
+        WCSCPY(rgbValue, buf);
+
+      MEM_FREE(buf);
+      if (pcbValue)
+      	*pcbValue *= sizeof(wchar_t);
+    }
+
+  return retcode;
 }
 
 
 SQLRETURN SQL_API
-SQLMoreResults (SQLHSTMT hstmt)
+SQLGetData (SQLHSTMT hstmt,
+    SQLUSMALLINT icol,
+    SQLSMALLINT fCType,
+    SQLPOINTER rgbValue,
+    SQLINTEGER cbValueMax,
+    SQLINTEGER FAR * pcbValue)
+{
+  ENTER_STMT (hstmt,
+    trace_SQLGetData (TRACE_ENTER, 
+    	hstmt, 
+	icol, 
+	fCType, 
+    	rgbValue, cbValueMax, pcbValue));
+
+  retcode = SQLGetData_Internal (
+    	hstmt, 
+	icol, 
+	fCType, 
+    	rgbValue, cbValueMax, pcbValue);
+
+  LEAVE_STMT (hstmt,
+    trace_SQLGetData (TRACE_LEAVE, 
+    	hstmt, 
+	icol, 
+	fCType, 
+    	rgbValue, cbValueMax, pcbValue));
+}
+
+
+static SQLRETURN
+SQLMoreResults_Internal (SQLHSTMT hstmt)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
-
-  ENTER_STMT (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -529,14 +611,14 @@ SQLMoreResults (SQLHSTMT hstmt)
 #if 0
 	case en_stmt_allocated:
 	case en_stmt_prepared:
-	  LEAVE_STMT (pstmt, SQL_NO_DATA_FOUND);
+	  return SQL_NO_DATA_FOUND;
 #endif
 
 	case en_stmt_needdata:
 	case en_stmt_mustput:
 	case en_stmt_canput:
 	  PUSHSQLERR (pstmt->herr, en_S1010);
-	  LEAVE_STMT (pstmt, SQL_ERROR);
+	  return SQL_ERROR;
 
 	default:
 	  break;
@@ -546,7 +628,7 @@ SQLMoreResults (SQLHSTMT hstmt)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   /* call driver */
@@ -556,7 +638,7 @@ SQLMoreResults (SQLHSTMT hstmt)
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_MoreResults,
@@ -576,7 +658,7 @@ SQLMoreResults (SQLHSTMT hstmt)
 
 	case SQL_STILL_EXECUTING:
 	default:
-	  LEAVE_STMT (pstmt, retcode);
+	  return retcode;
 	}
     }
 
@@ -584,7 +666,7 @@ SQLMoreResults (SQLHSTMT hstmt)
     {
     case en_stmt_allocated:
     case en_stmt_prepared:
-      /* driver should LEAVE_STMT (pstmt, SQL_NO_DATA_FOUND); */
+      /* driver should return SQL_NO_DATA_FOUND */
 	  if (pstmt->prep_state)
 	    {
 	      pstmt->state = en_stmt_cursoropen;
@@ -594,6 +676,10 @@ SQLMoreResults (SQLHSTMT hstmt)
 	      pstmt->state = en_stmt_prepared;
 	    }
       break;
+
+    case en_stmt_executed_with_info:
+    	_iodbcdm_do_cursoropen (pstmt);
+	/* FALL THROUGH */
 
     case en_stmt_executed:
       if (retcode == SQL_NO_DATA_FOUND)
@@ -641,7 +727,20 @@ SQLMoreResults (SQLHSTMT hstmt)
       break;
     }
 
-  LEAVE_STMT (pstmt, retcode);
+  return retcode;
+}
+
+
+SQLRETURN SQL_API
+SQLMoreResults (SQLHSTMT hstmt)
+{
+  ENTER_STMT (hstmt,
+    trace_SQLMoreResults (TRACE_ENTER, hstmt));
+
+  retcode = SQLMoreResults_Internal (hstmt);
+
+  LEAVE_STMT (hstmt,
+    trace_SQLMoreResults (TRACE_LEAVE, hstmt));
 }
 
 
@@ -675,6 +774,7 @@ _iodbcdm_SetPos (SQLHSTMT hstmt,
 	  sqlstat = en_S1010;
 	  break;
 
+	case en_stmt_executed_with_info:
 	case en_stmt_executed:
 	case en_stmt_cursoropen:
 	  sqlstat = en_24000;
@@ -752,15 +852,19 @@ _iodbcdm_SetPos (SQLHSTMT hstmt,
 
 
 SQLRETURN SQL_API
-SQLSetPos (SQLHSTMT hstmt,
-    SQLUSMALLINT irow, SQLUSMALLINT fOption, SQLUSMALLINT fLock)
+SQLSetPos (
+  SQLHSTMT	hstmt,
+  SQLUSMALLINT	irow, 
+  SQLUSMALLINT	fOption, 
+  SQLUSMALLINT	fLock)
 {
-  STMT (pstmt, hstmt);
-  SQLRETURN retcode;
-
-  ENTER_STMT (pstmt);
+  ENTER_STMT (hstmt,
+    trace_SQLSetPos (TRACE_ENTER,
+      hstmt, irow, fOption, fLock));
 
   retcode = _iodbcdm_SetPos (hstmt, irow, fOption, fLock);
 
-  LEAVE_STMT (pstmt, retcode);
+  LEAVE_STMT (hstmt,
+    trace_SQLSetPos (TRACE_LEAVE,
+      hstmt, irow, fOption, fLock));
 }

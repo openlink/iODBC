@@ -2,6 +2,6 @@
 *.lo
 Makefile
 Makefile.in
-odbctest
+iodbctest
 .libs
 .deps

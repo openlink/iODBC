@@ -74,6 +74,7 @@
 #define	_DLPROC_H
 
 #include <dlf.h>
+#include <wchar.h>
 
 #if defined(_MAC)
 typedef SQLRETURN (FAR * HPROC) (...);

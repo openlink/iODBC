@@ -335,7 +335,7 @@ slot_alloc (char *sym)
 
   ent = (slot_t *) malloc (sizeof (slot_t));
 
-  ent->sym = (char *) malloc (strlen (sym) + 1);
+  ent->sym = (char *) malloc (STRLEN (sym) + 1);
 
   if (!ent->sym)
     {
@@ -343,7 +343,7 @@ slot_alloc (char *sym)
       return 0;
     }
 
-  strcpy (ent->sym, sym);
+  STRCPY (ent->sym, sym);
 
   return ent;
 }
@@ -389,7 +389,7 @@ dlopen (char *file, int mode)
   if (!pobj)
     return 0;
 
-  pobj->path = (char *) malloc (strlen (file) + 1);
+  pobj->path = (char *) malloc (STRLEN (file) + 1);
 
   if (!pobj->path)
     {
@@ -397,7 +397,7 @@ dlopen (char *file, int mode)
       return 0;
     }
 
-  strcpy (pobj->path, file);
+  STRCPY (pobj->path, file);
 
   pobj->dev = st.st_dev;
   pobj->ino = st.st_ino;
@@ -720,7 +720,7 @@ iodbc_dlopen (char *path, int unused_flag)
 
   imgfab = cc$rms_fab;
   imgfab.fab$l_fna = path;
-  imgfab.fab$b_fns = strlen (path);
+  imgfab.fab$b_fns = STRLEN (path);
   imgfab.fab$w_ifi = 0;
   imgfab.fab$l_dna = defimg;
   imgfab.fab$b_dns = sizeof (defimg);
@@ -785,7 +785,7 @@ iodbc_dlsym (void *hdll, char *sym)
   symbol_d.dsc$b_dtype = DSC$K_DTYPE_T;
   symbol_d.dsc$b_class = DSC$K_CLASS_S;
   symbol_d.dsc$a_pointer = sym;
-  symbol_d.dsc$w_length = strlen (sym);
+  symbol_d.dsc$w_length = STRLEN (sym);
   status = iodbc_find_image_symbol (&dll->filename_d, &symbol_d, &rp,
       &dll->image_d, 0);
   if (!((saved_status ^ LIB$_KEYNOTFOU) & ~7))
@@ -998,6 +998,9 @@ static struct dlopen_handle *dlopen_handles = NULL;
 static const struct dlopen_handle main_program_handle = { NULL };
 static char *dlerror_pointer = NULL;
 
+  enum bool
+  { false, true };
+
 /*
  * NSMakePrivateModulePublic() is not part of the public dyld API so we define
  * it here.  The internal dyld function pointer for
@@ -1041,6 +1044,7 @@ dlopen (char FAR * path, int mode)
   void (*init) (void);
 
   dlerror_pointer = NULL;
+
   /*
    * A NULL path is to indicate the caller wants a handle for the
    * main program.
@@ -1143,7 +1147,9 @@ dlopen (char FAR * path, int mode)
     }
 
   /* try to link in this object file image */
-  options = NSLINKMODULE_OPTION_PRIVATE;
+  options = NSLINKMODULE_OPTION_NONE |
+    NSLINKMODULE_OPTION_PRIVATE |
+    NSLINKMODULE_OPTION_RETURN_ON_ERROR;
   if ((mode & RTLD_NOW) == RTLD_NOW)
     options |= NSLINKMODULE_OPTION_BINDNOW;
   module = NSLinkModule (objectFileImage, path, options);
@@ -1352,7 +1358,7 @@ dlclose (void FAR * handle)
 #include <CodeFragments.h>
 #include <strconv.h>
 
-static OSErr error = noErr;
+static char *msg_error = NULL;
 
 void *
 dlopen (char *dll, int mode)
@@ -1361,23 +1367,46 @@ dlopen (char *dll, int mode)
   CFragConnectionID conn_id;
   Ptr main_addr;
   Str255 name;
+  OSErr err;
 
   if (dll == NULL)
     {
+      msg_error = "Library name not valid.";
       return NULL;
     }
 
-  error =
-      GetSharedLibrary ((unsigned char *) str_to_Str255 (dll),
-      kPowerPCCFragArch, kLoadCFrag, &conn_id, &main_addr, name);
-
-  if (error != noErr)
+  if ((err = GetSharedLibrary ((unsigned char *) str_to_Str255 (dll),
+	      kPowerPCCFragArch, kLoadCFrag, &conn_id, &main_addr,
+	      name)) != noErr)
     {
+      msg_error = "Library cannot be loaded.";
       return NULL;
     }
 
+  msg_error = NULL;
   return (void *) conn_id;
 #else
+  CFragConnectionID conn_id;
+  Ptr main_addr;
+  Str255 name;
+  OSErr err;
+
+  if (dll == NULL)
+    {
+      msg_error = "Library name not valid.";
+      return NULL;
+    }
+
+  if ((err = GetSharedLibrary ((unsigned char *) str_to_Str255 (dll),
+	      kMotorola68KCFragArch, kLoadCFrag, &conn_id, &main_addr,
+	      name)) != noErr)
+    {
+      msg_error = "Library cannot be loaded.";
+      return NULL;
+    }
+
+  msg_error = NULL;
+  return (void *) conn_id;
 #endif
 }
 
@@ -1388,18 +1417,45 @@ dlsym (void *hdll, char *sym)
 #ifdef __POWERPC__
   Ptr symbol;
   CFragSymbolClass symbol_type;
+  OSErr err;
 
-  error =
-      FindSymbol ((CFragConnectionID) hdll,
-      (unsigned char *) str_to_Str255 (sym), &symbol, &symbol_type);
-
-  if (error != noErr)
+  if (sym == NULL)
     {
+      msg_error = "Symbol name not valid.";
       return NULL;
     }
 
+  if ((err =
+	  FindSymbol ((CFragConnectionID) hdll,
+	   (unsigned char *) str_to_Str255 (sym), &symbol,
+	      &symbol_type)) != noErr)
+    {
+      msg_error = "Symbol cannot be loaded.";
+      return NULL;
+    }
+
+  msg_error = NULL;
   return symbol;
 #else
+  Ptr symbol;
+  CFragSymbolClass symbol_type;
+
+  if (sym == NULL)
+    {
+      msg_error = "Symbol name not valid.";
+      return NULL;
+    }
+
+  if (FindSymbol ((CFragConnectionID) hdll,
+	  (unsigned char *) str_to_Str255 (sym), &symbol,
+	  &symbol_type) != noErr)
+    {
+      msg_error = "Symbol cannot be loaded.";
+      return NULL;
+    }
+
+  msg_error = NULL;
+  return symbol;
 #endif
 }
 
@@ -1407,18 +1463,35 @@ dlsym (void *hdll, char *sym)
 char *
 dlerror ()
 {
-  return 0L;			/* unimplemented yet */
+  return (msg_error) ? msg_error : "No error detected.";
 }
 
 
 int
 dlclose (void *hdll)
 {
+  /* It should be something like that ....  */
+  /* but some applications like Office 2001 */
+  /* have a problem with that ... just let  */
+  /* the Mac unload the library when the    */
+  /* application stop ...                   */
 #ifdef __POWERPC__
-  error = CloseConnection ((CFragConnectionID *) hdll);
-
-  return error;
+/*		if( CloseConnection((CFragConnectionID*)hdll) )
+		{
+			msg_error = "Library cannot be unloaded.";
+			return 1;
+		}
+		msg_error = NULL;	
+		return 0;*/
 #else
+  if (CloseConnection ((CFragConnectionID *) hdll))
+    {
+      msg_error = "Library cannot be unloaded.";
+      return 1;
+    }
+
+  msg_error = NULL;
+  return 0;
 #endif
 }
 

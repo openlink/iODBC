@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		034768DDFF38A45A11DB9C8B = {
 			children = (
@@ -54,6 +54,8 @@
 		};
 		0867D69AFE84028FC02AAC07 = {
 			children = (
+				F5EC325104D01DC50121CDE8,
+				F5EC325904D0397D0121CDE8,
 			);
 			isa = PBXGroup;
 			name = "External Frameworks and Libraries";
@@ -72,7 +74,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXPORTED_SYMBOLS_FILE = ../../mac/iodbc.exp;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "../..//mac/iODBCinst/build";
 				FRAMEWORK_VERSION = 3.0.6;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /Library/Frameworks;
@@ -93,8 +95,8 @@
 			productName = iODBC;
 			productReference = 034768DEFF38A45A11DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -144,9 +146,15 @@
 				F535B3580277FC2E01A801DE,
 				F535B3590277FC2E01A801DE,
 				F535B35A0277FC2E01A801DE,
+				F55DDABD04949A6001000FFE,
+				F586819104949AE201000FFE,
+				F586819304949B4701000FFE,
+				F586819704949C2101000FFE,
+				F578097604CED1970194ADB8,
+				F578098604CED1970194ADB8,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69EFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -154,7 +162,7 @@
 				089C1668FE841158C02AAC07,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69FFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -171,28 +179,105 @@
 				F535B3470277FBC601A801DE,
 				F535B3480277FBC601A801DE,
 				F535B3490277FBC601A801DE,
-				F535B34B0277FBC601A801DE,
 				F535B34C0277FBC601A801DE,
 				F535B34D0277FBC601A801DE,
 				F535B34E0277FBC601A801DE,
 				F54DA8D80279592201A801DE,
+				F586819604949C2101000FFE,
+				F586819904949C7301000FFE,
+				F578093D04CED1970194ADB8,
+				F578093E04CED1970194ADB8,
+				F578093F04CED1970194ADB8,
+				F578094004CED1970194ADB8,
+				F578094104CED1970194ADB8,
+				F578094204CED1970194ADB8,
+				F578094304CED1970194ADB8,
+				F578094404CED1970194ADB8,
+				F578094504CED1970194ADB8,
+				F578094604CED1970194ADB8,
+				F578094704CED1970194ADB8,
+				F578094804CED1970194ADB8,
+				F578094904CED1970194ADB8,
+				F578094A04CED1970194ADB8,
+				F578094B04CED1970194ADB8,
+				F578094C04CED1970194ADB8,
+				F578094D04CED1970194ADB8,
+				F578094E04CED1970194ADB8,
+				F578094F04CED1970194ADB8,
+				F578095004CED1970194ADB8,
+				F578095104CED1970194ADB8,
+				F578095204CED1970194ADB8,
+				F578095304CED1970194ADB8,
+				F578095404CED1970194ADB8,
+				F578095504CED1970194ADB8,
+				F578095604CED1970194ADB8,
+				F578095704CED1970194ADB8,
+				F578095804CED1970194ADB8,
+				F578095904CED1970194ADB8,
+				F578095A04CED1970194ADB8,
+				F578095B04CED1970194ADB8,
+				F578095C04CED1970194ADB8,
+				F578095D04CED1970194ADB8,
+				F578095E04CED1970194ADB8,
+				F578095F04CED1970194ADB8,
+				F578096004CED1970194ADB8,
+				F578096104CED1970194ADB8,
+				F578096204CED1970194ADB8,
+				F578096304CED1970194ADB8,
+				F578096404CED1970194ADB8,
+				F578096504CED1970194ADB8,
+				F578096604CED1970194ADB8,
+				F578096704CED1970194ADB8,
+				F578096804CED1970194ADB8,
+				F578096904CED1970194ADB8,
+				F578096A04CED1970194ADB8,
+				F578096B04CED1970194ADB8,
+				F578096C04CED1970194ADB8,
+				F578096D04CED1970194ADB8,
+				F578096E04CED1970194ADB8,
+				F578096F04CED1970194ADB8,
+				F578097004CED1970194ADB8,
+				F578097104CED1970194ADB8,
+				F578097204CED1970194ADB8,
+				F578097304CED1970194ADB8,
+				F578097404CED1970194ADB8,
+				F578097504CED1970194ADB8,
+				F578097704CED1970194ADB8,
+				F578097804CED1970194ADB8,
+				F578097904CED1970194ADB8,
+				F578097A04CED1970194ADB8,
+				F578097B04CED1970194ADB8,
+				F578097C04CED1970194ADB8,
+				F578097D04CED1970194ADB8,
+				F578097E04CED1970194ADB8,
+				F578097F04CED1970194ADB8,
+				F578098004CED1970194ADB8,
+				F578098104CED1970194ADB8,
+				F578098204CED1970194ADB8,
+				F578098304CED1970194ADB8,
+				F578098404CED1970194ADB8,
+				F578098504CED1970194ADB8,
+				F578098704CED1970194ADB8,
+				F5C609C404D1703401237589,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A0FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
+				F5EC325604D01DC50121CDE8,
+				F5EC32F104D0397E0121CDE8,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A2FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		089C1665FE841158C02AAC07 = {
 			children = (
@@ -226,6 +311,7 @@
 		08FB77ACFE841707C02AAC07 = {
 			children = (
 				F535B3150277FB3501A801DE,
+				F586818F04949ACB01000FFE,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -272,6 +358,7 @@
 //F54
 		F535B3150277FB3501A801DE = {
 			children = (
+				F57808F104CED1010194ADB8,
 				F535B34F0277FC2E01A801DE,
 				F535B3500277FC2E01A801DE,
 				F535B3510277FC2E01A801DE,
@@ -301,13 +388,16 @@
 				F535B32A0277FBC601A801DE,
 				F535B32C0277FBC601A801DE,
 				F535B32D0277FBC601A801DE,
-				F535B32E0277FBC601A801DE,
 				F535B32F0277FBC601A801DE,
 				F535B3300277FBC601A801DE,
 				F535B3310277FBC601A801DE,
 				F535B3320277FBC601A801DE,
 				F535B3330277FBC601A801DE,
 				F54DA8D70279592201A801DE,
+				F55DDABC04949A6001000FFE,
+				F586819204949B4701000FFE,
+				F586819404949C2101000FFE,
+				F586819504949C2101000FFE,
 			);
 			isa = PBXGroup;
 			name = iODBC;
@@ -449,12 +539,6 @@
 			isa = PBXFileReference;
 			name = ithread.h;
 			path = ../../iodbc/ithread.h;
-			refType = 2;
-		};
-		F535B32E0277FBC601A801DE = {
-			isa = PBXFileReference;
-			name = itrace.c;
-			path = ../../iodbc/itrace.c;
 			refType = 2;
 		};
 		F535B32F0277FBC601A801DE = {
@@ -619,12 +703,6 @@
 			settings = {
 			};
 		};
-		F535B34B0277FBC601A801DE = {
-			fileRef = F535B32E0277FBC601A801DE;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F535B34C0277FBC601A801DE = {
 			fileRef = F535B3310277FBC601A801DE;
 			isa = PBXBuildFile;
@@ -646,37 +724,37 @@
 		F535B34F0277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = isqltypes.h;
-			path = ../include/isqltypes.h;
+			path = ../../include/isqltypes.h;
 			refType = 2;
 		};
 		F535B3500277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = isql.h;
-			path = ../include/isql.h;
+			path = ../../include/isql.h;
 			refType = 2;
 		};
 		F535B3510277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = isqlext.h;
-			path = ../include/isqlext.h;
+			path = ../../include/isqlext.h;
 			refType = 2;
 		};
 		F535B3520277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = sql.h;
-			path = ../include/sql.h;
+			path = ../../include/sql.h;
 			refType = 2;
 		};
 		F535B3530277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = sqlext.h;
-			path = ../include/sqlext.h;
+			path = ../../include/sqlext.h;
 			refType = 2;
 		};
 		F535B3540277FC2E01A801DE = {
 			isa = PBXFileReference;
 			name = sqltypes.h;
-			path = ../include/sqltypes.h;
+			path = ../../include/sqltypes.h;
 			refType = 2;
 		};
 		F535B3550277FC2E01A801DE = {
@@ -741,6 +819,1106 @@
 		};
 		F54DA8D80279592201A801DE = {
 			fileRef = F54DA8D70279592201A801DE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F55DDABC04949A6001000FFE = {
+			isa = PBXFileReference;
+			name = sqlucode.h;
+			path = ../../include/sqlucode.h;
+			refType = 2;
+		};
+		F55DDABD04949A6001000FFE = {
+			fileRef = F55DDABC04949A6001000FFE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F57808F104CED1010194ADB8 = {
+			children = (
+				F57808F204CED1970194ADB8,
+				F57808F304CED1970194ADB8,
+				F57808F404CED1970194ADB8,
+				F57808F504CED1970194ADB8,
+				F57808F604CED1970194ADB8,
+				F57808F704CED1970194ADB8,
+				F57808F804CED1970194ADB8,
+				F57808F904CED1970194ADB8,
+				F57808FA04CED1970194ADB8,
+				F57808FB04CED1970194ADB8,
+				F57808FC04CED1970194ADB8,
+				F57808FD04CED1970194ADB8,
+				F57808FE04CED1970194ADB8,
+				F57808FF04CED1970194ADB8,
+				F578090004CED1970194ADB8,
+				F578090104CED1970194ADB8,
+				F578090204CED1970194ADB8,
+				F578090304CED1970194ADB8,
+				F578090404CED1970194ADB8,
+				F578090504CED1970194ADB8,
+				F578090604CED1970194ADB8,
+				F578090704CED1970194ADB8,
+				F578090804CED1970194ADB8,
+				F578090904CED1970194ADB8,
+				F578090A04CED1970194ADB8,
+				F578090B04CED1970194ADB8,
+				F578090C04CED1970194ADB8,
+				F578090D04CED1970194ADB8,
+				F578090E04CED1970194ADB8,
+				F578090F04CED1970194ADB8,
+				F578091004CED1970194ADB8,
+				F578091104CED1970194ADB8,
+				F578091204CED1970194ADB8,
+				F578091304CED1970194ADB8,
+				F578091404CED1970194ADB8,
+				F578091504CED1970194ADB8,
+				F578091604CED1970194ADB8,
+				F578091704CED1970194ADB8,
+				F578091804CED1970194ADB8,
+				F578091904CED1970194ADB8,
+				F578091A04CED1970194ADB8,
+				F578091B04CED1970194ADB8,
+				F578091C04CED1970194ADB8,
+				F578091D04CED1970194ADB8,
+				F578091E04CED1970194ADB8,
+				F578091F04CED1970194ADB8,
+				F578092004CED1970194ADB8,
+				F578092104CED1970194ADB8,
+				F578092204CED1970194ADB8,
+				F578092304CED1970194ADB8,
+				F578092404CED1970194ADB8,
+				F578092504CED1970194ADB8,
+				F578092604CED1970194ADB8,
+				F578092704CED1970194ADB8,
+				F578092804CED1970194ADB8,
+				F578092904CED1970194ADB8,
+				F578092A04CED1970194ADB8,
+				F578092B04CED1970194ADB8,
+				F578092C04CED1970194ADB8,
+				F578092D04CED1970194ADB8,
+				F578092E04CED1970194ADB8,
+				F578092F04CED1970194ADB8,
+				F578093004CED1970194ADB8,
+				F5C609C304D1703401237589,
+				F578093104CED1970194ADB8,
+				F578093204CED1970194ADB8,
+				F578093304CED1970194ADB8,
+				F578093404CED1970194ADB8,
+				F578093504CED1970194ADB8,
+				F578093604CED1970194ADB8,
+				F578093704CED1970194ADB8,
+				F578093804CED1970194ADB8,
+				F578093904CED1970194ADB8,
+				F578093A04CED1970194ADB8,
+				F578093B04CED1970194ADB8,
+				F578093C04CED1970194ADB8,
+			);
+			isa = PBXGroup;
+			name = trace;
+			refType = 4;
+		};
+		F57808F204CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = AllocConnect.c;
+			path = ../../iodbc/trace/AllocConnect.c;
+			refType = 2;
+		};
+		F57808F304CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = AllocEnv.c;
+			path = ../../iodbc/trace/AllocEnv.c;
+			refType = 2;
+		};
+		F57808F404CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = AllocHandle.c;
+			path = ../../iodbc/trace/AllocHandle.c;
+			refType = 2;
+		};
+		F57808F504CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = AllocStmt.c;
+			path = ../../iodbc/trace/AllocStmt.c;
+			refType = 2;
+		};
+		F57808F604CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = BindCol.c;
+			path = ../../iodbc/trace/BindCol.c;
+			refType = 2;
+		};
+		F57808F704CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = BindParameter.c;
+			path = ../../iodbc/trace/BindParameter.c;
+			refType = 2;
+		};
+		F57808F804CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = BrowseConnect.c;
+			path = ../../iodbc/trace/BrowseConnect.c;
+			refType = 2;
+		};
+		F57808F904CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = BulkOperations.c;
+			path = ../../iodbc/trace/BulkOperations.c;
+			refType = 2;
+		};
+		F57808FA04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Cancel.c;
+			path = ../../iodbc/trace/Cancel.c;
+			refType = 2;
+		};
+		F57808FB04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = CloseCursor.c;
+			path = ../../iodbc/trace/CloseCursor.c;
+			refType = 2;
+		};
+		F57808FC04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ColAttribute.c;
+			path = ../../iodbc/trace/ColAttribute.c;
+			refType = 2;
+		};
+		F57808FD04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ColumnPrivileges.c;
+			path = ../../iodbc/trace/ColumnPrivileges.c;
+			refType = 2;
+		};
+		F57808FE04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Columns.c;
+			path = ../../iodbc/trace/Columns.c;
+			refType = 2;
+		};
+		F57808FF04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Connect.c;
+			path = ../../iodbc/trace/Connect.c;
+			refType = 2;
+		};
+		F578090004CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = CopyDesc.c;
+			path = ../../iodbc/trace/CopyDesc.c;
+			refType = 2;
+		};
+		F578090104CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = DataSources.c;
+			path = ../../iodbc/trace/DataSources.c;
+			refType = 2;
+		};
+		F578090204CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = DescribeCol.c;
+			path = ../../iodbc/trace/DescribeCol.c;
+			refType = 2;
+		};
+		F578090304CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = DescribeParam.c;
+			path = ../../iodbc/trace/DescribeParam.c;
+			refType = 2;
+		};
+		F578090404CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Disconnect.c;
+			path = ../../iodbc/trace/Disconnect.c;
+			refType = 2;
+		};
+		F578090504CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = DriverConnect.c;
+			path = ../../iodbc/trace/DriverConnect.c;
+			refType = 2;
+		};
+		F578090604CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Drivers.c;
+			path = ../../iodbc/trace/Drivers.c;
+			refType = 2;
+		};
+		F578090704CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = EndTran.c;
+			path = ../../iodbc/trace/EndTran.c;
+			refType = 2;
+		};
+		F578090804CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Error.c;
+			path = ../../iodbc/trace/Error.c;
+			refType = 2;
+		};
+		F578090904CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ExecDirect.c;
+			path = ../../iodbc/trace/ExecDirect.c;
+			refType = 2;
+		};
+		F578090A04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Execute.c;
+			path = ../../iodbc/trace/Execute.c;
+			refType = 2;
+		};
+		F578090B04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ExtendedFetch.c;
+			path = ../../iodbc/trace/ExtendedFetch.c;
+			refType = 2;
+		};
+		F578090C04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Fetch.c;
+			path = ../../iodbc/trace/Fetch.c;
+			refType = 2;
+		};
+		F578090D04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = FetchScroll.c;
+			path = ../../iodbc/trace/FetchScroll.c;
+			refType = 2;
+		};
+		F578090E04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ForeignKeys.c;
+			path = ../../iodbc/trace/ForeignKeys.c;
+			refType = 2;
+		};
+		F578090F04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = FreeConnect.c;
+			path = ../../iodbc/trace/FreeConnect.c;
+			refType = 2;
+		};
+		F578091004CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = FreeEnv.c;
+			path = ../../iodbc/trace/FreeEnv.c;
+			refType = 2;
+		};
+		F578091104CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = FreeHandle.c;
+			path = ../../iodbc/trace/FreeHandle.c;
+			refType = 2;
+		};
+		F578091204CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = FreeStmt.c;
+			path = ../../iodbc/trace/FreeStmt.c;
+			refType = 2;
+		};
+		F578091304CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetConnectAttr.c;
+			path = ../../iodbc/trace/GetConnectAttr.c;
+			refType = 2;
+		};
+		F578091404CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetConnectOption.c;
+			path = ../../iodbc/trace/GetConnectOption.c;
+			refType = 2;
+		};
+		F578091504CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetCursorName.c;
+			path = ../../iodbc/trace/GetCursorName.c;
+			refType = 2;
+		};
+		F578091604CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetData.c;
+			path = ../../iodbc/trace/GetData.c;
+			refType = 2;
+		};
+		F578091704CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetDescField.c;
+			path = ../../iodbc/trace/GetDescField.c;
+			refType = 2;
+		};
+		F578091804CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetDescRec.c;
+			path = ../../iodbc/trace/GetDescRec.c;
+			refType = 2;
+		};
+		F578091904CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetDiagField.c;
+			path = ../../iodbc/trace/GetDiagField.c;
+			refType = 2;
+		};
+		F578091A04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetDiagRec.c;
+			path = ../../iodbc/trace/GetDiagRec.c;
+			refType = 2;
+		};
+		F578091B04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetEnvAttr.c;
+			path = ../../iodbc/trace/GetEnvAttr.c;
+			refType = 2;
+		};
+		F578091C04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetFunctions.c;
+			path = ../../iodbc/trace/GetFunctions.c;
+			refType = 2;
+		};
+		F578091D04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetStmtAttr.c;
+			path = ../../iodbc/trace/GetStmtAttr.c;
+			refType = 2;
+		};
+		F578091E04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetStmtOption.c;
+			path = ../../iodbc/trace/GetStmtOption.c;
+			refType = 2;
+		};
+		F578091F04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = GetTypeInfo.c;
+			path = ../../iodbc/trace/GetTypeInfo.c;
+			refType = 2;
+		};
+		F578092004CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Info.c;
+			path = ../../iodbc/trace/Info.c;
+			refType = 2;
+		};
+		F578092104CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = MoreResults.c;
+			path = ../../iodbc/trace/MoreResults.c;
+			refType = 2;
+		};
+		F578092204CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = NativeSql.c;
+			path = ../../iodbc/trace/NativeSql.c;
+			refType = 2;
+		};
+		F578092304CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = NumParams.c;
+			path = ../../iodbc/trace/NumParams.c;
+			refType = 2;
+		};
+		F578092404CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = NumResultCols.c;
+			path = ../../iodbc/trace/NumResultCols.c;
+			refType = 2;
+		};
+		F578092504CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ParamData.c;
+			path = ../../iodbc/trace/ParamData.c;
+			refType = 2;
+		};
+		F578092604CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ParamOptions.c;
+			path = ../../iodbc/trace/ParamOptions.c;
+			refType = 2;
+		};
+		F578092704CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Prepare.c;
+			path = ../../iodbc/trace/Prepare.c;
+			refType = 2;
+		};
+		F578092804CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = PrimaryKeys.c;
+			path = ../../iodbc/trace/PrimaryKeys.c;
+			refType = 2;
+		};
+		F578092904CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = ProcedureColumns.c;
+			path = ../../iodbc/trace/ProcedureColumns.c;
+			refType = 2;
+		};
+		F578092A04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Procedures.c;
+			path = ../../iodbc/trace/Procedures.c;
+			refType = 2;
+		};
+		F578092B04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = proto.h;
+			path = ../../iodbc/trace/proto.h;
+			refType = 2;
+		};
+		F578092C04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = PutData.c;
+			path = ../../iodbc/trace/PutData.c;
+			refType = 2;
+		};
+		F578092D04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = RowCount.c;
+			path = ../../iodbc/trace/RowCount.c;
+			refType = 2;
+		};
+		F578092E04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetConnectAttr.c;
+			path = ../../iodbc/trace/SetConnectAttr.c;
+			refType = 2;
+		};
+		F578092F04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetConnectOption.c;
+			path = ../../iodbc/trace/SetConnectOption.c;
+			refType = 2;
+		};
+		F578093004CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetCursorName.c;
+			path = ../../iodbc/trace/SetCursorName.c;
+			refType = 2;
+		};
+		F578093104CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetEnvAttr.c;
+			path = ../../iodbc/trace/SetEnvAttr.c;
+			refType = 2;
+		};
+		F578093204CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetPos.c;
+			path = ../../iodbc/trace/SetPos.c;
+			refType = 2;
+		};
+		F578093304CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetScrollOptions.c;
+			path = ../../iodbc/trace/SetScrollOptions.c;
+			refType = 2;
+		};
+		F578093404CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetStmtAttr.c;
+			path = ../../iodbc/trace/SetStmtAttr.c;
+			refType = 2;
+		};
+		F578093504CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SetStmtOption.c;
+			path = ../../iodbc/trace/SetStmtOption.c;
+			refType = 2;
+		};
+		F578093604CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = SpecialColumns.c;
+			path = ../../iodbc/trace/SpecialColumns.c;
+			refType = 2;
+		};
+		F578093704CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Statistics.c;
+			path = ../../iodbc/trace/Statistics.c;
+			refType = 2;
+		};
+		F578093804CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = TablePrivileges.c;
+			path = ../../iodbc/trace/TablePrivileges.c;
+			refType = 2;
+		};
+		F578093904CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Tables.c;
+			path = ../../iodbc/trace/Tables.c;
+			refType = 2;
+		};
+		F578093A04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = trace.c;
+			path = ../../iodbc/trace/trace.c;
+			refType = 2;
+		};
+		F578093B04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = trace.h;
+			path = ../../iodbc/trace/trace.h;
+			refType = 2;
+		};
+		F578093C04CED1970194ADB8 = {
+			isa = PBXFileReference;
+			name = Transact.c;
+			path = ../../iodbc/trace/Transact.c;
+			refType = 2;
+		};
+		F578093D04CED1970194ADB8 = {
+			fileRef = F57808F204CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578093E04CED1970194ADB8 = {
+			fileRef = F57808F304CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578093F04CED1970194ADB8 = {
+			fileRef = F57808F404CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094004CED1970194ADB8 = {
+			fileRef = F57808F504CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094104CED1970194ADB8 = {
+			fileRef = F57808F604CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094204CED1970194ADB8 = {
+			fileRef = F57808F704CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094304CED1970194ADB8 = {
+			fileRef = F57808F804CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094404CED1970194ADB8 = {
+			fileRef = F57808F904CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094504CED1970194ADB8 = {
+			fileRef = F57808FA04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094604CED1970194ADB8 = {
+			fileRef = F57808FB04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094704CED1970194ADB8 = {
+			fileRef = F57808FC04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094804CED1970194ADB8 = {
+			fileRef = F57808FD04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094904CED1970194ADB8 = {
+			fileRef = F57808FE04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094A04CED1970194ADB8 = {
+			fileRef = F57808FF04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094B04CED1970194ADB8 = {
+			fileRef = F578090004CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094C04CED1970194ADB8 = {
+			fileRef = F578090104CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094D04CED1970194ADB8 = {
+			fileRef = F578090204CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094E04CED1970194ADB8 = {
+			fileRef = F578090304CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578094F04CED1970194ADB8 = {
+			fileRef = F578090404CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095004CED1970194ADB8 = {
+			fileRef = F578090504CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095104CED1970194ADB8 = {
+			fileRef = F578090604CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095204CED1970194ADB8 = {
+			fileRef = F578090704CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095304CED1970194ADB8 = {
+			fileRef = F578090804CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095404CED1970194ADB8 = {
+			fileRef = F578090904CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095504CED1970194ADB8 = {
+			fileRef = F578090A04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095604CED1970194ADB8 = {
+			fileRef = F578090B04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095704CED1970194ADB8 = {
+			fileRef = F578090C04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095804CED1970194ADB8 = {
+			fileRef = F578090D04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095904CED1970194ADB8 = {
+			fileRef = F578090E04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095A04CED1970194ADB8 = {
+			fileRef = F578090F04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095B04CED1970194ADB8 = {
+			fileRef = F578091004CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095C04CED1970194ADB8 = {
+			fileRef = F578091104CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095D04CED1970194ADB8 = {
+			fileRef = F578091204CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095E04CED1970194ADB8 = {
+			fileRef = F578091304CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578095F04CED1970194ADB8 = {
+			fileRef = F578091404CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096004CED1970194ADB8 = {
+			fileRef = F578091504CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096104CED1970194ADB8 = {
+			fileRef = F578091604CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096204CED1970194ADB8 = {
+			fileRef = F578091704CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096304CED1970194ADB8 = {
+			fileRef = F578091804CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096404CED1970194ADB8 = {
+			fileRef = F578091904CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096504CED1970194ADB8 = {
+			fileRef = F578091A04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096604CED1970194ADB8 = {
+			fileRef = F578091B04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096704CED1970194ADB8 = {
+			fileRef = F578091C04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096804CED1970194ADB8 = {
+			fileRef = F578091D04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096904CED1970194ADB8 = {
+			fileRef = F578091E04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096A04CED1970194ADB8 = {
+			fileRef = F578091F04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096B04CED1970194ADB8 = {
+			fileRef = F578092004CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096C04CED1970194ADB8 = {
+			fileRef = F578092104CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096D04CED1970194ADB8 = {
+			fileRef = F578092204CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096E04CED1970194ADB8 = {
+			fileRef = F578092304CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578096F04CED1970194ADB8 = {
+			fileRef = F578092404CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097004CED1970194ADB8 = {
+			fileRef = F578092504CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097104CED1970194ADB8 = {
+			fileRef = F578092604CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097204CED1970194ADB8 = {
+			fileRef = F578092704CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097304CED1970194ADB8 = {
+			fileRef = F578092804CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097404CED1970194ADB8 = {
+			fileRef = F578092904CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097504CED1970194ADB8 = {
+			fileRef = F578092A04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097604CED1970194ADB8 = {
+			fileRef = F578092B04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097704CED1970194ADB8 = {
+			fileRef = F578092C04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097804CED1970194ADB8 = {
+			fileRef = F578092D04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097904CED1970194ADB8 = {
+			fileRef = F578092E04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097A04CED1970194ADB8 = {
+			fileRef = F578092F04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097B04CED1970194ADB8 = {
+			fileRef = F578093004CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097C04CED1970194ADB8 = {
+			fileRef = F578093104CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097D04CED1970194ADB8 = {
+			fileRef = F578093204CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097E04CED1970194ADB8 = {
+			fileRef = F578093304CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578097F04CED1970194ADB8 = {
+			fileRef = F578093404CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098004CED1970194ADB8 = {
+			fileRef = F578093504CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098104CED1970194ADB8 = {
+			fileRef = F578093604CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098204CED1970194ADB8 = {
+			fileRef = F578093704CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098304CED1970194ADB8 = {
+			fileRef = F578093804CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098404CED1970194ADB8 = {
+			fileRef = F578093904CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098504CED1970194ADB8 = {
+			fileRef = F578093A04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098604CED1970194ADB8 = {
+			fileRef = F578093B04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F578098704CED1970194ADB8 = {
+			fileRef = F578093C04CED1970194ADB8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F586818F04949ACB01000FFE = {
+			children = (
+				F586819004949AE201000FFE,
+				F586819804949C7301000FFE,
+			);
+			isa = PBXGroup;
+			name = mac;
+			refType = 4;
+		};
+		F586819004949AE201000FFE = {
+			isa = PBXFileReference;
+			name = wchar.h;
+			path = ../wchar.h;
+			refType = 2;
+		};
+		F586819104949AE201000FFE = {
+			fileRef = F586819004949AE201000FFE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F586819204949B4701000FFE = {
+			isa = PBXFileReference;
+			name = iodbcext.h;
+			path = ../../include/iodbcext.h;
+			refType = 2;
+		};
+		F586819304949B4701000FFE = {
+			fileRef = F586819204949B4701000FFE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F586819404949C2101000FFE = {
+			isa = PBXFileReference;
+			name = unicode.c;
+			path = ../../iodbc/unicode.c;
+			refType = 2;
+		};
+		F586819504949C2101000FFE = {
+			isa = PBXFileReference;
+			name = unicode.h;
+			path = ../../iodbc/unicode.h;
+			refType = 2;
+		};
+		F586819604949C2101000FFE = {
+			fileRef = F586819404949C2101000FFE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F586819704949C2101000FFE = {
+			fileRef = F586819504949C2101000FFE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F586819804949C7301000FFE = {
+			isa = PBXFileReference;
+			name = wchar.c;
+			path = ../wchar.c;
+			refType = 2;
+		};
+		F586819904949C7301000FFE = {
+			fileRef = F586819804949C7301000FFE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C609C304D1703401237589 = {
+			isa = PBXFileReference;
+			name = SetDescField.c;
+			path = ../../iodbc/trace/SetDescField.c;
+			refType = 2;
+		};
+		F5C609C404D1703401237589 = {
+			fileRef = F5C609C304D1703401237589;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5EC325104D01DC50121CDE8 = {
+			isa = PBXFrameworkReference;
+			name = iODBCinst.framework;
+			path = ../iODBCinst/build/iODBCinst.framework;
+			refType = 2;
+		};
+		F5EC325604D01DC50121CDE8 = {
+			fileRef = F5EC325104D01DC50121CDE8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5EC325904D0397D0121CDE8 = {
+			isa = PBXFrameworkReference;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+		};
+		F5EC32F104D0397E0121CDE8 = {
+			fileRef = F5EC325904D0397D0121CDE8;
 			isa = PBXBuildFile;
 			settings = {
 			};

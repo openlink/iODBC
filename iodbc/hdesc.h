@@ -99,31 +99,41 @@ typedef struct DESC_s {
 #ifndef HDESC
 #define HDESC SQLHDESC
 #endif
+
+
 #define IS_VALID_HDESC(x) \
 	((x) != SQL_NULL_HDESC && \
 	 ((DESC_t FAR *)(x))->type == SQL_HANDLE_DESC && \
 	 ((DESC_t FAR *)(x))->hdbc != SQL_NULL_HDBC)
 
-#define ENTER_HDESC(pdesc) \
+
+#define ENTER_DESC(hdesc, trace) \
+	DESC (pdesc, hdesc); \
+	SQLRETURN retcode = SQL_SUCCESS; \
         ODBC_LOCK();\
+	TRACE(trace); \
     	if (!IS_VALID_HDESC (pdesc)) \
 	  { \
-	    ODBC_UNLOCK (); \
-	    return SQL_INVALID_HANDLE; \
+	    retcode = SQL_INVALID_HANDLE; \
+	    goto done; \
 	  } \
 	else if (pdesc->desc_cip) \
           { \
 	    PUSHSQLERR (pdesc->herr, en_S1010); \
-	    ODBC_UNLOCK(); \
-	    return SQL_ERROR; \
+	    retcode = SQL_ERROR; \
+	    goto done; \
 	  } \
 	pdesc->desc_cip = 1; \
 	CLEAR_ERRORS (pdesc); \
 	ODBC_UNLOCK();
 
 
-#define LEAVE_HDESC(pdesc, err) \
+#define LEAVE_DESC(hdesc, trace) \
+	ODBC_LOCK (); \
+    done: \
+    	TRACE(trace); \
 	pdesc->desc_cip = 0; \
-	return (err);
+	ODBC_UNLOCK (); \
+	return (retcode);
 
 #endif /* __DESC_H */

@@ -70,5 +70,5 @@
 
 #include <config.h>
 
-char *version = VERSION;
-char *libname = "iODBC Administrator";
+char *iodbc_version = VERSION;
+char *iodbc_libname = "iODBC Administrator";

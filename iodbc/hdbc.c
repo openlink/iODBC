@@ -75,6 +75,11 @@
 
 #include <sql.h>
 #include <sqlext.h>
+#include <sqlucode.h>
+#include <iodbcext.h>
+
+#include <wchar.h>
+#include <unicode.h>
 
 #include <dlproc.h>
 
@@ -87,8 +92,11 @@
 #include <stdio.h>
 
 
+extern SQLRETURN _iodbcdm_driverunload ();
+
 static SQLRETURN
-_iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam)
+_iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam,
+	SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
   DRVOPT *popt;
@@ -119,6 +127,7 @@ _iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam)
    *  Store the value
    */
   popt->Param = vParam;
+  popt->waMode = waMode;
 
   return SQL_SUCCESS;
 }
@@ -143,26 +152,17 @@ _iodbcdm_drvopt_free (SQLHDBC hdbc)
 }
 
 
-SQLRETURN SQL_API
-SQLAllocConnect (
+SQLRETURN 
+SQLAllocConnect_Internal (
     SQLHENV henv,
     SQLHDBC FAR * phdbc)
 {
   GENV (genv, henv);
   DBC_t FAR *pdbc;
 
-  ODBC_LOCK ();
-  if (!IS_VALID_HENV (genv))
-    {
-      ODBC_UNLOCK ();
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (genv);
-
   if (phdbc == NULL)
     {
       PUSHSQLERR (genv->herr, en_S1009);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -173,7 +173,6 @@ SQLAllocConnect (
       *phdbc = SQL_NULL_HDBC;
 
       PUSHSQLERR (genv->herr, en_S1001);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
   pdbc->rc = 0;
@@ -198,9 +197,6 @@ SQLAllocConnect (
   pdbc->herr = SQL_NULL_HERR;
   pdbc->dhdbc = SQL_NULL_HDBC;
   pdbc->state = en_dbc_allocated;
-  pdbc->trace = 0;
-  pdbc->tstm = NULL;
-  pdbc->tfile = NULL;
   pdbc->drvopt = NULL;
   pdbc->dbc_cip = 0;
   pdbc->err_rec = 0;
@@ -219,31 +215,47 @@ SQLAllocConnect (
 
   *phdbc = (SQLHDBC) pdbc;
 
-  ODBC_UNLOCK ();
   return SQL_SUCCESS;
 }
 
 
 SQLRETURN SQL_API
-SQLFreeConnect (SQLHDBC hdbc)
+SQLAllocConnect (SQLHENV henv, SQLHDBC FAR * phdbc)
+{
+  GENV (genv, henv);
+  SQLRETURN retcode = SQL_SUCCESS;
+
+  ODBC_LOCK ();
+  if (!IS_VALID_HENV (genv))
+    {
+      ODBC_UNLOCK ();
+      return SQL_INVALID_HANDLE;
+    }
+  CLEAR_ERRORS (genv);
+
+  TRACE (trace_SQLAllocConnect (TRACE_ENTER, henv, phdbc));
+
+  retcode = SQLAllocConnect_Internal (henv, phdbc);
+
+  TRACE (trace_SQLAllocConnect (TRACE_LEAVE, henv, phdbc));
+
+  ODBC_UNLOCK ();
+
+  return SQL_SUCCESS;
+}
+
+
+SQLRETURN
+SQLFreeConnect_Internal (SQLHDBC hdbc)
 {
   GENV_t FAR *genv;
   CONN (pdbc, hdbc);
   DBC_t FAR *tpdbc;
 
-  ODBC_LOCK ();
-  if (!IS_VALID_HDBC (pdbc))
-    {
-      ODBC_UNLOCK ();
-      return SQL_INVALID_HANDLE;
-    }
-  CLEAR_ERRORS (pdbc);
-
   /* check state */
   if (pdbc->state != en_dbc_allocated)
     {
       PUSHSQLERR (pdbc->herr, en_S1010);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -270,32 +282,41 @@ SQLFreeConnect (SQLHDBC hdbc)
   /* free driver connect options */
   _iodbcdm_drvopt_free (pdbc);
    
-  if (pdbc->tfile)
-    {
-      MEM_FREE (pdbc->tfile);
-    }
-
-  _iodbcdm_SetConnectOption (hdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF);
+  _iodbcdm_SetConnectOption (hdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF, 'A');
 
   /*
    *  Invalidate this handle
    */
   pdbc->type = 0;
 
-  MEM_FREE (pdbc);
-
-  ODBC_UNLOCK ();
   return SQL_SUCCESS;
 }
 
 
 SQLRETURN SQL_API
+SQLFreeConnect (SQLHDBC hdbc)
+{
+  ENTER_HDBC (hdbc, 1,
+    trace_SQLFreeConnect (TRACE_ENTER, hdbc));
+
+  retcode = SQLFreeConnect_Internal (hdbc);
+
+  LEAVE_HDBC (hdbc, 1,
+    trace_SQLFreeConnect (TRACE_LEAVE, hdbc);
+    MEM_FREE(hdbc);
+  );
+}
+
+
+SQLRETURN
 _iodbcdm_SetConnectOption (
     SQLHDBC hdbc,
     SQLUSMALLINT fOption,
-    SQLUINTEGER vParam)
+    SQLUINTEGER vParam,
+    SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
+  ENV_t FAR *penv = pdbc->henv;
   STMT_t FAR *pstmt;
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
@@ -332,7 +353,7 @@ _iodbcdm_SetConnectOption (
        *  the driver at a later stage.
        */
       if (fOption >= SQL_CONNECT_OPT_DRVR_START && pdbc->henv == SQL_NULL_HENV)
-        _iodbcdm_drvopt_store (hdbc, fOption, vParam);
+        _iodbcdm_drvopt_store (hdbc, fOption, vParam, waMode);
 
       break;
 
@@ -381,95 +402,20 @@ _iodbcdm_SetConnectOption (
      * environment).
      */
     {
-      switch (vParam)
+      switch ((SQLUINTEGER)vParam)
 	{
 	case SQL_OPT_TRACE_ON:
-	  if (pdbc->tfile == NULL)
-	    {
-	      pdbc->tfile = (char FAR *) MEM_ALLOC (1 +
-		  STRLEN (SQL_OPT_TRACE_FILE_DEFAULT));
-
-	      if (pdbc->tfile == NULL)
-		{
-		  PUSHSQLERR (pdbc->herr, en_S1001);
-
-		  return SQL_ERROR;
-		}
-
-	      STRCPY (pdbc->tfile, SQL_OPT_TRACE_FILE_DEFAULT);
-	    }
-
-	  if (pdbc->tstm == NULL)
-	    {
-
-#if	defined(stderr) && defined(stdout)
-	      if (STREQ (pdbc->tfile, "stderr"))
-		{
-		  pdbc->tstm = stderr;
-		}
-	      else if (STREQ (pdbc->tfile, "stdout"))
-		{
-		  pdbc->tstm = stdout;
-		}
-	      else
-#endif
-
-		{
-#if defined (UNIX)
-		  /* 
-		   *  As this is a security risk, we refuse root to start
-		   *  a trace log
-		   */
-		  if (geteuid() == 0)
-		    {
-		      pdbc->tstm = NULL;
-		      pdbc->trace = 0;
-		      return SQL_SUCCESS;
-		    }
-		  else
-		    {
-		      pdbc->tstm = fopen (pdbc->tfile, "w");
-		    }
-#else
-		  pdbc->tstm = fopen (pdbc->tfile, "w");
-#endif
-		}
-
-	      if (pdbc->tstm)
-		{
-		  pdbc->trace = 1;
-		}
-	      else
-		{
-		  pdbc->trace = 0;
-
-		  sqlstat = en_IM013;
-		  retcode = SQL_ERROR;
-		}
-	    }
+	  trace_start ();
 	  break;
 
 	case SQL_OPT_TRACE_OFF:
-	  if (pdbc->trace && pdbc->tstm)
-	    {
-
-#if	defined(stderr) && defined(stdout)
-	      if (stderr != (FILE FAR *) (pdbc->tstm)
-		  && stdout != (FILE FAR *) (pdbc->tstm))
-#endif
-
-		{
-		  fclose (pdbc->tstm);
-		}
-	    }
-	  pdbc->tstm = NULL;
-	  pdbc->trace = 0;
+	  trace_stop ();
 	  break;
 
 	default:
-	  PUSHSQLERR (pdbc->herr, en_S1009);
-	  retcode = SQL_ERROR;
-	}
+	  PUSHSQLERR (pdbc->herr, en_HY024);
+	  return SQL_ERROR;
+	}                              	
 
       if (sqlstat != en_00000)
 	{
@@ -488,41 +434,35 @@ _iodbcdm_SetConnectOption (
      * and only meaningful for driver manager. 
      */
     {
-      if (vParam == 0UL || ((char FAR *) vParam)[0] == 0)
+      char *_vParam;
+      char *tmp = NULL;
+
+      if (((char FAR *)vParam) == NULL 
+          || (waMode != 'W' && ((char FAR *) vParam)[0] == '\0')
+          || (waMode == 'W' && ((wchar_t FAR *) vParam)[0] == L'\0'))
 	{
 	  PUSHSQLERR (pdbc->herr, en_S1009);
-
 	  return SQL_ERROR;
 	}
 
-      if (pdbc->tfile && STREQ (pdbc->tfile, vParam))
-	{
-	  return SQL_SUCCESS;
-	}
+      _vParam = (char FAR *)vParam;
+      if (waMode == 'W')
+        {
+          if ((_vParam = tmp = dm_SQL_WtoU8((wchar_t *)vParam, SQL_NTS)) == NULL)
+	    {
+              PUSHSQLERR (pdbc->herr, en_S1001);
+              return SQL_ERROR;
+            }
+        }
 
-      if (pdbc->trace)
+      if (ODBCSharedTraceFlag)
 	{
-	  PUSHSQLERR (pdbc->herr, en_IM014);
-
+	  PUSHSQLERR (pdbc->herr, en_IM013);
 	  return SQL_ERROR;
 	}
 
-      if (pdbc->tfile)
-	{
-	  MEM_FREE (pdbc->tfile);
-	}
-
-      pdbc->tfile = (char FAR *) MEM_ALLOC (1 + STRLEN (vParam));
-
-      if (pdbc->tfile == NULL)
-	{
-	  PUSHSQLERR (pdbc->herr, en_S1001);
-
-	  return SQL_ERROR;
-	}
-
-      STRCPY (pdbc->tfile, vParam);
-
+      trace_set_filename (_vParam);
+      MEM_FREE (tmp);
       return SQL_SUCCESS;
     }
 
@@ -533,9 +473,57 @@ _iodbcdm_SetConnectOption (
        * and delay the setting process until the connection 
        * been established.  
        */
+     void * _vParam = NULL;
+     int procid = 0;
+
+     if ((penv->unicode_driver && waMode != 'W') 
+        || (!penv->unicode_driver && waMode == 'W'))
+      {
+        switch (fOption)
+          {
+          case SQL_ATTR_TRACEFILE:
+          case SQL_CURRENT_QUALIFIER:
+          case SQL_TRANSLATE_DLL:
+          case SQL_APPLICATION_NAME:
+          case SQL_COPT_SS_ENLIST_IN_DTC:
+          case SQL_COPT_SS_PERF_QUERY_LOG:
+          case SQL_COPT_SS_PERF_DATA_LOG:
+          case SQL_CURRENT_SCHEMA:
+            if (waMode != 'W')
+              {
+              /* ansi=>unicode*/
+                _vParam = dm_SQL_A2W((char*)vParam, SQL_NTS);
+              }
+            else
+              {
+              /* unicode=>ansi*/
+                _vParam = dm_SQL_W2A((wchar_t*)vParam, SQL_NTS);
+              }
+            vParam = (SQLUINTEGER)_vParam;
+            break;
+          }
+      }
 
 #if (ODBCVER >= 0x0300)
-      hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr);
+     if (penv->unicode_driver)
+       {
+         /* SQL_XXX_W */
+         if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrW))
+             != SQL_NULL_HPROC)
+           procid = en_SetConnectAttrW;
+       }
+     else
+       {
+         /* SQL_XXX */
+         /* SQL_XXX_A */
+         if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr))
+             != SQL_NULL_HPROC)
+           procid = en_SetConnectAttr;
+         else
+         if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrA))
+             != SQL_NULL_HPROC)
+           procid = en_SetConnectAttrA;
+       }
 
       if (hproc != SQL_NULL_HPROC)
 	{
@@ -550,7 +538,7 @@ _iodbcdm_SetConnectOption (
 	    case SQL_ATTR_QUIET_MODE:
 	    case SQL_ATTR_TRANSLATE_OPTION:
 	    case SQL_ATTR_TXN_ISOLATION:
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_SetConnectAttr,
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
 		  (pdbc->dhdbc, fOption, vParam, 0));
 	      break;
 
@@ -561,30 +549,50 @@ _iodbcdm_SetConnectOption (
 	    case SQL_ATTR_CONNECTION_TIMEOUT:
 	    case SQL_ATTR_METADATA_ID:
 	      PUSHSQLERR (pdbc->herr, en_IM001);
+	      MEM_FREE(_vParam);
 	      return SQL_ERROR;
 
 	    default:		/* string & driver defined */
 
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_SetConnectAttr,
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
 		  (pdbc->dhdbc, fOption, vParam, SQL_NTS));
 	    }
 	}
       else
 #endif
 	{
-	  hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption);
+          if (penv->unicode_driver)
+            {
+             /* SQL_XXX_W */
+             if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionW))
+                 != SQL_NULL_HPROC)
+               procid = en_SetConnectOptionW;
+            }
+          else
+            {
+             /* SQL_XXX */
+             /* SQL_XXX_A */
+             if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption))
+                != SQL_NULL_HPROC)
+               procid = en_SetConnectOption;
+             else
+             if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionA))
+                != SQL_NULL_HPROC)
+               procid = en_SetConnectOptionA;
+            }
 
 	  if (hproc == SQL_NULL_HPROC)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_IM001);
-
+	      MEM_FREE(_vParam);
 	      return SQL_ERROR;
 	    }
 
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_SetConnectOption,
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
 	      (pdbc->dhdbc, fOption, vParam));
 	}
 
+      MEM_FREE(_vParam);
       if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	{
 	  return retcode;
@@ -634,13 +642,14 @@ _iodbcdm_SetConnectOption (
       if (vParam == 0UL)
 	{
 	  pdbc->current_qualifier = NULL;
-
 	  break;
 	}
 
-      pdbc->current_qualifier
-	  = (char FAR *) MEM_ALLOC (
-	  STRLEN (vParam) + 1);
+      if (waMode != 'W')
+        pdbc->current_qualifier = (wchar_t *) MEM_ALLOC (STRLEN (vParam) + 1);
+      else
+        pdbc->current_qualifier = (wchar_t *) MEM_ALLOC((WCSLEN (vParam) + 1) 
+        	* sizeof(wchar_t));
 
       if (pdbc->current_qualifier == NULL)
 	{
@@ -648,7 +657,12 @@ _iodbcdm_SetConnectOption (
 	  return SQL_ERROR;
 	}
 
-      STRCPY (pdbc->current_qualifier, vParam);
+      if (waMode != 'W')
+        STRCPY ((char *)pdbc->current_qualifier, vParam);
+      else
+        WCSCPY ((wchar_t *)pdbc->current_qualifier, vParam);
+
+      pdbc->current_qualifier_WA = waMode;
       break;
 
     case SQL_LOGIN_TIMEOUT:
@@ -681,20 +695,52 @@ _iodbcdm_SetConnectOption (
   return retcode;
 }
 
+
 SQLRETURN SQL_API
 SQLSetConnectOption (
-    SQLHDBC hdbc,
-    SQLUSMALLINT fOption,
-    SQLUINTEGER vParam)
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fOption,
+  SQLUINTEGER		  vParam)
 {
-  CONN (pdbc, hdbc);
-  SQLRETURN retcode;
+  ENTER_HDBC (hdbc, 1,
+    trace_SQLSetConnectOption (TRACE_ENTER, hdbc, fOption, vParam));
 
-  ENTER_HDBC (pdbc);
+  retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam, 'A');
 
-  retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam);
+  LEAVE_HDBC (hdbc, 1,
+    trace_SQLSetConnectOption (TRACE_LEAVE, hdbc, fOption, vParam));
+}
 
-  LEAVE_HDBC (pdbc, retcode);
+
+SQLRETURN SQL_API
+SQLSetConnectOptionA (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fOption,
+  SQLUINTEGER		  vParam)
+{
+  ENTER_HDBC (hdbc, 1,
+    trace_SQLSetConnectOption (TRACE_ENTER, hdbc, fOption, vParam));
+
+  retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam, 'A');
+
+  LEAVE_HDBC (hdbc, 1,
+    trace_SQLSetConnectOption (TRACE_LEAVE, hdbc, fOption, vParam));
+}
+
+
+SQLRETURN SQL_API
+SQLSetConnectOptionW (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fOption,
+  SQLUINTEGER		  vParam)
+{
+  ENTER_HDBC (hdbc, 1,
+    trace_SQLSetConnectOptionW (TRACE_ENTER, hdbc, fOption, vParam));
+
+  retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam, 'W');
+
+  LEAVE_HDBC (hdbc, 1,
+    trace_SQLSetConnectOptionW (TRACE_LEAVE, hdbc, fOption, vParam));
 }
 
 
@@ -702,12 +748,14 @@ SQLRETURN SQL_API
 _iodbcdm_GetConnectOption (
     SQLHDBC hdbc,
     SQLUSMALLINT fOption,
-    SQLPOINTER pvParam)
+    SQLPOINTER pvParam,
+    SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  int sqlstat = en_00000;
+  ENV_t FAR *penv = pdbc->henv;
   HPROC hproc = SQL_NULL_HPROC;
-  SQLRETURN retcode;
+  int sqlstat = en_00000;
+  SQLRETURN retcode = SQL_SUCCESS;
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -753,7 +801,6 @@ _iodbcdm_GetConnectOption (
   if (sqlstat != en_00000)
     {
       PUSHSQLERR (pdbc->herr, sqlstat);
-
       return SQL_ERROR;
     }
 
@@ -766,7 +813,7 @@ _iodbcdm_GetConnectOption (
   if (fOption == SQL_OPT_TRACE)
 #endif
     {
-      if (pdbc->trace)
+      if (ODBCSharedTraceFlag)
 	*((UDWORD *) pvParam) = (UDWORD) SQL_OPT_TRACE_ON;
       else
 	*((UDWORD *) pvParam) = (UDWORD) SQL_OPT_TRACE_OFF;
@@ -780,7 +827,20 @@ _iodbcdm_GetConnectOption (
   if (fOption == SQL_OPT_TRACEFILE)
 #endif
     {
-      STRCPY (pvParam, pdbc->tfile);
+      char *fname;
+      
+      fname = trace_get_filename ();	/* UTF8 format */
+
+      if (waMode != 'W')
+        {
+           STRCPY (pvParam, fname);
+        }
+      else
+        {
+           dm_strcpy_A2W (pvParam, fname);
+        }
+
+      free (fname);
 
       return SQL_SUCCESS;
     }
@@ -789,9 +849,62 @@ _iodbcdm_GetConnectOption (
     /* if already connected, we will invoke driver's function */
     {
 
+      void * _Param = NULL;
+      void * paramOut = pvParam;
+      int procid = 0;
+
+      switch (fOption)
+        {
+        case SQL_CURRENT_QUALIFIER:
+        case SQL_TRANSLATE_DLL:
+
+          if ((penv->unicode_driver && waMode != 'W') 
+              || (!penv->unicode_driver && waMode == 'W'))
+            {
+              if (waMode != 'W')
+                {
+                /* ansi=>unicode*/
+                  if ((_Param = malloc(SQL_MAX_OPTION_STRING_LENGTH * sizeof(wchar_t))) == NULL)
+	            {
+                      PUSHSQLERR (pdbc->herr, en_HY001);
+                      return SQL_ERROR;
+                    }
+                }
+              else
+                {
+                /* unicode=>ansi*/
+                  if ((_Param = malloc(SQL_MAX_OPTION_STRING_LENGTH)) == NULL)
+    	            {
+                      PUSHSQLERR (pdbc->herr, en_HY001);
+                      return SQL_ERROR;
+                    }
+                }
+              paramOut = _Param;
+            }
+          break;
+        }
+
 #if (ODBCVER >= 0x0300)
 
-      hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttr);
+     if (penv->unicode_driver)
+       {
+         /* SQL_XXX_W */
+         if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttrW))
+             != SQL_NULL_HPROC)
+           procid = en_GetConnectAttrW;
+       }
+     else
+       {
+         /* SQL_XXX */
+         /* SQL_XXX_A */
+         if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttr))
+             != SQL_NULL_HPROC)
+           procid = en_GetConnectAttr;
+         else
+         if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttrA))
+             != SQL_NULL_HPROC)
+           procid = en_GetConnectAttrA;
+       }
 
       if (hproc != SQL_NULL_HPROC)
 	{
@@ -806,8 +919,8 @@ _iodbcdm_GetConnectOption (
 	    case SQL_ATTR_QUIET_MODE:
 	    case SQL_ATTR_TRANSLATE_OPTION:
 	    case SQL_ATTR_TXN_ISOLATION:
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetConnectAttr,
-		  (pdbc->dhdbc, fOption, pvParam, 0, NULL));
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+		  (pdbc->dhdbc, fOption, paramOut, 0, NULL));
 	      break;
 
 	      /* ODBC3 defined options */
@@ -817,30 +930,75 @@ _iodbcdm_GetConnectOption (
 	    case SQL_ATTR_CONNECTION_TIMEOUT:
 	    case SQL_ATTR_METADATA_ID:
 	      PUSHSQLERR (pdbc->herr, en_IM001);
+	      MEM_FREE(_Param);
 	      return SQL_ERROR;
 
 	    default:		/* string & driver defined */
 
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetConnectAttr,
-		  (pdbc->dhdbc, fOption, pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL));
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+		  (pdbc->dhdbc, fOption, paramOut, SQL_MAX_OPTION_STRING_LENGTH, NULL));
+
 	    }
 	}
       else
 #endif
 	{
-	  hproc = _iodbcdm_getproc (pdbc, en_GetConnectOption);
+          if (penv->unicode_driver)
+            {
+             /* SQL_XXX_W */
+             if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectOptionW))
+                 != SQL_NULL_HPROC)
+               procid = en_GetConnectOptionW;
+            }
+          else
+            {
+             /* SQL_XXX */
+             /* SQL_XXX_A */
+             if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectOption))
+                != SQL_NULL_HPROC)
+               procid = en_GetConnectOption;
+             else
+             if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectOptionA))
+                != SQL_NULL_HPROC)
+               procid = en_GetConnectOptionA;
+            }
 
 	  if (hproc == SQL_NULL_HPROC)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_IM001);
-
+              MEM_FREE(_Param);
 	      return SQL_ERROR;
 	    }
 
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetConnectOption,
-	      (pdbc->dhdbc, fOption, pvParam));
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	      (pdbc->dhdbc, fOption, paramOut));
 	}
 
+      if (pvParam
+          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+          &&  ((penv->unicode_driver && waMode != 'W') 
+              || (!penv->unicode_driver && waMode == 'W')))
+        {
+          switch (fOption)
+            {
+            case SQL_ATTR_TRACEFILE:
+            case SQL_CURRENT_QUALIFIER:
+            case SQL_TRANSLATE_DLL:
+              if (waMode != 'W')
+                {
+                 /* ansi<=unicode*/
+                  dm_StrCopyOut2_W2A (paramOut, pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
+                }
+              else
+                {
+                 /* unicode<=ansi*/
+                  dm_StrCopyOut2_A2W (paramOut, pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
+                }
+              break;
+            }
+        }
+      
+      MEM_FREE(_Param);
       return retcode;
     }
 
@@ -870,20 +1028,51 @@ _iodbcdm_GetConnectOption (
   return SQL_SUCCESS;
 }
 
+
 SQLRETURN SQL_API
-SQLGetConnectOption (
-    SQLHDBC hdbc,
+SQLGetConnectOption (SQLHDBC hdbc,
     SQLUSMALLINT fOption,
     SQLPOINTER pvParam)
 {
-  CONN (pdbc, hdbc);
-  SQLRETURN retcode;
+  ENTER_HDBC (hdbc, 0,
+    trace_SQLGetConnectOption (TRACE_ENTER, hdbc, fOption, pvParam));
 
-  ENTER_HDBC (pdbc);
+  retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam, 'A');
 
-  retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam);
+  LEAVE_HDBC (hdbc, 0,
+    trace_SQLGetConnectOption (TRACE_LEAVE, hdbc, fOption, pvParam));
+}
 
-  LEAVE_HDBC (pdbc, retcode);
+
+SQLRETURN SQL_API
+SQLGetConnectOptionA (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fOption,
+  SQLPOINTER		  pvParam)
+{
+  ENTER_HDBC (hdbc, 1,
+    trace_SQLGetConnectOption (TRACE_ENTER, hdbc, fOption, pvParam));
+
+  retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam, 'A');
+
+  LEAVE_HDBC (hdbc, 1,
+    trace_SQLGetConnectOption (TRACE_LEAVE, hdbc, fOption, pvParam));
+}
+
+
+SQLRETURN SQL_API
+SQLGetConnectOptionW (
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fOption,
+  SQLPOINTER		  pvParam)
+{
+  ENTER_HDBC (hdbc, 1,
+    trace_SQLGetConnectOptionW (TRACE_ENTER, hdbc, fOption, pvParam));
+
+  retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam, 'W');
+
+  LEAVE_HDBC (hdbc, 1,
+    trace_SQLGetConnectOptionW (TRACE_LEAVE, hdbc, fOption, pvParam));
 }
 
 
@@ -976,6 +1165,7 @@ _iodbcdm_transact (
 	    }
 	  break;
 
+	case en_stmt_executed_with_info:
 	case en_stmt_executed:
 	case en_stmt_cursoropen:
 	case en_stmt_fetched:
@@ -1023,8 +1213,8 @@ _iodbcdm_transact (
 }
 
 
-SQLRETURN SQL_API
-SQLTransact (
+SQLRETURN 
+SQLTransact_Internal (
     SQLHENV henv,
     SQLHDBC hdbc,
     SQLUSMALLINT fType)
@@ -1034,7 +1224,6 @@ SQLTransact (
   HERR herr;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  ODBC_LOCK ();
   if (IS_VALID_HDBC (pdbc))
     {
       CLEAR_ERRORS (pdbc);
@@ -1047,16 +1236,14 @@ SQLTransact (
     }
   else
     {
-      ODBC_UNLOCK ();
       return SQL_INVALID_HANDLE;
     }
 
   /* check argument */
   if (fType != SQL_COMMIT && fType != SQL_ROLLBACK)
     {
-      SQLHENV handle = IS_VALID_HDBC (pdbc) ? ((SQLHENV) pdbc) : genv;
+/*      SQLHENV handle = IS_VALID_HDBC (pdbc) ? ((SQLHENV) pdbc) : genv;*/
       PUSHSQLERR (herr, en_S1012);
-      ODBC_UNLOCK ();
       return SQL_ERROR;
     }
 
@@ -1074,11 +1261,29 @@ SQLTransact (
 
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
-      ODBC_UNLOCK ();
       /* fail on one of the connection */
       return SQL_ERROR;
     }
 
+  return retcode;
+}
+
+
+SQLRETURN SQL_API
+SQLTransact (
+  SQLHENV		  henv,
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fType)
+{
+  SQLRETURN retcode = SQL_SUCCESS;
+
+  ODBC_LOCK ();
+  TRACE (trace_SQLTransact (TRACE_ENTER, henv, hdbc, fType));
+
+  retcode = SQLTransact_Internal (henv, hdbc, fType);
+
+  TRACE (trace_SQLTransact (TRACE_LEAVE, henv, hdbc, fType));
   ODBC_UNLOCK ();
+
   return retcode;
 }

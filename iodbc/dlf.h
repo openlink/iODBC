@@ -222,19 +222,26 @@ struct dlopen_handle
 };
 #endif /* DLDAPI_MACX */
 
-
-#ifndef	RTLD_LAZY
-#define	RTLD_LAZY       1
+#ifndef RTLD_LOCAL
+#define RTLD_LOCAL	0	/* Only if not defined by dlfcn.h */
+#endif
+#ifndef RTLD_LAZY
+#define RTLD_LAZY	1
 #endif
 
+#ifdef RTLD_NOW
+#define OPL_DL_MODE	(RTLD_NOW | RTLD_LOCAL)
+#else
+#define OPL_DL_MODE	(RTLD_LAZY | RTLD_LOCAL)
+#endif
 
 #if defined(DLDAPI_VMS_IODBC)
-#define	DLL_OPEN(dll)		(void*)iodbc_dlopen((char*)(dll), RTLD_LAZY)
+#define	DLL_OPEN(dll)		(void*)iodbc_dlopen((char*)(dll), OPL_DL_MODE)
 #define	DLL_PROC(hdll, sym)	(void*)iodbc_dlsym((void*)(hdll), (char*)sym)
 #define	DLL_ERROR()		(char*)iodbc_dlerror()
 #define	DLL_CLOSE(hdll)		iodbc_dlclose((void*)(hdll))
 #else
-#define	DLL_OPEN(dll)		(void*)dlopen((char*)(dll), RTLD_LAZY)
+#define	DLL_OPEN(dll)		(void*)dlopen((char*)(dll), OPL_DL_MODE)
 #define	DLL_PROC(hdll, sym)	(void*)dlsym((void*)(hdll), (char*)sym)
 #define	DLL_ERROR()		(char*)dlerror()
 #define	DLL_CLOSE(hdll)		dlclose((void*)(hdll))

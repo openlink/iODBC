@@ -1,5 +1,5 @@
 /*
- *  odbctest.c
+ *  iodbctest.c
  *
  *  $Id$
  *
@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *  
- *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1999-2003 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -573,7 +573,7 @@ main (int argc, char **argv)
    */
   if (argc > 2 || (argc == 2 && argv[1][0] == '-'))
     {
-      fprintf (stderr, "\nUsage:\n  odbctest [\"DSN=xxxx;UID=xxxx;PWD=xxxx\"]\n");
+      fprintf (stderr, "\nUsage:\n  iodbctest [\"DSN=xxxx;UID=xxxx;PWD=xxxx\"]\n");
       exit(0);
     }
 

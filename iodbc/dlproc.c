@@ -92,6 +92,7 @@ char *odbcapi_symtab[] =
 #undef FUNCDEF
 };
 
+
 HPROC
 _iodbcdm_getproc (HDBC hdbc, int idx)
 {

@@ -82,7 +82,11 @@
 #endif
 
 #ifndef VERSION
-#define VERSION	"3.0.6"
+#define VERSION	"3.0.7"
+#endif
+
+#ifndef IODBC_BUILD
+#define IODBC_BUILD 30007	/* 0003.0007 */
 #endif
 
 #include <stdlib.h>
@@ -98,7 +102,23 @@
 #define STRCAT(t, s)	(strcat((char*)(t), (char*)(s)))
 #define STRNCAT(t,s,n)	(strncat((char*)(t), (char*)(s), (size_t)(n)))
 #define STREQ(a, b)	(strcmp((char*)(a), (char*)(b)) == 0)
+#define STRNEQ(a, b, n)		(strncmp((char*)(a), (char*)(b), (size_t)(n)) == 0)
 #define STRLEN(str)	((str)? strlen((char*)(str)):0)
+#define STRDUP(t)		(strdup((char*)(t)))
+#define STRCASEEQ(a, b)		(strcasecmp((char*)(a), (char*)(b)) == 0)
+#define STRNCASEEQ(a, b, n)	(strncasecmp((char*)(a), (char*)(b), (size_t)(n)) == 0)
+
+#define WCSCPY(t, s)		(wcscpy((wchar_t*)(t), (wchar_t*)(s)))
+#define WCSNCPY(t,s,n)		(wcsncpy((wchar_t*)(t), (wchar_t*)(s), (size_t)(n)))
+#define WCSCAT(t, s)		(wcscat((wchar_t*)(t), (wchar_t*)(s)))
+#define WCSNCAT(t,s,n)		(wcsncat((wchar_t*)(t), (wchar_t*)(s), (size_t)(n)))
+#define WCSEQ(a, b)		(wcscmp((wchar_t*)(a), (wchar_t*)(b)) == 0)
+#define WCSNEQ(a, b, n)		(wcsncmp((wchar_t*)(a), (wchar_t*)(b), (size_t)(n)) == 0)
+#define WCSLEN(str)		((str)? wcslen((wchar_t*)(str)):0)
+#define WCSDUP(t)		(wcsdup((wchar_t*)(t)))
+#define WCSCASEEQ(a, b)		(wcscasecmp((wchar_t*)(a), (wchar_t*)(b)) == 0)
+#define WCSNCASEEQ(a, b, n)	(wcsncasecmp((wchar_t*)(a), (wchar_t*)(b), (size_t)(n)) == 0)
+
 
 #define EXPORT
 #define CALLBACK
@@ -111,11 +131,8 @@
 /*
  *  If not defined, use this as the system default odbc.ini file
  */
-/*
- *  If not defined, use this as the system default odbc.ini file
- */
 #ifndef SYS_ODBC_INI
-# ifdef _BE
+# if defined(__BEOS__)
 # 	define SYS_ODBC_INI "/boot/beos/etc/odbc.ini"
 # elif defined(_MAC)
 # 	ifdef __POWERPC__
@@ -125,7 +142,7 @@
 # 	endif
 # elif defined(_MACX)
 # 	define SYS_ODBC_INI "/etc/odbc.ini"
-# 	define ODBC_INI_APP "/Library/Preferences/ODBC.preference"
+# 	define ODBC_INI_APP "/Library/ODBC/odbc.ini"
 # else
 # 	define SYS_ODBC_INI "/etc/odbc.ini"
 # endif
@@ -137,7 +154,7 @@
 #  elif defined(macintosh)
 #  elif defined(__APPLE__)
 #    define SYS_ODBCINST_INI	"/etc/odbcinst.ini"
-#    define ODBCINST_INI_APP	"/Library/Preferences/ODBC Installer.preference"
+#    define ODBCINST_INI_APP	"/Library/ODBC/odbcinst.ini"
 #  else
 #    define SYS_ODBCINST_INI	"/etc/odbcinst.ini"
 #  endif

@@ -126,10 +126,10 @@ addcomponents_to_list (GtkWidget *widget)
       if ((handle = dlopen (szComponentNames[i], RTLD_LAZY)))
 	{
 	  /* Take the name of the library */
-	  if ((proc = dlsym (handle, "libname")))
+	  if ((proc = dlsym (handle, "iodbc_libname")))
 	    {
 	      data[0] = *(char **) proc;
-	      data[1] = *(char **) dlsym (handle, "version");
+	      data[1] = *(char **) dlsym (handle, "iodbc_version");
 	      data[2] = szComponentNames[i];
 
 	      /* Take some information about the library */
@@ -266,6 +266,22 @@ addconnectionpool_to_list (GtkWidget *widget)
 
 
 static void
+admin_apply_tracing (TTRACING *tracing_t)
+{
+  char tokenstr[1024];
+  
+  /* Write keywords for tracing in the ini file */
+  SQLWritePrivateProfileString ("ODBC", "Trace",
+    (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->allthetime_rb)) == TRUE
+	 || gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->onetime_rb)) == TRUE) ? "1" : "0", NULL);
+  SQLWritePrivateProfileString ("ODBC", "TraceAutoStop",
+    gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->onetime_rb)) ? "1" : "0", NULL);
+  SQLWritePrivateProfileString ("ODBC", "TraceFile",
+	    gtk_entry_get_text (GTK_ENTRY (tracing_t->logfile_entry)), NULL);
+}
+
+
+static void
 admin_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
     gint page_num, void **inparams)
 {
@@ -312,7 +328,7 @@ admin_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
     case 2:
       if (driverchoose_t)
 	{
-	  adddrivers_to_list (driverchoose_t->driverlist, FALSE);
+	  adddrivers_to_list (driverchoose_t->driverlist, driverchoose_t->mainwnd);
 	  gtk_widget_set_sensitive (driverchoose_t->b_remove, FALSE);
 	  gtk_widget_set_sensitive (driverchoose_t->b_configure, FALSE);
 	}
@@ -416,18 +432,7 @@ static void
 tracing_start_clicked (GtkWidget *widget, TTRACING *tracing_t)
 {
   if (tracing_t)
-    {
-      /* Write keywords for tracing in the ini file */
-      SQLWritePrivateProfileString ("ODBC", "Trace",
-	  (GTK_TOGGLE_BUTTON (tracing_t->donttrace_rb)->active) ? "0" : "1",
-	  NULL);
-      SQLWritePrivateProfileString ("ODBC", "TraceAutoStop",
-	  (GTK_TOGGLE_BUTTON (tracing_t->allthetime_rb)->active) ? "0" : "1",
-	  NULL);
-      if (STRLEN (gtk_entry_get_text (GTK_ENTRY (tracing_t->logfile_entry))))
-	SQLWritePrivateProfileString ("ODBC", "TraceFile",
-	    gtk_entry_get_text (GTK_ENTRY (tracing_t->logfile_entry)), NULL);
-    }
+    admin_apply_tracing (tracing_t);
 }
 
 
@@ -581,7 +586,7 @@ driver_add_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 	  free (cstr);
 	}
 
-      adddrivers_to_list (choose_t->driverlist, FALSE);
+      adddrivers_to_list (choose_t->driverlist, choose_t->mainwnd);
 
     done:
       if (GTK_CLIST (choose_t->driverlist)->selection == NULL)
@@ -626,7 +631,7 @@ driver_remove_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 	      goto done;
 	    }
 
-	  adddrivers_to_list (choose_t->driverlist, FALSE);
+	  adddrivers_to_list (choose_t->driverlist, choose_t->mainwnd);
 	}
 
     done:
@@ -704,7 +709,7 @@ driver_configure_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 	      free (cstr);
 	    }
 
-	  adddrivers_to_list (choose_t->driverlist, FALSE);
+	  adddrivers_to_list (choose_t->driverlist, choose_t->mainwnd);
 	}
 
     done:
@@ -756,20 +761,7 @@ admin_ok_clicked (GtkWidget *widget, void **inparams)
   if (tracing_t)
     {
       if (tracing_t->changed)
-	{
-	  /* Write keywords for tracing in the ini file */
-	  SQLWritePrivateProfileString ("ODBC", "Trace",
-	      (GTK_TOGGLE_BUTTON (tracing_t->donttrace_rb)->
-		  active) ? "0" : "1", NULL);
-	  SQLWritePrivateProfileString ("ODBC", "TraceAutoStop",
-	      (GTK_TOGGLE_BUTTON (tracing_t->allthetime_rb)->
-		  active) ? "0" : "1", NULL);
-	  if (STRLEN (gtk_entry_get_text (GTK_ENTRY (tracing_t->
-			  logfile_entry))))
-	    SQLWritePrivateProfileString ("ODBC", "TraceFile",
-		gtk_entry_get_text (GTK_ENTRY (tracing_t->logfile_entry)),
-		NULL);
-	}
+        admin_apply_tracing (tracing_t);
 
       tracing_t->logfile_entry = tracing_t->tracelib_entry =
 	  tracing_t->b_start_stop = NULL;
@@ -874,11 +866,6 @@ delete_event (GtkWidget *widget, GdkEvent *event, void **inparams)
 void
 create_administrator (HWND hwnd)
 {
-  guint b_ok_key, b_cancel_key, b_add_key, b_remove_key, b_test_key,
-      b_configure_key;
-  guint b_donottrace_key, b_allthetime_key, b_onetime_key, b_start_key,
-      b_browse_key, b_select_key;
-  guint br_enable_key, br_disable_key;
   GtkWidget *admin, *dialog_vbox1, *notebook1, *vbox1, *fixed1,
       *scrolledwindow1;
   GtkWidget *clist1, *l_name, *l_description, *l_driver, *l_usdsn, *frame1,
@@ -920,6 +907,7 @@ create_administrator (HWND hwnd)
   TTRACING tracing_t;
   TCONNECTIONPOOLING connectionpool_t;
   void *inparams[6];
+  guint b_key;
 
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return;
@@ -1064,10 +1052,10 @@ create_administrator (HWND hwnd)
   gtk_widget_set_usize (vbuttonbox1, 85, 135);
 
   b_add = gtk_button_new_with_label ("");
-  b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
       szDSNButtons[0]);
   gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      b_add_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_add);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_add", b_add,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1078,10 +1066,10 @@ create_administrator (HWND hwnd)
       'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_remove = gtk_button_new_with_label ("");
-  b_remove_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
       szDSNButtons[1]);
   gtk_widget_add_accelerator (b_remove, "clicked", accel_group,
-      b_remove_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_remove);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_remove", b_remove,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1093,11 +1081,11 @@ create_administrator (HWND hwnd)
   gtk_widget_set_sensitive (b_remove, FALSE);
 
   b_configure = gtk_button_new_with_label ("");
-  b_configure_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
       szDSNButtons[2]);
   gtk_widget_add_accelerator (b_configure, "clicked", accel_group,
-      b_configure_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_configure);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_configure", b_configure,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1109,10 +1097,10 @@ create_administrator (HWND hwnd)
   gtk_widget_set_sensitive (b_configure, FALSE);
 
   b_test = gtk_button_new_with_label ("");
-  b_test_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
       szDSNButtons[3]);
   gtk_widget_add_accelerator (b_test, "clicked", accel_group,
-      b_test_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_test);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_test", b_test,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1243,10 +1231,10 @@ create_administrator (HWND hwnd)
   gtk_widget_set_usize (vbuttonbox2, 85, 135);
 
   b_add = gtk_button_new_with_label ("");
-  b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
       szDSNButtons[0]);
   gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      b_add_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_add);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_add", b_add,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1257,10 +1245,10 @@ create_administrator (HWND hwnd)
       'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_remove = gtk_button_new_with_label ("");
-  b_remove_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
       szDSNButtons[1]);
   gtk_widget_add_accelerator (b_remove, "clicked", accel_group,
-      b_remove_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_remove);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_remove", b_remove,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1272,11 +1260,11 @@ create_administrator (HWND hwnd)
   gtk_widget_set_sensitive (b_remove, FALSE);
 
   b_configure = gtk_button_new_with_label ("");
-  b_configure_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
       szDSNButtons[2]);
   gtk_widget_add_accelerator (b_configure, "clicked", accel_group,
-      b_configure_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_configure);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_configure", b_configure,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1288,10 +1276,10 @@ create_administrator (HWND hwnd)
   gtk_widget_set_sensitive (b_configure, FALSE);
 
   b_test = gtk_button_new_with_label ("");
-  b_test_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
       szDSNButtons[3]);
   gtk_widget_add_accelerator (b_test, "clicked", accel_group,
-      b_test_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_test);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_test", b_test,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1464,10 +1452,10 @@ create_administrator (HWND hwnd)
      gtk_widget_set_usize (vbuttonbox3, 85, 135);
 
      b_add = gtk_button_new_with_label ("");
-     b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
+     b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
      szDSNButtons[0]);
      gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-     b_add_key, GDK_MOD1_MASK, 0);
+     b_key, GDK_MOD1_MASK, 0);
      gtk_widget_ref (b_add);
      gtk_object_set_data_full (GTK_OBJECT (admin), "b_add", b_add,
      (GtkDestroyNotify) gtk_widget_unref);
@@ -1479,10 +1467,10 @@ create_administrator (HWND hwnd)
      GTK_ACCEL_VISIBLE);
 
      b_remove = gtk_button_new_with_label ("");
-     b_remove_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
+     b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
      szDSNButtons[1]);
      gtk_widget_add_accelerator (b_remove, "clicked", accel_group,
-     b_remove_key, GDK_MOD1_MASK, 0);
+     b_key, GDK_MOD1_MASK, 0);
      gtk_widget_ref (b_remove);
      gtk_object_set_data_full (GTK_OBJECT (admin), "b_remove", b_remove,
      (GtkDestroyNotify) gtk_widget_unref);
@@ -1494,10 +1482,10 @@ create_administrator (HWND hwnd)
      GTK_ACCEL_VISIBLE);
 
      b_configure = gtk_button_new_with_label ("");
-     b_configure_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
+     b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
      szDSNButtons[2]);
      gtk_widget_add_accelerator (b_configure, "clicked", accel_group,
-     b_configure_key, GDK_MOD1_MASK, 0);
+     b_key, GDK_MOD1_MASK, 0);
      gtk_widget_ref (b_configure);
      gtk_object_set_data_full (GTK_OBJECT (admin), "b_configure", b_configure,
      (GtkDestroyNotify) gtk_widget_unref);
@@ -1509,10 +1497,10 @@ create_administrator (HWND hwnd)
      GTK_ACCEL_VISIBLE);
 
      b_test = gtk_button_new_with_label ("");
-     b_test_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
+     b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
      szDSNButtons[3]);
      gtk_widget_add_accelerator (b_test, "clicked", accel_group,
-     b_test_key, GDK_MOD1_MASK, 0);
+     b_key, GDK_MOD1_MASK, 0);
      gtk_widget_ref (b_test);
      gtk_object_set_data_full (GTK_OBJECT (admin), "b_test", b_test,
      (GtkDestroyNotify) gtk_widget_unref);
@@ -1659,10 +1647,10 @@ create_administrator (HWND hwnd)
   gtk_button_box_set_child_size (GTK_BUTTON_BOX (hbuttonbox2), 64, -1);
 
   b_add = gtk_button_new_with_label ("");
-  b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
       szDriverButtons[0]);
   gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      b_add_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_add);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_add", b_add,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1673,10 +1661,10 @@ create_administrator (HWND hwnd)
       'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_remove = gtk_button_new_with_label ("");
-  b_remove_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
       szDriverButtons[1]);
   gtk_widget_add_accelerator (b_remove, "clicked", accel_group,
-      b_remove_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_remove);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_remove", b_remove,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1687,11 +1675,11 @@ create_administrator (HWND hwnd)
       'R', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_configure = gtk_button_new_with_label ("");
-  b_configure_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
       szDriverButtons[2]);
   gtk_widget_add_accelerator (b_configure, "clicked", accel_group,
-      b_configure_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_configure);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_configure", b_configure,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1780,11 +1768,11 @@ create_administrator (HWND hwnd)
   gtk_container_set_border_width (GTK_CONTAINER (vbox5), 6);
 
   br_enable = gtk_radio_button_new_with_label (vbox5_group, "");
-  br_enable_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (br_enable)->child),
       "_Enable");
   gtk_widget_add_accelerator (br_enable, "clicked", accel_group,
-      br_enable_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   vbox5_group = gtk_radio_button_group (GTK_RADIO_BUTTON (br_enable));
   gtk_widget_ref (br_enable);
   gtk_object_set_data_full (GTK_OBJECT (admin), "br_enable", br_enable,
@@ -1793,11 +1781,11 @@ create_administrator (HWND hwnd)
   gtk_box_pack_start (GTK_BOX (vbox5), br_enable, FALSE, FALSE, 0);
 
   br_disable = gtk_radio_button_new_with_label (vbox5_group, "");
-  br_disable_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (br_disable)->child),
       "_Disable");
   gtk_widget_add_accelerator (br_disable, "clicked", accel_group,
-      br_disable_key, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+      b_key, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
   vbox5_group = gtk_radio_button_group (GTK_RADIO_BUTTON (br_disable));
   gtk_widget_ref (br_disable);
   gtk_object_set_data_full (GTK_OBJECT (admin), "br_disable", br_disable,
@@ -1948,11 +1936,11 @@ create_administrator (HWND hwnd)
   gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, TRUE, 0);
 
   b_donottrace = gtk_radio_button_new_with_label (vbox2_group, "");
-  b_donottrace_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_donottrace)->child),
       "_Don't trace");
   gtk_widget_add_accelerator (b_donottrace, "clicked", accel_group,
-      b_donottrace_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   vbox2_group = gtk_radio_button_group (GTK_RADIO_BUTTON (b_donottrace));
   gtk_widget_ref (b_donottrace);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_donottrace", b_donottrace,
@@ -1964,11 +1952,11 @@ create_administrator (HWND hwnd)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b_donottrace), TRUE);
 
   b_allthetime = gtk_radio_button_new_with_label (vbox2_group, "");
-  b_allthetime_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_allthetime)->child),
       "All the t_ime");
   gtk_widget_add_accelerator (b_allthetime, "clicked", accel_group,
-      b_allthetime_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   vbox2_group = gtk_radio_button_group (GTK_RADIO_BUTTON (b_allthetime));
   gtk_widget_ref (b_allthetime);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_allthetime", b_allthetime,
@@ -1979,11 +1967,11 @@ create_administrator (HWND hwnd)
       'I', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_onetime = gtk_radio_button_new_with_label (vbox2_group, "");
-  b_onetime_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_onetime)->child),
       "One-_time only");
   gtk_widget_add_accelerator (b_onetime, "clicked", accel_group,
-      b_onetime_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   vbox2_group = gtk_radio_button_group (GTK_RADIO_BUTTON (b_onetime));
   gtk_widget_ref (b_onetime);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_onetime", b_onetime,
@@ -2001,10 +1989,10 @@ create_administrator (HWND hwnd)
   gtk_box_pack_start (GTK_BOX (hbox1), vbox3, FALSE, FALSE, 0);
 
   b_start = gtk_button_new_with_label ("");
-  b_start_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_start)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_start)->child),
       "_Apply tracing settings");
   gtk_widget_add_accelerator (b_start, "clicked", accel_group,
-      b_start_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_start);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_start", b_start,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -2041,10 +2029,10 @@ create_administrator (HWND hwnd)
       (GtkAttachOptions) (0), 0, 0);
 
   b_browse = gtk_button_new_with_label ("");
-  b_browse_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_browse)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_browse)->child),
       "_Browse");
   gtk_widget_add_accelerator (b_browse, "clicked", accel_group,
-      b_browse_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_browse);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_browse", b_browse,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -2082,10 +2070,10 @@ create_administrator (HWND hwnd)
       (GtkAttachOptions) (0), 0, 0);
 
   b_select = gtk_button_new_with_label ("");
-  b_select_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_select)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_select)->child),
       "_Select library");
   gtk_widget_add_accelerator (b_select, "clicked", accel_group,
-      b_select_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_select);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_select", b_select,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -2288,9 +2276,9 @@ create_administrator (HWND hwnd)
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
 
   b_ok = gtk_button_new_with_label ("");
-  b_ok_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
   gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      b_ok_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_ok);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_ok", b_ok,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -2301,10 +2289,10 @@ create_administrator (HWND hwnd)
       'O', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_cancel = gtk_button_new_with_label ("");
-  b_cancel_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
       "_Cancel");
   gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      b_cancel_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_cancel);
   gtk_object_set_data_full (GTK_OBJECT (admin), "b_cancel", b_cancel,
       (GtkDestroyNotify) gtk_widget_unref);

@@ -69,8 +69,13 @@
  */
 
 #include <config.h>
-#include <iodbc.h>
-#include <iodbcinst.h>
+#ifdef _MACX
+#  include <iODBC/iodbc.h>
+#  include <iODBCinst/iodbcinst.h>
+#else
+#  include <iodbc.h>
+#  include <iodbcinst.h>
+#endif
 
 #if defined(__BEOS__)
 #include "be/gui.h"
@@ -89,9 +94,6 @@ extern "C" {
 #ifndef	_GUI_H
 #define _GUI_H
 
-BOOL create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text);
-LPSTR create_oplsetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add);
-LPSTR create_virtsetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add);
 LPSTR create_gensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add);
 void create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn, TLOGIN *log_t);
 

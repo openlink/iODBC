@@ -81,7 +81,7 @@ ConfigDriver (HWND hwndParent,
     LPCSTR lpszDriver,
     LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
 {
-  char *path = NULL, *curr, *cour;
+  char *curr, *cour;
   char driverread[4096] = { 0 };
   BOOL retcode = FALSE;
   UWORD confMode = ODBC_USER_DSN;

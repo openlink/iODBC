@@ -65,12 +65,12 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-bin_PROGRAMS		= odbctest
+bin_PROGRAMS		= iodbctest
 INCLUDES		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
 
 #
 #  Build odbctest program
 #
-odbctest_SOURCES	= odbctest.c
-odbctest_LDADD		= ../iodbc/libiodbc.la 
-odbctest_LDFLAGS	= # -static
+iodbctest_SOURCES	= iodbctest.c
+iodbctest_LDADD		= ../iodbc/libiodbc.la ../iodbcinst/libiodbcinst.la 
+iodbctest_LDFLAGS	= # -static

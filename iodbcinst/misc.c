@@ -77,6 +77,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "inifile.h"
 #include "misc.h"
@@ -201,11 +203,11 @@ readtoken (
  * For MacX:     1. Check for $ODBCINI variable, if exists return $ODBCINI.
  *               2. Check for $HOME/.odbc.ini or ~/.odbc.ini file, if exists
  *                  return it.
- *               3. Check for $HOME/Library/Preferences/ODBC.preference or
+ *               3. Check for $HOME/Library/ODBC/odbc.ini or
  *                  ~/.odbc.ini file, if exists return it.
  *               4. Check for SYS_ODBC_INI build variable, if exists return
  *                  it. (ie : /etc/odbc.ini).
- *               5. Check for /Library/Preferences/ODBC.preference
+ *               5. Check for /Library/ODBC/odbc.ini
  *                  file, if exists return it.
  *               6. No odbc.ini presence, return NULL.
  */
@@ -213,9 +215,10 @@ char *
 _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 {
 #ifdef _MAC
-  OSErr result;
+  HParamBlockRec hp;
   long fldrDid;
   short fldrRef;
+  OSErr result;
 #endif /* endif _MAC */
   int i, j;
   char *ptr;
@@ -261,6 +264,22 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
   STRCAT (buf, bIsInst ? ":ODBC Installer Preferences" : ":ODBC Preferences");
 #    endif /* endif __POWERPC__ */
 
+  if (doCreate)
+    {
+      hp.fileParam.ioCompletion = NULL;
+      hp.fileParam.ioVRefNum = fldrRef;
+      hp.fileParam.ioDirID = fldrDid;
+#    ifdef __POWERPC__
+      hp.fileParam.ioNamePtr =
+	  bIsInst ? "\pODBC Installer Preferences PPC" :
+	  "\pODBC Preferences PPC";
+#    else
+      hp.fileParam.ioNamePtr =
+	  bIsInst ? "\pODBC Installer Preferences" : "\pODBC Preferences";
+#    endif
+      PBHCreate (&hp, FALSE);
+    }
+
   free (ptr);
 
   return buf;
@@ -289,8 +308,18 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	{
 	  STRNCPY (buf, ptr, size);
 
-	  if (doCreate || access (buf, R_OK) == 0)
-	    return buf;
+          if (access (buf, R_OK) == 0)
+            return buf;
+          else if (doCreate)
+            {
+              int f = open ((char*)buf, O_CREAT,
+                S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+              if(f != -1)
+                {
+                  close(f);
+                  return buf;
+                }
+            }
 	}
 
 #  ifdef VMS
@@ -324,13 +353,23 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 
 #   ifdef _MACX
 	  /*
-	   * Try to check the ~/Library/Preferences/ODBC.preference
+	   * Try to check the ~/Library/ODBC/odbc.ini
 	   */
 	  snprintf (buf, size,
 	      bIsInst ? "%s" ODBCINST_INI_APP : "%s" ODBC_INI_APP, ptr);
 
-	  if (doCreate || access (buf, R_OK) == 0)
-	    return buf;
+          if (access (buf, R_OK) == 0)
+            return buf;
+          else if (doCreate)
+            {
+              int f = open ((char*)buf, O_CREAT,
+                S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+              if(f != -1)
+                {
+                  close(f);
+                  return buf;
+                }
+            }
 #   endif /* endif _MACX */
 	}
 
@@ -349,25 +388,43 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	{
 	  STRNCPY (buf, ptr, size);
 
-	  if (doCreate || access (buf, R_OK) == 0)
-	    return buf;
+          if (access (buf, R_OK) == 0)
+            return buf;
+          else if (doCreate)
+            {
+              int f = open ((char*)buf, O_CREAT,
+                S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+              if(f != -1)
+                {
+                  close(f);
+                  return buf;
+                }
+            }
 	}
-
-      STRNCPY (buf, bIsInst ? SYS_ODBCINST_INI : SYS_ODBC_INI, size);
-
-      if (doCreate || access (buf, R_OK) == 0)
-	return buf;
 
 #   ifdef _MACX
       /*
-       * Try to check the /Library/Preferences/ODBC.preference
+       * Try to check the /Library/ODBC/odbc.ini
        */
       snprintf (buf, size, "%s",
 	  bIsInst ? ODBCINST_INI_APP : ODBC_INI_APP);
 
       if (access (buf, R_OK) == 0)
-	return buf;
+        return buf;
+      else if (doCreate)
+        {
+          int f = open ((char*)buf, O_CREAT,
+            S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+          if(f != -1)
+            {
+              close(f);
+              return buf;
+            }
+        }
 #   endif /* endif _MACX */
+
+      STRNCPY (buf, bIsInst ? SYS_ODBCINST_INI : SYS_ODBC_INI, size);
+      return buf;
     }
 
   /*

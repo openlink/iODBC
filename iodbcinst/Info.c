@@ -71,5 +71,5 @@
 #include <iodbc.h>
 #include <iodbcinst.h>
 
-char *version = VERSION;
-char *libname = "iODBC Installer";
+char *iodbc_version = VERSION;
+char *iodbc_libname = "iODBC Installer";

@@ -74,7 +74,7 @@
 #include <dirent.h>
 #include <errno.h>
 
-#include "gui.h"
+#include "../gui.h"
 #include "odbc4.xpm"
 
 char *szDSNColumnNames[] = {
@@ -99,26 +99,6 @@ char *szDSNButtons[] = {
   "Confi_gure",
   "_Test",
 };
-
-static void
-display_sqlerror (HWND parent, LPCSTR description, LPCSTR dsn, HENV henv,
-    HDBC hdbc, HSTMT hstmt)
-{
-  UCHAR state[32], err[SQL_MAX_MESSAGE_LENGTH];
-  SDWORD native;
-  SWORD len;
-  char *message;
-
-  if (SQLError (henv, hdbc, hstmt, state, &native, err, sizeof (err) - 1,
-	  &len) == SQL_SUCCESS)
-    {
-      message = (char *) malloc (STRLEN (err) + STRLEN ("SQL State : ") + 1);
-      if (message)
-	sprintf (message, "SQL State : %s", state);
-      create_error (parent, dsn, description, message);
-    }
-}
-
 
 void
 addlistofdir_to_optionmenu (GtkWidget *widget, LPCSTR path,
@@ -341,22 +321,29 @@ static void
 dsnchooser_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
     gint page_num, TDSNCHOOSER *choose_t)
 {
-  if (choose_t)
-    {
-      switch (page_num)
+  switch (page_num)
 	{
 	case 0:
-	  choose_t->type_dsn = 0;
-	  adddsns_to_list (choose_t->udsnlist, FALSE);
+	  if (choose_t)
+	    {
+	      choose_t->type_dsn = 0;
+	      adddsns_to_list (choose_t->udsnlist, FALSE);
+		 }
 	  break;
 
 	case 1:
-	  choose_t->type_dsn = 1;
-	  adddsns_to_list (choose_t->sdsnlist, TRUE);
+	  if (choose_t)
+	    {
+	      choose_t->type_dsn = 1;
+	      adddsns_to_list (choose_t->sdsnlist, TRUE);
+		 }
 	  break;
 
 	case 2:
-	  choose_t->type_dsn = 2;
+	  if (choose_t)
+	    {
+	      choose_t->type_dsn = 2;
+		 }
 	  break;
 	};
 
@@ -375,7 +362,6 @@ dsnchooser_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
 	  if (choose_t->stest)
 	    gtk_widget_set_sensitive (choose_t->stest, FALSE);
 	}
-    }
 }
 
 
@@ -577,9 +563,8 @@ userdsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
 #endif
 	    {
-	      display_sqlerror (choose_t->mainwnd,
-		  "The connection test to the DSN failed.", szDSN,
-		  SQL_NULL_HENV, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
@@ -591,10 +576,9 @@ userdsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
 #endif
 	    {
+         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			  henv, hdbc, SQL_NULL_HSTMT);
 	      SQLFreeEnv (henv);
-	      display_sqlerror (choose_t->mainwnd,
-		  "The connection test to the DSN failed.", szDSN, henv,
-		  SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
@@ -604,9 +588,8 @@ userdsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLDriverConnect (hdbc, choose_t->mainwnd, connstr, SQL_NTS,
 		  outconnstr, sizeof (outconnstr), &buflen,
 		  SQL_DRIVER_PROMPT) != SQL_SUCCESS)
-	    display_sqlerror (choose_t->mainwnd,
-		"The connection test to the DSN failed.", szDSN, henv, hdbc,
-		SQL_NULL_HSTMT);
+        _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			 henv, hdbc, SQL_NULL_HSTMT);
 	  else
 	    {
 	      _iodbcdm_messagebox (choose_t->mainwnd, szDSN,
@@ -833,9 +816,8 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
 #endif
 	    {
-	      display_sqlerror (choose_t->mainwnd,
-		  "The connection test to the DSN failed.", szDSN,
-		  SQL_NULL_HENV, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
@@ -847,10 +829,9 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
 #endif
 	    {
+         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			  henv, hdbc, SQL_NULL_HSTMT);
 	      SQLFreeEnv (henv);
-	      display_sqlerror (choose_t->mainwnd,
-		  "The connection test to the DSN failed.", szDSN, henv,
-		  SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
@@ -860,9 +841,8 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
 	  if (SQLDriverConnect (hdbc, choose_t->mainwnd, connstr, SQL_NTS,
 		  outconnstr, sizeof (outconnstr), &buflen,
 		  SQL_DRIVER_PROMPT) != SQL_SUCCESS)
-	    display_sqlerror (choose_t->mainwnd,
-		"The connection test to the DSN failed.", szDSN, henv, hdbc,
-		SQL_NULL_HSTMT);
+        _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			 henv, hdbc, SQL_NULL_HSTMT);
 	  else
 	    {
 	      _iodbcdm_messagebox (choose_t->mainwnd, szDSN,
@@ -930,27 +910,24 @@ filedsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 
 	  if (SQLAllocEnv (&henv) != SQL_SUCCESS)
 	    {
-	      display_sqlerror (choose_t->mainwnd,
-		  "The File DSN creation failed.", NULL, SQL_NULL_HENV,
-		  SQL_NULL_HDBC, SQL_NULL_HSTMT);
+         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
 	  if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
 	    {
+         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			  henv, hdbc, SQL_NULL_HSTMT);
 	      SQLFreeEnv (henv);
-	      display_sqlerror (choose_t->mainwnd,
-		  "The File DSN creation failed.", NULL, henv, SQL_NULL_HDBC,
-		  SQL_NULL_HSTMT);
 	      return;
 	    }
 
 	  if (SQLDriverConnect (hdbc, choose_t->mainwnd, connstr, SQL_NTS,
 		  outconnstr, sizeof (outconnstr), &buflen,
 		  SQL_DRIVER_PROMPT) != SQL_SUCCESS)
-	    display_sqlerror (choose_t->mainwnd,
-		"The File DSN creation failed.", NULL, henv, hdbc,
-		SQL_NULL_HSTMT);
+        _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+			 henv, hdbc, SQL_NULL_HSTMT);
 	  else
 	    SQLDisconnect (hdbc);
 
@@ -1224,47 +1201,45 @@ dsnchooser_ok_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
   if (choose_t)
     {
       switch (choose_t->type_dsn)
-	{
-	case 0:
-	  if (GTK_CLIST (choose_t->udsnlist)->selection != NULL)
-	    {
-	      gtk_clist_get_text (GTK_CLIST (choose_t->udsnlist),
-		  GPOINTER_TO_INT (GTK_CLIST (choose_t->udsnlist)->selection->
-		      data), 0, &szDSN);
-	      choose_t->dsn = strdup (szDSN);
-	    }
-	  else
-	    choose_t->dsn = NULL;
-	  SQLSetConfigMode (ODBC_USER_DSN);
-	  break;
+	     {
+	       case USER_DSN:
+	         if (GTK_CLIST (choose_t->udsnlist)->selection != NULL)
+	           {
+	             gtk_clist_get_text (GTK_CLIST (choose_t->udsnlist),
+		            GPOINTER_TO_INT (GTK_CLIST (choose_t->udsnlist)->selection->
+		            data), 0, &szDSN);
+	             choose_t->dsn = strdup (szDSN);
+	           }
+	         else
+	           choose_t->dsn = NULL;
+	         break;
 
-	case 1:
-	  if (GTK_CLIST (choose_t->sdsnlist)->selection != NULL)
-	    {
-	      gtk_clist_get_text (GTK_CLIST (choose_t->sdsnlist),
-		  GPOINTER_TO_INT (GTK_CLIST (choose_t->sdsnlist)->selection->
-		      data), 0, &szDSN);
-	      choose_t->dsn = strdup (szDSN);
-	    }
-	  else
-	    choose_t->dsn = NULL;
-	  SQLSetConfigMode (ODBC_SYSTEM_DSN);
-	  break;
+	       case SYSTEM_DSN:
+	         if (GTK_CLIST (choose_t->sdsnlist)->selection != NULL)
+	           {
+	             gtk_clist_get_text (GTK_CLIST (choose_t->sdsnlist),
+		            GPOINTER_TO_INT (GTK_CLIST (choose_t->sdsnlist)->selection->
+		            data), 0, &szDSN);
+	             choose_t->dsn = strdup (szDSN);
+	           }
+	         else
+	           choose_t->dsn = NULL;
+	         break;
 
-	default:
-	  choose_t->dsn = NULL;
-	  break;
-	};
+	       default:
+	         choose_t->dsn = NULL;
+	         break;
+	    };
 
     done:
       choose_t->udsnlist = choose_t->sdsnlist = NULL;
       choose_t->uadd = choose_t->uremove = choose_t->utest =
-	  choose_t->uconfigure = NULL;
+	   choose_t->uconfigure = NULL;
       choose_t->sadd = choose_t->sremove = choose_t->stest =
-	  choose_t->sconfigure = NULL;
+	   choose_t->sconfigure = NULL;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (choose_t->mainwnd),
-	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	     GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
       gtk_main_quit ();
       gtk_widget_destroy (choose_t->mainwnd);
     }
@@ -1278,14 +1253,14 @@ dsnchooser_cancel_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
     {
       choose_t->udsnlist = choose_t->sdsnlist = NULL;
       choose_t->uadd = choose_t->uremove = choose_t->utest =
-	  choose_t->uconfigure = NULL;
+	   choose_t->uconfigure = NULL;
       choose_t->sadd = choose_t->sremove = choose_t->stest =
-	  choose_t->sconfigure = NULL;
+	   choose_t->sconfigure = NULL;
       choose_t->type_dsn = -1;
       choose_t->dsn = NULL;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (choose_t->mainwnd),
-	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	     GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
       gtk_main_quit ();
       gtk_widget_destroy (choose_t->mainwnd);
     }
@@ -1303,8 +1278,6 @@ delete_event (GtkWidget *widget, GdkEvent *event, TDSNCHOOSER *choose_t)
 void
 create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
 {
-  guint b_ok_key, b_cancel_key, b_add_key, b_remove_key, b_test_key,
-      b_configure_key;
   GtkWidget *dsnchooser, *dialog_vbox1, *notebook1, *vbox1, *fixed1,
       *scrolledwindow1;
   GtkWidget *clist1, *l_name, *l_description, *l_driver, *l_usdsn, *frame1,
@@ -1319,8 +1292,9 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   GdkBitmap *mask;
   GtkStyle *style;
   GtkAccelGroup *accel_group;
+  guint b_key;
 
-  if (hwnd == (HWND)-1L)
+  if (!GTK_IS_WIDGET (hwnd))
     {
       gtk_init(0, NULL);
       hwnd = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1334,7 +1308,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   dsnchooser = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dsnchooser), "dsnchooser", dsnchooser);
   gtk_widget_set_usize (dsnchooser, 565, 415);
-  gtk_window_set_title (GTK_WINDOW (dsnchooser), "Select a Data Source");
+  gtk_window_set_title (GTK_WINDOW (dsnchooser), "Select Data Source");
   gtk_window_set_position (GTK_WINDOW (dsnchooser), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (dsnchooser), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dsnchooser), FALSE, FALSE, FALSE);
@@ -1357,6 +1331,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (notebook1), vbox1);
 
+  /* User DSN panel */
   fixed1 = gtk_fixed_new ();
   gtk_widget_ref (fixed1);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "fixed1", fixed1,
@@ -1467,10 +1442,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_set_usize (vbuttonbox1, 85, 135);
 
   b_add = gtk_button_new_with_label ("");
-  b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
       szDSNButtons[0]);
   gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      b_add_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_add);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_add", b_add,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1481,10 +1456,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
       'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_remove = gtk_button_new_with_label ("");
-  b_remove_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
       szDSNButtons[1]);
   gtk_widget_add_accelerator (b_remove, "clicked", accel_group,
-      b_remove_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_remove);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_remove", b_remove,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1496,11 +1471,11 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_set_sensitive (b_remove, FALSE);
 
   b_configure = gtk_button_new_with_label ("");
-  b_configure_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
       szDSNButtons[2]);
   gtk_widget_add_accelerator (b_configure, "clicked", accel_group,
-      b_configure_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_configure);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_configure",
       b_configure, (GtkDestroyNotify) gtk_widget_unref);
@@ -1512,10 +1487,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_set_sensitive (b_configure, FALSE);
 
   b_test = gtk_button_new_with_label ("");
-  b_test_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
       szDSNButtons[3]);
   gtk_widget_add_accelerator (b_test, "clicked", accel_group,
-      b_test_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_test);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_test", b_test,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1539,6 +1514,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1),
       gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), udsn);
 
+  /* System DSN panel */
   fixed2 = gtk_fixed_new ();
   gtk_widget_ref (fixed2);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "fixed2", fixed2,
@@ -1645,10 +1621,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_set_usize (vbuttonbox2, 85, 135);
 
   b_add = gtk_button_new_with_label ("");
-  b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
       szDSNButtons[0]);
   gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      b_add_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_add);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_add", b_add,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1659,10 +1635,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
       'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_remove = gtk_button_new_with_label ("");
-  b_remove_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_remove)->child),
       szDSNButtons[1]);
   gtk_widget_add_accelerator (b_remove, "clicked", accel_group,
-      b_remove_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_remove);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_remove", b_remove,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1674,11 +1650,11 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_set_sensitive (b_remove, FALSE);
 
   b_configure = gtk_button_new_with_label ("");
-  b_configure_key =
+  b_key =
       gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_configure)->child),
       szDSNButtons[2]);
   gtk_widget_add_accelerator (b_configure, "clicked", accel_group,
-      b_configure_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_configure);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_configure",
       b_configure, (GtkDestroyNotify) gtk_widget_unref);
@@ -1690,10 +1666,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_widget_set_sensitive (b_configure, FALSE);
 
   b_test = gtk_button_new_with_label ("");
-  b_test_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_test)->child),
       szDSNButtons[3]);
   gtk_widget_add_accelerator (b_test, "clicked", accel_group,
-      b_test_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_test);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_test", b_test,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1734,9 +1710,9 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
 
   b_ok = gtk_button_new_with_label ("");
-  b_ok_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
   gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      b_ok_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_ok);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_ok", b_ok,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1747,10 +1723,10 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
       'O', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
   b_cancel = gtk_button_new_with_label ("");
-  b_cancel_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
+  b_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
       "_Cancel");
   gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      b_cancel_key, GDK_MOD1_MASK, 0);
+      b_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (b_cancel);
   gtk_object_set_data_full (GTK_OBJECT (dsnchooser), "b_cancel", b_cancel,
       (GtkDestroyNotify) gtk_widget_unref);
@@ -1815,7 +1791,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
 
   choose_t->udsnlist = clist1;
   choose_t->sdsnlist = clist2;
-  choose_t->type_dsn = 0;
+  choose_t->type_dsn = USER_DSN;
   choose_t->mainwnd = dsnchooser;
 
   gtk_widget_show_all (dsnchooser);

@@ -26,5 +26,5 @@ SQLValidDSN
 SQLWriteDSNToIni
 SQLWriteFileDSN
 SQLWritePrivateProfileString
-version
-libname
+iodbc_version
+iodbc_libname

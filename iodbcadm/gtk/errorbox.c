@@ -107,7 +107,7 @@ create_error (HWND hwnd, LPCSTR dsn, LPCSTR text, LPCSTR errmsg)
 
   error = gtk_dialog_new ();
   if (dsn)
-    sprintf (msg, "Error on DSN %s", dsn);
+    sprintf (msg, "Error : %s", dsn);
   else
     sprintf (msg, "Error ...");
   gtk_object_set_data (GTK_OBJECT (error), "error", error);

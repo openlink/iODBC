@@ -95,6 +95,7 @@ libdrvproxy_la_LIBADD	= \
 	../iodbc/dlf.lo \
 	../drvproxy/gtk/confirm.lo \
 	../drvproxy/gtk/gensetup.lo \
+	../drvproxy/gtk/loginbox.lo \
 	-L../iodbcinst -liodbcinst \
 	-L../iodbcadm -liodbcadm \
 	@GTK_LIBS@
@@ -110,8 +111,7 @@ libdrvproxy_la_SOURCES	= \
 	ConfigDSN.c \
 	ConfigDriver.c \
 	Info.c \
-	drvconn.c \
-	login.c
+	drvconn.c
 
 noinst_HEADERS		= gui.h
 

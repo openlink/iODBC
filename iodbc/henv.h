@@ -118,6 +118,7 @@ typedef struct
     HDLL hdll;			/* driver share library handle */
 
     SWORD thread_safe;		/* Is the driver threadsafe? */
+    SWORD unicode_driver;       /* Is the driver unicode? */
     MUTEX_DECLARE (drv_lock);	/* Used only when driver is not threadsafe */
 
 #if (ODBCVER >= 0x300)
@@ -130,6 +131,26 @@ ENV_t;
 #define IS_VALID_HENV(x) \
 	((x) != SQL_NULL_HENV && ((GENV_t FAR *)(x))->type == SQL_HANDLE_ENV)
 
+
+#define ENTER_HENV(henv, trace) \
+	GENV (genv, henv); \
+	SQLRETURN retcode = SQL_SUCCESS; \
+	ODBC_LOCK (); \
+	TRACE (trace); \
+	if (!IS_VALID_HENV (henv)) \
+	  { \
+	    retcode = SQL_INVALID_HANDLE; \
+	    goto done; \
+	  } \
+	CLEAR_ERRORS (genv);
+
+
+#define LEAVE_HENV(henv, trace) \
+    done: \
+     	TRACE(trace); \
+	ODBC_UNLOCK (); \
+	return (retcode);
+  
 
 /*
  * Multi threading

@@ -31,6 +31,9 @@ Emmanuel Poitier <epoitier@openlinksw.co.uk>				(ep)
 Christian Hammers <ch@debian.org>					(ch)
   - Maintainer of iODBC packaging for the Debian project
 
+Sergei Malinin <smalinin@openlinksw.com>				(sm)
+  - Added Unicode support
+
 
 This list is not complete. If you have contributed to this project and
 want to appear on this list, please email the current maintainer.

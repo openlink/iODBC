@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *  
- *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1999-2003 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -84,7 +84,9 @@ login_ok_clicked (GtkWidget *widget, TLOGIN *log_t)
 	    gtk_entry_get_text (GTK_ENTRY (log_t->username)));
       if (log_t->pwd)
 	strcpy (log_t->pwd, gtk_entry_get_text (GTK_ENTRY (log_t->password)));
+
       log_t->username = log_t->password = NULL;
+		log_t->ok = TRUE;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (log_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -101,6 +103,7 @@ login_cancel_clicked (GtkWidget *widget, TLOGIN *log_t)
     {
       log_t->user = log_t->pwd = NULL;
       log_t->username = log_t->password = NULL;
+		log_t->ok = FALSE;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (log_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		034768DDFF38A45A11DB9C8B = {
 			children = (
@@ -73,7 +73,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
-				FRAMEWORK_SEARCH_PATHS = "../iODBC/build";
+				FRAMEWORK_SEARCH_PATHS = ../iODBC/build;
 				FRAMEWORK_VERSION = 3.0.6;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /Library/Frameworks;
@@ -94,8 +94,8 @@
 			productName = iODBCinst;
 			productReference = 034768DEFF38A45A11DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
-<plist version=\"0.9\">
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
@@ -144,7 +144,7 @@
 				F535B3C5027827A201A801DE,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69EFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -152,7 +152,7 @@
 				089C1668FE841158C02AAC07,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D69FFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -193,7 +193,7 @@
 				F54DA8D60279584A01A801DE,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A0FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -201,14 +201,14 @@
 				F54DA8DA02795B3501A801DE,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0867D6A2FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		089C1665FE841158C02AAC07 = {
 			children = (
@@ -334,7 +334,7 @@
 		F535B35C0278023701A801DE = {
 			isa = PBXFileReference;
 			name = iodbcinst.h;
-			path = ../include/iodbcinst.h;
+			path = ../../include/iodbcinst.h;
 			refType = 2;
 		};
 		F535B35D0278023701A801DE = {
@@ -786,37 +786,37 @@
 		F535B3A702780BB701A801DE = {
 			isa = PBXFileReference;
 			name = isqltypes.h;
-			path = ../include/isqltypes.h;
+			path = ../../include/isqltypes.h;
 			refType = 2;
 		};
 		F535B3A802780BB701A801DE = {
 			isa = PBXFileReference;
 			name = isql.h;
-			path = ../include/isql.h;
+			path = ../../include/isql.h;
 			refType = 2;
 		};
 		F535B3A902780BB701A801DE = {
 			isa = PBXFileReference;
 			name = isqlext.h;
-			path = ../include/isqlext.h;
+			path = ../../include/isqlext.h;
 			refType = 2;
 		};
 		F535B3AA02780BB701A801DE = {
 			isa = PBXFileReference;
 			name = sql.h;
-			path = ../include/sql.h;
+			path = ../../include/sql.h;
 			refType = 2;
 		};
 		F535B3AB02780BB701A801DE = {
 			isa = PBXFileReference;
 			name = sqlext.h;
-			path = ../include/sqlext.h;
+			path = ../../include/sqlext.h;
 			refType = 2;
 		};
 		F535B3AC02780BB701A801DE = {
 			isa = PBXFileReference;
 			name = sqltypes.h;
-			path = ../include/sqltypes.h;
+			path = ../../include/sqltypes.h;
 			refType = 2;
 		};
 		F535B3AD02780BB701A801DE = {

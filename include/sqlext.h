@@ -465,8 +465,10 @@ extern "C" {
 #define SQL_OPT_TRACE_DEFAULT			SQL_OPT_TRACE_OFF
 #if defined (WIN32)
 #define SQL_OPT_TRACE_FILE_DEFAULT		"\\SQL.LOG"
+#define SQL_OPT_TRACE_FILE_DEFAULTW		L"\\SQL.LOG"
 #else
 #define SQL_OPT_TRACE_FILE_DEFAULT		"/tmp/odbc.log"
+#define SQL_OPT_TRACE_FILE_DEFAULTW		L"/tmp/odbc.log"
 #endif
 
 
@@ -617,7 +619,7 @@ extern "C" {
 
 
 /*
- *  SQLGetFunctions - extentions to the X/Open specification
+ *  SQLGetFunctions - extensions to the X/Open specification
  */
 #if (ODBCVER >= 0x0300)
 #define SQL_API_SQLALLOCHANDLESTD		73
@@ -683,7 +685,7 @@ extern "C" {
 
 
 /*
- *  SQLGetInfo - ODBC 2.x extentions to the X/Open standard
+ *  SQLGetInfo - ODBC 2.x extensions to the X/Open standard
  */
 #define SQL_INFO_FIRST				0
 #define SQL_ACTIVE_CONNECTIONS			0 /* MAX_DRIVER_CONNECTIONS */
@@ -782,7 +784,7 @@ extern "C" {
 
 
 /*
- *  SQLGetInfo - ODBC 3.x extentions to the X/Open standard
+ *  SQLGetInfo - ODBC 3.x extensions to the X/Open standard
  */
 #if (ODBCVER >= 0x0300)
 #define SQL_ACTIVE_ENVIRONMENTS			116
@@ -1120,6 +1122,15 @@ extern "C" {
 #if (ODBCVER >= 0x0300)
 #define SQL_CTR_CREATE_TRANSLATION		0x00000001L
 #endif	/* ODBCVER >= 0x0300 */
+
+
+/*
+ *  SQLGetInfo - SQL_CREATE_VIEW
+ */
+#define SQL_CV_CREATE_VIEW			0x00000001L
+#define SQL_CV_CHECK_OPTION			0x00000002L
+#define SQL_CV_CASCADED				0x00000004L
+#define SQL_CV_LOCAL				0x00000008L
 
 
 /*
@@ -1909,16 +1920,6 @@ extern "C" {
 #define SQL_US_UNION				SQL_U_UNION
 #define SQL_US_UNION_ALL			SQL_U_UNION_ALL
 #endif	/* ODBCVER >= 0x0300 */
-
-
-/*
- *  SQLGetInfo - SQL_VIEW
- */
-#define SQL_CV_CREATE_VIEW			0x00000001L
-#define SQL_CV_CHECK_OPTION			0x00000002L
-#define SQL_CV_CASCADED				0x00000004L
-#define SQL_CV_LOCAL				0x00000008L
-
 
 
 /*

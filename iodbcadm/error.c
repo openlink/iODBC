@@ -73,6 +73,39 @@
 #include "gui.h"
 
 void SQL_API
+_iodbcdm_nativeerrorbox (
+    HWND hwnd,
+	 HENV henv,
+	 HDBC hdbc,
+	 HSTMT hstmt)
+{
+  char buf[250];
+  char sqlstate[15];
+
+  /*
+   * Get statement errors
+	*/
+  if (SQLError (henv, hdbc, hstmt, sqlstate, NULL,
+        buf, sizeof(buf), NULL) == SQL_SUCCESS)
+    create_error (hwnd, "Native ODBC Error", sqlstate, buf);
+
+  /*
+   * Get connection errors
+	*/
+  if (SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate,
+        NULL, buf, sizeof(buf), NULL) == SQL_SUCCESS)
+    create_error (hwnd, "Native ODBC Error", sqlstate, buf);
+
+  /*
+   * Get environmental errors
+	*/
+  if (SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT,
+        sqlstate, NULL, buf, sizeof(buf), NULL) == SQL_SUCCESS)
+    create_error (hwnd, "Native ODBC Error", sqlstate, buf);
+}
+
+
+void SQL_API
 _iodbcdm_errorbox (
     HWND hwnd,
     LPCSTR szDSN,
@@ -92,4 +125,14 @@ _iodbcdm_messagebox (
     LPCSTR szText)
 {
   create_message (hwnd, szDSN, szText);
+}
+
+
+BOOL SQL_API
+_iodbcdm_confirmbox (
+    HWND hwnd,
+	 LPCSTR szDSN,
+	 LPCSTR szText)
+{
+  return create_confirm (hwnd, (SQLPOINTER)szDSN, (SQLPOINTER)szText);
 }

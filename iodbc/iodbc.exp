@@ -75,5 +75,5 @@ SQLStatistics
 SQLTablePrivileges
 SQLTables
 SQLTransact
-version
-libname
+iodbc_version
+iodbc_libname

@@ -69,6 +69,15 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+# ----------------------------------------------------------------------
+# MACROS AND DEFINES
+# ----------------------------------------------------------------------
+
+#  Disable generation of debug package
+%define debug_package %{nil}
+
+
 # ----------------------------------------------------------------------
 # BASE PACKAGE
 # ----------------------------------------------------------------------
@@ -134,11 +143,14 @@ currently maintained by OpenLink Software under an LGPL license.
 %prep
 %setup
 %build
-./configure --prefix=/usr --enable-odbc3 --with-iodbc-inidir=/etc --with-pthreads
+./configure --prefix=/usr --enable-odbc3 --with-iodbc-inidir=/etc --enable-pthreads
 make
 
 %install
-#rm -rf $RPM_BUILD_ROOT
+#
+#  Carefully clean the build tree before use
+#
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 #
 #  Make sure we can find the necessary libraries
@@ -155,20 +167,24 @@ make install prefix=$RPM_BUILD_ROOT/usr
 #  Install the sample odbc.ini and odbcinst.ini files
 #
 mkdir -p $RPM_BUILD_ROOT/etc
-install -m644 etc/odbc.ini.sample $RPM_BUILD_ROOT/etc/odbc.ini
-install -m644 etc/odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
+#install -m644 etc/odbc.ini.sample $RPM_BUILD_ROOT/etc/odbc.ini
+#install -m644 etc/odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+#
+#  Carefully clean the build tree
+#
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %files 
+%attr(0755, root, root) /usr/bin/iodbctest
 %attr(0755, root, root) /usr/lib/libiodbc.so.*
 %attr(0755, root, root) /usr/lib/libiodbcinst.so.*
-%attr(0644, root, root) %config /etc/odbc.ini
-%attr(0644, root, root) %config /etc/odbcinst.ini
+#%attr(0644, root, root) %config /etc/odbc.ini
+#%attr(0644, root, root) %config /etc/odbcinst.ini
 
 %files devel
 %attr(0644, root, root) %doc AUTHORS 
@@ -178,13 +194,17 @@ install -m644 etc/odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
 %attr(0644, root, root) %doc ChangeLog 
 %attr(0644, root, root) %doc NEWS 
 %attr(0644, root, root) %doc README
-%attr(0644, root, root) /usr/include/isql.h
+%attr(0644, root, root) %doc etc/odbc.ini.sample
+%attr(0644, root, root) %doc etc/odbcinst.ini.sample
+%attr(0644, root, root) /usr/include/iodbcext.h
+%attr(0644, root, root) /usr/include/iodbcinst.h
 %attr(0644, root, root) /usr/include/isqlext.h
+%attr(0644, root, root) /usr/include/isql.h
 %attr(0644, root, root) /usr/include/isqltypes.h
 %attr(0644, root, root) /usr/include/sql.h
-%attr(0644, root, root) /usr/include/sqlext.h
 %attr(0644, root, root) /usr/include/sqltypes.h
-%attr(0644, root, root) /usr/include/iodbcinst.h
+%attr(0644, root, root) /usr/include/sqlucode.h
+%attr(0644, root, root) /usr/include/sqlext.h
 %attr(0755, root, root) /usr/bin/iodbc-config
 %attr(0644, root, root) /usr/lib/libiodbc.a
 %attr(0644, root, root) /usr/lib/libiodbc.la
@@ -195,13 +215,9 @@ install -m644 etc/odbcinst.ini.sample $RPM_BUILD_ROOT/etc/odbcinst.ini
 
 %files admin
 %attr(0755, root, root) /usr/bin/iodbcadm-gtk
-%attr(0644, root, root) /usr/lib/libdrvproxy-gtk.a
-%attr(0644, root, root) /usr/lib/libdrvproxy-gtk.la
 %attr(0644, root, root) /usr/lib/libdrvproxy.a
 %attr(0644, root, root) /usr/lib/libdrvproxy.la
 %attr(0755, root, root) /usr/lib/libdrvproxy.so*
-%attr(0644, root, root) /usr/lib/libiodbcadm-gtk.a
-%attr(0644, root, root) /usr/lib/libiodbcadm-gtk.la
 %attr(0644, root, root) /usr/lib/libiodbcadm.a
 %attr(0644, root, root) /usr/lib/libiodbcadm.la
 %attr(0755, root, root) /usr/lib/libiodbcadm.so*

@@ -17,3 +17,4 @@ config.status
 .deps
 iodbc-config
 autom4te.cache
+distrib

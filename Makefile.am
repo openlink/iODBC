@@ -67,9 +67,10 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
-SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
 
-EXTRA_DIST             = \
+SUBDIRS 		= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
+
+EXTRA_DIST		= \
 	IAFA-PACKAGE \
 	LICENSE LICENSE.LGPL LICENSE.BSD \
 	README.MACOSX \
@@ -112,10 +113,15 @@ if MAINTAINER_MODE
 #
 #  Create Linux RPM's
 #
+RPMFLAGS=--define="_topdir `pwd`/distrib"
+
 linux-rpm:
+	$(mkinstalldirs) distrib/SOURCES distrib/SRPMS distrib/SPECS
+	$(mkinstalldirs) distrib/BUILD distrib/RPMS/i386
 	$(MAKE) dist
-	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
-	rpm -ba admin/libiodbc.spec
+	cp $(PACKAGE)-$(VERSION).tar.gz distrib/SOURCES
+	rpmbuild $(RPMFLAGS) -ba admin/libiodbc.spec
+	rpmbuild $(RPMFLAGS) --clean --rmsource admin/libiodbc.spec
 
 #
 #  Create a tar file containing the library and include files

@@ -72,6 +72,7 @@
 
 #include <iodbc.h>
 #include <iodbcinst.h>
+#include <iodbcadm.h>
 
 #include "dlf.h"
 #include "inifile.h"
@@ -101,6 +102,16 @@
 		} \
 		DLL_CLOSE(handle); \
 	}
+
+#define CALL_TRSCHOOSE_DIALBOX(path) \
+	if ((handle = DLL_OPEN(path)) != NULL) \
+	{ \
+		if ((pTrsChoose = (pTrsChooseFunc)DLL_PROC(handle, "_iodbcdm_trschoose_dialbox")) != NULL) \
+		  ret = pTrsChoose(hwndParent, translator, sizeof(translator), NULL); \
+		else ret = SQL_NO_DATA; \
+		DLL_CLOSE(handle); \
+	} \
+	else ret = SQL_NO_DATA;
 #endif
 
 extern SQLRETURN _iodbcdm_trschoose_dialbox(HWND, LPSTR, DWORD, int FAR*);
@@ -110,21 +121,45 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
     WORD FAR *pcbPathOut, DWORD FAR *pvOption)
 {
   pConfigTranslatorFunc pConfigTranslator;
+  pTrsChooseFunc pTrsChoose;
   BOOL retcode = FALSE, finish = FALSE;
   PCONFIG pCfg;
   UWORD configMode;
   RETCODE ret;
   void *handle;
   char translator[1024];
+#ifdef _MACX
+  CFStringRef libname;
+  CFBundleRef bundle;
+  CFURLRef liburl;
+  char name[1024] = { 0 };
+#endif
 
   do
     {
-#ifdef GUI
-      ret =
-	  _iodbcdm_trschoose_dialbox (hwndParent, translator,
-	  sizeof (translator), NULL);
+      /* Load the Admin dialbox function */
+#ifdef _MACX
+      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
+      if (bundle)
+        {
+          /* Search for the drvproxy library */
+          liburl = CFBundleCopyExcutableURL (bundle);
+          if (liburl
+	      && (libname =
+	          CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	    {
+	      CFStringGetCString (libname, name, sizeof (name),
+	          kCFStringEncodingASCII);
+	      CALL_TRSCHOOSE_DIALBOX (name);
+	    }
+          if (liburl)
+	    CFRelease (liburl);
+          if (libname)
+	    CFRelease (libname);
+          CFRelease (bundle);
+        }
 #else
-      ret = SQL_NO_DATA;
+      CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so");
 #endif
 
       if (ret == SQL_NO_DATA)

@@ -71,7 +71,8 @@ lib_LTLIBRARIES		= libiodbcinst.la
 INCLUDES		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
-	-I$(top_srcdir)/iodbcinst
+	-I$(top_srcdir)/iodbcinst \
+	-I$(top_srcdir)/iodbcadm
 
 libiodbcinst_la_LDFLAGS	= -version-info @lib_version@ \
 			  -export-symbols $(srcdir)/iodbcinst.exp
