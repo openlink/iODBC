@@ -279,24 +279,6 @@ ODBC_Disconnect (void)
 
 
 /*
- *  This is the message handler for the communications layer.
- *
- *  The messages received here are not passed through SQLError,
- *  because they might occur when no connection is established.
- *
- *  Typically, Rejections from oplrqb are trapped here, and
- *  also RPC errors.
- *
- *  When no message handler is installed, the messages are output to stderr
- */
-void
-ODBC_MesgHandler (char *reason)
-{
-  fprintf (stderr, "ODBC_MesgHandler: %s\n", reason);
-}
-
-
-/*
  *  Show all the error information that is available
  */
 int
