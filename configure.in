@@ -76,7 +76,7 @@ AC_INIT
 AC_CONFIG_SRCDIR([include/isql.h])
 AC_CONFIG_AUX_DIR(admin)
 AM_CONFIG_HEADER(include/config.h)
-AM_INIT_AUTOMAKE(libiodbc,3.0.6a)
+AM_INIT_AUTOMAKE(libiodbc,3.51.0)
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
@@ -348,7 +348,7 @@ AC_ARG_ENABLE(odbc3,
 
 if test "x$odbcmode" = "x3"
 then
-	lib_version=3:6:1
+	lib_version=3:8:1
 	CFLAGS="$CFLAGS -DODBCVER=0x0350" 
 	AC_MSG_RESULT(ODBC 3.x compatible mode)
 else

@@ -82,11 +82,11 @@
 #endif
 
 #ifndef VERSION
-#define VERSION	"3.0.7"
+#define VERSION	"3.51.0"
 #endif
 
 #ifndef IODBC_BUILD
-#define IODBC_BUILD 30007	/* 0003.0007 */
+#define IODBC_BUILD 35100	/* 0003.5100 */
 #endif
 
 #include <stdlib.h>
