@@ -73,8 +73,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __APPLE__
+#include <iODBC/isql.h>
+#include <iODBC/isqlext.h>
+#else
 #include "isql.h"
 #include "isqlext.h"
+#endif
 
 #define MAXCOLS		32
 
