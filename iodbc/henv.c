@@ -281,7 +281,7 @@ Init_iODBC (void)
 }
 
 
-static void 
+void 
 Done_iODBC(void)
 {
 #if !defined (PTHREAD_MUTEX_INITIALIZER) || defined (WINDOWS)
