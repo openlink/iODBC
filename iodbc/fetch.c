@@ -191,7 +191,7 @@ SQLFetch_Internal (SQLHSTMT hstmt)
 	case SQL_NO_DATA_FOUND:
 	  if (pstmt->prep_state)
 	    {
-	      pstmt->state = en_stmt_prepared;
+	      pstmt->state = en_stmt_fetched;
 	    }
 	  else
 	    {
@@ -767,7 +767,6 @@ _iodbcdm_SetPos (SQLHSTMT hstmt,
 	{
 	case en_stmt_allocated:
 	case en_stmt_prepared:
-	case en_stmt_fetched:
 	case en_stmt_needdata:
 	case en_stmt_mustput:
 	case en_stmt_canput:
