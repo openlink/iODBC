@@ -108,6 +108,7 @@ typedef signed short		SQLSMALLINT;
 typedef unsigned short		SQLUSMALLINT;
 typedef signed int		SQLINTEGER;
 typedef unsigned int		SQLUINTEGER;
+typedef void *              	SQLPOINTER;
 
 #if (ODBCVER >= 0x0300)
 typedef signed char		SQLSCHAR;
@@ -193,18 +194,18 @@ typedef SQLPOINTER 		SQLHWND;
  */
 typedef unsigned char		UCHAR;
 typedef signed char		SCHAR;
-typedef long int		SDWORD;
 typedef short int		SWORD;
-typedef unsigned long int	UDWORD;
 typedef unsigned short int	UWORD;
+typedef long int		SDWORD;
+typedef unsigned long int	UDWORD;
 
-typedef signed long		SLONG;
 typedef signed short		SSHORT;
-typedef unsigned long		ULONG;
 typedef unsigned short		USHORT;
+typedef signed long		SLONG;
+typedef unsigned long		ULONG;
+typedef float			SFLOAT;
 typedef double			SDOUBLE;
 typedef double			LDOUBLE;
-typedef float			SFLOAT;
 
 
 /*
