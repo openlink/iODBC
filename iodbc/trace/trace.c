@@ -520,10 +520,10 @@ trace_emit_string (SQLCHAR *str, int len, int is_utf8)
       else
         {
 	  /*
-	   *  Skip this bogus UTF8 character sequence and emit a single # 
+	   *  Skip this bogus UTF8 character sequence and emit a single #
 	   */
 	  for (bytes = 1, ptr++; (*ptr & 0xC0) == 0x80; bytes++)
-	    ptr++;	
+	    ptr++;
 	  trace_emitc ('#');
 	}
 
