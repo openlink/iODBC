@@ -28,7 +28,7 @@
 
 #include	<dlf.h>
 
-typedef RETCODE (FAR * HPROC) ();
+typedef SQLRETURN (FAR * HPROC) ();
 
 #ifdef	DLDAPI_SVR4_DLFCN
 #include	<dlfcn.h>

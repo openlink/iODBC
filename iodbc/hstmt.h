@@ -71,5 +71,5 @@ enum
     en_stmt_cursor_xfetched
   };				/* for statement cursor state */
 
-extern RETCODE _iodbcdm_dropstmt ();
+extern SQLRETURN _iodbcdm_dropstmt ();
 #endif
