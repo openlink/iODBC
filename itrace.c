@@ -35,9 +35,10 @@
 
 #include <herr.h>
 #include <henv.h>
-#include "henv.ci"
 
 #include <stdio.h>
+
+extern char *odbcapi_symtab[];
 
 static int
 printreturn (void FAR * istm, int ret)
@@ -93,19 +94,10 @@ _iodbcdm_gettrproc (void FAR * istm, int procid, int type)
 
   if (type == TRACE_TYPE_DM2DRV)
     {
-      int i, j = 0;
 
-      for (i = 0; j != en_NullProc; i++)
-	{
-	  j = odbcapi_symtab[i].en_idx;
+      fprintf (stm, "\n%s ( ... )\n", odbcapi_symtab[procid]);
 
-	  if (j == procid)
-	    {
-	      fprintf (stm, "\n%s ( ... )\n", odbcapi_symtab[i].symbol);
-
-	      fflush (stm);
-	    }
-	}
+      fflush (stm);
     }
 
   if (type == TRACE_TYPE_RETURN)

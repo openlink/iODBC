@@ -25,110 +25,105 @@
  */
 
 /* There are some exceptions :
- * on FreeBSD 2.x      CLI_NAME_PREFIX is defined in Config.mk as "_SQL"
- * on HP/UX s300/s400, CLI_NAME_PREFIX is defined in Config.mk as "_SQL" 
- * on AIX 3.x 4.x,     CLI_NAME_PREFIX is defined in Config.mk as ".SQL" 
+ * on FreeBSD 2.x      CLI is defined in Config.mk as "_SQL"
+ * on HP/UX s300/s400, CLI is defined in Config.mk as "_SQL" 
+ * on AIX 3.x 4.x,     CLI is defined in Config.mk as ".SQL" 
  */
-#ifndef	CLI_NAME_PREFIX
-#  define CLI_NAME_PREFIX	"SQL"	/* using call by value prefix */ 
+#ifndef CLI
+#  define CLI    "SQL"    /* using call by value prefix */ 
 #else
-# ifdef USE_SYMBOL_UNDERSCORE
-#  define CLI_NAME_PREFIX	"_SQL"
+# ifdef NEED_USCORE
+#  define CLI    "_SQL"
 # endif
 #endif
 
-static struct
-  {
-    int en_idx;
-    char *symbol;
-  }
-odbcapi_symtab[] = {
+FUNCDEF (SQL_API_SQLALLOCENV,         en_AllocEnv,         CLI "AllocEnv")
+FUNCDEF (SQL_API_SQLALLOCCONNECT,     en_AllocConnect,     CLI "AllocConnect")
+FUNCDEF (SQL_API_SQLCONNECT,          en_Connect,          CLI "Connect")
+FUNCDEF (SQL_API_SQLDRIVERCONNECT,    en_DriverConnect,    CLI "DriverConnect")
+FUNCDEF (SQL_API_SQLBROWSECONNECT,    en_BrowseConnect,    CLI "BrowseConnect")
+
+FUNCDEF (SQL_API_SQLDATASOURCES,      en_DataSources,      CLI "DataSources")
+FUNCDEF (SQL_API_SQLDRIVERS,          en_Drivers,          CLI "Driver")
+FUNCDEF (SQL_API_SQLGETINFO,          en_GetInfo,          CLI "GetInfo")
+FUNCDEF (SQL_API_SQLGETFUNCTIONS,     en_GetFunctions,     CLI "GetFunctions")
+FUNCDEF (SQL_API_SQLGETTYPEINFO,      en_GetTypeInfo,      CLI "GetTypeInfo")
+
+FUNCDEF (SQL_API_SQLSETCONNECTOPTION, en_SetConnectOption, CLI "SetConnectOption")
+FUNCDEF (SQL_API_SQLGETCONNECTOPTION, en_GetConnectOption, CLI "GetConnectOption")
+FUNCDEF (SQL_API_SQLSETSTMTOPTION,    en_SetStmtOption,    CLI "SetStmtOption")
+FUNCDEF (SQL_API_SQLGETSTMTOPTION,    en_GetStmtOption,    CLI "GetStmtOption")
+
+FUNCDEF (SQL_API_SQLALLOCSTMT,        en_AllocStmt,        CLI "AllocStmt")
+FUNCDEF (SQL_API_SQLPREPARE,          en_Prepare,          CLI "Prepare")
+FUNCDEF (SQL_API_SQLBINDPARAMETER,    en_BindParameter,    CLI "BindParameter")
+FUNCDEF (SQL_API_SQLPARAMOPTIONS,     en_ParamOptions,     CLI "ParamOptions")
+FUNCDEF (SQL_API_SQLGETCURSORNAME,    en_GetCursorName,    CLI "GetCursorName")
+FUNCDEF (SQL_API_SQLSETCURSORNAME,    en_SetCursorName,    CLI "SetCursorName")
+FUNCDEF (SQL_API_SQLSETSCROLLOPTIONS, en_SetScrollOptions, CLI "SetScrollOptions")
+FUNCDEF (SQL_API_SQLSETPARAM,         en_SetParam,         CLI "SetParam")
+
+FUNCDEF (SQL_API_SQLEXECUTE,          en_Execute,          CLI "Execute")
+FUNCDEF (SQL_API_SQLEXECDIRECT,       en_ExecDirect,       CLI "ExecDirect")
+FUNCDEF (SQL_API_SQLNATIVESQL,        en_NativeSql,        CLI "NativeSql")
+FUNCDEF (SQL_API_SQLDESCRIBEPARAM,    en_DescribeParam,    CLI "DescribeParam")
+FUNCDEF (SQL_API_SQLNUMPARAMS,        en_NumParams,        CLI "NumParams")
+FUNCDEF (SQL_API_SQLPARAMDATA,        en_ParamData,        CLI "ParamData")
+FUNCDEF (SQL_API_SQLPUTDATA,          en_PutData,          CLI "PutData")
+
+FUNCDEF (SQL_API_SQLROWCOUNT,         en_RowCount,         CLI "RowCount")
+FUNCDEF (SQL_API_SQLNUMRESULTCOLS,    en_NumResultCols,    CLI "NumResultCols")
+FUNCDEF (SQL_API_SQLDESCRIBECOL,      en_DescribeCol,      CLI "DescribeCol")
+FUNCDEF (SQL_API_SQLCOLATTRIBUTES,    en_ColAttributes,    CLI "ColAttributes")
+FUNCDEF (SQL_API_SQLBINDCOL,          en_BindCol,          CLI "BindCol")
+FUNCDEF (SQL_API_SQLFETCH,            en_Fetch,            CLI "Fetch")
+FUNCDEF (SQL_API_SQLEXTENDEDFETCH,    en_ExtendedFetch,    CLI "ExtendedFetch")
+FUNCDEF (SQL_API_SQLGETDATA,          en_GetData,          CLI "GetData")
+FUNCDEF (SQL_API_SQLSETPOS,           en_SetPos,           CLI "SetPos")
+FUNCDEF (SQL_API_SQLMORERESULTS,      en_MoreResults,      CLI "MoreResults")
+FUNCDEF (SQL_API_SQLERROR,            en_Error,            CLI "Error")
+
+FUNCDEF (SQL_API_SQLCOLUMNPRIVILEGES, en_ColumnPrivileges, CLI "ColumnPrivileges")
+FUNCDEF (SQL_API_SQLCOLUMNS,          en_Columns,          CLI "Columns")
+FUNCDEF (SQL_API_SQLFOREIGNKEYS,      en_ForeignKeys,      CLI "ForeignKeys")
+FUNCDEF (SQL_API_SQLPRIMARYKEYS,      en_PrimaryKeys,      CLI "PrimaryKeys")
+FUNCDEF (SQL_API_SQLPROCEDURECOLUMNS, en_ProcedureColumns, CLI "ProcedureColumns")
+FUNCDEF (SQL_API_SQLPROCEDURES,       en_Procedures,       CLI "Procedures")
+FUNCDEF (SQL_API_SQLSPECIALCOLUMNS,   en_SpecialColumns,   CLI "SpecialColumns")
+FUNCDEF (SQL_API_SQLSTATISTICS,       en_Statistics,       CLI "Statistics")
+FUNCDEF (SQL_API_SQLTABLEPRIVILEGES,  en_TablePrivileges,  CLI "TablePrivileges")
+FUNCDEF (SQL_API_SQLTABLES,           en_Tables,           CLI "Tables")
+
+FUNCDEF (SQL_API_SQLFREESTMT,         en_FreeStmt,         CLI "FreeStmt")
+FUNCDEF (SQL_API_SQLCANCEL,           en_Cancel,           CLI "Cancel")
+FUNCDEF (SQL_API_SQLTRANSACT,         en_Transact,         CLI "Transact")
+
+FUNCDEF (SQL_API_SQLDISCONNECT,       en_Disconnect,       CLI "Disconnect")
+FUNCDEF (SQL_API_SQLFREECONNECT,      en_FreeConnect,      CLI "FreeConnect")
+FUNCDEF (SQL_API_SQLFREEENV,          en_FreeEnv,          CLI "FreeEnv")
+
 #if (ODBCVER >= 0x0300)
-  en_AllocHandle,	CLI_NAME_PREFIX "AllocHandle",
-  en_BindParam,		CLI_NAME_PREFIX "BindParam" ,
-  en_CloseCursor,	CLI_NAME_PREFIX "CloseCursor" ,
-  en_CopyDesc,		CLI_NAME_PREFIX "CopyDesc" ,
-  en_EndTran,		CLI_NAME_PREFIX "EndTran" ,
-  en_FreeHandle,	CLI_NAME_PREFIX "FreeHandle" ,
-  en_GetConnectAttr,	CLI_NAME_PREFIX "GetConnectAttr" ,
-  en_GetDescField,	CLI_NAME_PREFIX "GetDescField" ,
-  en_GetDescRec,	CLI_NAME_PREFIX "GetDescRec" ,
-  en_GetDiagField,	CLI_NAME_PREFIX "GetDiagField" ,
-  en_GetDiagRec,	CLI_NAME_PREFIX "GetDiagRec" ,
-  en_GetEnvAttr,	CLI_NAME_PREFIX "GetEnvAttr" ,
-  en_GetStmtAttr,	CLI_NAME_PREFIX "GetStmtAttr" ,
-  en_SetConnectAttr,	CLI_NAME_PREFIX "SetConnectAttr" ,
-  en_SetDescField,	CLI_NAME_PREFIX "SetDescField" ,
-  en_SetDescRec,	CLI_NAME_PREFIX "SetDescRec" ,
-  en_SetEnvAttr,	CLI_NAME_PREFIX "SetEnvAttr" ,
-  en_SetStmtAttr,	CLI_NAME_PREFIX "SetStmtAttr" ,
-  en_FetchScroll,	CLI_NAME_PREFIX "FetchScroll" ,
-  en_BulkOperations,	CLI_NAME_PREFIX "BulkOperations" ,
+FUNCDEF (SQL_API_SQLALLOCHANDLE,      en_AllocHandle,      CLI "AllocHandle")
+FUNCDEF (SQL_API_SQLBINDPARAM,        en_BindParam,        CLI "BindParam")
+FUNCDEF (SQL_API_SQLBULKOPERATIONS,   en_BulkOperations,   CLI "BulkOperations")
+FUNCDEF (SQL_API_SQLCLOSECURSOR,      en_CloseCursor,      CLI "CloseCursor")
+FUNCDEF (SQL_API_SQLCOLATTRIBUTE,     en_ColAttribute,     CLI "ColAttribute")
+FUNCDEF (SQL_API_SQLCOPYDESC,         en_CopyDesc,         CLI "CopyDesc")
+FUNCDEF (SQL_API_SQLENDTRAN,          en_EndTran,          CLI "EndTran")
+FUNCDEF (SQL_API_SQLFETCHSCROLL,      en_FetchScroll,      CLI "FetchScroll")
+FUNCDEF (SQL_API_SQLFREEHANDLE,       en_FreeHandle,       CLI "FreeHandle")
+FUNCDEF (SQL_API_SQLGETCONNECTATTR,   en_GetConnectAttr,   CLI "GetConnectAttr")
+FUNCDEF (SQL_API_SQLGETDESCFIELD,     en_GetDescField,     CLI "GetDescField")
+FUNCDEF (SQL_API_SQLGETDESCREC,       en_GetDescRec,       CLI "GetDescRec")
+FUNCDEF (SQL_API_SQLGETDIAGFIELD,     en_GetDiagField,     CLI "GetDiagField")
+FUNCDEF (SQL_API_SQLGETDIAGREC,       en_GetDiagRec,       CLI "GetDiagRec")
+FUNCDEF (SQL_API_SQLGETENVATTR,       en_GetEnvAttr,       CLI "GetEnvAttr")
+FUNCDEF (SQL_API_SQLGETSTMTATTR,      en_GetStmtAttr,      CLI "GetStmtAttr")
+FUNCDEF (SQL_API_SQLSETCONNECTATTR,   en_SetConnectAttr,   CLI "SetConnectAttr")
+FUNCDEF (SQL_API_SQLSETDESCFIELD,     en_SetDescField,     CLI "SetDescField")
+FUNCDEF (SQL_API_SQLSETDESCREC,       en_SetDescRec,       CLI "SetDescRec")
+FUNCDEF (SQL_API_SQLSETENVATTR,       en_SetEnvAttr,       CLI "SetEnvAttr")
+FUNCDEF (SQL_API_SQLSETSTMTATTR,      en_SetStmtAttr,      CLI "SetStmtAttr")
 #endif
-  en_AllocEnv,		CLI_NAME_PREFIX "AllocEnv",
-  en_AllocConnect,	CLI_NAME_PREFIX "AllocConnect",
-  en_Connect,		CLI_NAME_PREFIX "Connect",
-  en_DriverConnect,	CLI_NAME_PREFIX "DriverConnect",
-  en_BrowseConnect,	CLI_NAME_PREFIX "BrowseConnect",	
 
-  en_DataSources,	CLI_NAME_PREFIX "DataSources",
-  en_Drivers,		CLI_NAME_PREFIX "Driver",
-  en_GetInfo,		CLI_NAME_PREFIX "GetInfo",
-  en_GetFunctions,	CLI_NAME_PREFIX "GetFunctions",
-  en_GetTypeInfo,	CLI_NAME_PREFIX "GetTypeInfo",
-
-  en_SetConnectOption,	CLI_NAME_PREFIX "SetConnectOption",
-  en_GetConnectOption,	CLI_NAME_PREFIX "GetConnectOption",
-  en_SetStmtOption,	CLI_NAME_PREFIX "SetStmtOption",
-  en_GetStmtOption,	CLI_NAME_PREFIX "GetStmtOption",
-
-  en_AllocStmt,		CLI_NAME_PREFIX "AllocStmt",
-  en_Prepare,		CLI_NAME_PREFIX "Prepare",
-  en_BindParameter,	CLI_NAME_PREFIX "BindParameter",
-  en_ParamOptions,	CLI_NAME_PREFIX "ParamOptions",
-  en_GetCursorName,	CLI_NAME_PREFIX "GetCursorName",
-  en_SetCursorName,	CLI_NAME_PREFIX "SetCursorName",
-  en_SetScrollOptions,	CLI_NAME_PREFIX "SetScrollOptions",
-  en_SetParam,		CLI_NAME_PREFIX "SetParam",
-
-  en_Execute,		CLI_NAME_PREFIX "Execute",
-  en_ExecDirect,	CLI_NAME_PREFIX "ExecDirect",
-  en_NativeSql,		CLI_NAME_PREFIX "NativeSql",
-  en_DescribeParam,	CLI_NAME_PREFIX "DescribeParam",
-  en_NumParams,		CLI_NAME_PREFIX "NumParams",
-  en_ParamData,		CLI_NAME_PREFIX "ParamData",
-  en_PutData,		CLI_NAME_PREFIX "PutData",
-
-  en_RowCount,		CLI_NAME_PREFIX "RowCount",
-  en_NumResultCols,	CLI_NAME_PREFIX "NumResultCols",
-  en_DescribeCol,	CLI_NAME_PREFIX "DescribeCol",
-  en_ColAttributes,	CLI_NAME_PREFIX "ColAttributes",
-  en_BindCol,		CLI_NAME_PREFIX "BindCol",
-  en_Fetch,		CLI_NAME_PREFIX "Fetch",
-  en_ExtendedFetch,	CLI_NAME_PREFIX "ExtendedFetch",
-  en_GetData,		CLI_NAME_PREFIX "GetData",
-  en_SetPos,		CLI_NAME_PREFIX "SetPos",
-  en_MoreResults,	CLI_NAME_PREFIX "MoreResults",
-  en_Error,		CLI_NAME_PREFIX "Error",
-
-  en_ColumnPrivileges,	CLI_NAME_PREFIX "ColumnPrivileges",
-  en_Columns,		CLI_NAME_PREFIX "Columns",
-  en_ForeignKeys,	CLI_NAME_PREFIX "ForeignKeys",
-  en_PrimaryKeys,	CLI_NAME_PREFIX "PrimaryKeys",
-  en_ProcedureColumns,	CLI_NAME_PREFIX "ProcedureColumns",
-  en_Procedures,	CLI_NAME_PREFIX "Procedures",
-  en_SpecialColumns,	CLI_NAME_PREFIX "SpecialColumns",
-  en_Statistics,	CLI_NAME_PREFIX "Statistics",
-  en_TablePrivileges,	CLI_NAME_PREFIX "TablePrivileges",
-  en_Tables,		CLI_NAME_PREFIX "Tables",
-
-  en_FreeStmt,		CLI_NAME_PREFIX "FreeStmt",
-  en_Cancel,		CLI_NAME_PREFIX "Cancel",
-  en_Transact,		CLI_NAME_PREFIX "Transact",
-
-  en_Disconnect,	CLI_NAME_PREFIX "Disconnect",
-  en_FreeConnect,	CLI_NAME_PREFIX "FreeConnect",
-  en_FreeEnv,		CLI_NAME_PREFIX "FreeEnv",
-
-  en_NullProc,		NULL
-};
+#undef CLI

@@ -149,16 +149,17 @@ _iodbcdm_driverload (
 	      return SQL_ERROR;
 	    }
 
-	  for (i = 0; i < SQL_EXT_API_LAST + 1; i++)
+	  /*
+	   *  Initialize array of ODBC functions
+	   */
+	  for (i = 0; i < __LAST_API_FUNCTION__; i++)
 	    {
+#if 1 
 	      (penv->dllproc_tab)[i] = SQL_NULL_HPROC;
-	    }
-#if (ODBCVER >= 0x0300)
-	  for (i = SQL_EXT_API_LAST + 1; i < SQL_ODBC3_API_LAST + 1; i++)
-	    {
-	      (penv->dllproc_tab)[i] = SQL_NULL_HPROC;
-	    }
+#else
+	      (penv->dllproc_tab)[i] = _iodbcdm_getproc(pdbc, i);
 #endif
+	    }
 
 	  pdbc->henv = penv;
 	  penv->hdll = hdll;

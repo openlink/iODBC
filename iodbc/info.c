@@ -448,89 +448,15 @@ SQLGetInfo (
   return retcode;
 }
 
-#if (ODBCVER >= 0x0300)
-static const int FunctionNumbers[] =
+static int FunctionNumbers[] =
 {
-    SQL_API_SQLALLOCHANDLE,
-    SQL_API_SQLBINDPARAM,
-    SQL_API_SQLCLOSECURSOR,
-    SQL_API_SQLCOPYDESC,
-    SQL_API_SQLENDTRAN,
-    SQL_API_SQLFREEHANDLE,
-    SQL_API_SQLGETCONNECTATTR,
-    SQL_API_SQLGETDESCFIELD,
-    SQL_API_SQLGETDESCREC,
-    SQL_API_SQLGETDIAGFIELD,
-    SQL_API_SQLGETDIAGREC,
-    SQL_API_SQLGETENVATTR,
-    SQL_API_SQLGETSTMTATTR,
-    SQL_API_SQLSETCONNECTATTR,
-    SQL_API_SQLSETDESCFIELD,
-    SQL_API_SQLSETDESCREC,
-    SQL_API_SQLSETENVATTR,
-    SQL_API_SQLSETSTMTATTR,
-    SQL_API_SQLFETCHSCROLL,
-    SQL_API_SQLBULKOPERATIONS,
-    SQL_API_SQLALLOCENV,
-    SQL_API_SQLALLOCCONNECT,
-    SQL_API_SQLCONNECT,
-    SQL_API_SQLDRIVERCONNECT,
-    SQL_API_SQLBROWSECONNECT,
-    SQL_API_SQLDATASOURCES,
-    SQL_API_SQLDRIVERS,
-    SQL_API_SQLGETINFO,
-    SQL_API_SQLGETFUNCTIONS,
-    SQL_API_SQLGETTYPEINFO,
-    SQL_API_SQLSETCONNECTOPTION,
-    SQL_API_SQLGETCONNECTOPTION,
-    SQL_API_SQLSETSTMTOPTION,
-    SQL_API_SQLGETSTMTOPTION,
-    SQL_API_SQLALLOCSTMT,
-    SQL_API_SQLPREPARE,
-    SQL_API_SQLBINDPARAMETER,
-    SQL_API_SQLPARAMOPTIONS,
-    SQL_API_SQLGETCURSORNAME,
-    SQL_API_SQLSETCURSORNAME,
-    SQL_API_SQLSETSCROLLOPTIONS,
-    SQL_API_SQLSETPARAM,
-    SQL_API_SQLEXECUTE,
-    SQL_API_SQLEXECDIRECT,
-    SQL_API_SQLNATIVESQL,
-    SQL_API_SQLDESCRIBEPARAM,
-    SQL_API_SQLNUMPARAMS,
-    SQL_API_SQLPARAMDATA,
-    SQL_API_SQLPUTDATA,
-    SQL_API_SQLROWCOUNT,
-    SQL_API_SQLNUMRESULTCOLS,
-    SQL_API_SQLDESCRIBECOL,
-    SQL_API_SQLCOLATTRIBUTES,
-    SQL_API_SQLCOLATTRIBUTE,
-    SQL_API_SQLBINDCOL,
-    SQL_API_SQLFETCH,
-    SQL_API_SQLEXTENDEDFETCH,
-    SQL_API_SQLGETDATA,
-    SQL_API_SQLSETPOS,
-    SQL_API_SQLMORERESULTS,
-    SQL_API_SQLERROR,
-    SQL_API_SQLCOLUMNPRIVILEGES,
-    SQL_API_SQLCOLUMNS,
-    SQL_API_SQLFOREIGNKEYS,
-    SQL_API_SQLPRIMARYKEYS,
-    SQL_API_SQLPROCEDURECOLUMNS,
-    SQL_API_SQLPROCEDURES,
-    SQL_API_SQLSPECIALCOLUMNS,
-    SQL_API_SQLSTATISTICS,
-    SQL_API_SQLTABLEPRIVILEGES,
-    SQL_API_SQLTABLES,
-    SQL_API_SQLFREESTMT,
-    SQL_API_SQLCANCEL,
-    SQL_API_SQLTRANSACT,
-    SQL_API_SQLDISCONNECT,
-    SQL_API_SQLFREECONNECT,
-    SQL_API_SQLFREEENV
+    0
+#define FUNCDEF(A,B,C)	,A
+#include "henv.ci"
+#undef FUNCDEF
 };
 
-#define FUNCTION_NUMBERS_SIZE sizeof(FunctionNumbers)/sizeof(int)
+#if (ODBCVER >= 0x0300)
 
 #define SQL_ODBC3_SET_FUNC_ON(pfExists, uwAPI) \
 	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) |= (1 << ((uwAPI) & 0x000F))
@@ -549,6 +475,12 @@ SQLGetFunctions (
   CONN (pdbc, hdbc);
   HPROC hproc;
   SQLRETURN retcode;
+  int i;
+  UWORD functions2[100];
+#if (ODBCVER >= 0x0300)
+  UWORD functions3[SQL_API_ODBC3_ALL_FUNCTIONS_SIZE];
+#endif
+
 
   if (!IS_VALID_HDBC (pdbc))
     {
@@ -570,23 +502,37 @@ SQLGetFunctions (
       return SQL_SUCCESS;
     }
 
+  /*
+   *  These functions are supported by the iODBC driver manager
+   */
+  if (fFunc == SQL_API_SQLDATASOURCES
+      || fFunc == SQL_API_SQLDRIVERS
 #if (ODBCVER >= 0x0300)
-  /* thease are pure DM functions */
-  if (fFunc == SQL_API_SQLGETENVATTR ||
-      fFunc == SQL_API_SQLSETENVATTR)
+      || fFunc == SQL_API_SQLGETENVATTR
+      || fFunc == SQL_API_SQLSETENVATTR
+#endif
+      )
     {
-      *pfExists = SQL_TRUE;
+      *pfExists = (UWORD) 1;
       return SQL_SUCCESS;
     }
 
-  if (((GENV_t FAR *) pdbc->genv)->odbc_ver == SQL_OV_ODBC2)
-#endif
-    if (fFunc > SQL_EXT_API_LAST)
-      {
-	PUSHSQLERR (pdbc->herr, en_S1095);
+  /*
+   *  Check if function number is within ODBC version context
+   */
+#if (ODBCVER < 0x0300)
+  if (fFunc > SQL_EXT_API_LAST)
+    {
+      PUSHSQLERR (pdbc->herr, en_S1095);
 
-	return SQL_ERROR;
-      }
+      return SQL_ERROR;
+    }
+#endif
+
+  /*
+   *  In a ODBC 2.x driver context, the ODBC 3.x API calls are 
+   *  mapped by the driver manager.
+   */
 #if (ODBCVER >= 0x0300)
   if (((ENV_t FAR *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2)
     {
@@ -596,7 +542,7 @@ SQLGetFunctions (
 	case SQL_API_ODBC3_ALL_FUNCTIONS:
 	  break;
 
-	  /* Mapped ODBC3 app -> ODBC2 drvr fucntions */
+	  /* Mapped ODBC3 app -> ODBC2 driver functions */
 	case SQL_API_SQLALLOCHANDLE:
 	case SQL_API_SQLFREEHANDLE:
 	case SQL_API_SQLSETCONNECTATTR:
@@ -617,9 +563,10 @@ SQLGetFunctions (
 	  break;
 
 	default:
-	  if (fFunc > SQL_EXT_API_LAST)
+	  if (fFunc > SQL_API_SQLBINDPARAMETER)
 	    {
 	      *pfExists = SQL_FALSE;
+
 	      return SQL_SUCCESS;
 	    }
 	  break;
@@ -627,12 +574,10 @@ SQLGetFunctions (
     }
 #endif
 
-  if (fFunc == SQL_API_SQLDATASOURCES || fFunc == SQL_API_SQLDRIVERS)
-    {
-      *pfExists = (UWORD) 1;
-      return SQL_SUCCESS;
-    }
 
+  /*
+   *  If the driver exports a SQLGetFunctions call, use it
+   */
   hproc = _iodbcdm_getproc (pdbc, en_GetFunctions);
 
   if (hproc != SQL_NULL_HPROC)
@@ -643,63 +588,63 @@ SQLGetFunctions (
       return retcode;
     }
 
+  /*
+   *  Map deprecated functions
+   */
   if (fFunc == SQL_API_SQLSETPARAM)
     {
       fFunc = SQL_API_SQLBINDPARAMETER;
     }
 
-#if (ODBCVER >= 0x0300)
-  if (fFunc != SQL_API_ALL_FUNCTIONS && fFunc != SQL_API_ODBC3_ALL_FUNCTIONS)
-#else
-  if (fFunc != SQL_API_ALL_FUNCTIONS)
+  /*
+   *  Initialize intermediate result arrays
+   */
+  memset (functions2, '\0', sizeof (functions2));
+#if (ODBCVER > 0x0300)
+  memset (functions3, '\0', sizeof (functions3));
 #endif
+
+  /*
+   *  Build result array by scanning for all API calls
+   */
+  for (i = 1; i < __LAST_API_FUNCTION__; i++)
     {
-      hproc = _iodbcdm_getproc (pdbc, fFunc);
+      int j = FunctionNumbers[i];
 
-      if (hproc == SQL_NULL_HPROC)
-	{
-	  *pfExists = (UWORD) 0;
-	}
-      else
-	{
-	  *pfExists = (UWORD) 1;
-	}
+      hproc = _iodbcdm_getproc (pdbc, i);
 
-      return SQL_SUCCESS;
+      if (hproc != SQL_NULL_HPROC)
+	{
+	  if (j < 100)
+	    functions2[j] = 1;
+#if (ODBCVER >= 0x0300)
+	  functions3[j >> 4] |= (1 << (j & 0x000F));
+#endif
+	}
     }
 
-#if (ODBCVER >= 0x0300)
-  if (fFunc == SQL_API_ODBC3_ALL_FUNCTIONS)
+  /*
+   *  Finally return the information
+   */
+  if (fFunc == SQL_API_ALL_FUNCTIONS)
     {
-      for (fFunc = 0; fFunc < FUNCTION_NUMBERS_SIZE; fFunc++)
-	{
-	  hproc = _iodbcdm_getproc (pdbc, FunctionNumbers[fFunc]);
-
-	  if (hproc == SQL_NULL_HPROC)
-	    {
-	      SQL_ODBC3_SET_FUNC_OFF (pfExists, FunctionNumbers[fFunc]);
-	    }
-	  else
-	    {
-	      SQL_ODBC3_SET_FUNC_ON (pfExists, FunctionNumbers[fFunc]);
-	    }
-	}
+      memcpy (pfExists, &functions2, sizeof (functions2));
+    }
+#if (ODBCVER < 0x0300)
+  else
+    {
+      *pfExists = functions2[fFunc];
+    }
+#else
+  else if (fFunc == SQL_API_ODBC3_ALL_FUNCTIONS)
+    {
+      memcpy (pfExists, &functions3, sizeof (functions3));
     }
   else
+    {
+      *pfExists = SQL_FUNC_EXISTS (functions3, fFunc);
+    }
 #endif
-    for (fFunc = 0; fFunc < 100; fFunc++)
-      {
-	hproc = _iodbcdm_getproc (pdbc, fFunc);
-
-	if (hproc == SQL_NULL_HPROC)
-	  {
-	    pfExists[fFunc] = (UWORD) 0;
-	  }
-	else
-	  {
-	    pfExists[fFunc] = (UWORD) 1;
-	  }
-      }
 
   return SQL_SUCCESS;
 }

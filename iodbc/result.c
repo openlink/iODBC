@@ -345,8 +345,8 @@ SQLDescribeCol (
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
     {
-      if (pstmt->asyn_on == en_stmt_allocated
-	  || pstmt->asyn_on >= en_stmt_needdata)
+      if (pstmt->state == en_stmt_allocated
+	  || pstmt->state >= en_stmt_needdata)
 	{
 	  sqlstat = en_S1010;
 	}
@@ -463,8 +463,8 @@ SQLColAttributes (
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
     {
-      if (pstmt->asyn_on == en_stmt_allocated
-	  || pstmt->asyn_on >= en_stmt_needdata)
+      if (pstmt->state == en_stmt_allocated
+	  || pstmt->state >= en_stmt_needdata)
 	{
 	  sqlstat = en_S1010;
 	}

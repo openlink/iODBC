@@ -37,7 +37,13 @@
 
 #include <itrace.h>
 
+char *odbcapi_symtab[] =
+{
+    "UNKNOWN FUNCTION"
+#define FUNCDEF(A, B, C)	,C
 #include "henv.ci"
+#undef FUNCDEF
+};
 
 HPROC
 _iodbcdm_getproc (HDBC hdbc, int idx)
@@ -46,50 +52,18 @@ _iodbcdm_getproc (HDBC hdbc, int idx)
   ENV_t FAR *penv;
   HPROC FAR *phproc;
 
-  if (idx <= 0 || idx > SQL_EXT_API_LAST)
-    /* first entry naver used */
-    {
-#if (ODBCVER >= 0x0300)
-      if (!API_IS_ODBC3_FUNCTION (idx))
-#endif
-	return SQL_NULL_HPROC;
-    }
+  if (idx <= 0 || idx >= __LAST_API_FUNCTION__)
+    return SQL_NULL_HPROC;
 
   penv = (ENV_t FAR *) (pdbc->henv);
 
   if (penv == NULL)
-    {
-      return SQL_NULL_HPROC;
-    }
+    return SQL_NULL_HPROC;
 
-#if (ODBCVER >= 0x0300)
-  phproc = penv->dllproc_tab + API_ODBC3_FUNCTION_INDEX (idx);
-#else
   phproc = penv->dllproc_tab + idx;
-#endif
 
   if (*phproc == SQL_NULL_HPROC)
-    {
-      int i, en_idx;
-
-      for (i = 0;; i++)
-	{
-	  en_idx = odbcapi_symtab[i].en_idx;
-
-	  if (en_idx == en_NullProc)
-	    {
-	      break;
-	    }
-
-	  if (en_idx == idx)
-	    {
-	      *phproc = _iodbcdm_dllproc (penv->hdll,
-		  odbcapi_symtab[i].symbol);
-
-	      break;
-	    }
-	}
-    }
+    *phproc = _iodbcdm_dllproc (penv->hdll, odbcapi_symtab[idx]);
 
   return *phproc;
 }
