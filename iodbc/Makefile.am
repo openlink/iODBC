@@ -33,7 +33,7 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
 
 noinst_HEADERS		= config.h dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci
-include_HEADERS		= isql.h isqlext.h
+include_HEADERS		= isql.h isqlext.h isqltypes.h
 
 
 noinst_SCRIPTS		= config.guess config.sub configure \
