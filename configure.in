@@ -1,0 +1,148 @@
+AC_PREREQ(2.13)
+AC_REVISION($Id$)
+#
+#  configure.in
+#  
+#  (C) 1999 OpenLink Software Inc.
+#
+#  This library is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Library General Public
+#  License as published by the Free Software Foundation; either
+#  version 2 of the License, or (at your option) any later version.
+#
+#  This library is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  Library General Public License for more details.
+#
+#  You should have received a copy of the GNU Library General Public
+#  License along with this library; if not, write to the Free
+#  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+##########################################################################
+##									##
+##  Initialization							##
+##									##
+##########################################################################
+AC_INIT(isql.h)
+AM_INIT_AUTOMAKE(libiodbc,2.50)
+AC_CANONICAL_HOST
+
+
+##########################################################################
+##									##
+##  Set version information						## 
+##									##
+##########################################################################
+lib_version=2:12
+AC_SUBST(lib_version)
+
+
+##########################################################################
+##									##
+##  Check whether config.cache belongs to this machine			##
+##									##
+##########################################################################
+AC_MSG_CHECKING(cached information)
+hostcheck="$host"
+AC_CACHE_VAL(ac_cv_hostcheck, [ ac_cv_hostcheck="$hostcheck" ])
+if test "$ac_cv_hostcheck" != "$hostcheck"; then
+  AC_MSG_RESULT(changed)
+
+  AC_MSG_WARN([Running on a different architecture.])
+  AC_MSG_WARN([Can't use cached values.])
+  AC_MSG_ERROR([Please remove the invalid config.cache file, then try again.])
+else
+  AC_MSG_RESULT(ok)
+fi
+
+
+##########################################################################
+##									##
+##  Check for C compiler						##
+##									##
+##########################################################################
+AC_PROG_CC
+AC_PROG_CC_C_O
+AC_PROG_CPP
+AC_LANG_C
+
+
+##########################################################################
+##									##
+##  Check for standard programs						##
+##									##
+##########################################################################
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+AM_PROG_LIBTOOL
+
+
+##########################################################################
+##									##
+##  Check for dynamic load module					##
+##									##
+##########################################################################
+LIBADD_DL=
+AC_CHECK_FUNCS(dlopen, AC_DEFINE(HAVE_LIBDL),
+[AC_CHECK_LIB(dl, dlopen, [AC_DEFINE(HAVE_LIBDL) LIBADD_DL="-ldl"],
+ [AC_CHECK_LIB(dld, dld_link, [AC_DEFINE(HAVE_DLD) LIBADD_DL="-ldld"],
+   [AC_CHECK_FUNCS(shl_load, AC_DEFINE(HAVE_SHL_LOAD) )]
+  )]
+ )]
+)
+AC_SUBST(LIBADD_DL)
+
+AC_CACHE_CHECK([for underscore before symbols], libltdl_cv_uscore, [
+  echo "main(){int i=1;} fnord(){int i=23; int ltuae=42;}" > conftest.c
+  ${CC} -c conftest.c > /dev/null
+  if (nm conftest.o | grep _fnord) > /dev/null; then
+    libltdl_cv_uscore=yes
+  else
+    libltdl_cv_uscore=no
+  fi
+  rm -f conftest*
+])
+
+if test x"$libltdl_cv_uscore" = xyes; then
+  if test x"$ac_cv_func_dlopen" = xyes ||
+     test x"$ac_cv_lib_dl_dlopen" = xyes ; then
+	AC_CACHE_CHECK([whether we have to add an underscore for dlsym],
+		libltdl_cv_need_uscore, [dnl
+		AC_TRY_RUN([
+#include <dlfcn.h>
+#include <stdio.h>
+fnord() { int i=42;}
+main() { void *self, *ptr1, *ptr2; self=dlopen(NULL,RTLD_LAZY);
+    if(self) { ptr1=dlsym(self,"fnord"); ptr2=dlsym(self,"_fnord");
+    if(ptr1 && !ptr2) exit(0); } exit(1); } 
+],	libltdl_cv_need_uscore=no, libltdl_cv_need_uscore=yes,
+	libltdl_cv_need_uscore=no
+)])
+  fi
+fi
+
+if test x"$libltdl_cv_need_uscore" = xyes; then
+   AC_DEFINE(NEED_USCORE)
+fi
+dnl Checks for header files.
+AC_HEADER_STDC
+
+
+##########################################################################
+##									##
+##  Check for specific library functions				##
+##									##
+##########################################################################
+dnl Checks for library functions.
+AC_CHECK_FUNCS(strerror)
+
+
+##########################################################################
+##									##
+##  Generate Makefiles etc.						##
+##									##
+##########################################################################
+AC_OUTPUT([Makefile samples/Makefile])
