@@ -106,9 +106,11 @@ include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sq
 #  Install libraries in /Library/Frameworks
 #
 install:
+	-sudo rm /Library/Frameworks/iODBC.framework/Versions/Current
+	-sudo rm /Library/Frameworks/iODBCinst.framework/Versions/Current
 	cd iODBC;     sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
 	cd iODBCinst; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
-	sh link-inclibs.sh
+	sudo sh link-inclibs.sh
 
 #
 #  Clean out the targets
