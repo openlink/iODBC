@@ -435,12 +435,14 @@ SQLGetInfo (
       LEAVE_HDBC (pdbc, SQL_SUCCESS);
     }
 
+#if (ODBCVER >= 0x0300)
   /*
    *  This was a temp value in ODBC 2
    */
   if (((ENV_t FAR *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2 && 
 	  fInfoType == SQL_OJ_CAPABILITIES)
       fInfoType = 65003;
+#endif /* ODBCVER >= 0x0300 */
 
   hproc = _iodbcdm_getproc (pdbc, en_GetInfo);
 
