@@ -29,14 +29,14 @@
 Summary: iODBC Driver Manager
 name: libiodbc
 version: 2.50
-release: 1
+release: 2
 Group: Libraries
 Vendor: Ke Jin 
 Packager: OpenLink Software <iodbc@openlinksw.com>
 Copyright: LGPL
 URL: http://www.openlinksw.com/iodbc/
 Source: libiodbc-%{PACKAGE_VERSION}.tar.gz
-Prefix: /
+#Prefix: /
 BuildRoot:/tmp/libiodbc.root
 AutoReqProv: no
 
@@ -85,12 +85,13 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files 
-%attr(0644, root, root) /usr/lib/libiodbc.so.2.0.12
+%attr(0644, root, root) /usr/lib/libiodbc.so.2.0.50
 %attr(0644, root, root) %config /etc/odbc.ini
 
 %files devel
 %attr(0644, root, root) %doc AUTHORS COPYING ChangeLog NEWS README
 %attr(0644, root, root) /usr/include/isql.h
 %attr(0644, root, root) /usr/include/isqlext.h
+%attr(0644, root, root) /usr/include/isqltypes.h
 %attr(0644, root, root) /usr/lib/libiodbc.so
 %attr(0644, root, root) /usr/lib/libiodbc.a
