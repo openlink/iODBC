@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -80,64 +80,76 @@ extern char* szTabNames[];
 extern char* szDSNButtons[];
 extern char* szDriverColumnNames[];
 
-typedef struct TLOGIN {
-  GtkWidget *username,*password,*mainwnd;
+typedef struct TLOGIN
+{
+  GtkWidget *username, *password, *mainwnd;
   char *user, *pwd;
 } TLOGIN;
 
-typedef struct TFILEDSN {
-  GtkWidget *name_entry,*mainwnd;
+typedef struct TFILEDSN
+{
+  GtkWidget *name_entry, *mainwnd;
   char *name;
 } TFILEDSN;
 
-typedef struct TDSNCHOOSER {
-	GtkWidget *mainwnd,*udsnlist,*sdsnlist;
-	GtkWidget *uadd,*uremove,*utest,*uconfigure;
-	GtkWidget *sadd,*sremove,*stest,*sconfigure;
-	GtkWidget *fadd,*fremove,*ftest,*fconfigure;
-	GtkWidget *dir_list,*file_list,*file_entry,*dir_combo;
+typedef struct TDSNCHOOSER
+{
+  GtkWidget *mainwnd, *udsnlist, *sdsnlist;
+  GtkWidget *uadd, *uremove, *utest, *uconfigure;
+  GtkWidget *sadd, *sremove, *stest, *sconfigure;
+  GtkWidget *fadd, *fremove, *ftest, *fconfigure;
+  GtkWidget *dir_list, *file_list, *file_entry, *dir_combo;
   char *dsn, *curr_dir;
-	int type_dsn;
+  int type_dsn;
 } TDSNCHOOSER;
 
-typedef struct TDRIVERCHOOSER {
-	GtkWidget *driverlist,*mainwnd,*b_add,*b_remove,*b_configure,*b_finish;
+typedef struct TDRIVERCHOOSER
+{
+  GtkWidget *driverlist, *mainwnd, *b_add, *b_remove, *b_configure, *b_finish;
   char *driver;
 } TDRIVERCHOOSER;
 
-typedef struct TCONNECTIONPOOLING {
-	GtkWidget *driverlist,*mainwnd,*enperfmon_rb,*disperfmon_rb,*retwait_entry,*timeout_entry;
-	BOOL changed;
-	char *timeout;
+typedef struct TCONNECTIONPOOLING
+{
+  GtkWidget *driverlist, *mainwnd, *enperfmon_rb, *disperfmon_rb,
+      *retwait_entry, *timeout_entry;
+  BOOL changed;
+  char *timeout;
 } TCONNECTIONPOOLING;
 
-typedef struct TTRANSLATORCHOOSER {
-	GtkWidget *translatorlist,*mainwnd,*b_finish;
+typedef struct TTRANSLATORCHOOSER
+{
+  GtkWidget *translatorlist, *mainwnd, *b_finish;
   char *translator;
 } TTRANSLATORCHOOSER;
 
-typedef struct TCOMPONENT {
-	GtkWidget *componentlist;
+typedef struct TCOMPONENT
+{
+  GtkWidget *componentlist;
 } TCOMPONENT;
 
-typedef struct TTRACING {
-	GtkWidget *logfile_entry, *tracelib_entry, *b_start_stop;
-	GtkWidget *donttrace_rb, *allthetime_rb, *onetime_rb;
-	GtkWidget *filesel;
-	BOOL changed;
+typedef struct TTRACING
+{
+  GtkWidget *logfile_entry, *tracelib_entry, *b_start_stop;
+  GtkWidget *donttrace_rb, *allthetime_rb, *onetime_rb;
+  GtkWidget *filesel;
+  BOOL changed;
 } TTRACING;
 
-typedef struct TCONFIRM {
+typedef struct TCONFIRM
+{
   GtkWidget *mainwnd;
   BOOL yes_no;
 } TCONFIRM;
 
-typedef struct TDRIVERSETUP {
-	GtkWidget *name_entry, *driver_entry, *setup_entry, *key_list, *bupdate;
-	GtkWidget *key_entry, *value_entry;
-	GtkWidget *mainwnd, *filesel;
-	LPSTR connstr;
+typedef struct TDRIVERSETUP
+{
+  GtkWidget *name_entry, *driver_entry, *setup_entry, *key_list, *bupdate;
+  GtkWidget *key_entry, *value_entry;
+  GtkWidget *mainwnd, *filesel;
+  LPSTR connstr;
 } TDRIVERSETUP;
+
 
 void adddsns_to_list(GtkWidget* widget, BOOL systemDSN);
 void userdsn_add_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);

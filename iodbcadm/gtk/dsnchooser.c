@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -70,6 +70,7 @@
 
 #include <iodbc.h>
 
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>
@@ -298,7 +299,7 @@ adddsns_to_list (GtkWidget *widget, BOOL systemDSN)
   char *curr, *buffer = (char *) malloc (sizeof (char) * 65536);
   char diz[1024], driver[1024];
   char *data[3];
-  int len, _case = 0, row = 0;
+  int len, _case = 0;
 
   if (!buffer || !GTK_IS_CLIST (widget))
     return;
@@ -369,46 +370,46 @@ dsnchooser_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
     gint page_num, TDSNCHOOSER *choose_t)
 {
   switch (page_num)
-	{
-	case 0:
-	  if (choose_t)
-	    {
-	      choose_t->type_dsn = 0;
-	      adddsns_to_list (choose_t->udsnlist, FALSE);
-		 }
-	  break;
-
-	case 1:
-	  if (choose_t)
-	    {
-	      choose_t->type_dsn = 1;
-	      adddsns_to_list (choose_t->sdsnlist, TRUE);
-		 }
-	  break;
-
-	case 2:
-	  if (choose_t)
-	    {
-	      choose_t->type_dsn = 2;
-		 }
-	  break;
-	};
-
+    {
+    case 0:
       if (choose_t)
 	{
-	  if (choose_t->uremove)
-	    gtk_widget_set_sensitive (choose_t->uremove, FALSE);
-	  if (choose_t->uconfigure)
-	    gtk_widget_set_sensitive (choose_t->uconfigure, FALSE);
-	  if (choose_t->utest)
-	    gtk_widget_set_sensitive (choose_t->utest, FALSE);
-	  if (choose_t->sremove)
-	    gtk_widget_set_sensitive (choose_t->sremove, FALSE);
-	  if (choose_t->sconfigure)
-	    gtk_widget_set_sensitive (choose_t->sconfigure, FALSE);
-	  if (choose_t->stest)
-	    gtk_widget_set_sensitive (choose_t->stest, FALSE);
+	  choose_t->type_dsn = 0;
+	  adddsns_to_list (choose_t->udsnlist, FALSE);
 	}
+      break;
+
+    case 1:
+      if (choose_t)
+	{
+	  choose_t->type_dsn = 1;
+	  adddsns_to_list (choose_t->sdsnlist, TRUE);
+	}
+      break;
+
+    case 2:
+      if (choose_t)
+	{
+	  choose_t->type_dsn = 2;
+	}
+      break;
+    };
+
+  if (choose_t)
+    {
+      if (choose_t->uremove)
+	gtk_widget_set_sensitive (choose_t->uremove, FALSE);
+      if (choose_t->uconfigure)
+	gtk_widget_set_sensitive (choose_t->uconfigure, FALSE);
+      if (choose_t->utest)
+	gtk_widget_set_sensitive (choose_t->utest, FALSE);
+      if (choose_t->sremove)
+	gtk_widget_set_sensitive (choose_t->sremove, FALSE);
+      if (choose_t->sconfigure)
+	gtk_widget_set_sensitive (choose_t->sconfigure, FALSE);
+      if (choose_t->stest)
+	gtk_widget_set_sensitive (choose_t->stest, FALSE);
+    }
 }
 
 
@@ -481,8 +482,7 @@ userdsn_remove_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  && create_confirm (choose_t->mainwnd, szDSN,
 	      "Are you sure you want to remove this DSN ?"))
 	{
-	  sprintf (dsn, "DSN=%s\0", szDSN);
-	  dsn[STRLEN (dsn) + 1] = 0;
+	  sprintf (dsn, "DSN=%s", szDSN);
 	  if (!SQLConfigDataSource (choose_t->mainwnd, ODBC_REMOVE_DSN,
 		  szDriver, dsn))
 	    _iodbcdm_errorbox (choose_t->mainwnd, szDSN,
@@ -528,7 +528,7 @@ userdsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
       /* Call the right function */
       if (szDSN)
 	{
-	  sprintf (connstr, "DSN=%s\0", szDSN);
+	  sprintf (connstr, "DSN=%s", szDSN);
 	  size -= (STRLEN (connstr) + 1);
 
 	  SQLSetConfigMode (ODBC_USER_DSN);
@@ -610,8 +610,8 @@ userdsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
 #endif
 	    {
-         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+	      _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
@@ -623,8 +623,8 @@ userdsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
 #endif
 	    {
-         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			  henv, hdbc, SQL_NULL_HSTMT);
+	      _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		  henv, hdbc, SQL_NULL_HSTMT);
 	      SQLFreeEnv (henv);
 	      return;
 	    }
@@ -635,8 +635,8 @@ userdsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLDriverConnect (hdbc, choose_t->mainwnd, connstr, SQL_NTS,
 		  outconnstr, sizeof (outconnstr), &buflen,
 		  SQL_DRIVER_PROMPT) != SQL_SUCCESS)
-        _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			 henv, hdbc, SQL_NULL_HSTMT);
+	    _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		henv, hdbc, SQL_NULL_HSTMT);
 	  else
 	    {
 	      _iodbcdm_messagebox (choose_t->mainwnd, szDSN,
@@ -735,8 +735,7 @@ systemdsn_remove_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  && create_confirm (choose_t->mainwnd, szDSN,
 	      "Are you sure you want to remove this DSN ?"))
 	{
-	  sprintf (dsn, "DSN=%s\0", szDSN);
-	  dsn[STRLEN (dsn) + 1] = 0;
+	  sprintf (dsn, "DSN=%s", szDSN);
 	  if (!SQLConfigDataSource (choose_t->mainwnd, ODBC_REMOVE_SYS_DSN,
 		  szDriver, dsn))
 	    _iodbcdm_errorbox (choose_t->mainwnd, szDSN,
@@ -782,7 +781,7 @@ systemdsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
       /* Call the right function */
       if (szDSN)
 	{
-	  sprintf (connstr, "DSN=%s\0", szDSN);
+	  sprintf (connstr, "DSN=%s", szDSN);
 	  size -= (STRLEN (connstr) + 1);
 
 	  SQLSetConfigMode (ODBC_SYSTEM_DSN);
@@ -843,9 +842,9 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
   HENV henv;
   HDBC hdbc;
   SWORD buflen;
-  char connstr[4096] = { 0 };
-  char outconnstr[4096] = { 0 };
-  char *szDSN;
+  SQLCHAR connstr[4096] = { 0 };
+  SQLCHAR outconnstr[4096] = { 0 };
+  char *szDSN = NULL;
 
   if (choose_t)
     {
@@ -863,8 +862,8 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
 #endif
 	    {
-         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+	      _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
@@ -876,8 +875,8 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
 	  if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
 #endif
 	    {
-         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			  henv, hdbc, SQL_NULL_HSTMT);
+	      _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		  henv, hdbc, SQL_NULL_HSTMT);
 	      SQLFreeEnv (henv);
 	      return;
 	    }
@@ -888,8 +887,8 @@ systemdsn_test_clicked (GtkWidget * widget, TDSNCHOOSER * choose_t)
 	  if (SQLDriverConnect (hdbc, choose_t->mainwnd, connstr, SQL_NTS,
 		  outconnstr, sizeof (outconnstr), &buflen,
 		  SQL_DRIVER_PROMPT) != SQL_SUCCESS)
-        _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			 henv, hdbc, SQL_NULL_HSTMT);
+	    _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		henv, hdbc, SQL_NULL_HSTMT);
 	  else
 	    {
 	      _iodbcdm_messagebox (choose_t->mainwnd, szDSN,
@@ -925,12 +924,12 @@ filedsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
   HENV henv;
   HDBC hdbc;
-  char connstr[4096] = { 0 };
-  char drv[1024] = { 0 };
-  char outconnstr[4096] = { 0 };
+  SQLCHAR connstr[4096] = { 0 };
+  SQLCHAR drv[1024] = { 0 };
+  SQLCHAR outconnstr[4096] = { 0 };
   SWORD buflen;
   int sqlstat;
-  DWORD error;
+  /* DWORD error; */
   LPSTR dsn = NULL;
 
   if (choose_t)
@@ -957,15 +956,15 @@ filedsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 
 	  if (SQLAllocEnv (&henv) != SQL_SUCCESS)
 	    {
-         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+	      _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		  henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
 	      return;
 	    }
 
 	  if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
 	    {
-         _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			  henv, hdbc, SQL_NULL_HSTMT);
+	      _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		  henv, hdbc, SQL_NULL_HSTMT);
 	      SQLFreeEnv (henv);
 	      return;
 	    }
@@ -973,8 +972,8 @@ filedsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (SQLDriverConnect (hdbc, choose_t->mainwnd, connstr, SQL_NTS,
 		  outconnstr, sizeof (outconnstr), &buflen,
 		  SQL_DRIVER_PROMPT) != SQL_SUCCESS)
-        _iodbcdm_nativeerrorbox (choose_t->mainwnd,
-			 henv, hdbc, SQL_NULL_HSTMT);
+	    _iodbcdm_nativeerrorbox (choose_t->mainwnd,
+		henv, hdbc, SQL_NULL_HSTMT);
 	  else
 	    SQLDisconnect (hdbc);
 
@@ -1037,7 +1036,6 @@ filedsn_filelist_select (GtkWidget *widget, gint row, gint column,
     GdkEvent *event, TDSNCHOOSER *choose_t)
 {
   LPSTR filename = NULL, temp = NULL;
-  char filecontent[4096];
 
   if (choose_t)
     {
@@ -1243,50 +1241,49 @@ static void
 dsnchooser_ok_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
   char *szDSN;
-  int i;
 
   if (choose_t)
     {
       switch (choose_t->type_dsn)
-	     {
-	       case USER_DSN:
-	         if (GTK_CLIST (choose_t->udsnlist)->selection != NULL)
-	           {
-	             gtk_clist_get_text (GTK_CLIST (choose_t->udsnlist),
-		            GPOINTER_TO_INT (GTK_CLIST (choose_t->udsnlist)->selection->
-		            data), 0, &szDSN);
-	             choose_t->dsn = strdup (szDSN);
-	           }
-	         else
-	           choose_t->dsn = NULL;
-	         break;
+	{
+	case USER_DSN:
+	  if (GTK_CLIST (choose_t->udsnlist)->selection != NULL)
+	    {
+	      gtk_clist_get_text (GTK_CLIST (choose_t->udsnlist),
+		  GPOINTER_TO_INT (GTK_CLIST (choose_t->udsnlist)->selection->
+		      data), 0, &szDSN);
+	      choose_t->dsn = strdup (szDSN);
+	    }
+	  else
+	    choose_t->dsn = NULL;
+	  break;
 
-	       case SYSTEM_DSN:
-	         if (GTK_CLIST (choose_t->sdsnlist)->selection != NULL)
-	           {
-	             gtk_clist_get_text (GTK_CLIST (choose_t->sdsnlist),
-		            GPOINTER_TO_INT (GTK_CLIST (choose_t->sdsnlist)->selection->
-		            data), 0, &szDSN);
-	             choose_t->dsn = strdup (szDSN);
-	           }
-	         else
-	           choose_t->dsn = NULL;
-	         break;
+	case SYSTEM_DSN:
+	  if (GTK_CLIST (choose_t->sdsnlist)->selection != NULL)
+	    {
+	      gtk_clist_get_text (GTK_CLIST (choose_t->sdsnlist),
+		  GPOINTER_TO_INT (GTK_CLIST (choose_t->sdsnlist)->selection->
+		      data), 0, &szDSN);
+	      choose_t->dsn = strdup (szDSN);
+	    }
+	  else
+	    choose_t->dsn = NULL;
+	  break;
 
-	       default:
-	         choose_t->dsn = NULL;
-	         break;
-	    };
+	default:
+	  choose_t->dsn = NULL;
+	  break;
+	};
 
     done:
       choose_t->udsnlist = choose_t->sdsnlist = NULL;
       choose_t->uadd = choose_t->uremove = choose_t->utest =
-	   choose_t->uconfigure = NULL;
+	  choose_t->uconfigure = NULL;
       choose_t->sadd = choose_t->sremove = choose_t->stest =
-	   choose_t->sconfigure = NULL;
+	  choose_t->sconfigure = NULL;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (choose_t->mainwnd),
-	     GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
       gtk_main_quit ();
       gtk_widget_destroy (choose_t->mainwnd);
     }
@@ -1300,14 +1297,14 @@ dsnchooser_cancel_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
     {
       choose_t->udsnlist = choose_t->sdsnlist = NULL;
       choose_t->uadd = choose_t->uremove = choose_t->utest =
-	   choose_t->uconfigure = NULL;
+	  choose_t->uconfigure = NULL;
       choose_t->sadd = choose_t->sremove = choose_t->stest =
-	   choose_t->sconfigure = NULL;
+	  choose_t->sconfigure = NULL;
       choose_t->type_dsn = -1;
       choose_t->dsn = NULL;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (choose_t->mainwnd),
-	     GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
       gtk_main_quit ();
       gtk_widget_destroy (choose_t->mainwnd);
     }
@@ -1318,6 +1315,7 @@ static gint
 delete_event (GtkWidget *widget, GdkEvent *event, TDSNCHOOSER *choose_t)
 {
   dsnchooser_cancel_clicked (widget, choose_t);
+
   return FALSE;
 }
 
@@ -1343,7 +1341,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
 
   if (!GTK_IS_WIDGET (hwnd))
     {
-      gtk_init(0, NULL);
+      gtk_init (0, NULL);
       hwnd = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     }
 

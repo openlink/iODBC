@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -78,6 +78,7 @@
 #include "dlf.h"
 #include "dlproc.h"
 
+
 char *szDriverColumnNames[] = {
   "Name",
   "File",
@@ -90,8 +91,8 @@ char *szDriverColumnNames[] = {
 void
 adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
 {
-  char drvdesc[1024], drvattrs[1024], driver[1024], size[64];
-  char *data[4];
+  SQLCHAR drvdesc[1024], drvattrs[1024], driver[1024], size[64];
+  SQLCHAR *data[4];
   void *handle;
   struct stat _stat;
   SQLSMALLINT len, len1;
@@ -114,134 +115,169 @@ adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
   ret = SQLAllocHandle (SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
   if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
     {
-	   _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
-		goto end;
-	 }
+      _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
+      goto end;
+    }
 
   /* Set the version ODBC API to use */
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
       SQL_IS_INTEGER);
 
   /* Get the list of drivers */
-  ret = SQLDrivers (henv, SQL_FETCH_FIRST, drvdesc, sizeof(drvdesc)/sizeof(SQLTCHAR),
-    &len, drvattrs, sizeof(drvattrs)/sizeof(SQLTCHAR), &len1);
-  if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO && ret != SQL_NO_DATA)
+  ret =
+      SQLDrivers (henv, SQL_FETCH_FIRST, drvdesc,
+      sizeof (drvdesc) / sizeof (SQLTCHAR), &len, drvattrs,
+      sizeof (drvattrs) / sizeof (SQLTCHAR), &len1);
+  if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO
+      && ret != SQL_NO_DATA)
     {
-	   _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
-		goto error;
-	 }
+      _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
+      goto error;
+    }
 
   while (ret != SQL_NO_DATA)
     {
-	   data[0] = drvdesc;
+      data[0] = drvdesc;
 
       /* Get the driver library name */
-		SQLSetConfigMode (ODBC_BOTH_DSN);
-		SQLGetPrivateProfileString (drvdesc, "Driver", "", driver,
-		    sizeof(driver)/sizeof(SQLTCHAR), "odbcinst.ini");
-		if (driver[0] == '\0')
-		  SQLGetPrivateProfileString ("Default", "Driver", "", driver,
-		      sizeof(driver)/sizeof(SQLTCHAR), "odbcinst.ini");
-		if (driver[0] == '\0')
-		  {
-		    data[0] = NULL;
-			 goto skip;
-		  }
+      SQLSetConfigMode (ODBC_BOTH_DSN);
+      SQLGetPrivateProfileString (drvdesc, "Driver", "", driver,
+	  sizeof (driver) / sizeof (SQLTCHAR), "odbcinst.ini");
+      if (driver[0] == '\0')
+	SQLGetPrivateProfileString ("Default", "Driver", "", driver,
+	    sizeof (driver) / sizeof (SQLTCHAR), "odbcinst.ini");
+      if (driver[0] == '\0')
+	{
+	  data[0] = NULL;
+	  goto skip;
+	}
 
-	   data[1] = driver;
+      data[1] = driver;
 
       drv_hdbc = NULL;
-		drv_henv = NULL;
+      drv_henv = NULL;
 
-      if ((handle = (void*)DLL_OPEN(driver)) != NULL)
-		  {
-		    if ((allocHdl = (pSQLAllocHandle)DLL_PROC(handle, "SQLAllocHandle")) != NULL)
-			   {
-				  ret = allocHdl(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &drv_henv);
-				  if (ret == SQL_ERROR) goto nodriverver;
-				  ret = allocHdl(SQL_HANDLE_DBC, drv_henv, &drv_hdbc);
-				  if (ret == SQL_ERROR) goto nodriverver;
-				}
-          else
-			   {
-				  if ((allocEnvHdl = (pSQLAllocEnv)DLL_PROC(handle, "SQLAllocEnv")) != NULL)
-				    {
-					   ret = allocEnvHdl(&drv_henv);
-						if (ret == SQL_ERROR) goto nodriverver;
-					 }
-				  else goto nodriverver;
+      if ((handle = (void *) DLL_OPEN (driver)) != NULL)
+	{
+	  if ((allocHdl =
+		  (pSQLAllocHandle) DLL_PROC (handle,
+		      "SQLAllocHandle")) != NULL)
+	    {
+	      ret = allocHdl (SQL_HANDLE_ENV, SQL_NULL_HANDLE, &drv_henv);
+	      if (ret == SQL_ERROR)
+		goto nodriverver;
+	      ret = allocHdl (SQL_HANDLE_DBC, drv_henv, &drv_hdbc);
+	      if (ret == SQL_ERROR)
+		goto nodriverver;
+	    }
+	  else
+	    {
+	      if ((allocEnvHdl =
+		      (pSQLAllocEnv) DLL_PROC (handle,
+			  "SQLAllocEnv")) != NULL)
+		{
+		  ret = allocEnvHdl (&drv_henv);
+		  if (ret == SQL_ERROR)
+		    goto nodriverver;
+		}
+	      else
+		goto nodriverver;
 
-              if ((allocConnectHdl = (pSQLAllocConnect)DLL_PROC(handle, "SQLAllocConnect")) != NULL)
-				    {
-					   ret = allocConnectHdl(drv_henv, &drv_hdbc);
-						if (ret == SQL_ERROR) goto nodriverver;
-					 }
-				  else goto nodriverver;
-				}
+	      if ((allocConnectHdl =
+		      (pSQLAllocConnect) DLL_PROC (handle,
+			  "SQLAllocConnect")) != NULL)
+		{
+		  ret = allocConnectHdl (drv_henv, &drv_hdbc);
+		  if (ret == SQL_ERROR)
+		    goto nodriverver;
+		}
+	      else
+		goto nodriverver;
+	    }
 
-          if ((funcHdl = (pSQLGetInfoFunc)DLL_PROC(handle, "SQLGetInfo")) != NULL)
-			   {
-				  /* Retrieve some informations */
-				  ret = funcHdl (drv_hdbc, SQL_DRIVER_VER, drvattrs, sizeof(drvattrs), &len);
-				  if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
-				    {
-					   unsigned int z;
-						/* Drop the description if one provided */
-						for(z=0 ; ((char*)drvattrs)[z] ; z++)
-						  if(((char*)drvattrs)[z] == ' ')
-						    ((char*)drvattrs)[z] = '\0';
-						data[2] = drvattrs;
-					 }
-				  else goto nodriverver;
-				}
-			  else goto nodriverver;
-		  }
-		else
-		  {
-nodriverver:
-          data[2] = "##.##";
-		  }
+	  if ((funcHdl =
+		  (pSQLGetInfoFunc) DLL_PROC (handle, "SQLGetInfo")) != NULL)
+	    {
+	      /* Retrieve some informations */
+	      ret =
+		  funcHdl (drv_hdbc, SQL_DRIVER_VER, drvattrs,
+		  sizeof (drvattrs), &len);
+	      if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+		{
+		  unsigned int z;
+		  /* Drop the description if one provided */
+		  for (z = 0; ((char *) drvattrs)[z]; z++)
+		    if (((char *) drvattrs)[z] == ' ')
+		      ((char *) drvattrs)[z] = '\0';
+		  data[2] = drvattrs;
+		}
+	      else
+		goto nodriverver;
+	    }
+	  else
+	    goto nodriverver;
+	}
+      else
+	{
+	nodriverver:
+	  data[2] = "##.##";
+	}
 
-       if(drv_hdbc || drv_henv)
-		   {
-			  if(allocConnectHdl && 
-			    (freeConnectHdl = (pSQLFreeConnect)DLL_PROC(handle, "SQLFreeConnect")) != NULL)
-				 { freeConnectHdl(drv_hdbc); drv_hdbc = NULL; }
+      if (drv_hdbc || drv_henv)
+	{
+	  if (allocConnectHdl &&
+	      (freeConnectHdl =
+		  (pSQLFreeConnect) DLL_PROC (handle,
+		      "SQLFreeConnect")) != NULL)
+	    {
+	      freeConnectHdl (drv_hdbc);
+	      drv_hdbc = NULL;
+	    }
 
-           if(allocEnvHdl &&
-			    (freeEnvHdl = (pSQLFreeEnv)DLL_PROC(handle, "SQLFreeEnv")) != NULL)
-				 { freeEnvHdl(drv_henv); drv_henv = NULL; }
-			}
+	  if (allocEnvHdl &&
+	      (freeEnvHdl =
+		  (pSQLFreeEnv) DLL_PROC (handle, "SQLFreeEnv")) != NULL)
+	    {
+	      freeEnvHdl (drv_henv);
+	      drv_henv = NULL;
+	    }
+	}
 
-       if ((drv_hdbc || drv_henv) &&
-		    (freeHdl = (pSQLFreeHandle)DLL_PROC(handle, "SQLFreeHandle")) != NULL)
-			{
-			  if(drv_hdbc) freeHdl(SQL_HANDLE_DBC, drv_hdbc);
-			  if(drv_henv) freeHdl(SQL_HANDLE_ENV, drv_henv);
-			}
+      if ((drv_hdbc || drv_henv) &&
+	  (freeHdl =
+	      (pSQLFreeHandle) DLL_PROC (handle, "SQLFreeHandle")) != NULL)
+	{
+	  if (drv_hdbc)
+	    freeHdl (SQL_HANDLE_DBC, drv_hdbc);
+	  if (drv_henv)
+	    freeHdl (SQL_HANDLE_ENV, drv_henv);
+	}
 
-       DLL_CLOSE(handle);
+      DLL_CLOSE (handle);
 
-       /* Get the size of the driver */
-		 if (!stat (driver, &_stat))
-		   {
-			  sprintf(size, "%d Kb", (int)(_stat.st_size / 1024));
-			  data[3] = size;
-			}
-		 else data[3] = "-";
+      /* Get the size of the driver */
+      if (!stat (driver, &_stat))
+	{
+	  sprintf (size, "%d Kb", (int) (_stat.st_size / 1024));
+	  data[3] = size;
+	}
+      else
+	data[3] = "-";
 
-		 gtk_clist_append (GTK_CLIST (widget), data);
+      gtk_clist_append (GTK_CLIST (widget), data);
 
-skip:
-       ret = SQLDrivers (henv, SQL_FETCH_NEXT, drvdesc,
-		   sizeof (drvdesc)/sizeof(SQLTCHAR), &len, drvattrs,
-			sizeof (drvattrs)/sizeof(SQLTCHAR), &len1);
-		 if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO && ret != SQL_NO_DATA)
-		   {
-			  _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
-			  goto error;
-			}
-	 }
+    skip:
+      ret = SQLDrivers (henv, SQL_FETCH_NEXT, drvdesc,
+	  sizeof (drvdesc) / sizeof (SQLTCHAR), &len, drvattrs,
+	  sizeof (drvattrs) / sizeof (SQLTCHAR), &len1);
+      if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO
+	  && ret != SQL_NO_DATA)
+	{
+	  _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE,
+	      SQL_NULL_HANDLE);
+	  goto error;
+	}
+    }
 
 error:
   /* Clean all that */

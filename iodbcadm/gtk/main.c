@@ -6,14 +6,14 @@
  *  Main program
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -78,6 +78,7 @@
 
 #include "gui.h"
 
+
 int
 gtk_gui (int *argc, char **argv[])
 {
@@ -116,23 +117,23 @@ display_help (void)
 
 
 #if !defined(HAVE_SETENV)
-static int 
+static int
 setenv (const char *name, const char *value, int overwrite)
 {
   int rc;
   char *entry;
-  
+
   /*
    *  Allocate some space for new environment variable
    */
   if ((entry = (char *) malloc (strlen (name) + strlen (value) + 2)) == NULL)
-      return -1;
+    return -1;
   strcpy (entry, name);
   strcat (entry, "=");
   strcat (entry, value);
 
   /*
-   *  Check if variable already exists in current environment and whether 
+   *  Check if variable already exists in current environment and whether
    *  we want to overwrite it with a new value if it exists.
    */
   if (getenv (name) != NULL && !overwrite)

@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -70,6 +70,7 @@
 
 #include "gui.h"
 
+
 static char* STRCONN = "%s\0Driver=%s\0Setup=%s\0\0";
 static int STRCONN_NB_TOKENS = 3;
 
@@ -82,6 +83,7 @@ char *szKeysButtons[] = {
   "_Add",
   "_Update"
 };
+
 
 static void
 addkeywords_to_list (GtkWidget *widget, LPCSTR attrs,
@@ -135,8 +137,6 @@ static void
 parse_attribute_line (TDRIVERSETUP *driversetup_t, LPCSTR driver,
     LPCSTR attrs, BOOL add)
 {
-  char *curr, *cour;
-
   if (driver)
     {
       gtk_entry_set_text (GTK_ENTRY (driversetup_t->name_entry), driver);

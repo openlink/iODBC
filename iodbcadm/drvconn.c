@@ -6,14 +6,14 @@
  *  The data_sources dialog for SQLDriverConnect
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -75,13 +75,14 @@
 #include <herr.h>
 #include <unicode.h>
 
+
 SQLRETURN SQL_API
 iodbcdm_drvconn_dialbox (
     HWND hwnd,
     LPSTR szInOutConnStr,
     DWORD cbInOutConnStr,
     int * sqlStat,
-    SQLUSMALLINT fDriverCompletion, 
+    SQLUSMALLINT fDriverCompletion,
 	 UWORD *config)
 {
   RETCODE retcode = SQL_ERROR;
@@ -96,38 +97,38 @@ iodbcdm_drvconn_dialbox (
 
   /* Check output parameters */
   if (choose_t.dsn)
-	 {
+    {
       /* Change the config mode */
       switch (choose_t.type_dsn)
-		  {
-		    case USER_DSN:
-				*config = ODBC_USER_DSN;
-				break;
-		    case SYSTEM_DSN:
-				*config = ODBC_SYSTEM_DSN;
-			   break;
-		  };
+	{
+	case USER_DSN:
+	  *config = ODBC_USER_DSN;
+	  break;
+	case SYSTEM_DSN:
+	  *config = ODBC_SYSTEM_DSN;
+	  break;
+	};
 
       /* Try to copy the DSN */
       if (cbInOutConnStr > STRLEN (choose_t.dsn) + STRLEN ("DSN="))
-		  {
+	{
 #ifdef _MAC
-          STRCPY (szInOutConnStr, "DSN=");
-			 STRCAT (szInOutConnStr, choose_t.dsn);
+	  STRCPY (szInOutConnStr, "DSN=");
+	  STRCAT (szInOutConnStr, choose_t.dsn);
 #else
-          sprintf (szInOutConnStr, "DSN=%s", choose_t.dsn);
+	  sprintf (szInOutConnStr, "DSN=%s", choose_t.dsn);
 #endif
-		    retcode = SQL_SUCCESS;
-		  }
-		else
-		  {
-			  if (sqlStat)
+	  retcode = SQL_SUCCESS;
+	}
+      else
+	{
+	  if (sqlStat)
 #if (ODBCVER>=0x3000)
-             *sqlStat = en_HY092;
+	    *sqlStat = en_HY092;
 #else
-             *sqlStat = en_S1000;
+	    *sqlStat = en_S1000;
 #endif
-		  }
+	}
     }
   else
     retcode = SQL_NO_DATA_FOUND;
@@ -143,8 +144,8 @@ iodbcdm_drvconn_dialboxw (
     LPWSTR szInOutConnStr,
     DWORD cbInOutConnStr,
     int * sqlStat,
-    SQLUSMALLINT fDriverCompletion, 
-	 UWORD *config)
+    SQLUSMALLINT fDriverCompletion,
+    UWORD *config)
 {
   RETCODE retcode = SQL_ERROR;
   LPSTR _szInOutConnStr = NULL;
@@ -153,14 +154,15 @@ iodbcdm_drvconn_dialboxw (
   if (!szInOutConnStr || cbInOutConnStr < 1)
     goto quit;
 
-  if( (_szInOutConnStr = malloc (cbInOutConnStr * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+  if ((_szInOutConnStr =
+	  malloc (cbInOutConnStr * UTF8_MAX_CHAR_LEN + 1)) == NULL)
     {
-	   *sqlStat = en_S1001;
-		goto quit;
-	 }
+      *sqlStat = en_S1001;
+      goto quit;
+    }
 
   retcode = iodbcdm_drvconn_dialbox (hwnd, _szInOutConnStr,
-    cbInOutConnStr * UTF8_MAX_CHAR_LEN, sqlStat, fDriverCompletion, config);
+      cbInOutConnStr * UTF8_MAX_CHAR_LEN, sqlStat, fDriverCompletion, config);
 
   MEM_FREE (_szInOutConnStr);
 

@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -72,9 +72,11 @@
 #include <dlfcn.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "../gui.h"
 #include "odbc4.xpm"
+
 
 #if !defined(HAVE_DL_INFO)
 typedef struct
@@ -97,16 +99,18 @@ static char *szCpLabels[] = {
   "Pool timeout (seconds)"
 };
 
-static struct {
+static struct
+{
   char *lib_name;
   char *lib_desc;
   char *lib_ver_sym;
-} iODBC_Components[]  = {
-  { "libiodbc.so",	"iODBC Driver Manager", 	"iodbc_version"},
-  { "libiodbcadm.so", 	"iODBC Administrator",		"iodbcadm_version"},
-  { "libiodbcinst.so",	"iODBC Installer",		"iodbcinst_version"},
-  { "libdrvproxy.so", 	"iODBC Driver Setup Proxy",	"iodbcproxy_version"},
-  { "libtranslator.so", "iODBC Translation Manager", 	"iodbctrans_version"}
+} iODBC_Components[] =
+{
+  {"libiodbc.so", "iODBC Driver Manager", "iodbc_version"},
+  {"libiodbcadm.so", "iODBC Administrator", "iodbcadm_version"},
+  {"libiodbcinst.so", "iODBC Installer", "iodbcinst_version"},
+  {"libdrvproxy.so", "iODBC Driver Setup Proxy", "iodbcproxy_version"},
+  {"libtranslator.so", "iODBC Translation Manager", "iodbctrans_version"}
 };
 
 
@@ -127,7 +131,8 @@ addcomponents_to_list (GtkWidget *widget)
 
   gtk_clist_clear (GTK_CLIST (widget));
 
-  for (i = 0; i < sizeof (iODBC_Components) / sizeof (iODBC_Components[0]); i++)
+  for (i = 0; i < sizeof (iODBC_Components) / sizeof (iODBC_Components[0]);
+      i++)
     {
       /*
        *  Collect basic info on the components
@@ -135,8 +140,8 @@ addcomponents_to_list (GtkWidget *widget)
       data[0] = iODBC_Components[i].lib_desc;
       data[1] = VERSION;
       data[2] = iODBC_Components[i].lib_name;
-      data[3] = "";				/* Modification Date */
-      data[4] = "";				/* Size */
+      data[3] = "";		/* Modification Date */
+      data[4] = "";		/* Size */
 
       if ((handle = dlopen (iODBC_Components[i].lib_name, RTLD_LAZY)))
 	{
@@ -146,10 +151,11 @@ addcomponents_to_list (GtkWidget *widget)
 
 	  /* Check the size and modification date of the library */
 #ifdef HAVE_DLADDR
-	  dladdr (proc, &info);	
+	  dladdr (proc, &info);
 	  if (!stat (info.dli_fname, &_stat))
 	    {
-	      sprintf (_size, "%d Kb", _stat.st_size / 1024);
+	      sprintf (_size, "%lu Kb",
+		  (unsigned long) _stat.st_size / 1024L);
 	      sprintf (_date, "%s", ctime (&_stat.st_mtime));
 	      _date[strlen (_date) - 1] = '\0';	/* remove last \n */
 	      data[3] = _date;
@@ -176,7 +182,7 @@ addconnectionpool_to_list (GtkWidget *widget)
   char *curr, *buffer = (char *) malloc (sizeof (char) * 65536), *szDriver;
   char driver[1024];
   char *data[2];
-  int len, row = 0, i;
+  int len, i;
   BOOL careabout;
   UWORD confMode = ODBC_USER_DSN;
 
@@ -272,16 +278,17 @@ addconnectionpool_to_list (GtkWidget *widget)
 static void
 admin_apply_tracing (TTRACING *tracing_t)
 {
-  char tokenstr[1024];
-  
   /* Write keywords for tracing in the ini file */
   SQLWritePrivateProfileString ("ODBC", "Trace",
-    (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->allthetime_rb)) == TRUE
-	 || gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->onetime_rb)) == TRUE) ? "1" : "0", NULL);
+      (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->
+		  allthetime_rb)) == TRUE
+	  || gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->
+		  onetime_rb)) == TRUE) ? "1" : "0", NULL);
   SQLWritePrivateProfileString ("ODBC", "TraceAutoStop",
-    gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->onetime_rb)) ? "1" : "0", NULL);
+      gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (tracing_t->
+	      onetime_rb)) ? "1" : "0", NULL);
   SQLWritePrivateProfileString ("ODBC", "TraceFile",
-	    gtk_entry_get_text (GTK_ENTRY (tracing_t->logfile_entry)), NULL);
+      gtk_entry_get_text (GTK_ENTRY (tracing_t->logfile_entry)), NULL);
 }
 
 
@@ -332,7 +339,8 @@ admin_switch_page (GtkNotebook *notebook, GtkNotebookPage *page,
     case 2:
       if (driverchoose_t)
 	{
-	  adddrivers_to_list (driverchoose_t->driverlist, driverchoose_t->mainwnd);
+	  adddrivers_to_list (driverchoose_t->driverlist,
+	      driverchoose_t->mainwnd);
 	  gtk_widget_set_sensitive (driverchoose_t->b_remove, FALSE);
 	  gtk_widget_set_sensitive (driverchoose_t->b_configure, FALSE);
 	}
@@ -565,12 +573,9 @@ driver_list_unselect (GtkWidget *widget, gint row, gint column,
 static void
 driver_add_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 {
-  char connstr[4096] = { 0 }, tokenstr[4096] =
-  {
-  0};
-  char *szDriver = NULL, *curr, *cour, *cstr;
-  int size = sizeof (connstr);
-  DWORD error;
+  char connstr[4096] = { 0 };
+  char tokenstr[4096] = { 0 };
+  char *cstr;
 
   if (choose_t)
     {
@@ -610,7 +615,6 @@ static void
 driver_remove_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
 {
   char *szDriver = NULL;
-  DWORD error;
 
   if (choose_t)
     {
@@ -659,7 +663,6 @@ driver_configure_clicked (GtkWidget *widget, TDRIVERCHOOSER *choose_t)
   char tokenstr[4096] = { 0 };
   char *szDriver = NULL, *curr, *cour, *cstr;
   int size = sizeof (connstr);
-  DWORD error;
 
   if (choose_t)
     {
@@ -765,7 +768,7 @@ admin_ok_clicked (GtkWidget *widget, void **inparams)
   if (tracing_t)
     {
       if (tracing_t->changed)
-        admin_apply_tracing (tracing_t);
+	admin_apply_tracing (tracing_t);
 
       tracing_t->logfile_entry = tracing_t->tracelib_entry =
 	  tracing_t->b_start_stop = NULL;

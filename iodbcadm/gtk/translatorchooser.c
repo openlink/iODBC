@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -70,9 +70,11 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "gui.h"
 #include "img.xpm"
+
 
 static void
 translator_list_select (GtkWidget *widget, gint row, gint column,
@@ -152,7 +154,7 @@ addtranslators_to_list (GtkWidget *widget, GtkWidget *dlg)
   char *curr, *buffer = (char *) malloc (sizeof (char) * 65536), *szDriver;
   char driver[1024], _date[1024], _size[1024];
   char *data[4];
-  int len, row = 0, i;
+  int len, i;
   BOOL careabout;
   UWORD confMode = ODBC_USER_DSN;
   struct stat _stat;
@@ -169,11 +171,11 @@ addtranslators_to_list (GtkWidget *widget, GtkWidget *dlg)
 #ifdef WIN32
       len =
 	  SQLGetPrivateProfileString ("ODBC 32 bit Translators",
-	   	NULL, "", buffer, 65535, "odbcinst.ini");
+	  NULL, "", buffer, 65535, "odbcinst.ini");
 #else
       len =
 	  SQLGetPrivateProfileString ("ODBC Translators",
-	   	NULL, "", buffer, 65535, "odbcinst.ini");
+	  NULL, "", buffer, 65535, "odbcinst.ini");
 #endif
       if (len)
 	goto process;
@@ -200,12 +202,10 @@ addtranslators_to_list (GtkWidget *widget, GtkWidget *dlg)
 	  SQLSetConfigMode (confMode);
 #ifdef WIN32
 	  SQLGetPrivateProfileString ("ODBC 32 bit Translators",
-	      curr, "", driver, sizeof (driver),
-	      "odbcinst.ini");
+	      curr, "", driver, sizeof (driver), "odbcinst.ini");
 #else
 	  SQLGetPrivateProfileString ("ODBC Translators",
-	      curr, "", driver, sizeof (driver),
-	      "odbcinst.ini");
+	      curr, "", driver, sizeof (driver), "odbcinst.ini");
 #endif
 
 	  /* Check if the driver is installed */
@@ -215,13 +215,11 @@ addtranslators_to_list (GtkWidget *widget, GtkWidget *dlg)
 	  /* Get the driver library name */
 	  SQLSetConfigMode (confMode);
 	  if (!SQLGetPrivateProfileString (curr,
-		  "Translator", "", driver,
-		  sizeof (driver), "odbcinst.ini"))
+		  "Translator", "", driver, sizeof (driver), "odbcinst.ini"))
 	    {
 	      SQLSetConfigMode (confMode);
 	      SQLGetPrivateProfileString ("Default",
-		     "Translator", "", driver,
-		  sizeof (driver), "odbcinst.ini");
+		  "Translator", "", driver, sizeof (driver), "odbcinst.ini");
 	    }
 
 	  if (STRLEN (curr) && STRLEN (driver))
@@ -232,7 +230,8 @@ addtranslators_to_list (GtkWidget *widget, GtkWidget *dlg)
 	      /* Get some information about the driver */
 	      if (!stat (driver, &_stat))
 		{
-		  sprintf (_size, "%d Kb", _stat.st_size / 1024);
+		  sprintf (_size, "%lu Kb",
+		      (unsigned long) _stat.st_size / 1024L);
 		  sprintf (_date, "%s", ctime (&_stat.st_mtime));
 		  data[2] = _date;
 		  data[3] = _size;

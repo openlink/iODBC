@@ -4,14 +4,14 @@
  *  $Id$
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -93,10 +93,11 @@ BOOL create_confirmadm (HWND hwnd, LPCSTR dsn, LPCSTR text);
 BOOL create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text);
 #endif
 
-void create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn, TLOGIN *log_t);
-void create_dsnchooser (HWND hwnd, TDSNCHOOSER *choose_t);
-void create_driverchooser (HWND hwnd, TDRIVERCHOOSER *choose_t);
-void create_translatorchooser (HWND hwnd, TTRANSLATORCHOOSER *choose_t);
+void create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
+    TLOGIN * log_t);
+void create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t);
+void create_driverchooser (HWND hwnd, TDRIVERCHOOSER * choose_t);
+void create_translatorchooser (HWND hwnd, TTRANSLATORCHOOSER * choose_t);
 void create_administrator (HWND hwnd);
 void create_error (HWND hwnd, LPCSTR dsn, LPCSTR text, LPCSTR errmsg);
 void create_message (HWND hwnd, LPCSTR dsn, LPCSTR text);
@@ -104,13 +105,15 @@ LPSTR create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add);
 LPSTR create_filedsn (HWND hwnd);
 LPSTR create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout);
 
-typedef SQLRETURN SQL_API (*pSQLGetInfoFunc) (SQLHDBC hdbc, SQLUSMALLINT fInfoType,
-    SQLPOINTER rgbInfoValue, SQLSMALLINT cbInfoValueMax, SQLSMALLINT * pcbInfoValue);
-typedef SQLRETURN SQL_API (*pSQLAllocHandle) (SQLSMALLINT hdl_type, SQLHANDLE hdl_in,
-    SQLHANDLE *hdl_out);
-typedef SQLRETURN SQL_API (*pSQLAllocEnv) (SQLHENV *henv);
-typedef SQLRETURN SQL_API (*pSQLAllocConnect) (SQLHENV henv, SQLHDBC *hdbc);
-typedef SQLRETURN SQL_API (*pSQLFreeHandle) (SQLSMALLINT hdl_type, SQLHANDLE hdl_in);
+typedef SQLRETURN SQL_API (*pSQLGetInfoFunc) (SQLHDBC hdbc,
+    SQLUSMALLINT fInfoType, SQLPOINTER rgbInfoValue,
+    SQLSMALLINT cbInfoValueMax, SQLSMALLINT * pcbInfoValue);
+typedef SQLRETURN SQL_API (*pSQLAllocHandle) (SQLSMALLINT hdl_type,
+    SQLHANDLE hdl_in, SQLHANDLE * hdl_out);
+typedef SQLRETURN SQL_API (*pSQLAllocEnv) (SQLHENV * henv);
+typedef SQLRETURN SQL_API (*pSQLAllocConnect) (SQLHENV henv, SQLHDBC * hdbc);
+typedef SQLRETURN SQL_API (*pSQLFreeHandle) (SQLSMALLINT hdl_type,
+    SQLHANDLE hdl_in);
 typedef SQLRETURN SQL_API (*pSQLFreeEnv) (SQLHENV henv);
 typedef SQLRETURN SQL_API (*pSQLFreeConnect) (SQLHDBC hdbc);
 	

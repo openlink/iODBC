@@ -6,14 +6,14 @@
  *  The data_sources dialog for SQLDriverConnect and a login box procedures
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1999-2002 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -72,44 +72,45 @@
 
 #include "gui.h"
 
+
 void SQL_API
 _iodbcdm_nativeerrorbox (
-    HWND hwnd,
-	 HENV henv,
-	 HDBC hdbc,
-	 HSTMT hstmt)
+    HWND	hwnd,
+    HENV	henv,
+    HDBC	hdbc,
+    HSTMT	hstmt)
 {
-  char buf[250];
-  char sqlstate[15];
+  SQLCHAR buf[250];
+  SQLCHAR sqlstate[15];
 
   /*
    * Get statement errors
-	*/
+   */
   if (SQLError (henv, hdbc, hstmt, sqlstate, NULL,
-        buf, sizeof(buf), NULL) == SQL_SUCCESS)
-    create_error (hwnd, "Native ODBC Error", sqlstate, buf);
+	  buf, sizeof (buf), NULL) == SQL_SUCCESS)
+    create_error (hwnd, "Native ODBC Error", (LPCSTR) sqlstate, (LPCSTR) buf);
 
   /*
    * Get connection errors
-	*/
+   */
   if (SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate,
-        NULL, buf, sizeof(buf), NULL) == SQL_SUCCESS)
-    create_error (hwnd, "Native ODBC Error", sqlstate, buf);
+	  NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+    create_error (hwnd, "Native ODBC Error", (LPCSTR) sqlstate, (LPCSTR) buf);
 
   /*
    * Get environmental errors
-	*/
+   */
   if (SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT,
-        sqlstate, NULL, buf, sizeof(buf), NULL) == SQL_SUCCESS)
-    create_error (hwnd, "Native ODBC Error", sqlstate, buf);
+	  sqlstate, NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+    create_error (hwnd, "Native ODBC Error", (LPCSTR) sqlstate, (LPCSTR) buf);
 }
 
 
 void SQL_API
 _iodbcdm_errorbox (
-    HWND hwnd,
-    LPCSTR szDSN,
-    LPCSTR szText)
+    HWND	hwnd,
+    LPCSTR	szDSN,
+    LPCSTR	szText)
 {
   char msg[4096];
 
@@ -120,9 +121,9 @@ _iodbcdm_errorbox (
 
 void SQL_API
 _iodbcdm_messagebox (
-    HWND hwnd,
-    LPCSTR szDSN,
-    LPCSTR szText)
+    HWND	hwnd,
+    LPCSTR	szDSN,
+    LPCSTR	szText)
 {
   create_message (hwnd, szDSN, szText);
 }
@@ -130,9 +131,9 @@ _iodbcdm_messagebox (
 
 BOOL SQL_API
 _iodbcdm_confirmbox (
-    HWND hwnd,
-	 LPCSTR szDSN,
-	 LPCSTR szText)
+    HWND	hwnd,
+    LPCSTR	szDSN,
+    LPCSTR	szText)
 {
-  return create_confirm (hwnd, (SQLPOINTER)szDSN, (SQLPOINTER)szText);
+  return create_confirm (hwnd, (SQLPOINTER) szDSN, (SQLPOINTER) szText);
 }
