@@ -80,6 +80,7 @@ EXTRA_DIST		= \
 	acinclude.m4 \
 	mac/Makefile \
 	mac/link-inclibs.sh \
+	mac/iodbc-config.macosx \
 	mac/README.MYODBC \
 	mac/myodbc.configure.diff \
 	mac/framework-include.sh \

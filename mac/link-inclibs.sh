@@ -117,6 +117,13 @@ ln -s "$INST_FW/iODBCinst"		"$PREFIX/lib/libiodbcinst.dylib"
 
 
 #
+#  Add special Mac OS X version of iodbc-config 
+#
+cp iodbc-config.macosx			"$PREFIX/bin/iodbc-config"
+chmod 755				"$PREFIX/bin/iodbc-config"
+
+
+#
 # Fix basic permissions
 #
 chmod -R og+rX "$PREFIX"
