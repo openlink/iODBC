@@ -185,7 +185,13 @@ DB_Disconnect (void)
     SQLFreeEnv (henv);
 #else
   if (hstmt)
-    SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
+    {
+       int sts;
+       sts = SQLCloseCursor (hstmt);
+       if (sts != SQL_ERROR)
+	   DB_Errors ("CloseCursor");
+       SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
+    }
 
   if (connected)
     SQLDisconnect (hdbc);
