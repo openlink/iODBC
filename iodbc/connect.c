@@ -85,7 +85,7 @@
 
 #include <itrace.h>
 
-#ifdef _MACX
+#if defined(_MACX) && defined(GUI)
 #include <Carbon/Carbon.h>
 #endif /* _MACX */
 
@@ -880,7 +880,7 @@ SQLConnect (
   return retcode;
 }
 
-#ifdef _MACX
+#if defined(_MACX) && defined(GUI)
 extern SQLRETURN SQL_API _iodbcdm_drvconn_dialbox (HWND hwnd,
     LPSTR szInOutConnStr, DWORD cbInOutConnStr, int FAR * sqlStat);
 #endif
@@ -999,15 +999,20 @@ SQLDriverConnect (
 	if (szConnStrOut[i] == ';')
 	  szConnStrOut[i] = 0;
 
-#ifdef _MACX
+#if defined(GUI)
+#  if defined(_MACX)
       retcode = iodbcdm_drvconn_dialbox (
-#else
+#  else
       retcode = dialproc (
-#endif
+#  endif
 	  hwnd,			/* window or display handle */
 	  szConnStrOut,		/* input/output dsn buf */
 	  cbConnStrOutMax,	/* buf size */
 	  &sqlstat);		/* error code */
+#else	/* GUI */
+      sqlstat = en_IM008;
+      retcode = SQL_ERROR;
+#endif	/* GUI */
 
       if (retcode != SQL_SUCCESS)
 	{

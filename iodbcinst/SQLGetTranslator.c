@@ -119,9 +119,13 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 
   do
     {
+#ifdef GUI
       ret =
 	  _iodbcdm_trschoose_dialbox (hwndParent, translator,
 	  sizeof (translator), NULL);
+#else
+      ret = SQL_NO_DATA;
+#endif
 
       if (ret == SQL_NO_DATA)
 	{

@@ -80,7 +80,9 @@ extern SQLRETURN _iodbcdm_admin_dialbox(HWND);
 BOOL
 ManageDataSources (HWND hwndParent)
 {
+#ifdef GUI
   _iodbcdm_admin_dialbox (hwndParent);
+#endif
   return TRUE;
 }
 

@@ -84,7 +84,9 @@ BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN)
 {
   char dsn[1024] = { 0 };
 
+#ifdef GUI
   iodbcdm_drvconn_dialbox (parent, dsn, sizeof (dsn), NULL);
+#endif
 
   return TRUE;
 }
