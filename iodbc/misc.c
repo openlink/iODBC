@@ -72,54 +72,54 @@ upper_strneq (
   return (int) !(c1 - c2);
 }
 
-
 static char *			/* return new position in input str */
 readtoken (
     char *istr,			/* old position in input buf */
     char *obuf)			/* token string ( if "\0", then finished ) */
 {
+  char *start = obuf;
+
+  /* Skip leading white space */
+  while (*istr == ' ' || *istr == '\t')
+    istr++;
+
   for (; *istr && *istr != '\n'; istr++)
     {
       char c, nx;
 
       c = *(istr);
-
-      if (c == ' ' || c == '\t')
-	{
-	  continue;
-	}
-
       nx = *(istr + 1);
 
+      if (c == ';')
+	{
+	  for (; *istr && *istr != '\n'; istr++);
+	  break;
+	}
       *obuf = c;
       obuf++;
 
-      if (c == ';' || c == '=')
-	{
-	  istr++;
-	  break;
-	}
-
-      if (nx == ' ' || nx == '\t' || nx == ';' || nx == '=')
+      if (nx == ';' || nx == '=' || c == '=')
 	{
 	  istr++;
 	  break;
 	}
     }
-
   *obuf = '\0';
+
+  /* Trim end of token */
+  for (; obuf > start && (*(obuf - 1) == ' ' || *(obuf - 1) == '\t');)
+    *--obuf = '\0';
 
   return istr;
 }
 
-
 #if	!defined(WINDOWS) && !defined(WIN32) && !defined(OS2)
-#include	<pwd.h>
-#define	UNIX_PWD
+# include	<pwd.h>
+# define	UNIX_PWD
 #endif
 
-static char *
-getinitfile (char *buf, int size)
+char *
+_iodbcdm_getinifile (char *buf, int size)
 {
   int i, j;
   char *ptr;
@@ -144,14 +144,23 @@ getinitfile (char *buf, int size)
 
   return buf;
 #else
-  ptr = (char *) getpwuid (getuid ());
-
-  if (ptr == NULL)
+  if ((ptr = getenv ("ODBCINI")) != NULL)
     {
-      return NULL;
+      strcpy (buf, ptr);
+      return buf;
     }
 
-  ptr = ((struct passwd *) ptr)->pw_dir;
+  if ((ptr = getenv ("HOME")) == NULL)
+    {
+      ptr = (char *) getpwuid (getuid ());
+
+      if (ptr == NULL)
+	{
+	  return NULL;
+	}
+
+      ptr = ((struct passwd *) ptr)->pw_dir;
+    }
 
   if (ptr == NULL || *ptr == '\0')
     {
@@ -171,6 +180,10 @@ getinitfile (char *buf, int size)
 }
 
 
+/* 
+ *  read odbc init file to resolve the value of specified
+ *  key from named or defaulted dsn section 
+ */
 char *
 _iodbcdm_getkeyvalbydsn (
     char *dsn,
@@ -178,9 +191,6 @@ _iodbcdm_getkeyvalbydsn (
     char *keywd,
     char *value,
     int size)
-/* read odbc init file to resolve the value of specified
- * key from named or defaulted dsn section 
- */
 {
   char buf[1024];
   char dsntk[SQL_MAX_DSN_LENGTH + 3] = {'[', '\0'};
@@ -224,7 +234,7 @@ _iodbcdm_getkeyvalbydsn (
 
   dsnlen = dsnlen + 2;
 
-  path = getinitfile (pathbuf, sizeof (pathbuf));
+  path = _iodbcdm_getinifile (pathbuf, sizeof (pathbuf));
 
   if (path == NULL)
     {
@@ -330,7 +340,8 @@ _iodbcdm_getkeyvalinstr (
   char token[1024] = {'\0'};
   int flag = 0;
 
-  if (cnstr == NULL || value == NULL || keywd == NULL || size < 1)
+  if (cnstr == NULL || value == NULL
+      || keywd == NULL || size < 1)
     {
       return NULL;
     }
@@ -361,34 +372,34 @@ _iodbcdm_getkeyvalinstr (
 	}
 
       switch (flag)
-	 {
-	 case 0:
-	   if (upper_strneq (token, keywd, strlen (keywd)))
-	     {
-	       flag = 1;
-	     }
-	   break;
+	{
+	case 0:
+	  if (upper_strneq (token, keywd, strlen (keywd)))
+	    {
+	      flag = 1;
+	    }
+	  break;
 
-	 case 1:
-	   if (STREQ (token, "="))
-	     {
-	       flag = 2;
-	     }
-	   break;
+	case 1:
+	  if (STREQ (token, "="))
+	    {
+	      flag = 2;
+	    }
+	  break;
 
-	 case 2:
-	   if (size < strlen (token) + 1)
-	     {
-	       return NULL;
-	     }
+	case 2:
+	  if (size < strlen (token) + 1)
+	    {
+	      return NULL;
+	    }
 
-	   STRNCPY (value, token, size);
+	  STRNCPY (value, token, size);
 
-	   return value;
+	  return value;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
 
   return NULL;
