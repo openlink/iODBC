@@ -108,7 +108,6 @@ extern HPROC _iodbcdm_gettrproc (void FAR * stm, int procid, int type);
       ret = proc plist; \
       if (errHandle) ((GENV_t FAR *)(errHandle))->rc = ret; \
     }
-#endif
 
 #ifdef	NO_TRACE
 #define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
