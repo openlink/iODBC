@@ -72,5 +72,5 @@ INCLUDES		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
 #  Build odbctest program
 #
 iodbctest_SOURCES	= iodbctest.c
-iodbctest_LDADD		= ../iodbc/libiodbc.la ../iodbcinst/libiodbcinst.la 
+iodbctest_LDADD		= ../iodbc/libiodbc.la
 iodbctest_LDFLAGS	= # -static
