@@ -38,33 +38,35 @@
 
 #include <itrace.h>
 
-static SQLRETURN 
+
+/* 
+ *  Check state for executing catalog functions 
+ */
+static SQLRETURN
 _iodbcdm_cata_state_ok (
-    HSTMT hstmt,
+    STMT_t FAR * pstmt,
     int fidx)
-/* check state for executing catalog functions */
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
   int sqlstat = en_00000;
 
   if (pstmt->asyn_on == en_NullProc)
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   sqlstat = en_S1010;
-	   break;
+	{
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  sqlstat = en_S1010;
+	  break;
 
-	 case en_stmt_fetched:
-	 case en_stmt_xfetched:
-	   sqlstat = en_24000;
-	   break;
+	case en_stmt_fetched:
+	case en_stmt_xfetched:
+	  sqlstat = en_24000;
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != fidx)
     {
@@ -82,67 +84,66 @@ _iodbcdm_cata_state_ok (
 }
 
 
-static SQLRETURN 
+/* 
+ *  State transition for catalog function 
+ */
+static SQLRETURN
 _iodbcdm_cata_state_tr (
-    HSTMT hstmt,
+    STMT_t FAR * pstmt,
     int fidx,
     SQLRETURN result)
-/* state transition for catalog function */
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
-  DBC_t FAR *pdbc;
-
-  pdbc = (DBC_t FAR *) (pstmt->hdbc);
+  CONN (pdbc, pstmt->hdbc);
 
   if (pstmt->asyn_on == fidx)
     {
       switch (result)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return result;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return result;
+	}
     }
 
   if (pstmt->state <= en_stmt_executed)
     {
       switch (result)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	   pstmt->state = en_stmt_cursoropen;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	  pstmt->state = en_stmt_cursoropen;
+	  break;
 
-	 case SQL_ERROR:
-	   pstmt->state = en_stmt_allocated;
-	   pstmt->prep_state = 0;
-	   break;
+	case SQL_ERROR:
+	  pstmt->state = en_stmt_allocated;
+	  pstmt->prep_state = 0;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	   pstmt->asyn_on = fidx;
-	   break;
+	case SQL_STILL_EXECUTING:
+	  pstmt->asyn_on = fidx;
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
 
   return result;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLGetTypeInfo (
     SQLHSTMT hstmt,
     SQLSMALLINT fSqlType)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   int sqlstat = en_00000;
   SQLRETURN retcode;
@@ -151,9 +152,11 @@ SQLGetTypeInfo (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
+#if (ODBCVER < 0x0300)
       if (fSqlType > SQL_TYPE_MAX)
 	{
 	  sqlstat = en_S1004;
@@ -166,6 +169,7 @@ SQLGetTypeInfo (
 	  sqlstat = en_S1004;
 	  break;
 	}
+#endif	/* ODBCVER < 0x0300 */
 
       retcode = _iodbcdm_cata_state_ok (pstmt, en_GetTypeInfo);
 
@@ -194,14 +198,14 @@ SQLGetTypeInfo (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER ( pstmt->hdbc, retcode, hproc, en_GetTypeInfo, 
-    (pstmt->dhstmt, fSqlType))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetTypeInfo,
+      (pstmt->dhstmt, fSqlType));
 
   return _iodbcdm_cata_state_tr (pstmt, en_GetTypeInfo, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLSpecialColumns (
     SQLHSTMT hstmt,
     SQLUSMALLINT fColType,
@@ -214,7 +218,7 @@ SQLSpecialColumns (
     SQLUSMALLINT fScope,
     SQLUSMALLINT fNullable)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -223,6 +227,7 @@ SQLSpecialColumns (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -281,7 +286,7 @@ SQLSpecialColumns (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_SpecialColumns, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SpecialColumns, (
 	  pstmt->dhstmt,
 	  fColType,
 	  szTableQualifier,
@@ -291,13 +296,13 @@ SQLSpecialColumns (
 	  szTableName,
 	  cbTableName,
 	  fScope,
-	  fNullable))
+	  fNullable));
 
   return _iodbcdm_cata_state_tr (pstmt, en_SpecialColumns, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLStatistics (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szTableQualifier,
@@ -309,7 +314,7 @@ SQLStatistics (
     SQLUSMALLINT fUnique,
     SQLUSMALLINT fAccuracy)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -318,6 +323,7 @@ SQLStatistics (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -369,7 +375,7 @@ SQLStatistics (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Statistics, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Statistics, (
 	  pstmt->dhstmt,
 	  szTableQualifier,
 	  cbTableQualifier,
@@ -378,13 +384,13 @@ SQLStatistics (
 	  szTableName,
 	  cbTableName,
 	  fUnique,
-	  fAccuracy))
+	  fAccuracy));
 
   return _iodbcdm_cata_state_tr (pstmt, en_Statistics, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLTables (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szTableQualifier,
@@ -396,7 +402,7 @@ SQLTables (
     SQLCHAR FAR * szTableType,
     SQLSMALLINT cbTableType)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -405,6 +411,7 @@ SQLTables (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -445,7 +452,7 @@ SQLTables (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Tables, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Tables, (
 	  pstmt->dhstmt,
 	  szTableQualifier,
 	  cbTableQualifier,
@@ -454,13 +461,13 @@ SQLTables (
 	  szTableName,
 	  cbTableName,
 	  szTableType,
-	  cbTableType))
+	  cbTableType));
 
   return _iodbcdm_cata_state_tr (pstmt, en_Tables, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLColumnPrivileges (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szTableQualifier,
@@ -472,7 +479,7 @@ SQLColumnPrivileges (
     SQLCHAR FAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -481,6 +488,7 @@ SQLColumnPrivileges (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -521,7 +529,7 @@ SQLColumnPrivileges (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ColumnPrivileges, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ColumnPrivileges, (
 	  pstmt->dhstmt,
 	  szTableQualifier,
 	  cbTableQualifier,
@@ -530,13 +538,13 @@ SQLColumnPrivileges (
 	  szTableName,
 	  cbTableName,
 	  szColumnName,
-	  cbColumnName))
+	  cbColumnName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_ColumnPrivileges, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLColumns (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szTableQualifier,
@@ -548,7 +556,7 @@ SQLColumns (
     SQLCHAR FAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -557,6 +565,7 @@ SQLColumns (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -597,7 +606,7 @@ SQLColumns (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Columns, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Columns, (
 	  pstmt->dhstmt,
 	  szTableQualifier,
 	  cbTableQualifier,
@@ -606,13 +615,13 @@ SQLColumns (
 	  szTableName,
 	  cbTableName,
 	  szColumnName,
-	  cbColumnName))
+	  cbColumnName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_Columns, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLForeignKeys (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szPkTableQualifier,
@@ -628,7 +637,7 @@ SQLForeignKeys (
     SQLCHAR FAR * szFkTableName,
     SQLSMALLINT cbFkTableName)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -637,6 +646,7 @@ SQLForeignKeys (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -679,7 +689,7 @@ SQLForeignKeys (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ForeignKeys, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ForeignKeys, (
 	  pstmt->dhstmt,
 	  szPkTableQualifier,
 	  cbPkTableQualifier,
@@ -692,13 +702,13 @@ SQLForeignKeys (
 	  szFkTableOwner,
 	  cbFkTableOwner,
 	  szFkTableName,
-	  cbFkTableName))
+	  cbFkTableName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_ForeignKeys, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLPrimaryKeys (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szTableQualifier,
@@ -708,7 +718,7 @@ SQLPrimaryKeys (
     SQLCHAR FAR * szTableName,
     SQLSMALLINT cbTableName)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -717,6 +727,7 @@ SQLPrimaryKeys (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -756,20 +767,20 @@ SQLPrimaryKeys (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_PrimaryKeys, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_PrimaryKeys, (
 	  pstmt->dhstmt,
 	  szTableQualifier,
 	  cbTableQualifier,
 	  szTableOwner,
 	  cbTableOwner,
 	  szTableName,
-	  cbTableName))
+	  cbTableName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_PrimaryKeys, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLProcedureColumns (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szProcQualifier,
@@ -781,7 +792,7 @@ SQLProcedureColumns (
     SQLCHAR FAR * szColumnName,
     SQLSMALLINT cbColumnName)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -790,6 +801,7 @@ SQLProcedureColumns (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -830,7 +842,7 @@ SQLProcedureColumns (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ProcedureColumns, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ProcedureColumns, (
 	  pstmt->dhstmt,
 	  szProcQualifier,
 	  cbProcQualifier,
@@ -839,13 +851,13 @@ SQLProcedureColumns (
 	  szProcName,
 	  cbProcName,
 	  szColumnName,
-	  cbColumnName))
+	  cbColumnName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_ProcedureColumns, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLProcedures (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szProcQualifier,
@@ -855,7 +867,7 @@ SQLProcedures (
     SQLCHAR FAR * szProcName,
     SQLSMALLINT cbProcName)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -864,6 +876,7 @@ SQLProcedures (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -903,20 +916,20 @@ SQLProcedures (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Procedures, (
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Procedures, (
 	  pstmt->dhstmt,
 	  szProcQualifier,
 	  cbProcQualifier,
 	  szProcOwner,
 	  cbProcOwner,
 	  szProcName,
-	  cbProcName))
+	  cbProcName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_Procedures, retcode);
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLTablePrivileges (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szTableQualifier,
@@ -926,8 +939,7 @@ SQLTablePrivileges (
     SQLCHAR FAR * szTableName,
     SQLSMALLINT cbTableName)
 {
-
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -936,6 +948,7 @@ SQLTablePrivileges (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -975,9 +988,9 @@ SQLTablePrivileges (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_TablePrivileges,
-    (pstmt->dhstmt, szTableQualifier, cbTableQualifier, szTableOwner,
-	cbTableOwner, szTableName, cbTableName))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_TablePrivileges,
+      (pstmt->dhstmt, szTableQualifier, cbTableQualifier, szTableOwner,
+	  cbTableOwner, szTableName, cbTableName));
 
   return _iodbcdm_cata_state_tr (pstmt, en_TablePrivileges, retcode);
 }

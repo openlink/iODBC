@@ -88,7 +88,7 @@ dlerror ()
 }
 
 
-int 
+int
 dlclose (void *hdll)
 {
   return shl_unload ((shl_t) hdll);
@@ -121,11 +121,11 @@ dlclose (void *hdll)
 #endif
 
 typedef struct slot_s
-  {
-    char *sym;
-    long fdesc[3];		/* 12 bytes function descriptor */
-    struct slot_s *next;
-  }
+{
+  char *sym;
+  long fdesc[3];		/* 12 bytes function descriptor */
+  struct slot_s *next;
+}
 slot_t;
 
 /* Note: on AIX, a function pointer actually points to a
@@ -159,13 +159,13 @@ typedef struct obj
     int (*pentry) ();		/* entry point of this share library */
     int refn;			/* number of reference */
     hent_t htab[HTAB_SIZE];
-    struct obj * next;
+    struct obj *next;
   }
 obj_t;
 
 static char *errmsg = 0;
 
-static void 
+static void
 init_htab (hent_t * ht)
 /* initate a hashing table */
 {
@@ -178,7 +178,7 @@ init_htab (hent_t * ht)
 }
 
 
-static void 
+static void
 clean_htab (hent_t * ht)
 /* free all slots */
 {
@@ -205,7 +205,7 @@ clean_htab (hent_t * ht)
 }
 
 
-static int 
+static int
 hash (char *sym)
 {
   int a, key;
@@ -230,7 +230,7 @@ hash (char *sym)
 }
 
 
-static hent_t 
+static hent_t
 search (hent_t * htab, char *sym)
 /* search hashing table to find a matched slot */
 {
@@ -249,7 +249,7 @@ search (hent_t * htab, char *sym)
 }
 
 
-static void 
+static void
 insert (hent_t * htab, slot_t * ent)
 /* insert a new slot to hashing table */
 {
@@ -358,7 +358,7 @@ dlopen (char *file, int mode)
 }
 
 
-int 
+int
 dlclose (void *hobj)
 {
   obj_t *pobj = (obj_t *) hobj;
@@ -571,7 +571,7 @@ dlerror ()
 }
 
 
-int 
+int
 dlclose (void FAR * hdll)
 {
   FreeLibrary ((HINSTANCE) hdll);
@@ -603,11 +603,13 @@ dlclose (void FAR * hdll)
 #define LIB$M_FIS_MIXCASE 1<<4
 #endif
 
-typedef struct {
-    struct dsc$descriptor_s filename_d;
-    struct dsc$descriptor_s image_d;
-    char filename[NAM$C_MAXRSS]; /* $PARSEd image name */
-} dll_t;
+typedef struct
+{
+  struct dsc$descriptor_s filename_d;
+  struct dsc$descriptor_s image_d;
+  char filename[NAM$C_MAXRSS];	/* $PARSEd image name */
+}
+dll_t;
 
 /*
  *  The following static int contains the last VMS error returned. It is kept

@@ -25,7 +25,8 @@
  */
 #include <config.h>
 
-int	__start()
+int
+__start ()
 {
-	return 0;
+  return 0;
 }

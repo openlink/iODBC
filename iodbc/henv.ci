@@ -44,8 +44,26 @@ static struct
   }
 odbcapi_symtab[] = {
 #if (ODBCVER >= 0x0300)
-  en_AllocHandle	CLI_NAME_PREFIX "AllocHandle",
-  en_FreeHandle		CLI_NAME_PREFIX "FreeHandle",
+  en_AllocHandle,	CLI_NAME_PREFIX "AllocHandle",
+  en_BindParam,		CLI_NAME_PREFIX "BindParam" ,
+  en_CloseCursor,	CLI_NAME_PREFIX "CloseCursor" ,
+  en_CopyDesc,		CLI_NAME_PREFIX "CopyDesc" ,
+  en_EndTran,		CLI_NAME_PREFIX "EndTran" ,
+  en_FreeHandle,	CLI_NAME_PREFIX "FreeHandle" ,
+  en_GetConnectAttr,	CLI_NAME_PREFIX "GetConnectAttr" ,
+  en_GetDescField,	CLI_NAME_PREFIX "GetDescField" ,
+  en_GetDescRec,	CLI_NAME_PREFIX "GetDescRec" ,
+  en_GetDiagField,	CLI_NAME_PREFIX "GetDiagField" ,
+  en_GetDiagRec,	CLI_NAME_PREFIX "GetDiagRec" ,
+  en_GetEnvAttr,	CLI_NAME_PREFIX "GetEnvAttr" ,
+  en_GetStmtAttr,	CLI_NAME_PREFIX "GetStmtAttr" ,
+  en_SetConnectAttr,	CLI_NAME_PREFIX "SetConnectAttr" ,
+  en_SetDescField,	CLI_NAME_PREFIX "SetDescField" ,
+  en_SetDescRec,	CLI_NAME_PREFIX "SetDescRec" ,
+  en_SetEnvAttr,	CLI_NAME_PREFIX "SetEnvAttr" ,
+  en_SetStmtAttr,	CLI_NAME_PREFIX "SetStmtAttr" ,
+  en_FetchScroll,	CLI_NAME_PREFIX "FetchScroll" ,
+  en_BulkOperations,	CLI_NAME_PREFIX "BulkOperations" ,
 #endif
   en_AllocEnv,		CLI_NAME_PREFIX "AllocEnv",
   en_AllocConnect,	CLI_NAME_PREFIX "AllocConnect",

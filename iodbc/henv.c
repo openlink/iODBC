@@ -36,7 +36,7 @@
 
 #include <itrace.h>
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLAllocEnv (SQLHENV FAR * phenv)
 {
   GENV_t FAR *genv;
@@ -49,6 +49,7 @@ SQLAllocEnv (SQLHENV FAR * phenv)
 
       return SQL_ERROR;
     }
+  genv->rc = 0;
 
   /*
    *  Initialize this handle
@@ -57,6 +58,9 @@ SQLAllocEnv (SQLHENV FAR * phenv)
   genv->henv = SQL_NULL_HENV;	/* driver's env list */
   genv->hdbc = SQL_NULL_HDBC;	/* driver's dbc list */
   genv->herr = SQL_NULL_HERR;	/* err list          */
+#if (ODBCVER >= 0x300)
+  genv->odbc_ver = SQL_OV_ODBC2;
+#endif
 
   *phenv = (SQLHENV) genv;
 
@@ -64,15 +68,16 @@ SQLAllocEnv (SQLHENV FAR * phenv)
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLFreeEnv (SQLHENV henv)
 {
-  GENV_t FAR *genv = (GENV_t *) henv;
+  GENV (genv, henv);
 
   if (!IS_VALID_HENV (genv))
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (genv);
 
   if (genv->hdbc != SQL_NULL_HDBC)
     {
@@ -80,8 +85,6 @@ SQLFreeEnv (SQLHENV henv)
 
       return SQL_ERROR;
     }
-
-  _iodbcdm_freesqlerrlist (genv->herr);
 
   /*
    *  Invalidate this handle

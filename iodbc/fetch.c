@@ -38,10 +38,10 @@
 
 #include <itrace.h>
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLFetch (SQLHSTMT hstmt)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
@@ -49,104 +49,126 @@ SQLFetch (SQLHSTMT hstmt)
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_allocated:
-	 case en_stmt_prepared:
-	 case en_stmt_xfetched:
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   PUSHSQLERR (pstmt->herr, en_S1010);
-	   return SQL_ERROR;
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	case en_stmt_xfetched:
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  return SQL_ERROR;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != en_Fetch)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
       return SQL_ERROR;
     }
-
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_Fetch);
-
+#if (ODBCVER >= 0x0300)
+  if (((ENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC2 &&
+      ((GENV_t FAR *) ((DBC_t FAR *) pstmt->hdbc)->genv)->odbc_ver == SQL_OV_ODBC3)
+    {				
+	/* 
+	 *  Try to map SQLFetch to SQLExtendedFetch for ODBC3 app calling 
+	 *  ODBC2 driver 
+         * 
+	 *  The rows_status_ptr must not be null because the SQLExtendedFetch 
+	 *  requires it 
+	 */
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_ExtendedFetch);
+      if (hproc)
+	{
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ExtendedFetch,
+	      (pstmt->dhstmt, SQL_FETCH_NEXT, 0, pstmt->rows_fetched_ptr, pstmt->row_status_ptr));
+	}
+    }
+#endif
   if (hproc == SQL_NULL_HPROC)
     {
-      PUSHSQLERR (pstmt->herr, en_IM001);
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_Fetch);
 
-      return SQL_ERROR;
+      if (hproc == SQL_NULL_HPROC)
+	{
+	  PUSHSQLERR (pstmt->herr, en_IM001);
+
+	  return SQL_ERROR;
+	}
+
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Fetch,
+	  (pstmt->dhstmt));
     }
-
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Fetch,
-    (pstmt->dhstmt))
 
   /* state transition */
   if (pstmt->asyn_on == en_Fetch)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_NO_DATA_FOUND:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return retcode;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_cursoropen:
-     case en_stmt_fetched:
-       switch (retcode)
-	  {
-	  case SQL_SUCCESS:
-	  case SQL_SUCCESS_WITH_INFO:
-	    pstmt->state = en_stmt_fetched;
-	    pstmt->cursor_state = en_stmt_cursor_fetched;
-	    break;
+    {
+    case en_stmt_cursoropen:
+    case en_stmt_fetched:
+      switch (retcode)
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	  pstmt->state = en_stmt_fetched;
+	  pstmt->cursor_state = en_stmt_cursor_fetched;
+	  break;
 
-	  case SQL_NO_DATA_FOUND:
-	    if (pstmt->prep_state)
-	      {
-		pstmt->state = en_stmt_prepared;
-	      }
-	    else
-	      {
+	case SQL_NO_DATA_FOUND:
+	  if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
+	  else
+	    {
 
-		pstmt->state = en_stmt_allocated;
-	      }
-	    pstmt->cursor_state = en_stmt_cursor_no;
-	    break;
+	      pstmt->state = en_stmt_allocated;
+	    }
+	  pstmt->cursor_state = en_stmt_cursor_no;
+	  break;
 
-	  case SQL_STILL_EXECUTING:
-	    pstmt->asyn_on = en_Fetch;
-	    break;
+	case SQL_STILL_EXECUTING:
+	  pstmt->asyn_on = en_Fetch;
+	  break;
 
-	  default:
-	    break;
-	  }
-       break;
+	default:
+	  break;
+	}
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLExtendedFetch (
     SQLHSTMT hstmt,
     SQLUSMALLINT fFetchType,
@@ -154,7 +176,7 @@ SQLExtendedFetch (
     SQLUINTEGER FAR * pcrow,
     SQLUSMALLINT FAR * rgfRowStatus)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
@@ -162,6 +184,7 @@ SQLExtendedFetch (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check fetch type */
   if (fFetchType < SQL_FETCH_NEXT || fFetchType > SQL_FETCH_BOOKMARK)
@@ -180,24 +203,32 @@ SQLExtendedFetch (
   if (pstmt->asyn_on == en_NullProc)
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_allocated:
-	 case en_stmt_prepared:
-	 case en_stmt_fetched:
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   PUSHSQLERR (pstmt->herr, en_S1010);
-	   return SQL_ERROR;
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	case en_stmt_fetched:
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  return SQL_ERROR;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != en_ExtendedFetch)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
       return SQL_ERROR;
+    }
+
+  if (fFetchType == SQL_FETCH_NEXT ||
+      fFetchType == SQL_FETCH_PRIOR ||
+      fFetchType == SQL_FETCH_FIRST ||
+      fFetchType == SQL_FETCH_LAST)
+    {
+      irow = 0;
     }
 
   hproc = _iodbcdm_getproc (pstmt->hdbc, en_ExtendedFetch);
@@ -209,58 +240,58 @@ SQLExtendedFetch (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ExtendedFetch,
-    (pstmt->dhstmt, fFetchType, irow, pcrow, rgfRowStatus))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ExtendedFetch,
+      (pstmt->dhstmt, fFetchType, irow, pcrow, rgfRowStatus));
 
   /* state transition */
   if (pstmt->asyn_on == en_ExtendedFetch)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_NO_DATA_FOUND:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return retcode;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_cursoropen:
-     case en_stmt_xfetched:
-       switch (retcode)
-	  {
-	  case SQL_SUCCESS:
-	  case SQL_SUCCESS_WITH_INFO:
-	  case SQL_NO_DATA_FOUND:
-	    pstmt->state = en_stmt_xfetched;
-	    pstmt->cursor_state = en_stmt_cursor_xfetched;
-	    break;
+    {
+    case en_stmt_cursoropen:
+    case en_stmt_xfetched:
+      switch (retcode)
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	  pstmt->state = en_stmt_xfetched;
+	  pstmt->cursor_state = en_stmt_cursor_xfetched;
+	  break;
 
-	  case SQL_STILL_EXECUTING:
-	    pstmt->asyn_on = en_ExtendedFetch;
-	    break;
+	case SQL_STILL_EXECUTING:
+	  pstmt->asyn_on = en_ExtendedFetch;
+	  break;
 
-	  default:
-	    break;
-	  }
-       break;
+	default:
+	  break;
+	}
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLGetData (
     SQLHSTMT hstmt,
     SQLUSMALLINT icol,
@@ -269,7 +300,7 @@ SQLGetData (
     SQLINTEGER cbValueMax,
     SQLINTEGER FAR * pcbValue)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -278,6 +309,7 @@ SQLGetData (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check argument */
   if (rgbValue == NULL)
@@ -291,31 +323,31 @@ SQLGetData (
   else
     {
       switch (fCType)
-	 {
-	 case SQL_C_DEFAULT:
-	 case SQL_C_CHAR:
-	 case SQL_C_BINARY:
-	 case SQL_C_BIT:
-	 case SQL_C_TINYINT:
-	 case SQL_C_STINYINT:
-	 case SQL_C_UTINYINT:
-	 case SQL_C_SHORT:
-	 case SQL_C_SSHORT:
-	 case SQL_C_USHORT:
-	 case SQL_C_LONG:
-	 case SQL_C_SLONG:
-	 case SQL_C_ULONG:
-	 case SQL_C_FLOAT:
-	 case SQL_C_DOUBLE:
-	 case SQL_C_DATE:
-	 case SQL_C_TIME:
-	 case SQL_C_TIMESTAMP:
-	   break;
+	{
+	case SQL_C_DEFAULT:
+	case SQL_C_CHAR:
+	case SQL_C_BINARY:
+	case SQL_C_BIT:
+	case SQL_C_TINYINT:
+	case SQL_C_STINYINT:
+	case SQL_C_UTINYINT:
+	case SQL_C_SHORT:
+	case SQL_C_SSHORT:
+	case SQL_C_USHORT:
+	case SQL_C_LONG:
+	case SQL_C_SLONG:
+	case SQL_C_ULONG:
+	case SQL_C_FLOAT:
+	case SQL_C_DOUBLE:
+	case SQL_C_DATE:
+	case SQL_C_TIME:
+	case SQL_C_TIMESTAMP:
+	  break;
 
-	 default:
-	   sqlstat = en_S1003;
-	   break;
-	 }
+	default:
+	  sqlstat = en_S1003;
+	  break;
+	}
     }
 
   if (sqlstat != en_00000)
@@ -329,23 +361,23 @@ SQLGetData (
   if (pstmt->asyn_on == en_NullProc)
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_allocated:
-	 case en_stmt_prepared:
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   sqlstat = en_S1010;
-	   break;
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  sqlstat = en_S1010;
+	  break;
 
-	 case en_stmt_executed:
-	 case en_stmt_cursoropen:
-	   sqlstat = en_24000;
-	   break;
+	case en_stmt_executed:
+	case en_stmt_cursoropen:
+	  sqlstat = en_24000;
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != en_GetData)
     {
@@ -369,50 +401,50 @@ SQLGetData (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_GetData,
-    (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetData,
+      (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue));
 
   /* state transition */
   if (pstmt->asyn_on == en_GetData)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_NO_DATA_FOUND:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return retcode;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_fetched:
-     case en_stmt_xfetched:
-       if (retcode == SQL_STILL_EXECUTING)
-	 {
-	   pstmt->asyn_on = en_GetData;
-	   break;
-	 }
-       break;
+    {
+    case en_stmt_fetched:
+    case en_stmt_xfetched:
+      if (retcode == SQL_STILL_EXECUTING)
+	{
+	  pstmt->asyn_on = en_GetData;
+	  break;
+	}
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLMoreResults (SQLHSTMT hstmt)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
 
@@ -420,25 +452,26 @@ SQLMoreResults (SQLHSTMT hstmt)
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_allocated:
-	 case en_stmt_prepared:
-	   return SQL_NO_DATA_FOUND;
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	  return SQL_NO_DATA_FOUND;
 
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   PUSHSQLERR (pstmt->herr, en_S1010);
-	   return SQL_ERROR;
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  return SQL_ERROR;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != en_MoreResults)
     {
@@ -457,92 +490,92 @@ SQLMoreResults (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_MoreResults,
-    (pstmt->dhstmt))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_MoreResults,
+      (pstmt->dhstmt));
 
   /* state transition */
   if (pstmt->asyn_on == en_MoreResults)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_NO_DATA_FOUND:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NO_DATA_FOUND:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return retcode;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_allocated:
-     case en_stmt_prepared:
-       /* driver should return SQL_NO_DATA_FOUND */
-       break;
+    {
+    case en_stmt_allocated:
+    case en_stmt_prepared:
+      /* driver should return SQL_NO_DATA_FOUND */
+      break;
 
-     case en_stmt_executed:
-       if (retcode == SQL_NO_DATA_FOUND)
-	 {
-	   if (pstmt->prep_state)
-	     {
-	       pstmt->state = en_stmt_prepared;
-	     }
-	   else
-	     {
-	       pstmt->state = en_stmt_allocated;
-	     }
-	 }
-       else if (retcode == SQL_STILL_EXECUTING)
-	 {
-	   pstmt->asyn_on = en_MoreResults;
-	 }
-       break;
+    case en_stmt_executed:
+      if (retcode == SQL_NO_DATA_FOUND)
+	{
+	  if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
+	  else
+	    {
+	      pstmt->state = en_stmt_allocated;
+	    }
+	}
+      else if (retcode == SQL_STILL_EXECUTING)
+	{
+	  pstmt->asyn_on = en_MoreResults;
+	}
+      break;
 
-     case en_stmt_cursoropen:
-     case en_stmt_fetched:
-     case en_stmt_xfetched:
-       if (retcode == SQL_SUCCESS)
-	 {
-	   break;
-	 }
-       else if (retcode == SQL_NO_DATA_FOUND)
-	 {
-	   if (pstmt->prep_state)
-	     {
-	       pstmt->state = en_stmt_prepared;
-	     }
-	   else
-	     {
-	       pstmt->state = en_stmt_allocated;
-	     }
-	 }
-       else if (retcode == SQL_STILL_EXECUTING)
-	 {
-	   pstmt->asyn_on = en_MoreResults;
-	 }
-       break;
+    case en_stmt_cursoropen:
+    case en_stmt_fetched:
+    case en_stmt_xfetched:
+      if (retcode == SQL_SUCCESS)
+	{
+	  break;
+	}
+      else if (retcode == SQL_NO_DATA_FOUND)
+	{
+	  if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
+	  else
+	    {
+	      pstmt->state = en_stmt_allocated;
+	    }
+	}
+      else if (retcode == SQL_STILL_EXECUTING)
+	{
+	  pstmt->asyn_on = en_MoreResults;
+	}
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLSetPos (
     SQLHSTMT hstmt,
     SQLUSMALLINT irow,
     SQLUSMALLINT fOption,
     SQLUSMALLINT fLock)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
   int sqlstat = en_00000;
@@ -551,6 +584,7 @@ SQLSetPos (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check argument value */
   if (fOption > SQL_ADD || fLock > SQL_LOCK_UNLOCK)
@@ -562,24 +596,24 @@ SQLSetPos (
   if (pstmt->asyn_on == en_NullProc)
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_allocated:
-	 case en_stmt_prepared:
-	 case en_stmt_fetched:
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   sqlstat = en_S1010;
-	   break;
+	{
+	case en_stmt_allocated:
+	case en_stmt_prepared:
+	case en_stmt_fetched:
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  sqlstat = en_S1010;
+	  break;
 
-	 case en_stmt_executed:
-	 case en_stmt_cursoropen:
-	   sqlstat = en_24000;
-	   break;
+	case en_stmt_executed:
+	case en_stmt_cursoropen:
+	  sqlstat = en_24000;
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != en_SetPos)
     {
@@ -603,46 +637,46 @@ SQLSetPos (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_SetPos,
-    (pstmt->dhstmt, irow, fOption, fLock))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetPos,
+      (pstmt->dhstmt, irow, fOption, fLock));
 
   /* state transition */
   if (pstmt->asyn_on == en_SetPos)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_NEED_DATA:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_NEED_DATA:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return retcode;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
     }
 
   /* now, the only possible init state is 'xfetched' */
   switch (retcode)
-     {
-     case SQL_SUCCESS:
-     case SQL_SUCCESS_WITH_INFO:
-       break;
+    {
+    case SQL_SUCCESS:
+    case SQL_SUCCESS_WITH_INFO:
+      break;
 
-     case SQL_NEED_DATA:
-       pstmt->state = en_stmt_needdata;
-       pstmt->need_on = en_SetPos;
-       break;
+    case SQL_NEED_DATA:
+      pstmt->state = en_stmt_needdata;
+      pstmt->need_on = en_SetPos;
+      break;
 
-     case SQL_STILL_EXECUTING:
-       pstmt->asyn_on = en_SetPos;
-       break;
+    case SQL_STILL_EXECUTING:
+      pstmt->asyn_on = en_SetPos;
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }

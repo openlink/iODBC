@@ -32,6 +32,9 @@
 #include <dlproc.h>
 
 #include <herr.h>
+#if (ODBCVER >= 0x0300)
+#include <hdesc.h>
+#endif
 #include <henv.h>
 #include <hdbc.h>
 #include <hstmt.h>
@@ -62,9 +65,9 @@ _iodbcdm_popsqlerr (HERR herr)
 void 
 _iodbcdm_freesqlerrlist (HERR herrlist)
 {
-  HERR list;
+  HERR list = herrlist;
 
-  for (list = herrlist; list != 0;)
+  while (list != SQL_NULL_HERR)
     {
       list = _iodbcdm_popsqlerr (list);
     }
@@ -106,7 +109,6 @@ _iodbcdm_pushsqlerr (
   ebuf->code = code;
   ebuf->idx = idx;
   ebuf->next = (sqlerr_t *) herr;
-
   return (HERR) ebuf;
 }
 
@@ -118,17 +120,25 @@ _iodbcdm_getsqlstate (
 {
   sqlerr_t *perr = (sqlerr_t *) herr;
   sqlerrmsg_t *ptr;
+  int perr_code;
 
   if (herr == SQL_NULL_HERR || tab == NULL)
     {
       return (char FAR *) NULL;
     }
 
+  perr_code = perr->code;
+#if (ODBCVER >= 0x0300)
+  switch (perr_code)
+    {
+      case en_S1009 : perr_code = en_HY009; break;
+    }
+#endif  
   for (ptr = tab;
       ptr->code != en_sqlstat_total;
       ptr++)
     {
-      if (ptr->code == perr->code)
+      if (ptr->code == perr_code)
 	{
 	  return (char FAR *) (ptr->stat);
 	}
@@ -174,9 +184,8 @@ _iodbcdm_getsqlerrmsg (
   return (char FAR *) NULL;
 }
 
-
 SQLRETURN SQL_API 
-SQLError (
+_iodbcdm_sqlerror (
     SQLHENV henv,
     SQLHDBC hdbc,
     SQLHSTMT hstmt,
@@ -184,11 +193,12 @@ SQLError (
     SQLINTEGER FAR * pfNativeError,
     SQLCHAR FAR * szErrorMsg,
     SQLSMALLINT cbErrorMsgMax,
-    SQLSMALLINT FAR * pcbErrorMsg)
+    SQLSMALLINT FAR * pcbErrorMsg,
+    int bDelete)
 {
-  GENV_t FAR *genv = (GENV_t FAR *) henv;
-  DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  GENV (genv, henv);
+  CONN (pdbc, hdbc);
+  STMT (pstmt, hstmt);
   HDBC thdbc = SQL_NULL_HDBC;
 
   HENV dhenv = SQL_NULL_HENV;
@@ -197,6 +207,12 @@ SQLError (
 
   HERR herr = SQL_NULL_HERR;
   HPROC hproc = SQL_NULL_HPROC;
+#if (ODBCVER >= 0x0300)  
+  HPROC hproc1 = SQL_NULL_HPROC;
+  SQLINTEGER handleType;
+  SQLHANDLE handle3;
+  SQLHANDLE dhandle3;
+#endif
 
   char FAR *errmsg = NULL;
   char FAR *ststr = NULL;
@@ -214,6 +230,12 @@ SQLError (
 	  return SQL_INVALID_HANDLE;
 	}
       hproc = _iodbcdm_getproc (thdbc, en_Error);
+#if (ODBCVER >= 0x0300)  
+      hproc1 = _iodbcdm_getproc (thdbc, en_GetDiagRec);
+      handleType = SQL_HANDLE_STMT;
+      handle3 = hstmt;
+      dhandle3 = pstmt->dhstmt;
+#endif      
       dhstmt = pstmt->dhstmt;
       handle = 3;
     }
@@ -226,6 +248,12 @@ SQLError (
 	  return SQL_INVALID_HANDLE;
 	}
       hproc = _iodbcdm_getproc (thdbc, en_Error);
+#if (ODBCVER >= 0x0300)  
+      hproc1 = _iodbcdm_getproc (thdbc, en_GetDiagRec);
+      handleType = SQL_HANDLE_STMT;
+      handle3 = hdbc;
+      dhandle3 = pdbc->dhdbc;
+#endif      
       dhdbc = pdbc->dhdbc;
       handle = 2;
 
@@ -267,18 +295,34 @@ SQLError (
   if (herr == SQL_NULL_HERR)	/* no err on drv mng */
     {
       /* call driver */
+#if (ODBCVER >= 0x0300)      
+      if (hproc == SQL_NULL_HPROC && hproc1 == SQL_NULL_HPROC)
+#else	
       if (hproc == SQL_NULL_HPROC)
+#endif	
 	{
-	  PUSHSQLERR (herr, en_IM001);
-
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (thdbc, retcode, hproc, en_Error,
-	  (dhenv, dhdbc, dhstmt, szSqlstate, pfNativeError, szErrorMsg,
-	      cbErrorMsgMax, pcbErrorMsg))
-
-      return retcode;
+      if (hproc != SQL_NULL_HPROC)
+	{
+	  CALL_DRIVER (thdbc, NULL, retcode, hproc, en_Error,
+	      (dhenv, dhdbc, dhstmt, szSqlstate, pfNativeError, szErrorMsg,
+	       cbErrorMsgMax, pcbErrorMsg));
+	  return retcode;
+	}
+/*      
+#if (ODBCVER >= 0x0300)	    
+      else if (hproc1 != SQL_NULL_HPROC)
+	{
+	  CALL_DRIVER (thdbc, handle3, retcode, hproc1, en_GetDiagRec,
+	      (handleType, dhandle3, 1, szSqlstate, pfNativeError, szErrorMsg,
+	       cbErrorMsgMax, pcbErrorMsg));
+	}
+      else
+	  retcode = SQL_NO_DATA_FOUND;
+#endif	    
+*/
     }
 
   if (szSqlstate != NULL)
@@ -356,23 +400,650 @@ SQLError (
 	}
     }
 
-  switch (handle)		/* free this err */
-     {
-     case 1:
-       genv->herr = _iodbcdm_popsqlerr (genv->herr);
-       break;
+  if (bDelete)
+    switch (handle)		/* free this err */
+      {
+	case 1:
+	    genv->herr = _iodbcdm_popsqlerr (genv->herr);
+	    break;
 
-     case 2:
-       pdbc->herr = _iodbcdm_popsqlerr (pdbc->herr);
-       break;
+	case 2:
+	    pdbc->herr = _iodbcdm_popsqlerr (pdbc->herr);
+	    break;
 
-     case 3:
-       pstmt->herr = _iodbcdm_popsqlerr (pstmt->herr);
-       break;
+	case 3:
+	    pstmt->herr = _iodbcdm_popsqlerr (pstmt->herr);
+	    break;
 
-     default:
-       break;
-     }
+	default:
+	    break;
+      }
 
   return retcode;
 }
+
+SQLRETURN SQL_API 
+SQLError (
+    SQLHENV henv,
+    SQLHDBC hdbc,
+    SQLHSTMT hstmt,
+    SQLCHAR FAR * szSqlstate,
+    SQLINTEGER FAR * pfNativeError,
+    SQLCHAR FAR * szErrorMsg,
+    SQLSMALLINT cbErrorMsgMax,
+    SQLSMALLINT FAR * pcbErrorMsg)
+{
+  return _iodbcdm_sqlerror(henv, hdbc, hstmt, szSqlstate, pfNativeError, 
+      szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 1);
+}
+
+#if (ODBCVER >= 0x0300)
+static int
+error_rec_count (HERR herr)
+{
+  sqlerr_t *err = (sqlerr_t *)herr;
+  if (err)
+    return err->idx + 1;
+  else
+    return 0;
+}
+
+static sqlerr_t *
+get_nth_error(HERR herr, int nIndex)
+{
+  sqlerr_t *err = herr;
+  while (err && err->idx != nIndex)
+      err = err->next;
+  return err;
+}
+
+RETCODE SQL_API
+SQLGetDiagRec (SQLSMALLINT HandleType,
+    SQLHANDLE Handle,
+    SQLSMALLINT RecNumber,
+    SQLCHAR * Sqlstate,
+    UNALIGNED SQLINTEGER * NativeErrorPtr,
+    SQLCHAR * MessageText,
+    SQLSMALLINT BufferLength,
+    UNALIGNED SQLSMALLINT * TextLengthPtr)
+{
+
+  sqlerr_t *curr_err = NULL;
+  HERR err = NULL;
+  HERR saved;
+  int nRecs;
+  HPROC hproc = SQL_NULL_HPROC;
+  HDBC hdbc = SQL_NULL_HDBC;
+  RETCODE retcode;
+  SQLHANDLE dhandle = SQL_NULL_HANDLE;
+
+  if (RecNumber < 1)
+    return SQL_ERROR;
+
+  if (BufferLength < 0)
+    return SQL_ERROR;
+
+  switch (HandleType)
+    {
+      case SQL_HANDLE_ENV:
+	  if (!IS_VALID_HENV(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = ((GENV_t *)Handle)->herr;
+	  break;
+
+      case SQL_HANDLE_DBC:
+	  if (!IS_VALID_HDBC(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = ((DBC_t *)Handle)->herr;
+	  dhandle = ((DBC_t *)Handle)->dhdbc;
+	  hdbc = Handle;
+	  break;
+
+      case SQL_HANDLE_STMT:
+	  if (!IS_VALID_HSTMT(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = ((STMT_t *)Handle)->herr;
+	  dhandle = ((STMT_t *)Handle)->dhstmt;
+	  hdbc = ((STMT_t *)Handle)->hdbc;
+	  break;
+
+      case SQL_HANDLE_DESC:
+	  if (!IS_VALID_HDESC(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = ((DESC_t *)Handle)->herr;
+	  dhandle = ((DESC_t *)Handle)->dhdesc;
+	  hdbc = ((DESC_t *)Handle)->hdbc;
+	  break;
+
+      default:
+	  return SQL_INVALID_HANDLE;
+    }
+
+  nRecs = error_rec_count(err);
+  
+  if (nRecs >= RecNumber)
+    { /* DM error range */
+      curr_err = get_nth_error(err, RecNumber - 1);
+
+      if (!curr_err)
+	return (SQL_NO_DATA_FOUND);
+
+      retcode = SQL_SUCCESS;
+
+      if (Sqlstate != NULL)
+	{
+	  int len;
+	  char *ststr = (char FAR *) _iodbcdm_getsqlstate (curr_err,
+	      (void FAR *) sqlerrmsg_tab);
+
+	  if (ststr == NULL)
+	    {
+	      len = 0;
+	    }
+	  else
+	    {
+	      len = (int) STRLEN (ststr);
+	    }
+
+	  STRNCPY (Sqlstate, ststr, len);
+	  Sqlstate[len] = 0;
+	  /* buffer size of szSqlstate is not checked. Applications
+	   * suppose provide enough ( not less than 6 bytes ) buffer
+	   * or NULL for it.
+	   */
+	}
+
+      if (MessageText == NULL || BufferLength == 0)
+	{
+	  if (TextLengthPtr != NULL)
+	    {
+	      *TextLengthPtr = (SWORD) 0;
+	    }
+	}
+      else
+	{
+	  int len;
+	  char msgbuf[256] = {'\0'};
+	  char *errmsg;
+
+	  /* get sql state message */
+	  errmsg = _iodbcdm_getsqlerrmsg (curr_err, (void FAR *) sqlerrmsg_tab);
+
+	  if (errmsg == NULL)
+	    {
+	      errmsg = (char FAR *) "";
+	    }
+
+	  sprintf (msgbuf, "%s%s", sqlerrhd, errmsg);
+
+	  len = STRLEN (msgbuf);
+
+	  if (len < BufferLength - 1)
+	    {
+	      retcode = SQL_SUCCESS;
+	    }
+	  else
+	    {
+	      len = BufferLength - 1;
+	      retcode = SQL_SUCCESS_WITH_INFO;
+	      /* and not posts error for itself */
+	    }
+
+	  STRNCPY ((char *) MessageText, msgbuf, len);
+	  MessageText[len] = 0;
+
+	  if (TextLengthPtr != NULL)
+	    {
+	      *TextLengthPtr = (SWORD) len;
+	    }
+	}
+      return retcode;
+    }
+  else
+    { /* Driver errors */
+      if (hdbc == SQL_NULL_HDBC)
+	return SQL_NO_DATA_FOUND;
+      RecNumber -= nRecs;
+
+      hproc = _iodbcdm_getproc(hdbc, en_GetDiagRec);
+      if (hproc != SQL_NULL_HPROC)
+	{
+	  CALL_DRIVER(hdbc, Handle, retcode, hproc, en_GetDiagRec,
+	      (HandleType, dhandle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
+	  return retcode;
+	}
+      else
+	{ /* no SQLGetDiagRec */
+	  hproc = _iodbcdm_getproc(hdbc, en_Error);
+	  
+	  if (hproc == SQL_NULL_HPROC || RecNumber > 1 || HandleType == SQL_HANDLE_DESC)
+	    return SQL_NO_DATA_FOUND;
+	  
+	  CALL_DRIVER(hdbc, Handle, retcode, hproc, en_Error, 
+	      (SQL_NULL_HENV, 
+	       HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
+	       HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
+	       Sqlstate,
+	       NativeErrorPtr,
+	       MessageText,
+	       BufferLength,
+	       TextLengthPtr));
+	  return retcode;
+	}	  
+    }      
+}
+
+
+RETCODE SQL_API
+SQLGetDiagField (SQLSMALLINT nHandleType,
+    SQLHANDLE Handle,
+    SQLSMALLINT nRecNumber,
+    SQLSMALLINT nDiagIdentifier,
+    SQLPOINTER pDiagInfoPtr,
+    SQLSMALLINT nBufferLength,
+    UNALIGNED SQLSMALLINT * pnStringLengthPtr)
+{
+  GENV (genv, Handle);
+  CONN (con, Handle);
+  STMT (stmt, Handle);
+  DESC (desc, Handle);
+  HERR err;
+  int odbc_ver;
+  HPROC hproc;
+  RETCODE retcode;
+  SQLHANDLE dhandle = SQL_NULL_HANDLE;
+
+  switch (nHandleType)
+    {
+      case SQL_HANDLE_ENV:
+	  if (!IS_VALID_HENV(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = genv->herr;
+	  con = NULL;
+	  stmt = NULL;
+	  desc = NULL;
+	  break;
+
+      case SQL_HANDLE_DBC:
+	  if (!IS_VALID_HDBC(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = con->herr;
+	  genv = con->genv;
+	  stmt = NULL;
+	  desc = NULL;
+	  dhandle = con->dhdbc;
+	  break;
+
+      case SQL_HANDLE_STMT:
+	  if (!IS_VALID_HSTMT(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = stmt->herr;
+	  con = stmt->hdbc;
+	  genv = con->genv;
+	  desc = NULL;
+	  dhandle = stmt->dhstmt;
+	  break;
+
+      case SQL_HANDLE_DESC:
+	  if (!IS_VALID_HDESC(Handle))
+	    return SQL_INVALID_HANDLE;
+	  err = desc->herr;
+	  stmt = desc->hstmt;
+	  con = desc->hdbc;
+	  genv = con->genv;
+	  dhandle = desc->dhdesc;
+	  break;
+
+      default:
+	  return SQL_INVALID_HANDLE;
+    }
+
+  switch (nRecNumber)
+    {
+
+      case 0:			/* Header record */
+	  switch (nDiagIdentifier)
+	    {
+	      case SQL_DIAG_ROW_COUNT:
+		  {
+		    if (nHandleType != SQL_HANDLE_STMT || !stmt)
+		      {
+			return SQL_ERROR;
+		      }
+
+		    if (stmt->state != en_stmt_executed && 
+			stmt->state != en_stmt_cursoropen)
+		      {
+			return SQL_ERROR;
+		      }
+		    if (!con)
+		      return SQL_INVALID_HANDLE;
+		    hproc = _iodbcdm_getproc(con, en_GetDiagField);
+		    if (hproc)
+		      {
+			CALL_DRIVER(stmt->hdbc, stmt, retcode, hproc, en_GetDiagField,
+			    (SQL_HANDLE_DBC, stmt->dhstmt, nRecNumber, nDiagIdentifier, pDiagInfoPtr, nBufferLength, pnStringLengthPtr));
+		      }
+		    else
+		      {
+			if (!con)
+			  return SQL_INVALID_HANDLE;
+			hproc = _iodbcdm_getproc(con, en_RowCount);
+			if (!hproc)
+			  {
+			    return SQL_ERROR;
+			  }
+			CALL_DRIVER(stmt->hdbc, stmt, retcode, hproc, en_RowCount,
+			    (stmt->dhstmt, pDiagInfoPtr));
+		      }
+		    return retcode;
+		  }
+
+	      case SQL_DIAG_CURSOR_ROW_COUNT:
+	      case SQL_DIAG_DYNAMIC_FUNCTION:
+	      case SQL_DIAG_DYNAMIC_FUNCTION_CODE:
+
+		    {
+		      if (nHandleType != SQL_HANDLE_STMT || !stmt)
+			{
+			  return SQL_ERROR;
+			}
+
+		      if (stmt->state != en_stmt_executed && 
+			  stmt->state != en_stmt_cursoropen)
+			{
+			  return SQL_ERROR;
+			}
+		      if (!con)
+			return SQL_INVALID_HANDLE;
+		      hproc = _iodbcdm_getproc(con, en_GetDiagField);
+		      if (hproc)
+			{
+			  CALL_DRIVER(stmt->hdbc, stmt, retcode, hproc, en_GetDiagField,
+			      (SQL_HANDLE_DBC, stmt->dhstmt, nRecNumber, nDiagIdentifier, pDiagInfoPtr, nBufferLength, pnStringLengthPtr));
+			  return retcode;	
+			}
+		      else
+			{
+			  return SQL_ERROR;
+			}
+		    }
+
+	      case SQL_DIAG_RETURNCODE:
+
+		    if (pDiagInfoPtr)
+		      *((SQLRETURN *)pDiagInfoPtr) = ((GENV_t FAR *)Handle)->rc;
+		    return SQL_SUCCESS;
+
+	      case SQL_DIAG_NUMBER:
+
+		    if (pDiagInfoPtr)
+		      {
+			(*(SQLINTEGER *) pDiagInfoPtr) = 0;
+			/* get the number from the driver */
+			if (con)
+			  {
+			    hproc = _iodbcdm_getproc(con, en_GetDiagField);
+			    if (hproc)
+			      {
+				CALL_DRIVER(con, Handle, retcode, hproc, en_GetDiagField,
+				    (nHandleType, dhandle, 0, nDiagIdentifier, pDiagInfoPtr, nBufferLength, pnStringLengthPtr));
+				if (retcode != SQL_SUCCESS)
+				  return retcode;	
+
+			        /* and add the DM's value */
+				(*(SQLINTEGER *) pDiagInfoPtr) += error_rec_count (err);
+			      }
+			    else if (((ENV_t *)con->henv)->dodbc_ver == SQL_OV_ODBC2 && 
+				((GENV_t FAR *)Handle)->rc)
+			      { /* ODBC2 drivers can only have one errror */
+				(*(SQLINTEGER *) pDiagInfoPtr) = 1;
+			      }
+			  }
+			else if (genv)
+			  { 
+			    (*(SQLINTEGER *) pDiagInfoPtr) = error_rec_count (err);
+			  }
+			    
+		      }
+		      break;
+
+	      default:
+		    return SQL_ERROR;
+	    }
+	  break;
+
+      default:			/* status records */
+	  {
+	    int nRecs = 0;
+
+	    if (nRecNumber < 1)
+	      {
+		return SQL_ERROR;
+	      }
+	    nRecs = error_rec_count(err);
+	    if (nRecNumber <= nRecs)
+	      { /* DM Errors */
+		char *szval = "";
+		int ival = 0;
+		int isInt = 0;
+		sqlerr_t *rec = NULL;
+
+		rec = get_nth_error (err, nRecNumber - 1);
+
+		if (!rec)
+		  return (SQL_NO_DATA_FOUND);
+
+		switch (nDiagIdentifier)
+		  {
+
+		    case SQL_DIAG_SUBCLASS_ORIGIN:
+		    case SQL_DIAG_CLASS_ORIGIN:
+			isInt = 0;
+
+			szval = (rec->code >= en_HY001 && rec->code <= en_IM014) ? "ODBC 3.0" : "ISO 9075";
+			break;
+
+		    case SQL_DIAG_COLUMN_NUMBER:
+
+			if (nHandleType != SQL_HANDLE_STMT || !stmt)
+			  {
+			    return SQL_ERROR;
+			  }
+			if (!con)
+			  return SQL_INVALID_HANDLE;
+
+			if (pDiagInfoPtr)
+			  *((SQLINTEGER *) pDiagInfoPtr) = SQL_COLUMN_NUMBER_UNKNOWN;
+			return SQL_SUCCESS;
+
+		    case SQL_DIAG_CONNECTION_NAME:
+		    case SQL_DIAG_SERVER_NAME:
+			
+			isInt = 0;
+			if (con)
+			  return SQLGetInfo(con, SQL_DATA_SOURCE_NAME, pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
+			else
+			  break;
+			    
+		    case SQL_DIAG_MESSAGE_TEXT:
+
+			isInt = 0;
+			szval = _iodbcdm_getsqlerrmsg(rec, (void FAR *)sqlerrmsg_tab);
+			break;
+
+		    case SQL_DIAG_NATIVE:
+
+			isInt = 1;
+			ival = 0;
+			break;
+
+		    case SQL_DIAG_ROW_NUMBER:
+
+			isInt = 1;
+			if (nHandleType != SQL_HANDLE_STMT || !stmt)
+			  {
+			    return SQL_ERROR;
+			  }
+			if (!con)
+			  return SQL_INVALID_HANDLE;
+			hproc = _iodbcdm_getproc(con, en_GetDiagField);
+			if (hproc)
+			  {
+			    CALL_DRIVER(con, Handle, retcode, hproc, en_GetDiagField, 
+				(nHandleType, dhandle, nRecNumber, nDiagIdentifier, pDiagInfoPtr, nBufferLength, pnStringLengthPtr));
+			    return retcode;
+			  }
+			else
+			  {
+			    ival = SQL_ROW_NUMBER_UNKNOWN;
+			    break;
+			  }
+
+		    case SQL_DIAG_SQLSTATE:
+
+			isInt = 0;
+			szval = _iodbcdm_getsqlstate(rec, (void FAR *)sqlerrmsg_tab);
+			break;
+
+		    default:
+			return SQL_ERROR;
+		  }
+		if (isInt)
+		  {
+		    if (pDiagInfoPtr)
+		      *((SQLINTEGER *)pDiagInfoPtr) = ival;
+		  }
+		else
+		  {
+		    int len = strlen(szval), len1;
+		    len1 = len > nBufferLength ? nBufferLength : len;
+		    if (pnStringLengthPtr)
+		      *pnStringLengthPtr = len;
+		    if (pDiagInfoPtr)
+		      {
+			STRNCPY(pDiagInfoPtr, szval, len1);
+			*(((SQLCHAR FAR *)pDiagInfoPtr) + len1) = 0;
+		      }
+		  }
+		break;
+	      }
+	    else
+	      { /* Driver's errors */
+		nRecNumber -= nRecs;
+		
+		if (!con)
+		  return SQL_NO_DATA_FOUND;
+		
+		hproc = _iodbcdm_getproc(con, en_GetDiagField);
+		if (hproc != SQL_NULL_HPROC)
+		  {
+		    CALL_DRIVER(con, Handle, retcode, hproc, en_GetDiagField,
+			(nHandleType, dhandle, nRecNumber, nDiagIdentifier, pDiagInfoPtr, nBufferLength, pnStringLengthPtr));
+		    return retcode;
+		  }
+		else
+		  { /* an ODBC2->ODBC3 translation */
+		    char *szval = "";
+		    char szState[6];
+		    SQLINTEGER nNative;
+
+		    if (nRecNumber > 1)
+		      return SQL_NO_DATA_FOUND;
+
+		    hproc = _iodbcdm_getproc(con, en_Error);
+		    if (hproc == SQL_NULL_HPROC || nHandleType == SQL_HANDLE_DESC)
+		      return SQL_INVALID_HANDLE;
+		    switch (nDiagIdentifier)
+		      {
+			case SQL_DIAG_SUBCLASS_ORIGIN:
+			case SQL_DIAG_CLASS_ORIGIN:
+			    CALL_DRIVER(con, Handle, retcode, hproc, en_Error,
+				(SQL_NULL_HENV,
+				 nHandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
+				 nHandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
+				 szState,
+				 &nNative,
+				 NULL,
+				 0,
+				 NULL));
+			    if (retcode != SQL_SUCCESS)
+		              return SQL_NO_DATA_FOUND;
+			    szval = !strncmp (szState, "IM", 2) ? "ODBC 3.0" : "ISO 9075";
+			    break;
+
+			case SQL_DIAG_ROW_NUMBER:
+			case SQL_DIAG_COLUMN_NUMBER:
+			    if (nHandleType != SQL_HANDLE_STMT || !stmt)
+			      {
+				return SQL_ERROR;
+			      }
+			    if (!con)
+			      return SQL_INVALID_HANDLE;
+			    if (pDiagInfoPtr)
+			      *((SQLINTEGER *) pDiagInfoPtr) = SQL_COLUMN_NUMBER_UNKNOWN;
+			    return SQL_SUCCESS;
+
+			case SQL_DIAG_SERVER_NAME:
+			case SQL_DIAG_CONNECTION_NAME:
+			    break;
+
+			case SQL_DIAG_MESSAGE_TEXT:
+			    CALL_DRIVER(con, Handle, retcode, hproc, en_Error,
+				(SQL_NULL_HENV,
+				 nHandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
+				 nHandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
+				 szState,
+				 &nNative,
+				 pDiagInfoPtr,
+				 nBufferLength,
+				 pnStringLengthPtr));
+			    return retcode;
+			    
+			case SQL_DIAG_NATIVE:
+			    CALL_DRIVER(con, Handle, retcode, hproc, en_Error,
+				(SQL_NULL_HENV,
+				 nHandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
+				 nHandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
+				 szState,
+				 &nNative,
+				 NULL,
+				 0,
+				 NULL));
+			    if (pDiagInfoPtr)
+			      *((SQLINTEGER *)pDiagInfoPtr) = nNative;
+			    return retcode;
+
+			case SQL_DIAG_SQLSTATE:
+			    CALL_DRIVER(con, Handle, retcode, hproc, en_Error,
+				(SQL_NULL_HENV,
+				 nHandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
+				 nHandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
+				 pDiagInfoPtr,
+				 &nNative,
+				 NULL,
+				 0,
+				 NULL));
+			    if (pnStringLengthPtr)
+		              *pnStringLengthPtr = 5;
+			    return retcode;
+			default:
+			    return SQL_ERROR;    
+		      }
+		    if (pDiagInfoPtr)
+		      {
+			int len = strlen(szval);
+			if (len > nBufferLength)
+			  len = nBufferLength;
+			if (len)
+			  strncpy(pDiagInfoPtr, szval, len);
+		      }
+		    if (pnStringLengthPtr)
+		      *pnStringLengthPtr = strlen(szval);
+		  } /* ODBC3->ODBC2 */
+	      } /* driver's errors */
+	  } /* status records */
+    } /* switch (nRecNumber */
+  return (SQL_SUCCESS);
+}
+#endif

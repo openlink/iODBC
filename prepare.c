@@ -38,13 +38,13 @@
 
 #include <itrace.h>
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLPrepare (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szSqlStr,
     SQLINTEGER cbSqlStr)
 {
-  STMT_t FAR *pstmt = (STMT_t *) hstmt;
+  STMT (pstmt, hstmt);
 
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
@@ -54,27 +54,28 @@ SQLPrepare (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
     {
       /* not on asyn state */
       switch (pstmt->state)
-	 {
-	 case en_stmt_fetched:
-	 case en_stmt_xfetched:
-	   sqlstat = en_24000;
-	   break;
+	{
+	case en_stmt_fetched:
+	case en_stmt_xfetched:
+	  sqlstat = en_24000;
+	  break;
 
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   sqlstat = en_S1010;
-	   break;
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  sqlstat = en_S1010;
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
   else if (pstmt->asyn_on != en_Prepare)
     {
@@ -111,66 +112,66 @@ SQLPrepare (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_Prepare,
-    (pstmt->dhstmt, szSqlStr, cbSqlStr))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Prepare,
+      (pstmt->dhstmt, szSqlStr, cbSqlStr));
 
   /* stmt state transition */
   if (pstmt->asyn_on == en_Prepare)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   return retcode;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  return retcode;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   return retcode;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  return retcode;
+	}
     }
 
   switch (retcode)
-     {
-     case SQL_STILL_EXECUTING:
-       pstmt->asyn_on = en_Prepare;
-       break;
+    {
+    case SQL_STILL_EXECUTING:
+      pstmt->asyn_on = en_Prepare;
+      break;
 
-     case SQL_SUCCESS:
-     case SQL_SUCCESS_WITH_INFO:
-       pstmt->state = en_stmt_prepared;
-       pstmt->prep_state = 1;
-       break;
+    case SQL_SUCCESS:
+    case SQL_SUCCESS_WITH_INFO:
+      pstmt->state = en_stmt_prepared;
+      pstmt->prep_state = 1;
+      break;
 
-     case SQL_ERROR:
-       switch (pstmt->state)
-	  {
-	  case en_stmt_prepared:
-	  case en_stmt_executed:
-	    pstmt->state = en_stmt_allocated;
-	    pstmt->prep_state = 0;
-	    break;
+    case SQL_ERROR:
+      switch (pstmt->state)
+	{
+	case en_stmt_prepared:
+	case en_stmt_executed:
+	  pstmt->state = en_stmt_allocated;
+	  pstmt->prep_state = 0;
+	  break;
 
-	  default:
-	    break;
-	  }
+	default:
+	  break;
+	}
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLSetCursorName (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szCursor,
     SQLSMALLINT cbCursor)
 {
-  STMT_t FAR *pstmt = (STMT_t *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
 
   SQLRETURN retcode = SQL_SUCCESS;
@@ -180,6 +181,7 @@ SQLSetCursorName (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   if (szCursor == NULL)
     {
@@ -203,23 +205,23 @@ SQLSetCursorName (
   else
     {
       switch (pstmt->state)
-	 {
-	 case en_stmt_executed:
-	 case en_stmt_cursoropen:
-	 case en_stmt_fetched:
-	 case en_stmt_xfetched:
-	   sqlstat = en_24000;
-	   break;
+	{
+	case en_stmt_executed:
+	case en_stmt_cursoropen:
+	case en_stmt_fetched:
+	case en_stmt_xfetched:
+	  sqlstat = en_24000;
+	  break;
 
-	 case en_stmt_needdata:
-	 case en_stmt_mustput:
-	 case en_stmt_canput:
-	   sqlstat = en_S1010;
-	   break;
+	case en_stmt_needdata:
+	case en_stmt_mustput:
+	case en_stmt_canput:
+	  sqlstat = en_S1010;
+	  break;
 
-	 default:
-	   break;
-	 }
+	default:
+	  break;
+	}
     }
 
   if (sqlstat != en_00000)
@@ -238,8 +240,8 @@ SQLSetCursorName (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_SetCursorName,
-    (pstmt->dhstmt, szCursor, cbCursor))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetCursorName,
+      (pstmt->dhstmt, szCursor, cbCursor));
 
   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
     {
@@ -250,7 +252,8 @@ SQLSetCursorName (
 }
 
 
-SQLRETURN SQL_API 
+
+SQLRETURN SQL_API
 SQLBindParameter (
     SQLHSTMT hstmt,
     SQLUSMALLINT ipar,
@@ -263,7 +266,7 @@ SQLBindParameter (
     SQLINTEGER cbValueMax,
     SQLINTEGER FAR * pcbValue)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
 
   int sqlstat = en_00000;
@@ -273,12 +276,17 @@ SQLBindParameter (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
+#if (ODBCVER >= 0x0300)
+  if (0)
+#else
   /* check param */
-  if (fSqlType > SQL_TYPE_MAX || 
-	(fSqlType < SQL_TYPE_MIN && fSqlType > SQL_TYPE_DRIVER_START))
+  if (fSqlType > SQL_TYPE_MAX ||
+      (fSqlType < SQL_TYPE_MIN && fSqlType > SQL_TYPE_DRIVER_START))
     /* Note: SQL_TYPE_DRIVER_START is a nagtive number 
      * So, we use ">" */
+#endif
     {
       sqlstat = en_S1004;
     }
@@ -310,31 +318,31 @@ SQLBindParameter (
   else
     {
       switch (fCType)
-	 {
-	 case SQL_C_DEFAULT:
-	 case SQL_C_CHAR:
-	 case SQL_C_BINARY:
-	 case SQL_C_BIT:
-	 case SQL_C_TINYINT:
-	 case SQL_C_STINYINT:
-	 case SQL_C_UTINYINT:
-	 case SQL_C_SHORT:
-	 case SQL_C_SSHORT:
-	 case SQL_C_USHORT:
-	 case SQL_C_LONG:
-	 case SQL_C_SLONG:
-	 case SQL_C_ULONG:
-	 case SQL_C_FLOAT:
-	 case SQL_C_DOUBLE:
-	 case SQL_C_DATE:
-	 case SQL_C_TIME:
-	 case SQL_C_TIMESTAMP:
-	   break;
+	{
+	case SQL_C_DEFAULT:
+	case SQL_C_CHAR:
+	case SQL_C_BINARY:
+	case SQL_C_BIT:
+	case SQL_C_TINYINT:
+	case SQL_C_STINYINT:
+	case SQL_C_UTINYINT:
+	case SQL_C_SHORT:
+	case SQL_C_SSHORT:
+	case SQL_C_USHORT:
+	case SQL_C_LONG:
+	case SQL_C_SLONG:
+	case SQL_C_ULONG:
+	case SQL_C_FLOAT:
+	case SQL_C_DOUBLE:
+	case SQL_C_DATE:
+	case SQL_C_TIME:
+	case SQL_C_TIMESTAMP:
+	  break;
 
-	 default:
-	   sqlstat = en_S1003;
-	   break;
-	 }
+	default:
+	  sqlstat = en_S1003;
+	  break;
+	}
     }
 
   if (sqlstat != en_00000)
@@ -352,30 +360,45 @@ SQLBindParameter (
       retcode = SQL_ERROR;
     }
 
+#if (ODBCVER >=0x0300)
+  if (fParamType == SQL_PARAM_INPUT)
+    {
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_BindParam);
+      if (hproc)
+	{
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindParam,
+	      (pstmt->dhstmt, ipar, fCType, fSqlType, cbColDef,
+		  ibScale, rgbValue, pcbValue));
+	  return retcode;
+	}
+    }
+#endif
+
   hproc = _iodbcdm_getproc (pstmt->hdbc, en_BindParameter);
 
   if (hproc == SQL_NULL_HPROC)
     {
+
       PUSHSQLERR (pstmt->herr, en_IM001);
 
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_BindParameter,
-    (pstmt->dhstmt, ipar, fParamType, fCType, fSqlType, cbColDef,
-      ibScale, rgbValue, cbValueMax, pcbValue))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindParameter,
+      (pstmt->dhstmt, ipar, fParamType, fCType, fSqlType, cbColDef,
+	  ibScale, rgbValue, cbValueMax, pcbValue));
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLParamOptions (
     SQLHSTMT hstmt,
     SQLUINTEGER crow,
     SQLUINTEGER FAR * pirow)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
 
@@ -383,6 +406,7 @@ SQLParamOptions (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   if (crow == (UDWORD) 0UL)
     {
@@ -398,30 +422,49 @@ SQLParamOptions (
       return SQL_ERROR;
     }
 
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_ParamOptions);
+#if (ODBCVER >= 0x0300)
 
-  if (hproc == SQL_NULL_HPROC)
+  hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+
+  if (hproc != SQL_NULL_HPROC)
     {
-      PUSHSQLERR (pstmt->herr, en_IM001);
-
-      return SQL_ERROR;
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
+	  (pstmt->dhstmt, SQL_ATTR_PARAMSET_SIZE, crow, 0));
+      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+	{
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
+	      (pstmt->dhstmt, SQL_ATTR_PARAMS_PROCESSED_PTR, pirow, 0));
+	}
     }
+  else
+#endif
+    {
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ParamOptions,
-    (pstmt->dhstmt, crow, pirow))
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_ParamOptions);
+
+      if (hproc == SQL_NULL_HPROC)
+	{
+	  PUSHSQLERR (pstmt->herr, en_IM001);
+
+	  return SQL_ERROR;
+	}
+
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ParamOptions,
+	  (pstmt->dhstmt, crow, pirow));
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLSetScrollOptions (
     SQLHSTMT hstmt,
     SQLUSMALLINT fConcurrency,
     SQLINTEGER crowKeyset,
     SQLUSMALLINT crowRowset)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc;
   int sqlstat = en_00000;
   SQLRETURN retcode;
@@ -430,6 +473,7 @@ SQLSetScrollOptions (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   for (;;)
     {
@@ -466,18 +510,120 @@ SQLSetScrollOptions (
 	  break;
 	}
 
+#if (ODBCVER < 0x0300)
       if (pstmt->state != en_stmt_allocated)
 	{
 	  sqlstat = en_S1010;
 	  break;
 	}
+#endif
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetScrollOptions);
 
       if (hproc == SQL_NULL_HPROC)
 	{
+#if (ODBCVER >= 0x0300)
+	  SQLINTEGER InfoValue, InfoType, Value;
+	  HPROC hproc1 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+
+	  if (hproc1 == SQL_NULL_HPROC)
+	    {
+	      PUSHSQLERR (pstmt->herr, en_IM001);
+	      return SQL_ERROR;
+	    }
+
+	  switch (crowKeyset)
+	    {
+	    case SQL_SCROLL_FORWARD_ONLY:
+	      InfoType = SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES2;
+	      Value = SQL_CURSOR_FORWARD_ONLY;
+	      break;
+
+	    case SQL_SCROLL_STATIC:
+	      InfoType = SQL_STATIC_CURSOR_ATTRIBUTES2;
+	      Value = SQL_CURSOR_STATIC;
+	      break;
+
+	    case SQL_SCROLL_DYNAMIC:
+	      InfoType = SQL_DYNAMIC_CURSOR_ATTRIBUTES2;
+	      Value = SQL_CURSOR_DYNAMIC;
+	      break;
+
+	    case SQL_SCROLL_KEYSET_DRIVEN:
+	    default:
+	      InfoType = SQL_KEYSET_CURSOR_ATTRIBUTES2;
+	      Value = SQL_CURSOR_KEYSET_DRIVEN;
+	      break;
+	    }
+
+	  retcode = SQLGetInfo (pstmt->hdbc, InfoType, &InfoValue, 0, NULL);
+	  if (retcode != SQL_SUCCESS)
+	    return retcode;
+
+	  switch (fConcurrency)
+	    {
+	    case SQL_CONCUR_READ_ONLY:
+	      if (!(InfoValue & SQL_CA2_READ_ONLY_CONCURRENCY))
+		{
+		  PUSHSQLERR (pstmt->herr, en_S1C00);
+		  return SQL_ERROR;
+		}
+	      break;
+
+	    case SQL_CONCUR_LOCK:
+	      if (!(InfoValue & SQL_CA2_LOCK_CONCURRENCY))
+		{
+		  PUSHSQLERR (pstmt->herr, en_S1C00);
+		  return SQL_ERROR;
+		}
+	      break;
+
+	    case SQL_CONCUR_ROWVER:
+	      if (!(InfoValue & SQL_CA2_OPT_ROWVER_CONCURRENCY))
+		{
+		  PUSHSQLERR (pstmt->herr, en_S1C00);
+		  return SQL_ERROR;
+		}
+	      break;
+
+	    case SQL_CONCUR_VALUES:
+	      if (!(InfoValue & SQL_CA2_OPT_VALUES_CONCURRENCY))
+		{
+		  PUSHSQLERR (pstmt->herr, en_S1C00);
+		  return SQL_ERROR;
+		}
+	      break;
+	    }
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	      (pstmt->dhstmt, SQL_ATTR_CURSOR_TYPE, Value, 0));
+
+	  if (retcode != SQL_SUCCESS)
+	    return retcode;
+
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	      (pstmt->dhstmt, SQL_ATTR_CONCURRENCY, fConcurrency, 0));
+
+	  if (retcode != SQL_SUCCESS)
+	    return retcode;
+
+	  if (crowKeyset > 0)
+	    {
+	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+		  (pstmt->dhstmt, SQL_ATTR_KEYSET_SIZE, crowKeyset, 0));
+
+	      if (retcode != SQL_SUCCESS)
+		return retcode;
+	    }
+
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	      (pstmt->dhstmt, SQL_ROWSET_SIZE, crowRowset, 0));
+
+	  if (retcode != SQL_SUCCESS)
+	    return retcode;
+#else
 	  sqlstat = en_IM001;
 	  break;
+#endif
 	}
 
       sqlstat = en_00000;
@@ -492,14 +638,14 @@ SQLSetScrollOptions (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_SetScrollOptions,
-    (pstmt->dhstmt, fConcurrency, crowKeyset, crowRowset))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetScrollOptions,
+      (pstmt->dhstmt, fConcurrency, crowKeyset, crowRowset));
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLSetParam (
     SQLHSTMT hstmt,
     SQLUSMALLINT ipar,

@@ -39,17 +39,20 @@
 
 #include "henv.ci"
 
-HPROC 
+HPROC
 _iodbcdm_getproc (HDBC hdbc, int idx)
 {
-  DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
+  CONN (pdbc, hdbc);
   ENV_t FAR *penv;
   HPROC FAR *phproc;
 
   if (idx <= 0 || idx > SQL_EXT_API_LAST)
     /* first entry naver used */
     {
-      return SQL_NULL_HPROC;
+#if (ODBCVER >= 0x0300)
+      if (!API_IS_ODBC3_FUNCTION (idx))
+#endif
+	return SQL_NULL_HPROC;
     }
 
   penv = (ENV_t FAR *) (pdbc->henv);
@@ -59,7 +62,11 @@ _iodbcdm_getproc (HDBC hdbc, int idx)
       return SQL_NULL_HPROC;
     }
 
+#if (ODBCVER >= 0x0300)
+  phproc = penv->dllproc_tab + API_ODBC3_FUNCTION_INDEX (idx);
+#else
   phproc = penv->dllproc_tab + idx;
+#endif
 
   if (*phproc == SQL_NULL_HPROC)
     {
@@ -88,21 +95,21 @@ _iodbcdm_getproc (HDBC hdbc, int idx)
 }
 
 
-HDLL 
+HDLL
 _iodbcdm_dllopen (char FAR * path)
 {
   return (HDLL) DLL_OPEN (path);
 }
 
 
-HPROC 
+HPROC
 _iodbcdm_dllproc (HDLL hdll, char FAR * sym)
 {
   return (HPROC) DLL_PROC (hdll, sym);
 }
 
 
-int 
+int
 _iodbcdm_dllclose (HDLL hdll)
 {
   DLL_CLOSE (hdll);
@@ -116,4 +123,3 @@ _iodbcdm_dllerror ()
 {
   return DLL_ERROR ();
 }
-

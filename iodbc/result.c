@@ -38,7 +38,7 @@
 
 #include <itrace.h>
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLBindCol (
     SQLHSTMT hstmt,
     SQLUSMALLINT icol,
@@ -58,31 +58,31 @@ SQLBindCol (
 
   /* check argument */
   switch (fCType)
-     {
-     case SQL_C_DEFAULT:
-     case SQL_C_CHAR:
-     case SQL_C_BINARY:
-     case SQL_C_BIT:
-     case SQL_C_TINYINT:
-     case SQL_C_STINYINT:
-     case SQL_C_UTINYINT:
-     case SQL_C_SHORT:
-     case SQL_C_SSHORT:
-     case SQL_C_USHORT:
-     case SQL_C_LONG:
-     case SQL_C_SLONG:
-     case SQL_C_ULONG:
-     case SQL_C_FLOAT:
-     case SQL_C_DOUBLE:
-     case SQL_C_DATE:
-     case SQL_C_TIME:
-     case SQL_C_TIMESTAMP:
-       break;
+    {
+    case SQL_C_DEFAULT:
+    case SQL_C_CHAR:
+    case SQL_C_BINARY:
+    case SQL_C_BIT:
+    case SQL_C_TINYINT:
+    case SQL_C_STINYINT:
+    case SQL_C_UTINYINT:
+    case SQL_C_SHORT:
+    case SQL_C_SSHORT:
+    case SQL_C_USHORT:
+    case SQL_C_LONG:
+    case SQL_C_SLONG:
+    case SQL_C_ULONG:
+    case SQL_C_FLOAT:
+    case SQL_C_DOUBLE:
+    case SQL_C_DATE:
+    case SQL_C_TIME:
+    case SQL_C_TIMESTAMP:
+      break;
 
-     default:
-       PUSHSQLERR (pstmt->herr, en_S1003);
-       return SQL_ERROR;
-     }
+    default:
+      PUSHSQLERR (pstmt->herr, en_S1003);
+      return SQL_ERROR;
+    }
 
   if (cbValueMax < 0)
     {
@@ -108,14 +108,14 @@ SQLBindCol (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_BindCol,
-    (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindCol,
+      (pstmt->dhstmt, icol, fCType, rgbValue, cbValueMax, pcbValue));
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLGetCursorName (
     SQLHSTMT hstmt,
     SQLCHAR FAR * szCursor,
@@ -130,6 +130,7 @@ SQLGetCursorName (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check argument */
   if (cbCursorMax < (SWORD) 0)
@@ -165,14 +166,14 @@ SQLGetCursorName (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_GetCursorName,
-    (pstmt->dhstmt, szCursor, cbCursorMax, pcbCursor))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetCursorName,
+      (pstmt->dhstmt, szCursor, cbCursorMax, pcbCursor));
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLRowCount (
     SQLHSTMT hstmt,
     SQLINTEGER FAR * pcrow)
@@ -185,6 +186,7 @@ SQLRowCount (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check state */
   if (pstmt->state >= en_stmt_needdata
@@ -206,14 +208,14 @@ SQLRowCount (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_RowCount,
-    (pstmt->dhstmt, pcrow))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_RowCount,
+      (pstmt->dhstmt, pcrow));
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLNumResultCols (
     SQLHSTMT hstmt,
     SQLSMALLINT FAR * pccol)
@@ -227,6 +229,7 @@ SQLNumResultCols (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -255,40 +258,40 @@ SQLNumResultCols (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_NumResultCols,
-    (pstmt->dhstmt, &ccol))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_NumResultCols,
+      (pstmt->dhstmt, &ccol));
 
   /* state transition */
   if (pstmt->asyn_on == en_NumResultCols)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
 
-	 case SQL_STILL_EXECUTING:
-	 default:
-	   break;
-	 }
+	case SQL_STILL_EXECUTING:
+	default:
+	  break;
+	}
     }
 
   switch (retcode)
-     {
-     case SQL_SUCCESS:
-     case SQL_SUCCESS_WITH_INFO:
-       break;
+    {
+    case SQL_SUCCESS:
+    case SQL_SUCCESS_WITH_INFO:
+      break;
 
-     case SQL_STILL_EXECUTING:
-       ccol = 0;
-       pstmt->asyn_on = en_NumResultCols;
-       break;
+    case SQL_STILL_EXECUTING:
+      ccol = 0;
+      pstmt->asyn_on = en_NumResultCols;
+      break;
 
-     default:
-       ccol = 0;
-       break;
-     }
+    default:
+      ccol = 0;
+      break;
+    }
 
   if (pccol)
     {
@@ -299,7 +302,7 @@ SQLNumResultCols (
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLDescribeCol (
     SQLHSTMT hstmt,
     SQLUSMALLINT icol,
@@ -320,6 +323,7 @@ SQLDescribeCol (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check arguments */
   if (icol == 0)
@@ -337,7 +341,7 @@ SQLDescribeCol (
 
       return SQL_ERROR;
     }
-
+#if (ODBCVER < 0x0300)
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
     {
@@ -351,6 +355,7 @@ SQLDescribeCol (
     {
       sqlstat = en_S1010;
     }
+#endif
 
   if (sqlstat != en_00000)
     {
@@ -369,47 +374,47 @@ SQLDescribeCol (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_DescribeCol,
-    (pstmt->dhstmt, icol, szColName, cbColNameMax, pcbColName,
-      pfSqlType, pcbColDef, pibScale, pfNullable))
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_DescribeCol,
+      (pstmt->dhstmt, icol, szColName, cbColNameMax, pcbColName,
+	  pfSqlType, pcbColDef, pibScale, pfNullable));
 
   /* state transition */
   if (pstmt->asyn_on == en_DescribeCol)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 default:
-	   return retcode;
-	 }
+	default:
+	  return retcode;
+	}
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_prepared:
-     case en_stmt_cursoropen:
-     case en_stmt_fetched:
-     case en_stmt_xfetched:
-       if (retcode == SQL_STILL_EXECUTING)
-	 {
-	   pstmt->asyn_on = en_DescribeCol;
-	 }
-       break;
+    {
+    case en_stmt_prepared:
+    case en_stmt_cursoropen:
+    case en_stmt_fetched:
+    case en_stmt_xfetched:
+      if (retcode == SQL_STILL_EXECUTING)
+	{
+	  pstmt->asyn_on = en_DescribeCol;
+	}
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }
 
 
-SQLRETURN SQL_API 
+SQLRETURN SQL_API
 SQLColAttributes (
     SQLHSTMT hstmt,
     SQLUSMALLINT icol,
@@ -428,6 +433,7 @@ SQLColAttributes (
     {
       return SQL_INVALID_HANDLE;
     }
+  CLEAR_ERRORS (pstmt);
 
   /* check arguments */
   if (icol == 0 && fDescType != SQL_COLUMN_COUNT)
@@ -438,12 +444,14 @@ SQLColAttributes (
     {
       sqlstat = en_S1090;
     }
+#if (ODBCVER < 0x0300)
   else if (			/* fDescType < SQL_COLATT_OPT_MIN || *//* turnoff warning */
 	(fDescType > SQL_COLATT_OPT_MAX
 	  && fDescType < SQL_COLUMN_DRIVER_START))
     {
       sqlstat = en_S1091;
     }
+#endif /* ODBCVER < 0x0300 */
 
   if (sqlstat != en_00000)
     {
@@ -474,49 +482,76 @@ SQLColAttributes (
     }
 
   /* call driver */
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_ColAttributes);
+#if (ODBCVER >= 0x0300)
 
-  if (hproc == SQL_NULL_HPROC)
+  hproc = _iodbcdm_getproc (pstmt->hdbc, en_ColAttribute);
+
+  if (hproc != SQL_NULL_HPROC)
     {
-      PUSHSQLERR (pstmt->herr, en_IM001);
-
-      return SQL_ERROR;
+      SQLUSMALLINT new_attr = fDescType;
+      switch (new_attr)
+	{
+	case SQL_COLUMN_NAME:
+	  new_attr = SQL_DESC_NAME;
+	  break;
+	case SQL_COLUMN_NULLABLE:
+	  new_attr = SQL_DESC_NULLABLE;
+	  break;
+	case SQL_COLUMN_COUNT:
+	  new_attr = SQL_DESC_COUNT;
+	  break;
+	}
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ColAttribute,
+	  (pstmt->dhstmt, icol, fDescType, rgbDesc, cbDescMax, pcbDesc, pfDesc));
     }
+  else
+#endif
 
-  CALL_DRIVER (pstmt->hdbc, retcode, hproc, en_ColAttributes,
-    (pstmt->dhstmt, icol, fDescType, rgbDesc, cbDescMax, pcbDesc, pfDesc))
+    {
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_ColAttributes);
+
+      if (hproc == SQL_NULL_HPROC)
+	{
+	  PUSHSQLERR (pstmt->herr, en_IM001);
+
+	  return SQL_ERROR;
+	}
+
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ColAttributes,
+	  (pstmt->dhstmt, icol, fDescType, rgbDesc, cbDescMax, pcbDesc, pfDesc));
+    }
 
   /* state transition */
   if (pstmt->asyn_on == en_ColAttributes)
     {
       switch (retcode)
-	 {
-	 case SQL_SUCCESS:
-	 case SQL_SUCCESS_WITH_INFO:
-	 case SQL_ERROR:
-	   pstmt->asyn_on = en_NullProc;
-	   break;
+	{
+	case SQL_SUCCESS:
+	case SQL_SUCCESS_WITH_INFO:
+	case SQL_ERROR:
+	  pstmt->asyn_on = en_NullProc;
+	  break;
 
-	 default:
-	   return retcode;
-	 }
+	default:
+	  return retcode;
+	}
     }
 
   switch (pstmt->state)
-     {
-     case en_stmt_prepared:
-     case en_stmt_cursoropen:
-     case en_stmt_fetched:
-     case en_stmt_xfetched:
-       if (retcode == SQL_STILL_EXECUTING)
-	 {
-	   pstmt->asyn_on = en_ColAttributes;
-	 }
-       break;
+    {
+    case en_stmt_prepared:
+    case en_stmt_cursoropen:
+    case en_stmt_fetched:
+    case en_stmt_xfetched:
+      if (retcode == SQL_STILL_EXECUTING)
+	{
+	  pstmt->asyn_on = en_ColAttributes;
+	}
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   return retcode;
 }

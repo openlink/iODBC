@@ -72,6 +72,7 @@ upper_strneq (
   return (int) !(c1 - c2);
 }
 
+
 static char *			/* return new position in input str */
 readtoken (
     char *istr,			/* old position in input buf */
@@ -113,9 +114,10 @@ readtoken (
   return istr;
 }
 
+
 #if	!defined(WINDOWS) && !defined(WIN32) && !defined(OS2)
-# include <pwd.h>
-# define UNIX_PWD
+#include <pwd.h>
+#define UNIX_PWD
 #endif
 
 char *
@@ -215,11 +217,13 @@ _iodbcdm_getkeyvalbydsn (
     int size)
 {
   char buf[1024];
-  char dsntk[SQL_MAX_DSN_LENGTH + 3] = {'[', '\0'};
+  char dsntk[SQL_MAX_DSN_LENGTH + 3] =
+  {'[', '\0'};
   char token[1024];		/* large enough */
   FILE *file;
   char pathbuf[1024];
   char *path;
+  int nKeyWordLength = 0, nTokenLength = 0;
 
 #define DSN_NOMATCH	0
 #define DSN_NAMED	1
@@ -250,6 +254,7 @@ _iodbcdm_getkeyvalbydsn (
     }
 
   value[0] = '\0';
+  nKeyWordLength = STRLEN (keywd);
 
   STRNCAT (dsntk, dsn, dsnlen);
   STRCAT (dsntk, "]");
@@ -318,7 +323,12 @@ _iodbcdm_getkeyvalbydsn (
 
       str = readtoken (str, token);
 
-      if (upper_strneq (keywd, token, STRLEN (keywd)))
+      if (token)
+	nTokenLength = STRLEN (token);
+      else
+	nTokenLength = 0;
+
+      if (upper_strneq (keywd, token, nTokenLength > nKeyWordLength ? nTokenLength : nKeyWordLength))
 	{
 	  str = readtoken (str, token);
 
@@ -359,7 +369,8 @@ _iodbcdm_getkeyvalinstr (
     char *value,
     int size)
 {
-  char token[1024] = {'\0'};
+  char token[1024] =
+  {'\0'};
   int flag = 0;
 
   if (cnstr == NULL || value == NULL
@@ -426,6 +437,7 @@ _iodbcdm_getkeyvalinstr (
 
   return NULL;
 }
+
 
 int
 SQLGetPrivateProfileString (

@@ -39,45 +39,45 @@
 
 #include <stdio.h>
 
-static int 
+static int
 printreturn (void FAR * istm, int ret)
 {
   FILE FAR *stm = (FILE FAR *) istm;
   char FAR *ptr = "Invalid return value";
 
   switch (ret)
-     {
-     case SQL_SUCCESS:
-       ptr = "SQL_SUCCESS";
-       break;
+    {
+    case SQL_SUCCESS:
+      ptr = "SQL_SUCCESS";
+      break;
 
-     case SQL_SUCCESS_WITH_INFO:
-       ptr = "SQL_SUCCESS_WITH_INFO";
-       break;
+    case SQL_SUCCESS_WITH_INFO:
+      ptr = "SQL_SUCCESS_WITH_INFO";
+      break;
 
-     case SQL_NO_DATA_FOUND:
-       ptr = "SQL_NO_DATA_FOUND";
-       break;
+    case SQL_NO_DATA_FOUND:
+      ptr = "SQL_NO_DATA_FOUND";
+      break;
 
-     case SQL_NEED_DATA:
-       ptr = "SQL_NEED_DATA";
-       break;
+    case SQL_NEED_DATA:
+      ptr = "SQL_NEED_DATA";
+      break;
 
-     case SQL_INVALID_HANDLE:
-       ptr = "SQL_INVALID_HANDLE";
-       break;
+    case SQL_INVALID_HANDLE:
+      ptr = "SQL_INVALID_HANDLE";
+      break;
 
-     case SQL_ERROR:
-       ptr = "SQL_ERROR";
-       break;
+    case SQL_ERROR:
+      ptr = "SQL_ERROR";
+      break;
 
-     case SQL_STILL_EXECUTING:
-       ptr = "SQL_STILL_EXECUTING";
-       break;
+    case SQL_STILL_EXECUTING:
+      ptr = "SQL_STILL_EXECUTING";
+      break;
 
-     default:
-       break;
-     }
+    default:
+      break;
+    }
 
   fprintf (stm, "%s\n", ptr);
   fflush (stm);
@@ -86,7 +86,7 @@ printreturn (void FAR * istm, int ret)
 }
 
 
-HPROC 
+HPROC
 _iodbcdm_gettrproc (void FAR * istm, int procid, int type)
 {
   FILE FAR *stm = (FILE FAR *) istm;
