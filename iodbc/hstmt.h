@@ -128,4 +128,8 @@ SQLRETURN SQL_API _iodbcdm_SetPos (
     SQLUSMALLINT irow, 
     SQLUSMALLINT fOption, 
     SQLUSMALLINT fLock);
+
+SQLRETURN SQL_API _iodbcdm_NumResultCols (
+    SQLHSTMT hstmt,
+    SQLSMALLINT FAR * pccol);
 #endif

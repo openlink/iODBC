@@ -205,16 +205,14 @@ SQLRowCount (
 
 
 SQLRETURN SQL_API
-SQLNumResultCols (
+_iodbcdm_NumResultCols (
     SQLHSTMT hstmt,
     SQLSMALLINT FAR * pccol)
 {
-  STMT_t FAR *pstmt = (STMT_t FAR *) hstmt;
+  STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
   SWORD ccol;
-
-  ENTER_STMT (pstmt);
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -223,14 +221,15 @@ SQLNumResultCols (
 	  || pstmt->state >= en_stmt_needdata)
 	{
 	  PUSHSQLERR (pstmt->herr, en_S1010);
-	  LEAVE_STMT (pstmt, SQL_ERROR);
+
+	  return SQL_ERROR;
 	}
     }
   else if (pstmt->asyn_on != en_NumResultCols)
     {
       PUSHSQLERR (pstmt->herr, en_S1010);
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   /* call driver */
@@ -240,7 +239,7 @@ SQLNumResultCols (
     {
       PUSHSQLERR (pstmt->herr, en_IM001);
 
-      LEAVE_STMT (pstmt, SQL_ERROR);
+      return SQL_ERROR;
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_NumResultCols,
@@ -282,6 +281,21 @@ SQLNumResultCols (
     {
       *pccol = ccol;
     }
+  return retcode;
+}
+
+
+SQLRETURN SQL_API
+SQLNumResultCols (
+    SQLHSTMT hstmt,
+    SQLSMALLINT FAR * pccol)
+{
+  STMT (pstmt, hstmt);
+  SQLRETURN retcode;
+
+  ENTER_STMT (pstmt);
+
+  retcode = _iodbcdm_NumResultCols (hstmt, pccol);
 
   LEAVE_STMT (pstmt, retcode);
 }

@@ -46,7 +46,7 @@ do_cursoropen (STMT_t FAR * pstmt)
 
   pstmt->state = en_stmt_executed;
 
-  retcode = SQLNumResultCols ((SQLHSTMT) pstmt, &ncol);
+  retcode = _iodbcdm_NumResultCols ((SQLHSTMT) pstmt, &ncol);
 
   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
     {
