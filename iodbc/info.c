@@ -222,7 +222,7 @@ SQLDataSources (
    */
   STRNCPY (szDSN, sect[cur_entry], cbDSNMax);
 
-  if (*pcbDSN)
+  if (pcbDSN)
     *pcbDSN = strlen (sect[cur_entry]);
 
 
@@ -232,7 +232,7 @@ SQLDataSources (
   _iodbcdm_getkeyvalbydsn (sect[cur_entry], strlen (sect[cur_entry]),
       "Description", szDesc, cbDescMax);
 
-  if (*pcbDesc)
+  if (pcbDesc)
     *pcbDesc = strlen(szDesc);
 
 
