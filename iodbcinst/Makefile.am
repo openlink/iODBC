@@ -123,6 +123,7 @@ noinst_HEADERS		= \
 CLEANFILES=	dlf.c
 
 dlf.c: $(top_srcdir)/iodbc/dlf.c
+	-rm -f dlf.c
 	$(LN_S) $(top_srcdir)/iodbc/dlf.c dlf.c
 
 
