@@ -92,7 +92,7 @@
 
 
 BOOL
-InstallDriverPath (LPSTR lpszPath, WORD cbPathMax, WORD *pcbPathOut,
+InstallDriverPath (LPSTR lpszPath, WORD cbPathMax, WORD * pcbPathOut,
     LPSTR envname)
 {
 #ifdef _MAC
@@ -229,7 +229,7 @@ quit:
 
 BOOL INSTAPI
 SQLInstallDriver (LPCSTR lpszInfFile, LPCSTR lpszDriver, LPSTR lpszPath,
-    WORD cbPathMax, WORD *pcbPathOut)
+    WORD cbPathMax, WORD * pcbPathOut)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
   BOOL retcode = FALSE;
@@ -315,21 +315,21 @@ quit:
 
 BOOL INSTAPI
 SQLInstallDriverW (LPCWSTR lpszInfFile, LPCWSTR lpszDriver, LPWSTR lpszPath,
-    WORD cbPathMax, WORD FAR *pcbPathOut)
+    WORD cbPathMax, WORD FAR * pcbPathOut)
 {
   char *_inf_u8 = NULL;
   char *_driver_u8 = NULL;
   char *_path_u8 = NULL;
   BOOL retcode = FALSE;
 
-  _inf_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszInfFile, SQL_NTS);
+  _inf_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszInfFile, SQL_NTS);
   if (_inf_u8 == NULL && lpszInfFile)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _driver_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+  _driver_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszDriver, SQL_NTS);
   if (_driver_u8 == NULL && lpszDriver)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
@@ -339,13 +339,15 @@ SQLInstallDriverW (LPCWSTR lpszInfFile, LPCWSTR lpszDriver, LPWSTR lpszPath,
   if (cbPathMax > 0)
     {
       if ((_path_u8 = malloc (cbPathMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto done;
-        }
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto done;
+	}
     }
 
-  retcode = SQLInstallDriver (_inf_u8, _driver_u8, _path_u8, cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut);
+  retcode =
+      SQLInstallDriver (_inf_u8, _driver_u8, _path_u8,
+      cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut);
 
   if (retcode == TRUE)
     {

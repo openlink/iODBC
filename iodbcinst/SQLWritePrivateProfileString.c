@@ -228,35 +228,37 @@ SQLWritePrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
   char *_filename_u8 = NULL;
   BOOL retcode = FALSE;
 
-  _section_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszSection, SQL_NTS);
+  _section_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszSection, SQL_NTS);
   if (_section_u8 == NULL && lpszSection)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _entry_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszEntry, SQL_NTS);
+  _entry_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszEntry, SQL_NTS);
   if (_entry_u8 == NULL && lpszEntry)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _string_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszString, SQL_NTS);
+  _string_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszString, SQL_NTS);
   if (_string_u8 == NULL && lpszString)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _filename_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszFilename, SQL_NTS);
+  _filename_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszFilename, SQL_NTS);
   if (_filename_u8 == NULL && lpszFilename)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  retcode = SQLWritePrivateProfileString (_section_u8, _entry_u8, _string_u8, _filename_u8);
+  retcode =
+      SQLWritePrivateProfileString (_section_u8, _entry_u8, _string_u8,
+      _filename_u8);
 
 done:
   MEM_FREE (_section_u8);
@@ -272,7 +274,7 @@ SQLSetKeywordValue (LPCSTR lpszSection,
     LPCSTR lpszEntry, LPSTR lpszString, int cbString)
 {
   return SQLWritePrivateProfileString (lpszSection,
-    lpszEntry, lpszString, "odbc.ini");
+      lpszEntry, lpszString, "odbc.ini");
 }
 
 BOOL INSTAPI
@@ -280,5 +282,5 @@ SQLSetKeywordValueW (LPCWSTR lpszSection,
     LPCWSTR lpszEntry, LPWSTR lpszString, int cbString)
 {
   return SQLWritePrivateProfileStringW (lpszSection,
-    lpszEntry, lpszString, L"odbc.ini");
+      lpszEntry, lpszString, L"odbc.ini");
 }

@@ -90,12 +90,12 @@
 # define UNIX_PWD
 #endif
 
-extern BOOL InstallDriverPath ( LPSTR lpszPath,WORD cbPathMax,
-    WORD * pcbPathOut,LPSTR envname);
+extern BOOL InstallDriverPath (LPSTR lpszPath, WORD cbPathMax,
+    WORD * pcbPathOut, LPSTR envname);
 
 
 BOOL
-InstallDriverPathLength (WORD *pcbPathOut, LPSTR envname)
+InstallDriverPathLength (WORD * pcbPathOut, LPSTR envname)
 {
 #ifdef _MAC
   OSErr result;
@@ -124,7 +124,7 @@ InstallDriverPathLength (WORD *pcbPathOut, LPSTR envname)
   goto done;
 #else
   /*
-     *  On Windows, there is only one place to look
+   *  On Windows, there is only one place to look
    */
   len = GetWindowsDirectory (path, sizeof (path));
   goto done;
@@ -216,7 +216,8 @@ quit:
 
 BOOL INSTAPI
 SQLInstallDriverEx (LPCSTR lpszDriver, LPCSTR lpszPathIn, LPSTR lpszPathOut,
-    WORD cbPathOutMax, WORD *pcbPathOut, WORD fRequest, LPDWORD lpdwUsageCount)
+    WORD cbPathOutMax, WORD * pcbPathOut, WORD fRequest,
+    LPDWORD lpdwUsageCount)
 {
   PCONFIG pCfg = NULL, pOdbcCfg = NULL;
   BOOL retcode = FALSE;
@@ -321,8 +322,9 @@ quit:
 }
 
 BOOL INSTAPI
-SQLInstallDriverExW (LPCWSTR lpszDriver, LPCWSTR lpszPathIn, LPWSTR lpszPathOut,
-    WORD cbPathOutMax, WORD *pcbPathOut, WORD fRequest, LPDWORD lpdwUsageCount)
+SQLInstallDriverExW (LPCWSTR lpszDriver, LPCWSTR lpszPathIn,
+    LPWSTR lpszPathOut, WORD cbPathOutMax, WORD * pcbPathOut, WORD fRequest,
+    LPDWORD lpdwUsageCount)
 {
   char *_driver_u8 = NULL;
   char *_pathin_u8 = NULL;
@@ -332,18 +334,22 @@ SQLInstallDriverExW (LPCWSTR lpszDriver, LPCWSTR lpszPathIn, LPWSTR lpszPathOut,
   SQLWCHAR *ptr;
   char *ptr_u8;
 
-  for(length = 0, ptr = (SQLWCHAR*)lpszDriver ; *ptr ; length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1);
+  for (length = 0, ptr = (SQLWCHAR *) lpszDriver; *ptr;
+      length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1);
 
   if (length > 0)
     {
       if ((_driver_u8 = malloc (length * UTF8_MAX_CHAR_LEN + 1)) != NULL)
-        {
-          for(ptr = (SQLWCHAR*)lpszDriver, ptr_u8 = _driver_u8 ; *ptr ; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1)
-            dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) *  UTF8_MAX_CHAR_LEN, NULL);
-          *ptr_u8 = '\0';
-        }
+	{
+	  for (ptr = (SQLWCHAR *) lpszDriver, ptr_u8 = _driver_u8; *ptr;
+	      ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1)
+	    dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) * UTF8_MAX_CHAR_LEN,
+		NULL);
+	  *ptr_u8 = '\0';
+	}
     }
-  else _driver_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+  else
+    _driver_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszDriver, SQL_NTS);
 
   if (_driver_u8 == NULL && lpszDriver)
     {
@@ -351,7 +357,7 @@ SQLInstallDriverExW (LPCWSTR lpszDriver, LPCWSTR lpszPathIn, LPWSTR lpszPathOut,
       goto done;
     }
 
-  _pathin_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszPathIn, SQL_NTS);
+  _pathin_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszPathIn, SQL_NTS);
   if (_pathin_u8 == NULL && lpszPathIn)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
@@ -360,19 +366,22 @@ SQLInstallDriverExW (LPCWSTR lpszDriver, LPCWSTR lpszPathIn, LPWSTR lpszPathOut,
 
   if (cbPathOutMax > 0)
     {
-      if ((_pathout_u8 = malloc (cbPathOutMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto done;
-        }
+      if ((_pathout_u8 =
+	      malloc (cbPathOutMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto done;
+	}
     }
 
-  retcode = SQLInstallDriverEx (_driver_u8, _pathin_u8, _pathout_u8, cbPathOutMax * UTF8_MAX_CHAR_LEN,
-    pcbPathOut, fRequest, lpdwUsageCount);
+  retcode =
+      SQLInstallDriverEx (_driver_u8, _pathin_u8, _pathout_u8,
+      cbPathOutMax * UTF8_MAX_CHAR_LEN, pcbPathOut, fRequest, lpdwUsageCount);
 
   if (retcode == TRUE)
     {
-      dm_StrCopyOut2_U8toW (_pathout_u8, lpszPathOut, cbPathOutMax, pcbPathOut);
+      dm_StrCopyOut2_U8toW (_pathout_u8, lpszPathOut, cbPathOutMax,
+	  pcbPathOut);
     }
 
 done:

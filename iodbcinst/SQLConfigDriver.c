@@ -163,7 +163,8 @@
 
 BOOL INSTAPI
 SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
-    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR *pcbMsgOut, SQLCHAR waMode)
+    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut,
+    SQLCHAR waMode)
 {
   PCONFIG pCfg;
   BOOL retcode = FALSE;
@@ -183,15 +184,15 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 
   if (waMode == 'W')
     {
-      _drv_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+      _drv_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszDriver, SQL_NTS);
       if (_drv_u8 == NULL && lpszDriver)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto quit;
-        }
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto quit;
+	}
     }
   else
-    _drv_u8 = (char*)lpszDriver;
+    _drv_u8 = (char *) lpszDriver;
 
   if (!_drv_u8 || !STRLEN (_drv_u8))
     {
@@ -211,30 +212,60 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   if (!_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {
       if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Setup"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
       if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Driver"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
       if (!access (_drv_u8, X_OK))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (_drv_u8); }
-          else { CALL_CONFIG_DRIVERW (_drv_u8); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (_drv_u8);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (_drv_u8);
+	    }
+	}
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Setup"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Driver"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
     }
 
   /* Get it from the system odbcinst file */
@@ -247,30 +278,60 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   if (!_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {
       if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Setup"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
       if (!_iodbcdm_cfg_find (pCfg, (char *) _drv_u8, "Driver"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
       if (!access (_drv_u8, X_OK))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (_drv_u8); }
-          else { CALL_CONFIG_DRIVERW (_drv_u8); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (_drv_u8);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (_drv_u8);
+	    }
+	}
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Setup"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
       if (!_iodbcdm_cfg_find (pCfg, "Default", "Driver"))
-        {
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (pCfg->value); }
-          else { CALL_CONFIG_DRIVERW (pCfg->value); }
-        }
+	{
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (pCfg->value);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (pCfg->value);
+	    }
+	}
     }
 
   /* The last ressort, a proxy driver */
@@ -289,8 +350,14 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 	  CFStringGetCString (libname, name, sizeof (name),
 	      kCFStringEncodingASCII);
 	  strcat (name, "/Contents/MacOS/iODBCdrvproxy");
-	  if (waMode == 'A') { CALL_CONFIG_DRIVER (name); }
-          else { CALL_CONFIG_DRIVERW (name); }
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER (name);
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW (name);
+	    }
 	}
       if (liburl)
 	CFRelease (liburl);
@@ -298,8 +365,14 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 	CFRelease (libname);
     }
 #else
-  if (waMode == 'A') { CALL_CONFIG_DRIVER ("libdrvproxy.so"); }
-  else { CALL_CONFIG_DRIVERW ("libdrvproxy.so"); }
+  if (waMode == 'A')
+    {
+      CALL_CONFIG_DRIVER ("libdrvproxy.so");
+    }
+  else
+    {
+      CALL_CONFIG_DRIVERW ("libdrvproxy.so");
+    }
 #endif
 
   /* Error : ConfigDriver could no be found */
@@ -324,16 +397,18 @@ quit:
 
 BOOL INSTAPI
 SQLConfigDriver (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
-  LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
+    LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
 {
-  return SQLConfigDriver_Internal(hwndParent, fRequest, (SQLPOINTER)lpszDriver,
-    (SQLPOINTER)lpszArgs, (SQLPOINTER)lpszMsg, cbMsgMax, pcbMsgOut, 'A');
+  return SQLConfigDriver_Internal (hwndParent, fRequest,
+      (SQLPOINTER) lpszDriver, (SQLPOINTER) lpszArgs, (SQLPOINTER) lpszMsg,
+      cbMsgMax, pcbMsgOut, 'A');
 }
 
 BOOL INSTAPI
 SQLConfigDriverW (HWND hwndParent, WORD fRequest, LPCWSTR lpszDriver,
-  LPCWSTR lpszArgs, LPWSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
+    LPCWSTR lpszArgs, LPWSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut)
 {
-  return SQLConfigDriver_Internal(hwndParent, fRequest, (SQLPOINTER)lpszDriver,
-    (SQLPOINTER)lpszArgs, (SQLPOINTER)lpszMsg, cbMsgMax, pcbMsgOut, 'W');
+  return SQLConfigDriver_Internal (hwndParent, fRequest,
+      (SQLPOINTER) lpszDriver, (SQLPOINTER) lpszArgs, (SQLPOINTER) lpszMsg,
+      cbMsgMax, pcbMsgOut, 'W');
 }

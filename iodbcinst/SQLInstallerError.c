@@ -104,7 +104,7 @@ LPSTR errortable[] = {
 
 
 RETCODE INSTAPI
-SQLInstallerError (WORD iError, DWORD *pfErrorCode, LPSTR lpszErrorMsg,
+SQLInstallerError (WORD iError, DWORD * pfErrorCode, LPSTR lpszErrorMsg,
     WORD cbErrorMsgMax, WORD * pcbErrorMsg)
 {
   LPSTR message;
@@ -124,7 +124,7 @@ SQLInstallerError (WORD iError, DWORD *pfErrorCode, LPSTR lpszErrorMsg,
 
   /* Copy the message error */
   message = (errormsg[iError - 1]) ?
-	errormsg[iError - 1] : errortable[ierror[iError - 1]];
+      errormsg[iError - 1] : errortable[ierror[iError - 1]];
 
   if (STRLEN (message) >= cbErrorMsgMax - 1)
     {
@@ -146,7 +146,7 @@ quit:
 }
 
 RETCODE INSTAPI
-SQLInstallerErrorW (WORD iError, DWORD *pfErrorCode, LPWSTR lpszErrorMsg,
+SQLInstallerErrorW (WORD iError, DWORD * pfErrorCode, LPWSTR lpszErrorMsg,
     WORD cbErrorMsgMax, WORD * pcbErrorMsg)
 {
   char *_errormsg_u8 = NULL;
@@ -154,18 +154,22 @@ SQLInstallerErrorW (WORD iError, DWORD *pfErrorCode, LPWSTR lpszErrorMsg,
 
   if (cbErrorMsgMax > 0)
     {
-      if ((_errormsg_u8 = malloc (cbErrorMsgMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto done;
-        }
+      if ((_errormsg_u8 =
+	      malloc (cbErrorMsgMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto done;
+	}
     }
 
-  retcode = SQLInstallerError (iError, pfErrorCode, _errormsg_u8, cbErrorMsgMax * UTF8_MAX_CHAR_LEN, pcbErrorMsg);
+  retcode =
+      SQLInstallerError (iError, pfErrorCode, _errormsg_u8,
+      cbErrorMsgMax * UTF8_MAX_CHAR_LEN, pcbErrorMsg);
 
   if (retcode != SQL_ERROR)
     {
-      dm_StrCopyOut2_U8toW (_errormsg_u8, lpszErrorMsg, cbErrorMsgMax, pcbErrorMsg);
+      dm_StrCopyOut2_U8toW (_errormsg_u8, lpszErrorMsg, cbErrorMsgMax,
+	  pcbErrorMsg);
     }
 
 done:

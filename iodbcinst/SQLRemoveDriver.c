@@ -125,7 +125,7 @@ SQLRemoveDriver (LPCSTR lpszDriver, BOOL fRemoveDSN, LPDWORD lpdwUsageCount)
     {
 #ifdef WIN32
       if (entries &&
-	(len = _iodbcdm_list_entries (pCfg, "ODBC 32 bit Data Sources",
+	  (len = _iodbcdm_list_entries (pCfg, "ODBC 32 bit Data Sources",
 		  entries, 65535)))
 #else
       if (entries
@@ -231,7 +231,7 @@ SQLRemoveDriverW (LPCWSTR lpszDriver, BOOL fRemoveDSN, LPDWORD lpdwUsageCount)
   char *_driver_u8 = NULL;
   BOOL retcode = FALSE;
 
-  _driver_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDriver, SQL_NTS);
+  _driver_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszDriver, SQL_NTS);
   if (_driver_u8 == NULL && lpszDriver)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);

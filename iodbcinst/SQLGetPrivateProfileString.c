@@ -92,7 +92,7 @@ GetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
   if (_iodbcdm_cfg_search_init (&pCfg, lpszFilename, FALSE))
     {
       if (lpszDefault)
-        STRNCPY (lpszRetBuffer, lpszDefault, cbRetBuffer - 1);
+	STRNCPY (lpszRetBuffer, lpszDefault, cbRetBuffer - 1);
       PUSH_ERROR (ODBC_ERROR_INVALID_PATH);
       goto fail;
     }
@@ -265,28 +265,28 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
   SQLWCHAR *ptrW;
   SQLSMALLINT length, len;
 
-  _section_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszSection, SQL_NTS);
+  _section_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszSection, SQL_NTS);
   if (_section_u8 == NULL && lpszSection)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _entry_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszEntry, SQL_NTS);
+  _entry_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszEntry, SQL_NTS);
   if (_entry_u8 == NULL && lpszEntry)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _default_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszDefault, SQL_NTS);
+  _default_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszDefault, SQL_NTS);
   if (_default_u8 == NULL && lpszDefault)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _filename_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszFilename, SQL_NTS);
+  _filename_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszFilename, SQL_NTS);
   if (_filename_u8 == NULL && lpszFilename)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
@@ -296,35 +296,38 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
   if (cbRetBuffer > 0)
     {
       if ((_buffer_u8 = malloc (cbRetBuffer * UTF8_MAX_CHAR_LEN + 1)) == NULL)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto done;
-        }
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto done;
+	}
     }
 
   length = SQLGetPrivateProfileString (_section_u8, _entry_u8, _default_u8,
-    _buffer_u8, cbRetBuffer * UTF8_MAX_CHAR_LEN, _filename_u8);
+      _buffer_u8, cbRetBuffer * UTF8_MAX_CHAR_LEN, _filename_u8);
 
   if (length > 0)
     {
       if (lpszSection == NULL || lpszEntry == NULL ||
-          lpszSection[0] == '\0' || lpszEntry[0] == '\0')
-        {
-          length = 0;
+	  lpszSection[0] == '\0' || lpszEntry[0] == '\0')
+	{
+	  length = 0;
 
-          for (ptr = _buffer_u8, ptrW = lpszRetBuffer ; *ptr ; ptr += STRLEN(ptr) + 1, ptrW += WCSLEN(ptrW) + 1)
-            {
-              dm_StrCopyOut2_U8toW (ptr, ptrW, cbRetBuffer - length - 1, &len);
-              length += len;
-            }
+	  for (ptr = _buffer_u8, ptrW = lpszRetBuffer; *ptr;
+	      ptr += STRLEN (ptr) + 1, ptrW += WCSLEN (ptrW) + 1)
+	    {
+	      dm_StrCopyOut2_U8toW (ptr, ptrW, cbRetBuffer - length - 1,
+		  &len);
+	      length += len;
+	    }
 
-          *ptrW = L'\0';
-          length ++;
-        }
+	  *ptrW = L'\0';
+	  length++;
+	}
       else
-        {
-          dm_StrCopyOut2_U8toW (_buffer_u8, lpszRetBuffer, cbRetBuffer, &length);
-        }
+	{
+	  dm_StrCopyOut2_U8toW (_buffer_u8, lpszRetBuffer, cbRetBuffer,
+	      &length);
+	}
     }
   else
     {
@@ -343,12 +346,11 @@ done:
 
 BOOL INSTAPI
 SQLGetKeywordValue (LPCSTR lpszSection,
-    LPCSTR lpszEntry,
-    LPSTR lpszBuffer,
-    int cbBuffer,
-    int *pcbBufOut)
+    LPCSTR lpszEntry, LPSTR lpszBuffer, int cbBuffer, int *pcbBufOut)
 {
-  int ret = SQLGetPrivateProfileString (lpszSection, lpszEntry, "", lpszBuffer, cbBuffer, "odbc.ini");
+  int ret =
+      SQLGetPrivateProfileString (lpszSection, lpszEntry, "", lpszBuffer,
+      cbBuffer, "odbc.ini");
 
   if (pcbBufOut)
     *pcbBufOut = ret;
@@ -358,12 +360,11 @@ SQLGetKeywordValue (LPCSTR lpszSection,
 
 BOOL INSTAPI
 SQLGetKeywordValueW (LPCWSTR lpszSection,
-    LPCWSTR lpszEntry,
-    LPWSTR lpszBuffer,
-    int cbBuffer,
-    int *pcbBufOut)
+    LPCWSTR lpszEntry, LPWSTR lpszBuffer, int cbBuffer, int *pcbBufOut)
 {
-  int ret = SQLGetPrivateProfileStringW (lpszSection, lpszEntry, L"", lpszBuffer, cbBuffer, L"odbc.ini");
+  int ret =
+      SQLGetPrivateProfileStringW (lpszSection, lpszEntry, L"", lpszBuffer,
+      cbBuffer, L"odbc.ini");
 
   if (pcbBufOut)
     *pcbBufOut = ret;

@@ -78,7 +78,7 @@
 
 
 BOOL INSTAPI
-SQLGetConfigMode (UWORD *pwConfigMode)
+SQLGetConfigMode (UWORD * pwConfigMode)
 {
   BOOL retcode = FALSE;
 

@@ -105,7 +105,8 @@ extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 		DLL_CLOSE(handle); \
 	}
 
-BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
+BOOL
+CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 {
   char dsn[1024] = { 0 };
   UWORD config = ODBC_USER_DSN;
@@ -133,11 +134,17 @@ BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 	  && (libname =
 	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	{
-          CFStringGetCString (libname, name, sizeof (name),
-            kCFStringEncodingASCII);
-          STRCAT (name, "/Contents/MacOS/iODBCadm");
-	  if (waMode == 'A') { CALL_DRVCONN_DIALBOX (name); }
-          else { CALL_DRVCONN_DIALBOXW (name); }
+	  CFStringGetCString (libname, name, sizeof (name),
+	      kCFStringEncodingASCII);
+	  STRCAT (name, "/Contents/MacOS/iODBCadm");
+	  if (waMode == 'A')
+	    {
+	      CALL_DRVCONN_DIALBOX (name);
+	    }
+	  else
+	    {
+	      CALL_DRVCONN_DIALBOXW (name);
+	    }
 	}
       if (liburl)
 	CFRelease (liburl);
@@ -145,8 +152,14 @@ BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 	CFRelease (libname);
     }
 #else
-  if (waMode == 'A') { CALL_DRVCONN_DIALBOX ("libiodbcadm.so"); }
-  else { CALL_DRVCONN_DIALBOXW ("libiodbcadm.so"); }
+  if (waMode == 'A')
+    {
+      CALL_DRVCONN_DIALBOX ("libiodbcadm.so");
+    }
+  else
+    {
+      CALL_DRVCONN_DIALBOXW ("libiodbcadm.so");
+    }
 #endif
 
   return retcode;
@@ -154,7 +167,8 @@ BOOL CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 
 
 BOOL INSTAPI
-SQLCreateDataSource_Internal (HWND hwndParent, SQLPOINTER lpszDSN, SQLCHAR waMode)
+SQLCreateDataSource_Internal (HWND hwndParent, SQLPOINTER lpszDSN,
+    SQLCHAR waMode)
 {
   BOOL retcode = FALSE;
 
@@ -168,19 +182,21 @@ SQLCreateDataSource_Internal (HWND hwndParent, SQLPOINTER lpszDSN, SQLCHAR waMod
 
   if (waMode == 'A')
     {
-      if ((!lpszDSN && !ValidDSN (lpszDSN)) || (!lpszDSN && !STRLEN (lpszDSN)))
-        {
-          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
-          goto quit;
-        }
+      if ((!lpszDSN && !ValidDSN (lpszDSN)) || (!lpszDSN
+	      && !STRLEN (lpszDSN)))
+	{
+	  PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+	  goto quit;
+	}
     }
   else
     {
-      if ((!lpszDSN && !ValidDSNW (lpszDSN)) || (!lpszDSN && !WCSLEN (lpszDSN)))
-        {
-          PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
-          goto quit;
-        }
+      if ((!lpszDSN && !ValidDSNW (lpszDSN)) || (!lpszDSN
+	      && !WCSLEN (lpszDSN)))
+	{
+	  PUSH_ERROR (ODBC_ERROR_INVALID_DSN);
+	  goto quit;
+	}
     }
 
   retcode = CreateDataSource (hwndParent, lpszDSN, waMode);
@@ -192,11 +208,11 @@ quit:
 BOOL INSTAPI
 SQLCreateDataSource (HWND hwndParent, LPCSTR lpszDSN)
 {
-  return SQLCreateDataSource_Internal(hwndParent, (SQLPOINTER)lpszDSN, 'A');
+  return SQLCreateDataSource_Internal (hwndParent, (SQLPOINTER) lpszDSN, 'A');
 }
 
 BOOL INSTAPI
 SQLCreateDataSourceW (HWND hwndParent, LPCWSTR lpszDSN)
 {
-  return SQLCreateDataSource_Internal(hwndParent, (SQLPOINTER)lpszDSN, 'W');
+  return SQLCreateDataSource_Internal (hwndParent, (SQLPOINTER) lpszDSN, 'W');
 }

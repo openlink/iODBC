@@ -119,11 +119,12 @@
 	else ret = SQL_NO_DATA;
 #endif
 
-extern SQLRETURN _iodbcdm_trschoose_dialbox(HWND, LPSTR, DWORD, int *);
+extern SQLRETURN _iodbcdm_trschoose_dialbox (HWND, LPSTR, DWORD, int *);
 
-BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
-    WORD *pcbNameOut, LPSTR lpszPath, WORD cbPathMax,
-    WORD *pcbPathOut, DWORD *pvOption)
+BOOL INSTAPI
+GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
+    WORD * pcbNameOut, LPSTR lpszPath, WORD cbPathMax,
+    WORD * pcbPathOut, DWORD * pvOption)
 {
   pConfigTranslatorFunc pConfigTranslator;
   pTrsChooseFunc pTrsChoose;
@@ -146,25 +147,25 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 #ifdef __APPLE__
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
       if (bundle)
-        {
-          /* Search for the iODBCadm library */
-          liburl =
+	{
+	  /* Search for the iODBCadm library */
+	  liburl =
 	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
 	      NULL, NULL);
-          if (liburl
+	  if (liburl
 	      && (libname =
-	          CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+		  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	    {
 	      CFStringGetCString (libname, name, sizeof (name),
-	          kCFStringEncodingASCII);
-              STRCAT (name, "/Contents/MacOS/iODBCadm");
+		  kCFStringEncodingASCII);
+	      STRCAT (name, "/Contents/MacOS/iODBCadm");
 	      CALL_TRSCHOOSE_DIALBOX (name);
 	    }
-          if (liburl)
+	  if (liburl)
 	    CFRelease (liburl);
-          if (libname)
+	  if (libname)
 	    CFRelease (libname);
-        }
+	}
 #else
       CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so");
 #endif
@@ -247,15 +248,11 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 
 
 BOOL INSTAPI
-SQLGetTranslator (
-    HWND hwnd,
+SQLGetTranslator (HWND hwnd,
     LPSTR lpszName,
     WORD cbNameMax,
     WORD * pcbNameOut,
-    LPSTR lpszPath,
-    WORD cbPathMax,
-    WORD * pcbPathOut,
-    DWORD * pvOption)
+    LPSTR lpszPath, WORD cbPathMax, WORD * pcbPathOut, DWORD * pvOption)
 {
   BOOL retcode = FALSE;
 
@@ -281,15 +278,12 @@ quit:
 }
 
 BOOL INSTAPI
-SQLGetTranslatorW (
-    HWND hwnd,
+SQLGetTranslatorW (HWND hwnd,
     LPWSTR lpszName,
     WORD cbNameMax,
     WORD FAR * pcbNameOut,
     LPWSTR lpszPath,
-    WORD cbPathMax,
-    WORD FAR * pcbPathOut,
-    DWORD FAR * pvOption)
+    WORD cbPathMax, WORD FAR * pcbPathOut, DWORD FAR * pvOption)
 {
   char *_name_u8 = NULL;
   char *_path_u8 = NULL;
@@ -298,23 +292,25 @@ SQLGetTranslatorW (
   if (cbNameMax > 0)
     {
       if ((_name_u8 = malloc (cbNameMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto done;
-        }
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto done;
+	}
     }
 
   if (cbPathMax > 0)
     {
       if ((_path_u8 = malloc (cbPathMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
-        {
-          PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
-          goto done;
-        }
+	{
+	  PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
+	  goto done;
+	}
     }
 
-  retcode = SQLGetTranslator (hwnd, _name_u8, cbNameMax * UTF8_MAX_CHAR_LEN, pcbNameOut,
-    _path_u8, cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut, pvOption);
+  retcode =
+      SQLGetTranslator (hwnd, _name_u8, cbNameMax * UTF8_MAX_CHAR_LEN,
+      pcbNameOut, _path_u8, cbPathMax * UTF8_MAX_CHAR_LEN, pcbPathOut,
+      pvOption);
 
   if (retcode == TRUE)
     {

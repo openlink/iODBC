@@ -89,7 +89,7 @@ ValidDSN (LPCSTR lpszDSN)
       if (strchr (INVALID_CHARS, *currp))
 	return FALSE;
       else
-	currp ++;
+	currp++;
     }
 
   return TRUE;
@@ -106,7 +106,7 @@ ValidDSNW (LPCWSTR lpszDSN)
       if (wcschr (INVALID_CHARSW, *currp))
 	return FALSE;
       else
-	currp ++;
+	currp++;
     }
 
   return TRUE;

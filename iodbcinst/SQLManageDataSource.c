@@ -115,12 +115,12 @@ ManageDataSources (HWND hwndParent)
 	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
 	  NULL, NULL);
       if (liburl && (libname =
-       CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
 	{
-          CFStringGetCString (libname, name, sizeof (name),
-            kCFStringEncodingASCII);
-          STRCAT (name, "/Contents/MacOS/iODBCadm");
-          CALL_ADMIN_DIALBOX (name);
+	  CFStringGetCString (libname, name, sizeof (name),
+	      kCFStringEncodingASCII);
+	  STRCAT (name, "/Contents/MacOS/iODBCadm");
+	  CALL_ADMIN_DIALBOX (name);
 	}
       if (liburl)
 	CFRelease (liburl);
