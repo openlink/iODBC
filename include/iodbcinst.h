@@ -73,10 +73,6 @@
 #ifndef _IODBCINST_H
 #define _IODBCINST_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 /*
  *  Set default specification to ODBC 3.00
  */

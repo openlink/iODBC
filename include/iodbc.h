@@ -74,9 +74,6 @@
 #ifndef	_IODBC_H
 #define _IODBC_H
 
-#if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
-#define _UNIX_
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -88,6 +85,10 @@
 #ifndef IODBC_BUILD
 #define IODBC_BUILD 35100	/* 0003.5100 */
 #endif
+
+
+#if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
+#define _UNIX_
 
 #include <stdlib.h>
 #include <stdio.h>

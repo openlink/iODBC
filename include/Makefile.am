@@ -75,3 +75,6 @@ include_HEADERS         = \
 	sqltypes.h \
 	iodbcinst.h \
 	iodbcext.h
+
+noinst_HEADERS	= \
+	iodbc.h
