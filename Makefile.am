@@ -42,7 +42,7 @@ if MAINTAINER_MODE
 linux-rpm:
 	$(MAKE) dist
 	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
-	rpm -ba libiodbc.spec
+	rpm -ba admin/libiodbc.spec
 
 #
 #  Create a tar file containing the library and include files
