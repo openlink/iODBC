@@ -61,7 +61,7 @@ if MAINTAINER_MODE
 #  Create Linux RPM's
 #
 linux-rpm:
-	make dist
+	$(MAKE) dist
 	cp libiodbc-$(VERSION).tar.gz /usr/src/redhat/SOURCES
 	rpm -ba libiodbc.spec
 
@@ -69,8 +69,8 @@ linux-rpm:
 #  Create a tar file containing the library and include files
 #
 binary-tar:
-	mkdir @build@
-	make install prefix=`pwd`/@build@
+	-mkdir @build@
+	$(MAKE) install prefix=`pwd`/@build@
 	tar cvf @build@.tar @build@
 	gzip -9v @build@.tar
 	rm -rf @build@
