@@ -194,6 +194,7 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) %doc ChangeLog 
 %attr(0644, root, root) %doc NEWS 
 %attr(0644, root, root) %doc README
+%attr(0644, root, root) %doc README.CVS
 %attr(0644, root, root) %doc etc/odbc.ini.sample
 %attr(0644, root, root) %doc etc/odbcinst.ini.sample
 %attr(0644, root, root) /usr/include/iodbcext.h
