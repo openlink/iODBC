@@ -1,3 +1,11 @@
+Sep 11 2001, V3.0.6:
+    * Added support for driver specific connect options
+    * Fixed wrong argument to SQLEndTran
+    * Fixed handling statement descriptor
+    * Fixed DSN string handling
+    * Fixed mapping in SQLColumnAttributes
+    * Minor cleanups and bugfixes
+
 Jun 7 2001, V3.0.5:
     * Added new iodbcinst code
     * Added new drvproxy and iodbcadm GTK frontend
