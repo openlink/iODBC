@@ -321,6 +321,39 @@ _iodbcdm_driverload (
 	}
     }
 
+  /*
+   *  Now set the driver specific options we saved earlier
+   */
+  if (pdbc->drvopt != NULL)
+    {
+      hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption);
+
+      if (hproc == SQL_NULL_HPROC)
+	{
+	  sqlstat = en_IM004;
+	}
+      else
+	{
+	  DRVOPT *popt;
+
+	  for (popt = pdbc->drvopt; popt != NULL; popt = popt->next)
+	    {
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
+		  en_SetConnectOption, (
+		      pdbc->dhdbc,
+		      popt->Option,
+		      popt->Param));
+
+	      if (retcode == SQL_ERROR)
+		{
+		  PUSHSQLERR (pdbc->herr, en_IM006);
+
+		  return SQL_SUCCESS_WITH_INFO;
+		}
+	    }
+	}
+    }
+
   return SQL_SUCCESS;
 }
 

@@ -30,6 +30,15 @@
 #include <hdesc.h>
 #endif
 
+typedef struct _drvopt
+  {
+    SQLUSMALLINT Option;
+    SQLUINTEGER  Param;
+
+    struct _drvopt *next;
+  } 
+DRVOPT;
+
 typedef struct DBC
   {
     int type;			/* must be 1st field */
@@ -68,6 +77,8 @@ typedef struct DBC
     void FAR * tstm;			/* trace stream */
 
     SWORD dbc_cip;			/* Call in Progess flag */
+
+    DRVOPT *drvopt;			/* Driver specific connect options */
   }
 DBC_t;
 

@@ -39,6 +39,63 @@
 #include <itrace.h>
 #include <stdio.h>
 
+
+static SQLRETURN
+_iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam)
+{
+  CONN (pdbc, hdbc);
+  DRVOPT *popt;
+
+  /*
+   *  Check if this option is already registered
+   */
+  for (popt = pdbc->drvopt; popt != NULL; popt = popt->next)
+    {
+      if (popt->Option == fOption)
+	break;
+    }
+
+  /*
+   *  New option
+   */
+  if (popt == NULL)
+    {
+      if ((popt = (DRVOPT *) MEM_ALLOC (sizeof (DRVOPT))) == NULL)
+	return SQL_ERROR;
+
+      popt->Option = fOption;
+      popt->next = pdbc->drvopt;
+      pdbc->drvopt = popt;
+    }
+
+  /*
+   *  Store the value
+   */
+  popt->Param = vParam;
+
+  return SQL_SUCCESS;
+}
+
+
+static SQLRETURN
+_iodbcdm_drvopt_free (SQLHDBC hdbc)
+{
+  CONN (pdbc, hdbc);
+  DRVOPT *popt;
+
+  popt = pdbc->drvopt;
+  while (popt != NULL)
+    {
+      DRVOPT *tmp = popt->next;
+      free (popt);
+      popt = tmp;
+    }
+  pdbc->drvopt = NULL;
+
+  return SQL_SUCCESS;
+}
+
+
 SQLRETURN SQL_API
 SQLAllocConnect (
     SQLHENV henv,
@@ -97,6 +154,7 @@ SQLAllocConnect (
   pdbc->trace = 0;
   pdbc->tstm = NULL;
   pdbc->tfile = NULL;
+  pdbc->drvopt = NULL;
   pdbc->dbc_cip = 0;
 
   /* set connect options to default values */
@@ -161,6 +219,9 @@ SQLFreeConnect (SQLHDBC hdbc)
   /* free this dbc */
   _iodbcdm_driverunload (pdbc);
 
+  /* free driver connect options */
+  _iodbcdm_drvopt_free (pdbc);
+   
   if (pdbc->tfile)
     {
       MEM_FREE (pdbc->tfile);
@@ -217,16 +278,14 @@ _iodbcdm_SetConnectOption (
 	  break;
 	}
 
+      /*
+       *  An option only meaningful for the driver is passed before the 
+       *  driver was actually loaded. We save it here and pass it onto 
+       *  the driver at a later stage.
+       */
       if (fOption >= SQL_CONNECT_OPT_DRVR_START && pdbc->henv == SQL_NULL_HENV)
-	/* An option only meaningful for drivers
-	 * is passed before loading a driver.
-	 * We classify this as an invalid option error.
-	 * This is not documented by MS SDK guide.
-	 */
-	{
-	  sqlstat = en_S1092;
-	  break;
-	}
+        _iodbcdm_drvopt_store (hdbc, fOption, vParam);
+
       break;
 
     case en_dbc_needdata:
