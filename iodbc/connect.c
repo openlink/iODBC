@@ -957,7 +957,6 @@ SQLDriverConnect (
 RETCODE SQL_API 
 SQLBrowseConnect (
     HDBC hdbc,
-    HWND hwnd,
     UCHAR FAR * szConnStrIn,
     SWORD cbConnStrIn,
     UCHAR FAR * szConnStrOut,
@@ -1064,8 +1063,8 @@ SQLBrowseConnect (
     }
 
   CALL_DRIVER (hdbc, retcode, hproc, en_BrowseConnect, (
-	  pdbc->dhdbc, hwnd,
-	  szConnStrIn, cbConnStrIn,
+	  pdbc->dhdbc, 
+	  szConnStrIn, cbConnStrIn, 
 	  szConnStrOut, cbConnStrOutMax,
 	  pcbConnStrOut))
 
