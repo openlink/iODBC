@@ -117,6 +117,12 @@ ln -s "$INST_FW/iODBCinst"		"$PREFIX/lib/libiodbcinst.dylib"
 
 
 #
+# Fix basic permissions
+#
+chmod -R og+rX "$PREFIX"
+
+
+#
 #  Done
 #
 exit 0
