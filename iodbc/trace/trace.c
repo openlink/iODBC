@@ -131,82 +131,126 @@ trace_get_filename (void)
 void
 trace_set_filename (char *fname)
 {
-  char buf[255];
   char *s, *p;
   struct passwd *pwd;
-  size_t i;
-  MEM_FREE (trace_fname);
+  char *buf;
+  size_t buf_len, buf_pos;
+  char tmp[255];
 
-  memset (buf, '\0', sizeof (buf));
-  for (s = fname, i = 0; i < sizeof (buf) && *s;)
+  /*  Initialize */
+  MEM_FREE (trace_fname);
+  trace_fname = NULL;
+  buf = (char *) malloc (buf_len = strlen (fname) + sizeof (tmp) + 1);
+  if (!buf)
+    return;			/* No more memory */
+  buf_pos = 0;
+  buf[0] = '\0';
+
+  for (s = fname; *s;)
     {
-      if (*s == '$')
+      /*
+       *  Make sure we can fit at least 1 more tmp buffer inside
+       */
+      if (buf_len - buf_pos < sizeof (tmp))
+	buf = realloc (buf, buf_len += sizeof (tmp) + 1);
+      if (!buf)
+	return;			/* No more memory */
+
+      if (*s != '$')
 	{
+	  buf[buf_pos++] = *s++;
+	}
+      else
+	{
+	  /* Handle Escape sequences */
 	  switch (*(s + 1))
 	    {
+	    case '$':
+	      {
+		buf[buf_pos++] = '$';
+		break;
+	      }
+
 	    case 'p':
 	    case 'P':
-	      sprintf (buf, "%s%ld", buf, (long) getpid());
-	      i = strlen (buf);
-	      s += 2;
-	      break;
+	      {
+#if defined (HAVE_SNPRINTF)
+		snprintf (tmp, sizeof (tmp), "%ld", (long) getpid ());
+#else
+		sprintf (tmp, "%ld", (long) getpid ());
+#endif
+		strcpy (&buf[buf_pos], tmp);
+		buf_pos += strlen (tmp);
+		break;
+	      }
 
 	    case 'u':
 	    case 'U':
-	      sprintf (buf, "%s%ld", buf, (long) geteuid());
-	      i = strlen (buf);
-	      s += 2;
-	      break;
+	      {
+		if ((pwd = getpwuid (getuid ())) != NULL)
+		  {
+#if defined (HAVE_SNPRINTF)
+		    snprintf (tmp, sizeof (tmp), "%s", pwd->pw_name);
+#else
+		    sprintf (tmp, "%s", pwd->pw_name);
+#endif
+		    strcpy (&buf[buf_pos], tmp);
+		    buf_pos += strlen (tmp);
+		  }
+		break;
+	      }
 
 	    case 'h':
 	    case 'H':
-	      p = NULL;
-	      if ((p = getenv ("HOME")) == NULL)
-		{
-		  if ((pwd = getpwuid (getuid ())) != NULL)
-		    p = pwd->pw_dir;
-		}
-
-	      if (p)
-		{
-#if defined (HAVE_SNPRINTF)
-		  snprintf (buf, sizeof (buf), "%s%s", buf, p);
-#else
-		  sprintf (buf, "%s%s", buf, p);
-#endif
-		  i = strlen(buf);
-		  s += 2;
-		  continue;
-		}
-
-	      case 't':
-	      case 'T':
-	        {
-		  char tmp[30];
-		  time_t now;
-		  struct tm *timeNow;
-
-		  tzset ();
-		  time (&now);
-		  timeNow = localtime (&now);
-
-		  strftime (tmp, sizeof (tmp), "%Y%m%d%H%M%S", timeNow);
-		  sprintf (buf, "%s%s", buf, tmp);
-		  i = strlen (buf);
-		  s += 2;
-		  continue;
+	      {
+		p = NULL;
+		if ((p = getenv ("HOME")) == NULL)
+		  {
+		    if ((pwd = getpwuid (getuid ())) != NULL)
+		      p = pwd->pw_dir;
 		  }
 
+		if (p)
+		  {
+#if defined (HAVE_SNPRINTF)
+		    snprintf (tmp, sizeof (tmp), "%s", p);
+#else
+		    sprintf (tmp, "%s", p);
+#endif
+		    strcpy (&buf[buf_pos], tmp);
+		    buf_pos += strlen (tmp);
+		  }
+		break;
+	      }
+
+	    case 't':
+	    case 'T':
+	      {
+		time_t now;
+		struct tm *timeNow;
+
+		tzset ();
+		time (&now);
+		timeNow = localtime (&now);
+
+		strftime (tmp, sizeof (tmp), "%Y%m%d-%H%M%S", timeNow);
+		strcpy (&buf[buf_pos], tmp);
+		buf_pos += strlen (tmp);
+		break;
+	      }
 
 	    default:
-	       buf[i++] = *s++;
+	      /* Skip unknown escapes */
+	      break;
 	    }
+	  s += 2;
 	}
-      else
-       buf[i++] = *s++;
     }
 
-  trace_fname = STRDUP (buf);
+  buf[buf_pos] = '\0';
+  trace_fname = buf;
+
+  return;
 }
 
 
