@@ -42,7 +42,6 @@
 #include	<ctype.h>
 
 extern char*   _iodbcdm_getinifile (char *buf, int size);
-extern char*   _iodbcdm_getkeyvalbydsn();
 
 #define SECT1			"ODBC Data Sources"
 #define SECT2			"Default"
@@ -97,6 +96,7 @@ SQLDataSources (
     {
       return SQL_INVALID_HANDLE;
     }
+
   /* check argument */
   if (cbDSNMax < 0 || cbDescMax < 0)
     {
@@ -104,12 +104,14 @@ SQLDataSources (
 
       return SQL_ERROR;
     }
+
   if (fDir != SQL_FETCH_FIRST && fDir != SQL_FETCH_NEXT)
     {
       PUSHSQLERR (genv->herr, en_S1103);
 
       return SQL_ERROR;
     }
+
   if (cur_entry < 0 || fDir == SQL_FETCH_FIRST)
     {
       cur_entry = 0;
@@ -137,9 +139,11 @@ SQLDataSources (
       if ((sect = (char **) calloc (MAX_ENTRIES, sizeof (char *))) == NULL)
 	{
 	  PUSHSQLERR (genv->herr, en_S1011);
+	  fclose (fp);
 
 	  return SQL_ERROR;
 	}
+
       /*
        *  Build a dynamic list of sections
        */
@@ -173,6 +177,7 @@ SQLDataSources (
 	      sect[num_entries++] = (char *) strdup (str);
 	    }
 	}
+      fclose (fp);
 
       /*
        *  Sort all entries so we can present a nice list
@@ -180,6 +185,7 @@ SQLDataSources (
       if (num_entries > 1)
 	qsort (sect, num_entries, sizeof (char *), SectSorter);
     }
+
   /*
    *  Try to get to the next item
    */
@@ -188,6 +194,7 @@ SQLDataSources (
       cur_entry = 0;		/* Next time, start all over again */
       return SQL_NO_DATA_FOUND;
     }
+
   /*
    *  Copy DSN information 
    */
@@ -388,7 +395,7 @@ SQLGetInfo (
       return SQL_SUCCESS;
     }
 
-  hproc = _iodbcdm_getproc (hdbc, en_GetInfo);
+  hproc = _iodbcdm_getproc (pdbc, en_GetInfo);
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -467,7 +474,7 @@ SQLGetFunctions (
       return SQL_SUCCESS;
     }
 
-  hproc = _iodbcdm_getproc (hdbc, en_GetFunctions);
+  hproc = _iodbcdm_getproc (pdbc, en_GetFunctions);
 
   if (hproc != SQL_NULL_HPROC)
     {
@@ -484,7 +491,7 @@ SQLGetFunctions (
 
   if (fFunc != SQL_API_ALL_FUNCTIONS)
     {
-      hproc = _iodbcdm_getproc (hdbc, fFunc);
+      hproc = _iodbcdm_getproc (pdbc, fFunc);
 
       if (hproc == SQL_NULL_HPROC)
 	{
@@ -500,7 +507,7 @@ SQLGetFunctions (
 
   for (fFunc = 0; fFunc < 100; fFunc++)
     {
-      hproc = _iodbcdm_getproc (hdbc, fFunc);
+      hproc = _iodbcdm_getproc (pdbc, fFunc);
 
       if (hproc == SQL_NULL_HPROC)
 	{
