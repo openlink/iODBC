@@ -66,7 +66,7 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AUTOMAKE_OPTIONS	= gnu dist-shar dist-zip dist-tarZ 1.4-p5
+AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
 SUBDIRS			= admin bin etc include iodbc iodbcinst iodbcadm drvproxy samples
 
 EXTRA_DIST             = IAFA-PACKAGE LICENSE LICENSE.LGPL LICENSE.BSD
