@@ -107,7 +107,7 @@ SQLAllocStmt_Internal (
     SQLHSTMT * phstmt)
 {
   CONN (pdbc, hdbc);
-  STMT_t *pstmt = NULL;
+  STMT (pstmt, NULL);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int i;
@@ -324,7 +324,7 @@ SQLAllocStmt_Internal (
 #endif
 
   /* insert into list */
-  pstmt->next = pdbc->hstmt;
+  pstmt->next = (STMT_t *) pdbc->hstmt;
   pdbc->hstmt = pstmt;
 
   *phstmt = (SQLHSTMT) pstmt;
@@ -402,8 +402,8 @@ SQLRETURN
 _iodbcdm_dropstmt (HSTMT hstmt)
 {
   STMT (pstmt, hstmt);
-  STMT_t *tpstmt;
-  DBC_t *pdbc;
+  STMT (tpstmt, NULL);
+  CONN (pdbc, NULL);
 
   if (!IS_VALID_HSTMT (pstmt))
     {
@@ -472,7 +472,7 @@ SQLFreeStmt_Internal (
     SQLUSMALLINT fOption)
 {
   STMT (pstmt, hstmt);
-  DBC_t *pdbc;
+  CONN (pdbc, NULL);
 
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
@@ -616,7 +616,7 @@ SQLSetStmtOption_Internal (
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode;
 
 #if (ODBCVER < 0x0300)
@@ -788,9 +788,9 @@ SQLSetStmtOption_Internal (
 
 SQLRETURN SQL_API 
 SQLSetStmtOption (
-    SQLHSTMT hstmt,
-    SQLUSMALLINT fOption,
-    SQLUINTEGER vParam)
+  SQLHSTMT		  hstmt,
+  SQLUSMALLINT		  fOption,
+  SQLUINTEGER		  vParam)
 {
   ENTER_STMT (hstmt,
     trace_SQLSetStmtOption (TRACE_ENTER, hstmt, fOption, vParam));
@@ -804,9 +804,9 @@ SQLSetStmtOption (
 
 SQLRETURN SQL_API 
 SQLSetStmtOptionA (
-    SQLHSTMT hstmt,
-    SQLUSMALLINT fOption,
-    SQLUINTEGER vParam)
+  SQLHSTMT		  hstmt,
+  SQLUSMALLINT		  fOption,
+  SQLUINTEGER		  vParam)
 {
   ENTER_STMT (hstmt,
     trace_SQLSetStmtOption (TRACE_ENTER, hstmt, fOption, vParam));
@@ -826,7 +826,7 @@ SQLGetStmtOption_Internal (
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode;
 
 #if (ODBCVER < 0x0300)
@@ -1136,10 +1136,10 @@ _iodbcdm_alloc_param(STMT_t *pstmt, int i, int size)
 
 
 wchar_t *
-_iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, char *pData, int pDataLength)
+_iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength)
 {
   PARAM_t *param;
-  int size = 0;
+  size_t size = 0;
   int count_alloc = 0;
 
   if (i > STMT_PARAMS_MAX - 1)
@@ -1157,7 +1157,7 @@ _iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, char *pData, int pDataLength)
     }
 
   if (pDataLength == SQL_NTS)
-    size = strlen(pData);
+    size = strlen((char *) pData);
   else
     size = pDataLength;
 
@@ -1182,15 +1182,15 @@ _iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, char *pData, int pDataLength)
         }      
     }
 
-  return param->data;
+  return (wchar_t *) param->data;
 }
 
 
 char *
-_iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, wchar_t *pData, int pDataLength)
+_iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength)
 {
   PARAM_t *param;
-  int size = 0;
+  size_t size = 0;
   int count_alloc = 0;
 
   if (i > STMT_PARAMS_MAX - 1)
@@ -1233,7 +1233,7 @@ _iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, wchar_t *pData, int pDataLength)
         }      
     }
 
-  return param->data;
+  return (char *) param->data;
 }
 
 
@@ -1246,7 +1246,7 @@ _iodbcdm_BindColumn (STMT_t *pstmt, BIND_t *pbind)
   /*
    *  Initialize the cell
    */
-  if ((pblst = calloc (1, sizeof (TBLST))) == NULL)
+  if ((pblst = (PBLST) calloc (1, sizeof (TBLST))) == NULL)
     {
       return SQL_ERROR;
     }
@@ -1335,9 +1335,11 @@ _iodbcdm_RemoveBind (STMT_t *pstmt)
 
 
 static void 
-_iodbcdm_bindConv_A2W(char *data, SDWORD *pInd, UDWORD size)
+_iodbcdm_bindConv_A2W(char *data, SQLINTEGER *pInd, UDWORD size)
 {
   wchar_t *wdata = (wchar_t *) data;
+
+  size=size; /*UNUSED*/
 
   if (*pInd != SQL_NULL_DATA)
     {
@@ -1360,7 +1362,7 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
   PBLST ptr;
   BIND_t *col;
   UDWORD i, size, row_size;
-  SDWORD  *pInd;
+  SQLINTEGER *pInd;
   char *data;
 
   /*
@@ -1376,7 +1378,7 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
       if (pstmt->bind_type == SQL_BIND_BY_COLUMN)
         {
           size = col->bn_size;
-          data = col->bn_data;
+          data = (char *) col->bn_data;
           pInd = col->bn_pInd;
           for (i = 0; i < pstmt->rowset_size; i++)
             {
@@ -1389,7 +1391,7 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
         {
           row_size = pstmt->bind_type;
           size = col->bn_size;
-          data = col->bn_data;
+          data = (char *) col->bn_data;
           pInd = col->bn_pInd;
           for (i = 0; i < pstmt->rowset_size; i++)
             {

@@ -134,10 +134,10 @@ wcsncpy (wchar_t * wcd, const wchar_t * wcs, size_t n)
 
 
 SQLCHAR *
-dm_SQL_W2A (SQLWCHAR * inStr, int size)
+dm_SQL_W2A (SQLWCHAR * inStr, ssize_t size)
 {
   SQLCHAR *outStr = NULL;
-  int len;
+  ssize_t len;
 
   if (inStr == NULL)
     return NULL;

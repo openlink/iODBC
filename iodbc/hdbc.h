@@ -80,8 +80,8 @@
 typedef struct _drvopt
   {
     SQLUSMALLINT Option;
-    SQLUINTEGER  Param;
-    SQLCHAR      waMode;
+    SQLINTEGER Param;
+    SQLCHAR waMode;
 
     struct _drvopt *next;
   } 

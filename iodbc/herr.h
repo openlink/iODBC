@@ -203,7 +203,7 @@ extern void _iodbcdm_freesqlerrlist (HERR herr);
 extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, void *sysmsg);
 
 #define	PUSHSYSERR(list, msg)	\
-	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), 0, msg)
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), en_00000, msg)
 
 #define	PUSHSQLERR(list, code)	\
 	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (code), NULL)

@@ -91,7 +91,7 @@ typedef struct BIND {
   SWORD		 bn_type;	  /* ODBC C data type */
   void *	 bn_data;	  /* Pointer to data */
   SDWORD	 bn_size;	  /* Size of data area */
-  SDWORD	*bn_pInd;	  /* Holds SQL_NULL_DATA | 0. 
+  SQLINTEGER	*bn_pInd;	  /* Holds SQL_NULL_DATA | 0. 
                                    * And length of returned char/bin data 
 				   */
 } BIND_t;
@@ -215,12 +215,12 @@ enum
 /*
  *  Internal prototypes
  */
-SQLRETURN _iodbcdm_dropstmt ();
+SQLRETURN _iodbcdm_dropstmt (HSTMT stmt);
 
 void _iodbcdm_FreeStmtParams(STMT_t *pstmt);
 void *_iodbcdm_alloc_param(STMT_t *pstmt, int i, int size);
-wchar_t *_iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, char *pData, int pDataLength);
-char *_iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, wchar_t *pData, int pDataLength);
+wchar_t *_iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength);
+char *_iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength);
 void _iodbcdm_ConvBindData (STMT_t *pstmt);
 SQLRETURN _iodbcdm_BindColumn (STMT_t *pstmt, BIND_t *pbind);
 int _iodbcdm_UnBindColumn (STMT_t *pstmt, BIND_t *pbind);
@@ -231,17 +231,17 @@ SQLSMALLINT _iodbcdm_map_c_type (int type, int odbcver);
 
 
 SQLRETURN SQL_API _iodbcdm_ExtendedFetch (
-    SQLHSTMT hstmt, 
-    SQLUSMALLINT fFetchType, 
-    SQLINTEGER irow, 
-    SQLUINTEGER *pcrow, 
-    SQLUSMALLINT *rgfRowStatus);
+    SQLHSTMT		  hstmt,
+    SQLUSMALLINT	  fFetchType,
+    SQLINTEGER		  irow, 
+    SQLUINTEGER	 	* pcrow, 
+    SQLUSMALLINT 	* rgfRowStatus);
 
 SQLRETURN SQL_API _iodbcdm_SetPos (
-    SQLHSTMT hstmt, 
-    SQLUSMALLINT irow, 
-    SQLUSMALLINT fOption, 
-    SQLUSMALLINT fLock);
+    SQLHSTMT		  hstmt, 
+    SQLUSMALLINT	  irow, 
+    SQLUSMALLINT	  fOption, 
+    SQLUSMALLINT	  fLock);
 
 SQLRETURN SQL_API _iodbcdm_NumResultCols (
     SQLHSTMT hstmt,

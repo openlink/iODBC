@@ -185,7 +185,7 @@ SQLAllocHandle_Internal (
 	new_desc->desc_cip = 0;
 	*outputHandlePtr = new_desc;
 
-	new_desc->next = con->hdesc;
+	new_desc->next = (DESC_t *) con->hdesc;
 	con->hdesc = new_desc;
 
 	return SQL_SUCCESS;
@@ -362,7 +362,7 @@ _SQLFreeHandle_DESC (
   CLEAR_ERRORS (pdesc);
 
   /* remove it from the dbc's list */
-  curr_desc = pdbc->hdesc;
+  curr_desc = (DESC_t *) pdbc->hdesc;
   while (curr_desc)
     {
       if (curr_desc == pdesc)
@@ -462,6 +462,8 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
     SQLINTEGER StringLength)
 {
   GENV (genv, environmentHandle);
+
+  StringLength = StringLength; /*UNUSED*/
 
   if (genv->hdbc)
     {
@@ -691,9 +693,11 @@ SQLGetStmtAttr_Internal (
 {
   STMT (stmt, statementHandle);
   CONN (pdbc, stmt->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
+
+  waMode = waMode; /*UNUSED*/
 
   switch (Attribute)
     {
@@ -890,7 +894,7 @@ SQLGetStmtAttr_Internal (
       else
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
-	    *((SQLUINTEGER **) ValuePtr) = stmt->params_processed_ptr;
+	    *((SQLUINTEGER **) ValuePtr) = (SQLUINTEGER *) stmt->params_processed_ptr;
 	  return SQL_SUCCESS;
 	}
 
@@ -933,7 +937,7 @@ SQLGetStmtAttr_Internal (
 	{			/* an ODBC2 driver */
 	  if (ValuePtr)
 	    *((SQLUINTEGER **) ValuePtr) = stmt->row_status_allocated == SQL_FALSE ?
-		stmt->row_status_ptr :
+		(SQLUINTEGER *) stmt->row_status_ptr :
 		NULL;
 	  return SQL_SUCCESS;
 	}
@@ -1093,9 +1097,11 @@ SQLSetStmtAttr_Internal (
 {
   STMT (stmt, statementHandle);
   CONN (pdbc, stmt->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
+
+  waMode = waMode; /*UNUSED*/
 
   if (stmt->state == en_stmt_needdata)
     {
@@ -1152,7 +1158,7 @@ SQLSetStmtAttr_Internal (
 	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
 	    return SQL_ERROR;
 
-	  stmt->desc[APP_PARAM_DESC] = ValuePtr;
+	  stmt->desc[APP_PARAM_DESC] = (DESC_t *) ValuePtr;
 	  return SQL_SUCCESS;
 	}
 
@@ -1202,7 +1208,7 @@ SQLSetStmtAttr_Internal (
 	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
 	    return SQL_ERROR;
 
-	  stmt->desc[APP_ROW_DESC] = ValuePtr;
+	  stmt->desc[APP_ROW_DESC] = (DESC_t *) ValuePtr;
 	  return SQL_SUCCESS;
 	}
 
@@ -1629,7 +1635,7 @@ SQLSetConnectAttr_Internal (
   SQLCHAR		  waMode)
 {
   CONN (con, connectionHandle);
-  ENV_t *penv = con->henv;
+  ENVR (penv, con->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ValuePtr = NULL;
@@ -1654,13 +1660,13 @@ SQLSetConnectAttr_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _ValuePtr = dm_SQL_A2W(ValuePtr, StringLength);
+              _ValuePtr = dm_SQL_A2W((SQLCHAR *) ValuePtr, StringLength);
             }
           else
             {
             /* unicode=>ansi*/
-              StringLength = (StringLength != SQL_NTS ? StringLength / sizeof(wchar_t) : SQL_NTS);
-              _ValuePtr = dm_SQL_W2A(ValuePtr, StringLength);
+              StringLength = (StringLength != SQL_NTS) ? (SQLINTEGER) (StringLength / sizeof(wchar_t)) : SQL_NTS;
+              _ValuePtr = dm_SQL_W2A((SQLWCHAR *) ValuePtr, StringLength);
             }
           ValuePtr = _ValuePtr;
           StringLength = SQL_NTS;
@@ -1781,7 +1787,7 @@ SQLGetConnectAttr_Internal (
   SQLCHAR 		  waMode)
 {
   CONN (con, connectionHandle);
-  ENV_t *penv = con->henv;
+  ENVR (penv, con->henv);
   HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode = SQL_SUCCESS;
   void * _Value = NULL;
@@ -1849,8 +1855,9 @@ SQLGetConnectAttr_Internal (
                 /* ansi<=unicode*/
 		  SQLSMALLINT retlen;
 
-                  dm_StrCopyOut2_W2A (valueOut, ValuePtr, 
-                    StringLength / sizeof(wchar_t), &retlen);
+                  dm_StrCopyOut2_W2A ((SQLWCHAR *) valueOut,
+			(SQLCHAR *) ValuePtr, 
+			StringLength / sizeof(wchar_t), &retlen);
                   if (StringLengthPtr)
                     *StringLengthPtr = retlen;
                 }
@@ -1859,8 +1866,9 @@ SQLGetConnectAttr_Internal (
                 /* unicode<=ansi*/
 		  SQLSMALLINT retlen;
 
-                  dm_StrCopyOut2_A2W (valueOut, ValuePtr, StringLength, 
-                    &retlen);
+                  dm_StrCopyOut2_A2W ((SQLCHAR *) valueOut, 
+			(SQLWCHAR *) ValuePtr, 
+			StringLength, &retlen);
                   if (StringLengthPtr)
                     *StringLengthPtr = retlen * sizeof(wchar_t);
                 }
@@ -1989,7 +1997,7 @@ SQLGetDescField_Internal (
 {
   DESC (desc, descriptorHandle);
   CONN (pdbc, desc->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * valueOut = ValuePtr;
@@ -2070,8 +2078,9 @@ SQLGetDescField_Internal (
             /* ansi<=unicode*/
 	      SQLSMALLINT retlen;
 
-              dm_StrCopyOut2_W2A (valueOut, ValuePtr, 
-                 BufferLength / sizeof(wchar_t), &retlen);
+              dm_StrCopyOut2_W2A ((SQLWCHAR *) valueOut, 
+		(SQLCHAR *) ValuePtr, 
+		BufferLength / sizeof(wchar_t), &retlen);
 	      if (StringLengthPtr)
                 *StringLengthPtr = retlen;
             }
@@ -2080,8 +2089,9 @@ SQLGetDescField_Internal (
             /* unicode<=ansi*/
 	      SQLSMALLINT retlen;
 
-              dm_StrCopyOut2_A2W (valueOut, ValuePtr, BufferLength, 
-                &retlen);
+              dm_StrCopyOut2_A2W ((SQLCHAR *) valueOut, 
+		(SQLWCHAR *) ValuePtr, 
+		BufferLength, &retlen);
               if (StringLengthPtr)
                 *StringLengthPtr = retlen * sizeof(wchar_t);
             }
@@ -2202,7 +2212,7 @@ SQLSetDescField_Internal (
 {
   DESC (desc, descriptorHandle);
   CONN (pdbc, desc->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ValuePtr = NULL;
@@ -2226,13 +2236,13 @@ SQLSetDescField_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _ValuePtr = dm_SQL_A2W(ValuePtr, BufferLength);
+              _ValuePtr = dm_SQL_A2W((SQLCHAR *) ValuePtr, BufferLength);
             }
           else
             {
             /* unicode=>ansi*/
-              BufferLength = (BufferLength != SQL_NTS ? BufferLength / sizeof(wchar_t) : SQL_NTS);
-              _ValuePtr = dm_SQL_W2A(ValuePtr, BufferLength);
+              BufferLength = (BufferLength != SQL_NTS) ? (SQLINTEGER) (BufferLength / sizeof(wchar_t)) : SQL_NTS;
+              _ValuePtr = dm_SQL_W2A((SQLWCHAR *) ValuePtr, BufferLength);
             }
           ValuePtr = _ValuePtr;
           BufferLength = SQL_NTS;
@@ -2341,7 +2351,7 @@ SQLGetDescRec_Internal (
 {
   DESC (desc, descriptorHandle);
   CONN (pdbc, desc->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * nameOut = Name;
@@ -2391,12 +2401,12 @@ SQLGetDescRec_Internal (
       if (waMode != 'W')
         {
         /* ansi<=unicode*/
-          dm_StrCopyOut2_W2A (nameOut, Name, BufferLength, StringLengthPtr);
+          dm_StrCopyOut2_W2A ((SQLWCHAR *) nameOut, (SQLCHAR *) Name, BufferLength, StringLengthPtr);
         }
       else
         {
         /* unicode<=ansi*/
-          dm_StrCopyOut2_A2W (nameOut, Name, BufferLength, StringLengthPtr);
+          dm_StrCopyOut2_A2W ((SQLCHAR *) nameOut, (SQLWCHAR *) Name, BufferLength, StringLengthPtr);
         }
     }
 
@@ -2593,7 +2603,6 @@ SQLSetDescRec_Internal (
   return retcode;
 }
 
-
 RETCODE SQL_API
 SQLSetDescRec (
   SQLHDESC		  DescriptorHandle,
@@ -2681,8 +2690,8 @@ SQLColAttribute_Internal (
 {
   STMT (stmt, statementHandle);
   CONN (pdbc, stmt->hdbc);
-  ENV_t *penv = pdbc->henv;
-  GENV_t *genv = pdbc->genv;
+  ENVR (penv, pdbc->henv);
+  GENV (genv, pdbc->genv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * charAttrOut = CharacterAttributePtr;
@@ -2770,14 +2779,16 @@ SQLColAttribute_Internal (
               if (waMode != 'W')
                 {
                 /* ansi<=unicode*/
-                  dm_StrCopyOut2_W2A (charAttrOut, CharacterAttributePtr, 
-                    BufferLength / sizeof(wchar_t), StringLengthPtr);
+                  dm_StrCopyOut2_W2A ((SQLWCHAR *) charAttrOut, 
+			(SQLCHAR *) CharacterAttributePtr,
+			BufferLength / sizeof(wchar_t), StringLengthPtr);
                 }
               else
                 {
                 /* unicode<=ansi*/
-                  dm_StrCopyOut2_A2W (charAttrOut, CharacterAttributePtr, 
-                    BufferLength, StringLengthPtr);
+                  dm_StrCopyOut2_A2W ((SQLCHAR *) charAttrOut, 
+			(SQLWCHAR *) CharacterAttributePtr,
+			BufferLength, StringLengthPtr);
                   if (StringLengthPtr)
                     *StringLengthPtr = *StringLengthPtr * sizeof(wchar_t);
                 }
@@ -2977,14 +2988,16 @@ SQLColAttribute_Internal (
               if (waMode != 'W')
                 {
                 /* ansi<=unicode*/
-                  dm_StrCopyOut2_W2A (charAttrOut, CharacterAttributePtr, 
-                    BufferLength / sizeof(wchar_t), StringLengthPtr);
+                  dm_StrCopyOut2_W2A ((SQLWCHAR *) charAttrOut, 
+			(SQLCHAR *) CharacterAttributePtr,
+			BufferLength / sizeof(wchar_t), StringLengthPtr);
                 }
               else
                 {
                 /* unicode<=ansi*/
-                  dm_StrCopyOut2_A2W (charAttrOut, CharacterAttributePtr, 
-                    BufferLength, StringLengthPtr);
+                  dm_StrCopyOut2_A2W ((SQLCHAR *) charAttrOut,
+			(SQLWCHAR *) CharacterAttributePtr,
+			BufferLength, StringLengthPtr);
                   if (StringLengthPtr)
                     *StringLengthPtr = *StringLengthPtr * sizeof(wchar_t);
                 }
@@ -3004,7 +3017,7 @@ SQLColAttribute (
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLPOINTER 		  NumericAttributePtr)
+  SQLPOINTER		  NumericAttributePtr)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttribute (TRACE_ENTER, 
@@ -3039,7 +3052,7 @@ SQLColAttributeA (
   SQLPOINTER		  CharacterAttributePtr,
   SQLSMALLINT		  BufferLength,
   SQLSMALLINT		* StringLengthPtr,
-  SQLPOINTER 		  NumericAttributePtr)
+  SQLPOINTER		  NumericAttributePtr)
 {
   ENTER_STMT (statementHandle,
     trace_SQLColAttribute (TRACE_ENTER, 
@@ -3279,14 +3292,15 @@ SQLFetchScroll_Internal (
 	      return SQL_ERROR;
 	    }
 	  retcode = _iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
-	      stmt->
-	      fetch_bookmark_ptr ? *((SQLINTEGER *) stmt->fetch_bookmark_ptr)
-	      : 0, stmt->rows_fetched_ptr, stmt->row_status_ptr);
+	      stmt->fetch_bookmark_ptr ? *((SQLINTEGER *) stmt->fetch_bookmark_ptr)
+	      : 0, (SQLUINTEGER *) stmt->rows_fetched_ptr, 
+		(SQLUSMALLINT *) stmt->row_status_ptr);
 	}
       else
 	retcode =
 	    _iodbcdm_ExtendedFetch (statementHandle, fetchOrientation,
-	    fetchOffset, stmt->rows_fetched_ptr, stmt->row_status_ptr);
+	    fetchOffset, (SQLUINTEGER *) stmt->rows_fetched_ptr, 
+	    (SQLUSMALLINT *) stmt->row_status_ptr);
 
     }
 
@@ -3356,7 +3370,7 @@ SQLFetchScroll (
 	FetchOffset);
 
   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-    _iodbcdm_ConvBindData (StatementHandle);
+    _iodbcdm_ConvBindData ((STMT_t *) StatementHandle);
 
   LEAVE_STMT (StatementHandle,
     trace_SQLFetchScroll (TRACE_LEAVE,
@@ -3385,7 +3399,7 @@ static SQLRETURN
 SQLCloseCursor_Internal (SQLHSTMT hstmt)
 {
   STMT (pstmt, hstmt);
-  DBC_t *pdbc;
+  CONN (pdbc, NULL);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 

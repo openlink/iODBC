@@ -75,7 +75,7 @@
 
 #include <dlf.h>
 
-#if defined(_MAC)
+#if defined(_MAC) || defined (__cplusplus)
 typedef SQLRETURN (* HPROC) (...);
 #else
 typedef SQLRETURN (* HPROC) ();

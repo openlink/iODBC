@@ -91,7 +91,7 @@
 #include <stdio.h>
 
 
-extern SQLRETURN _iodbcdm_driverunload ();
+extern SQLRETURN _iodbcdm_driverunload (HDBC hdbc);
 
 static SQLRETURN
 _iodbcdm_drvopt_store (SQLHDBC hdbc, SQLUSMALLINT fOption, SQLUINTEGER vParam,
@@ -157,7 +157,7 @@ SQLAllocConnect_Internal (
     SQLHDBC * phdbc)
 {
   GENV (genv, henv);
-  DBC_t *pdbc;
+  CONN (pdbc, NULL);
 
   if (phdbc == NULL)
     {
@@ -182,7 +182,7 @@ SQLAllocConnect_Internal (
   pdbc->type = SQL_HANDLE_DBC;
 
   /* insert this dbc entry into the link list */
-  pdbc->next = genv->hdbc;
+  pdbc->next = (DBC_t *) genv->hdbc;
   genv->hdbc = pdbc;
 #if (ODBCVER >= 0x0300)
   if (genv->odbc_ver == 0)
@@ -247,9 +247,9 @@ SQLAllocConnect (SQLHENV henv, SQLHDBC * phdbc)
 SQLRETURN
 SQLFreeConnect_Internal (SQLHDBC hdbc)
 {
-  GENV_t *genv;
   CONN (pdbc, hdbc);
-  DBC_t *tpdbc;
+  GENV (genv, pdbc->genv);
+  CONN (tpdbc, NULL);
 
   /* check state */
   if (pdbc->state != en_dbc_allocated)
@@ -257,8 +257,6 @@ SQLFreeConnect_Internal (SQLHDBC hdbc)
       PUSHSQLERR (pdbc->herr, en_S1010);
       return SQL_ERROR;
     }
-
-  genv = (GENV_t *) pdbc->genv;
 
   for (tpdbc = (DBC_t *) genv->hdbc; tpdbc != NULL; tpdbc = tpdbc->next)
     {
@@ -309,16 +307,16 @@ SQLFreeConnect (SQLHDBC hdbc)
 
 SQLRETURN
 _iodbcdm_SetConnectOption (
-    SQLHDBC hdbc,
-    SQLUSMALLINT fOption,
-    SQLUINTEGER vParam,
-    SQLCHAR waMode)
+  SQLHDBC		  hdbc,
+  SQLUSMALLINT		  fOption,
+  SQLUINTEGER		  vParam,
+  SQLCHAR		  waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t *penv = pdbc->henv;
-  STMT_t *pstmt;
+  ENVR (penv, pdbc->henv);
+  STMT (pstmt, NULL);
   HPROC hproc = SQL_NULL_HPROC;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
 
 #if (ODBCVER < 0x0300)
@@ -751,9 +749,9 @@ _iodbcdm_GetConnectOption (
     SQLCHAR waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
 
 #if (ODBCVER < 0x0300)
@@ -836,7 +834,7 @@ _iodbcdm_GetConnectOption (
         }
       else
         {
-           dm_strcpy_A2W (pvParam, (SQLCHAR *)fname);
+           dm_strcpy_A2W ((SQLWCHAR *)pvParam, (SQLCHAR *)fname);
         }
 
       free (fname);
@@ -986,12 +984,12 @@ _iodbcdm_GetConnectOption (
               if (waMode != 'W')
                 {
                  /* ansi<=unicode*/
-                  dm_StrCopyOut2_W2A (paramOut, pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
+                  dm_StrCopyOut2_W2A ((SQLWCHAR *)paramOut, (SQLCHAR *)pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
                 }
               else
                 {
                  /* unicode<=ansi*/
-                  dm_StrCopyOut2_A2W (paramOut, pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
+                  dm_StrCopyOut2_A2W ((SQLCHAR *)paramOut, (SQLWCHAR *)pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
                 }
               break;
             }
@@ -1081,7 +1079,7 @@ _iodbcdm_transact (
     UWORD fType)
 {
   CONN (pdbc, hdbc);
-  STMT_t *pstmt;
+  STMT (pstmt, NULL);
   HPROC hproc;
   SQLRETURN retcode;
 

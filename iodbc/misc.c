@@ -145,6 +145,8 @@ _iodbcdm_getkeyvalinstr_Internal (char *str,
   char *s, *tmp;
   int count;
 
+  cnlen=cnlen; /*UNUSED*/ 
+
   if (str == NULL || (s = tmp = strdup (str)) == NULL)
     return NULL;
 
@@ -185,11 +187,11 @@ _iodbcdm_getkeyvalinstr_Internal (char *str,
       if (*cp)
 	{
 	  *cp++ = 0;
-	  if (upper_strneq (s, keywd, STRLEN (keywd)))
+	  if (upper_strneq ((char *) s, (char *) keywd, STRLEN (keywd)))
 	    {
-	      strncpy (value, cp, size);
+	      strncpy ((char *) value, (char *) cp, size);
 	      free (tmp);
-	      return value;
+	      return (char *) value;
 	    }
 	}
       else if (count == 0)
@@ -198,11 +200,11 @@ _iodbcdm_getkeyvalinstr_Internal (char *str,
 	   *  Handle missing DSN=... from the beginning of the string, e.g.:
 	   *  'dsn_ora7;UID=scott;PWD=tiger'
 	   */
-	  if (upper_strneq ("DSN", keywd, STRLEN (keywd)))
+	  if (upper_strneq ("DSN", (char *) keywd, STRLEN (keywd)))
 	    {
-	      strncpy (value, s, size);
+	      strncpy ((char *) value, (char *) s, size);
 	      free (tmp);
-	      return value;
+	      return (char *) value;
 	    }
 	}
 
@@ -235,7 +237,7 @@ _iodbcdm_getkeyvalinstrw (wchar_t *cnstr,
 
   if (size > 0)
     {
-      if ((buf = malloc (size * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+      if ((buf = (char *) malloc (size * UTF8_MAX_CHAR_LEN + 1)) == NULL)
 	return NULL;
     }
 

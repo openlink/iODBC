@@ -95,14 +95,16 @@ SPINLOCK_DECLARE (iodbcdm_global_lock);
 #endif
 
 static int _iodbcdm_initialized = 0;
-static void Init_iODBC();
-static void Done_iODBC();
+static void Init_iODBC(void);
+static void Done_iODBC(void);
 
 
 static void
 _iodbcdm_env_settracing (GENV_t *genv)
 {
   char buf[1024];
+
+  genv = genv; /*UNUSED*/
 
   /*
    *  Check TraceFile keyword
@@ -128,7 +130,7 @@ _iodbcdm_env_settracing (GENV_t *genv)
 SQLRETURN 
 SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
 {
-  GENV_t *genv;
+  GENV (genv, NULL);
   int retcode = SQL_SUCCESS;
 
   /* 
@@ -173,7 +175,7 @@ SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
 SQLRETURN SQL_API
 SQLAllocEnv (SQLHENV * phenv)
 {
-  GENV_t *genv;
+  GENV (genv, NULL);
   int retcode = SQL_SUCCESS;
 
   retcode = SQLAllocEnv_Internal (phenv, SQL_OV_ODBC2);
@@ -244,7 +246,7 @@ SQLFreeEnv (SQLHENV henv)
  *  properly
  */
 static void
-Init_iODBC ()
+Init_iODBC (void)
 {
 #if !defined (PTHREAD_MUTEX_INITIALIZER) || defined (WINDOWS)
   SPINLOCK_INIT (iodbcdm_global_lock);
@@ -269,7 +271,7 @@ Init_iODBC ()
 
 
 static void 
-Done_iODBC()
+Done_iODBC(void)
 {
     SPINLOCK_DONE (iodbcdm_global_lock);
 }

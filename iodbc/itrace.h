@@ -103,16 +103,16 @@ extern int ODBCSharedTraceFlag;
 
 #define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
     {\
-	DBC_t * pdbc = (DBC_t *)(hdbc);\
-	ENV_t * penv = (ENV_t *)(pdbc->henv);\
+	DBC_t *	t_pdbc = (DBC_t *)(hdbc);\
+	ENV_t * t_penv = (ENV_t *)(t_pdbc->henv);\
 \
-	if (!penv->thread_safe)\
-	    MUTEX_LOCK (penv->drv_lock);\
+	if (!t_penv->thread_safe)\
+	    MUTEX_LOCK (t_penv->drv_lock);\
 \
 	CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist )\
 \
-	if (!penv->thread_safe)\
-	    MUTEX_UNLOCK (penv->drv_lock);\
+	if (!t_penv->thread_safe)\
+	    MUTEX_UNLOCK (t_penv->drv_lock);\
     }
 
 #define CALL_UDRIVER(hdbc, errHandle, retcode, hproc, unicode_driver, procid, plist) \

@@ -101,7 +101,7 @@ typedef struct
     HDBC hdbc;			/* driver's dbc list */
     int state;
 #if (ODBCVER >= 0x300)
-    SQLINTEGER odbc_ver;    /* ODBC version of the application */
+    SQLUINTEGER odbc_ver;    /* ODBC version of the application */
 #endif    
 
     SQLSMALLINT err_rec;
@@ -122,7 +122,7 @@ typedef struct
     MUTEX_DECLARE (drv_lock);	/* Used only when driver is not threadsafe */
 
 #if (ODBCVER >= 0x300)
-    SQLINTEGER dodbc_ver;	/* driver's ODBC version */
+    SQLUINTEGER dodbc_ver;	/* driver's ODBC version */
 #endif    
   }
 ENV_t;

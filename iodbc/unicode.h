@@ -85,11 +85,11 @@
 /*
  *  Function Prototypes
  */
-SQLCHAR *dm_SQL_W2A (SQLWCHAR * inStr, int size);
-SQLCHAR *dm_SQL_WtoU8 (SQLWCHAR * inStr, int size);
+SQLCHAR *dm_SQL_W2A (SQLWCHAR * inStr, ssize_t size);
+SQLCHAR *dm_SQL_WtoU8 (SQLWCHAR * inStr, ssize_t size);
 SQLCHAR *dm_strcpy_W2A (SQLCHAR * destStr, SQLWCHAR * sourStr);
 
-SQLWCHAR *dm_SQL_A2W (SQLCHAR * inStr, int size);
+SQLWCHAR *dm_SQL_A2W (SQLCHAR * inStr, ssize_t size);
 SQLWCHAR *dm_SQL_U8toW (SQLCHAR * inStr, SQLSMALLINT size);
 SQLWCHAR *dm_strcpy_A2W (SQLWCHAR * destStr, SQLCHAR * sourStr);
 

@@ -235,11 +235,11 @@ SQLFetch (SQLHSTMT hstmt)
 
 SQLRETURN SQL_API
 _iodbcdm_ExtendedFetch (
-    SQLHSTMT hstmt,
-    SQLUSMALLINT fFetchType,
-    SQLINTEGER irow, 
-    SQLUINTEGER * pcrow, 
-    SQLUSMALLINT * rgfRowStatus)
+    SQLHSTMT		  hstmt,
+    SQLUSMALLINT	  fFetchType,
+    SQLINTEGER		  irow, 
+    SQLUINTEGER	 	* pcrow, 
+    SQLUSMALLINT 	* rgfRowStatus)
 {
   STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
@@ -384,10 +384,10 @@ SQLGetData_Internal (
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
   SQLSMALLINT nCType;
 
   /* check argument */
@@ -552,7 +552,7 @@ SQLGetData_Internal (
 
   if (!penv->unicode_driver && fCType == SQL_C_WCHAR)
     {
-      wchar_t *buf = dm_SQL_A2W(rgbValue, SQL_NTS);
+      wchar_t *buf = dm_SQL_A2W((SQLCHAR *) rgbValue, SQL_NTS);
 
       if (buf != NULL) 
         WCSCPY(rgbValue, buf);
@@ -567,12 +567,13 @@ SQLGetData_Internal (
 
 
 SQLRETURN SQL_API
-SQLGetData (SQLHSTMT hstmt,
-    SQLUSMALLINT icol,
-    SQLSMALLINT fCType,
-    SQLPOINTER rgbValue,
-    SQLINTEGER cbValueMax,
-    SQLINTEGER * pcbValue)
+SQLGetData (
+    SQLHSTMT		  hstmt,
+    SQLUSMALLINT	  icol,
+    SQLSMALLINT		  fCType,
+    SQLPOINTER		  rgbValue,
+    SQLINTEGER		  cbValueMax,
+    SQLINTEGER 		* pcbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLGetData (TRACE_ENTER, 
@@ -745,13 +746,16 @@ SQLMoreResults (SQLHSTMT hstmt)
 
 
 SQLRETURN SQL_API
-_iodbcdm_SetPos (SQLHSTMT hstmt,
-    SQLUSMALLINT irow, SQLUSMALLINT fOption, SQLUSMALLINT fLock)
+_iodbcdm_SetPos (
+  SQLHSTMT		  hstmt,
+  SQLUSMALLINT		  irow, 
+  SQLUSMALLINT		  fOption, 
+  SQLUSMALLINT		  fLock)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
 
   /* check argument value */
   if (fOption > SQL_ADD || fLock > SQL_LOCK_UNLOCK)
@@ -852,10 +856,10 @@ _iodbcdm_SetPos (SQLHSTMT hstmt,
 
 SQLRETURN SQL_API
 SQLSetPos (
-  SQLHSTMT	hstmt,
-  SQLUSMALLINT	irow, 
-  SQLUSMALLINT	fOption, 
-  SQLUSMALLINT	fLock)
+  SQLHSTMT		  hstmt,
+  SQLUSMALLINT		  irow, 
+  SQLUSMALLINT		  fOption, 
+  SQLUSMALLINT		  fLock)
 {
   ENTER_STMT (hstmt,
     trace_SQLSetPos (TRACE_ENTER,

@@ -71,7 +71,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-static const sqlerrmsg_t sqlerrmsg_tab[] =
+static sqlerrmsg_t sqlerrmsg_tab[] =
 {
   { en_00000, "00000", ""},
   { en_01000, "01000", "General warning" },

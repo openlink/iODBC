@@ -122,8 +122,8 @@ stricmp (const char *s1, const char *s2)
 static int
 SectSorter (const void *p1, const void *p2)
 {
-  char **s1 = (char **) p1;
-  char **s2 = (char **) p2;
+  const char **s1 = (const char **) p1;
+  const char **s2 = (const char **) p2;
 
   return stricmp (*s1, *s2);
 }
@@ -148,6 +148,8 @@ SQLDataSources_Internal (
   static int num_entries = 0;
   static void **sect = NULL;
   SQLUSMALLINT fDirOld = fDir;
+
+  waMode = waMode; /*UNUSED*/
 
   /* check argument */
   if (cbDSNMax < 0 || cbDescMax < 0)
@@ -289,7 +291,7 @@ SQLDataSources (
   SQLSMALLINT 		* pcbDSN,
   SQLCHAR 		* szDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT 	 	* pcbDesc)
+  SQLSMALLINT 		* pcbDesc)
 {
   ENTER_HENV (henv,
     trace_SQLDataSources (TRACE_ENTER,
@@ -323,7 +325,7 @@ SQLDataSourcesA (
   SQLSMALLINT 		* pcbDSN,
   SQLCHAR 		* szDesc,
   SQLSMALLINT		  cbDescMax,
-  SQLSMALLINT 	 	* pcbDesc)
+  SQLSMALLINT		* pcbDesc)
 {
   ENTER_HENV (henv,
     trace_SQLDataSources (TRACE_ENTER,
@@ -371,7 +373,7 @@ SQLDataSourcesW (
 
   if (cbDSNMax > 0)
     {
-      if ((_DSN = malloc (cbDSNMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+      if ((_DSN = (SQLCHAR *) malloc (cbDSNMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
 	{
 	  PUSHSQLERR (genv->herr, en_S1001);
 	  return SQL_ERROR;
@@ -380,7 +382,7 @@ SQLDataSourcesW (
 
   if (cbDescMax > 0)
     {
-      if ((_Desc = malloc (cbDescMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+      if ((_Desc = (SQLCHAR *) malloc (cbDescMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
 	{
 	  PUSHSQLERR (genv->herr, en_S1001);
 	  return SQL_ERROR;
@@ -431,6 +433,8 @@ SQLDrivers_Internal (
   static int num_entries = 0;
   static void **sect = NULL;
   SQLUSMALLINT fDirOld = fDir;
+
+  waMode = waMode; /*UNUSED*/
 
   /* check argument */
   if (cbDrvDescMax < 0 || cbDrvAttrMax < 0)
@@ -635,13 +639,13 @@ SQLDriversA (
 
 SQLRETURN SQL_API
 SQLDriversW (SQLHENV henv,
-    SQLUSMALLINT fDir,
-    SQLWCHAR * szDrvDesc,
-    SQLSMALLINT cbDrvDescMax,
-    SQLSMALLINT * pcbDrvDesc,
-    SQLWCHAR * szDrvAttr,
-    SQLSMALLINT cbDrvAttrMax,
-    SQLSMALLINT * pcbDrvAttr)
+    SQLUSMALLINT 	  fDir,
+    SQLWCHAR		* szDrvDesc,
+    SQLSMALLINT		  cbDrvDescMax,
+    SQLSMALLINT		* pcbDrvDesc,
+    SQLWCHAR		* szDrvAttr,
+    SQLSMALLINT		  cbDrvAttrMax,
+    SQLSMALLINT		* pcbDrvAttr)
 {
   SQLCHAR *_Driver = NULL;  
   SQLCHAR *_Attrs = NULL;
@@ -655,7 +659,7 @@ SQLDriversW (SQLHENV henv,
 
   if (cbDrvDescMax > 0)
     {
-      if ((_Driver = malloc (cbDrvDescMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+      if ((_Driver = (SQLCHAR *) malloc (cbDrvDescMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
 	{
 	  PUSHSQLERR (genv->herr, en_S1001);
 	  return SQL_ERROR;
@@ -664,7 +668,7 @@ SQLDriversW (SQLHENV henv,
 
   if (cbDrvAttrMax > 0)
     {
-      if ((_Attrs = malloc (cbDrvAttrMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
+      if ((_Attrs = (SQLCHAR *) malloc (cbDrvAttrMax * UTF8_MAX_CHAR_LEN + 1)) == NULL)
 	{
 	  PUSHSQLERR (genv->herr, en_S1001);
 	  return SQL_ERROR;
@@ -698,17 +702,17 @@ SQLDriversW (SQLHENV henv,
 
 SQLRETURN SQL_API
 SQLGetInfo_Internal (
-    SQLHDBC hdbc,
-    SQLUSMALLINT fInfoType,
-    SQLPOINTER rgbInfoValue,
-    SQLSMALLINT cbInfoValueMax,
-    SQLSMALLINT * pcbInfoValue,
-    SQLCHAR waMode)
+    SQLHDBC		  hdbc,
+    SQLUSMALLINT	  fInfoType,
+    SQLPOINTER		  rgbInfoValue,
+    SQLSMALLINT		  cbInfoValueMax,
+    SQLSMALLINT		* pcbInfoValue,
+    SQLCHAR		  waMode)
 {
   CONN (pdbc, hdbc);
-  ENV_t *penv = pdbc->henv;
-  STMT_t *pstmt = NULL;
-  STMT_t *tpstmt;
+  ENVR (penv, pdbc->henv);
+  STMT (pstmt, NULL);
+  STMT (tpstmt, NULL);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _InfoValue = NULL;
@@ -990,8 +994,9 @@ SQLGetInfo_Internal (
         }
       else
         {
-          ret = dm_StrCopyOut2_A2W ((SQLCHAR *) "01.00", rgbInfoValue, 
-            cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+          ret = dm_StrCopyOut2_A2W ((SQLCHAR *) "01.00",  
+		(SQLWCHAR *) rgbInfoValue, 
+    		cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
           if (pcbInfoValue)
             *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
         }
@@ -1055,14 +1060,16 @@ SQLGetInfo_Internal (
           if (waMode != 'W')
             {
             /* ansi<=unicode*/
-              ret = dm_StrCopyOut2_W2A (infoValueOut, rgbInfoValue, 
+              ret = dm_StrCopyOut2_W2A ((SQLWCHAR *) infoValueOut, 
+		(SQLCHAR *) rgbInfoValue, 
                 cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
             }
           else
             {
             /* unicode<=ansi*/
-              ret = dm_StrCopyOut2_A2W (infoValueOut, rgbInfoValue, cbInfoValueMax, 
-                pcbInfoValue);
+              ret = dm_StrCopyOut2_A2W ((SQLCHAR *) infoValueOut, 
+		(SQLWCHAR *) rgbInfoValue, 
+		cbInfoValueMax, pcbInfoValue);
               if (pcbInfoValue)
                 *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
             }
@@ -1186,7 +1193,7 @@ static SQLRETURN
 SQLGetFunctions_Internal (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fFunc,
-  SQLUSMALLINT 		* pfExists)
+  SQLUSMALLINT		* pfExists)
 {
   CONN (pdbc, hdbc);
   HPROC hproc;
@@ -1362,7 +1369,7 @@ SQLRETURN SQL_API
 SQLGetFunctions (
   SQLHDBC		  hdbc,
   SQLUSMALLINT		  fFunc,
-  SQLUSMALLINT 		* pfExists)
+  SQLUSMALLINT	 	* pfExists)
 {
   ENTER_HDBC (hdbc, 0,
     trace_SQLGetFunctions (TRACE_ENTER,

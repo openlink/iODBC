@@ -120,8 +120,7 @@ SQLExecute_Internal (SQLHSTMT hstmt)
   STMT (pstmt, hstmt);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
-
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -291,10 +290,10 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  ENV_t *penv = pdbc->henv;
+  ENVR (penv, pdbc->henv);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
-  int sqlstat = en_00000;
+  sqlstcode_t sqlstat = en_00000;
   void * _SqlStr = NULL;
 
   /* check arguments */
@@ -352,12 +351,12 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          _SqlStr = _iodbcdm_conv_param_A2W(pstmt, 0, szSqlStr, cbSqlStr);
+          _SqlStr = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *) szSqlStr, cbSqlStr);
         }
       else
         {
         /* unicode=>ansi*/
-          _SqlStr = _iodbcdm_conv_param_W2A(pstmt, 0, szSqlStr, cbSqlStr);
+          _SqlStr = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *) szSqlStr, cbSqlStr);
         }
       szSqlStr = _SqlStr;
       cbSqlStr = SQL_NTS;
@@ -475,7 +474,10 @@ SQLExecDirectW (SQLHSTMT hstmt, SQLWCHAR * szSqlStr, SQLINTEGER cbSqlStr)
 
 
 static SQLRETURN
-SQLPutData_Internal (SQLHSTMT hstmt, SQLPOINTER rgbValue, SQLINTEGER cbValue)
+SQLPutData_Internal (
+  SQLHSTMT		  hstmt,
+  SQLPOINTER		  rgbValue, 
+  SQLINTEGER		  cbValue)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
@@ -584,7 +586,10 @@ SQLPutData_Internal (SQLHSTMT hstmt, SQLPOINTER rgbValue, SQLINTEGER cbValue)
 
 
 SQLRETURN SQL_API
-SQLPutData (SQLHSTMT hstmt, SQLPOINTER rgbValue, SQLINTEGER cbValue)
+SQLPutData (
+  SQLHSTMT		  hstmt, 
+  SQLPOINTER		  rgbValue, 
+  SQLINTEGER		  cbValue)
 {
   ENTER_STMT (hstmt,
     trace_SQLPutData (TRACE_ENTER, hstmt, rgbValue, cbValue));
@@ -825,15 +830,17 @@ SQLNumParams (SQLHSTMT hstmt, SQLSMALLINT * pcpar)
 
 
 static SQLRETURN
-SQLDescribeParam_Internal (SQLHSTMT hstmt,
-    SQLUSMALLINT ipar,
-    SQLSMALLINT * pfSqlType,
-    SQLUINTEGER * pcbColDef,
-    SQLSMALLINT * pibScale, SQLSMALLINT * pfNullable)
+SQLDescribeParam_Internal (
+    SQLHSTMT		  hstmt,
+    SQLUSMALLINT	  ipar,
+    SQLSMALLINT		* pfSqlType,
+    SQLUINTEGER		* pcbColDef,
+    SQLSMALLINT		* pibScale, 
+    SQLSMALLINT 	* pfNullable)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
-  GENV_t *genv = pdbc->genv;
+  GENV (genv, pdbc->genv);
 
   HPROC hproc;
   SQLRETURN retcode;
