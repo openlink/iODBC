@@ -76,6 +76,7 @@ EXTRA_DIST		= \
 	README.CVS \
 	README.MACOSX \
 	bootstrap.sh \
+	PORT.OpenLink \
 	acinclude.m4 \
 	mac/Makefile \
 	mac/link-inclibs.sh \
