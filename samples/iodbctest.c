@@ -252,7 +252,7 @@ ODBC_Connect (char *connStr)
 	/*
 	 * Check if the user wants to quit
 	 */
-	if (!strcmp (dataSource, "quit") || !strcmp (dataSource, "exit"))
+	if (!strcmp ((char *)dataSource, "quit") || !strcmp ((char *)dataSource, "exit"))
 	  return -1;
 
 	/*
