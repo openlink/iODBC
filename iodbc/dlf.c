@@ -1284,7 +1284,7 @@ dlerror (void)
 
   p = (const char *) dlerror_pointer;
   dlerror_pointer = NULL;
-  return (p);
+  return (char FAR*)(p);
 }
 
 
