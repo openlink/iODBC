@@ -31,9 +31,7 @@ INCLUDES		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcinst \
-	@GTK_CFLAGS@
-
-CFLAGS			= @CFLAGS@ -D__GTK__
+	@GTK_CFLAGS@ -D__GTK__
 else
 INCLUDES		= \
 	-I$(top_srcdir)/include \

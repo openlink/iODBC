@@ -26,11 +26,16 @@ lib_LTLIBRARIES		= libdrvproxy.la
 endif
 
 if GTK
-INCLUDES		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbc -I$(top_srcdir)/iodbcinst \
-	@GTK_CFLAGS@
-CFLAGS			= @CFLAGS@ -D__GTK__
+INCLUDES		= \
+	-I$(top_srcdir)/include \
+	-I$(top_srcdir)/iodbc \
+	-I$(top_srcdir)/iodbcinst \
+	@GTK_CFLAGS@ -D__GTK__
 else
-INCLUDES		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbc -I$(top_srcdir)/iodbcinst
+INCLUDES		= \
+	-I$(top_srcdir)/include 
+	-I$(top_srcdir)/iodbc \
+	-I$(top_srcdir)/iodbcinst
 endif
 
 libdrvproxy_la_LDFLAGS	= -version-info @lib_version@ \
