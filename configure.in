@@ -642,6 +642,7 @@ fi
 ##########################################################################
 LIBADD_OS=""
 AC_MSG_CHECKING(for OS dependent libraries)
+AM_CONDITIONAL(DARWIN, false)	
 case $host in
   *-darwin*)
 	AM_CONDITIONAL(DARWIN, true)	
