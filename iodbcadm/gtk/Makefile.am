@@ -21,7 +21,9 @@
 
 DATEBUILD		= `date +%d/%m/%Y_%T`
 
+if GTK
 lib_LTLIBRARIES		= libiodbcadm-gtk.la
+endif
 
 INCLUDES		= \
 	-I$(top_srcdir)/include \
