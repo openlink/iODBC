@@ -297,12 +297,12 @@ ODBC_Connect (char *connStr)
 #ifdef UNICODE
   strcpy_A2W (wdataSource, (char *) dataSource);
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
-      (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
+      (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_PROMPT);
   if (status != SQL_SUCCESS)
     ODBC_Errors ("SQLDriverConnectW");
 #else
   status = SQLDriverConnect (hdbc, 0, (SQLCHAR *) dataSource, SQL_NTS,
-      (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
+      (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_PROMPT);
   if (status != SQL_SUCCESS)
     ODBC_Errors ("SQLDriverConnect");
 #endif
