@@ -115,7 +115,7 @@ readtoken (
 
 #if	!defined(WINDOWS) && !defined(WIN32) && !defined(OS2)
 # include <pwd.h>
-# define	UNIX_PWD
+# define UNIX_PWD
 #endif
 
 char *
@@ -132,7 +132,9 @@ _iodbcdm_getinifile (char *buf, int size)
     }
 
 #if	!defined(UNIX_PWD)
-
+  /*
+   *  On Windows, there is only one place to look
+   */
   i = GetWindowsDirectory ((LPSTR) buf, size);
 
   if (i == 0 || i > size - j)
@@ -144,50 +146,59 @@ _iodbcdm_getinifile (char *buf, int size)
 
   return buf;
 #else
+  /*
+   *  1. Check $ODBCINI environment variable
+   */
   if ((ptr = getenv ("ODBCINI")) != NULL)
     {
-      strcpy (buf, ptr);
-      return buf;
+      STRNCPY (buf, ptr, size);
+
+      if (access (buf, 4) == 0)
+	return buf;
     }
 
 #ifdef VMS
-  j = STRLEN ("SYS$LOGIN:ODBC.INI") + 1;
+  /*
+   *  2a. VMS calls this HOME
+   */
+  STRNCPY (buf, "SYS$LOGIN:ODBC.INI", size);
 
-  if (size < j)
-    {
-      return NULL;
-    }
-
-  STRCPY (buf, "SYS$LOGIN:ODBC.INI");
+  if (access (buf, 4) == 0)
+    return buf;
 #else
+  /*
+   *  2b. Check either $HOME/.odbc.ini or ~/.odbc.ini
+   */
   if ((ptr = getenv ("HOME")) == NULL)
     {
       ptr = (char *) getpwuid (getuid ());
 
-      if (ptr == NULL)
-	{
-	  return NULL;
-	}
-
-      ptr = ((struct passwd *) ptr)->pw_dir;
+      if (ptr != NULL)
+	ptr = ((struct passwd *) ptr)->pw_dir;
     }
 
-  if (ptr == NULL || *ptr == '\0')
+  if (ptr != NULL)
     {
-      ptr = "/home";
+      sprintf (buf, "%s/.odbc.ini", ptr);
+
+      if (access (buf, 4) == 0)
+	return buf;
     }
 
-  if (size < STRLEN (ptr) + j)
-    {
-      return NULL;
-    }
-
-  sprintf (buf, "%s%s", ptr, "/.odbc.ini");
-  /* i.e. searching ~/.odbc.ini */
 #endif /* VMS */
-#endif /* UNIX_PWD */
 
-  return buf;
+  /*
+   *  3. Try SYS_ODBC_INI as the last resort
+   */
+  STRNCPY (buf, SYS_ODBC_INI, size);
+  if (access (buf, 4) == 0)
+    return buf;
+
+  /*
+   *  No ini file found or accessable
+   */
+  return NULL;
+#endif /* UNIX_PWD */
 }
 
 
