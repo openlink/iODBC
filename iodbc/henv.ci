@@ -31,6 +31,10 @@
  */
 #ifndef	CLI_NAME_PREFIX
 #  define CLI_NAME_PREFIX	"SQL"	/* using call by value prefix */ 
+#else
+# ifdef NEED_USCORE
+#  define CLI_NAME_PREFIX	"_SQL"
+# endif
 #endif
 
 static struct
