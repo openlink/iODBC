@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <iodbc.h>
 #include <iodbcinst.h>
 #include <gtk/gtk.h>
 

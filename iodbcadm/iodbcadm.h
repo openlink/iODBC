@@ -25,6 +25,7 @@
 #ifdef _MACX
 #  include <iODBCinst/iodbcinst.h>
 #else
+#  include <iodbc.h>
 #  include <iodbcinst.h>
 #endif
 

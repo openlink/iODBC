@@ -26,6 +26,7 @@
 
 #include "gui.h"
 
+#include <iodbc.h>
 #include <herr.h>
 #include <dlproc.h>
 
