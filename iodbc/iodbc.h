@@ -53,7 +53,6 @@ typedef long DWORD;
 
 typedef WORD WPARAM;
 typedef DWORD LPARAM;
-typedef void *HWND;
 typedef int BOOL;
 #endif /* _UNIX_ */
 
