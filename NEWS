@@ -1,3 +1,29 @@
+Sep 29 2004, V3.52.1:
+    * Added support for new ODBC 3.52 specification for 64bit environments
+    * Added support for SQLGetEnvAttr(SQL_ATTR_WCHAR_SIZE extension
+    * Added missing Mac OS X build files
+    * Added script to symlink Mac OS X framework into /usr/local/iODBC
+      to allow traditional GNU configurable packages to use the same
+      version of iODBC
+    * Added new layer to driver loading to prevent memory leaks when
+      drivers cannot be physically unloaded
+    * Added man pages for iodbc-config, iodbctest and iodbcadm-gtk
+    * Added header file iodbcunix.h for portability
+    * Enhanced tracing for SQLGetFunctions, SQLColAttribute
+    * Fixed NULL pointer problem when connection failed
+    * Fixed initialization problem with SQLGetPrivateProfileString
+    * Fixed export Unicode and ANSI names of ODBC functions in libiodbc
+    * Fixed SQLSetScrollOption emulation
+    * Fixed tracing for SQLSetDescRec
+    * Fixed rpm build issue with RedHat 9
+    * Fixed MAC OS X install problem
+    * Fixed Mac OS X build dependency on Carbon libraries
+    * Fixed HP/UX shared library name handling
+    * Fixed handling of UTF-8 sequences
+    * Fixed compiler warnings
+    * Small code cleanups and fixes
+ 
+
 Feb 24 2004, V3.51.2:
     * Added support for installation layouts for different distributions
       e.g. --with-layout=RedHat
