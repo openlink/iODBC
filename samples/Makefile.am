@@ -65,14 +65,12 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-EXTRA_DIST		= odbctest.c
-
-noinst_PROGRAMS		= odbctest
+bin_PROGRAMS		= odbctest
 INCLUDES		= -I$(top_srcdir)/include
 
 #
 #  Build odbctest program
 #
 odbctest_SOURCES	= odbctest.c
-odbctest_LDADD		= ../iodbc/libiodbc.la
-odbctest_LDFLAGS	= -static
+odbctest_LDADD		= ../iodbc/libiodbc.la 
+odbctest_LDFLAGS	= # -static
