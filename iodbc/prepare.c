@@ -642,7 +642,7 @@ SQLParamOptions_Internal (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (crow == (UDWORD) 0UL)
+  if (crow == (SQLULEN) 0UL)
     {
       PUSHSQLERR (pstmt->herr, en_S1107);
 

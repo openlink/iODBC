@@ -719,7 +719,7 @@ _iodbcdm_dbcdelayset (HDBC hdbc, UCHAR waMode)
   if (pdbc->current_qualifier != NULL)
     {
       ret = _iodbcdm_SetConnectOption_init (hdbc, SQL_CURRENT_QUALIFIER,
-	      (SQLUINTEGER)pdbc->current_qualifier,
+	      (SQLULEN) pdbc->current_qualifier,
 	      pdbc->current_qualifier_WA);
 
       retcode |= ret;

@@ -496,7 +496,7 @@ _iodbcdm_SetConnectOption (
               /* unicode=>ansi*/
                 _vParam = dm_SQL_W2A((SQLWCHAR *)vParam, SQL_NTS);
               }
-            vParam = (SQLUINTEGER)_vParam;
+            vParam = (SQLULEN)_vParam;
             break;
           }
       }

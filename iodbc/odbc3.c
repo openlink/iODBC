@@ -474,7 +474,7 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
   switch (Attribute)
     {
     case SQL_ATTR_CONNECTION_POOLING:
-      switch ((SQLINTEGER) ValuePtr)
+      switch ((SQLINTEGER) (SQLULEN) ValuePtr)
 	{
 	case SQL_CP_OFF:
 	case SQL_CP_ONE_PER_DRIVER:
@@ -487,7 +487,7 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
 	}
 
     case SQL_ATTR_CP_MATCH:
-      switch ((SQLINTEGER) ValuePtr)
+      switch ((SQLINTEGER) (SQLULEN) ValuePtr)
 	{
 	case SQL_CP_STRICT_MATCH:
 	case SQL_CP_RELAXED_MATCH:
@@ -499,11 +499,11 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
 	}
 
     case SQL_ATTR_ODBC_VERSION:
-      switch ((SQLINTEGER) ValuePtr)
+      switch ((SQLINTEGER) (SQLULEN) ValuePtr)
 	{
 	case SQL_OV_ODBC2:
 	case SQL_OV_ODBC3:
-	  genv->odbc_ver = (SQLINTEGER) ValuePtr;
+	  genv->odbc_ver = (SQLINTEGER) (SQLULEN) ValuePtr;
 	  return (SQL_SUCCESS);
 
 	default:
@@ -512,7 +512,7 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
 	}
 
     case SQL_ATTR_OUTPUT_NTS:
-      switch ((SQLINTEGER) ValuePtr)
+      switch ((SQLINTEGER) (SQLULEN) ValuePtr)
 	{
 	case SQL_TRUE:
 	  return SQL_SUCCESS;
@@ -1315,7 +1315,7 @@ SQLSetStmtAttr_Internal (
 	}
       else
 	{			/* an ODBC2 driver */
-	  stmt->paramset_size = (SQLUINTEGER) ValuePtr;
+	  stmt->paramset_size = (SQLUINTEGER) (SQLULEN) ValuePtr;
 	  return SQL_SUCCESS;
 	}
 
@@ -1347,12 +1347,12 @@ SQLSetStmtAttr_Internal (
 	}
       else
 	{			/* an ODBC2 driver */
-	  if ((SQLUINTEGER) ValuePtr < 1)
+	  if ((SQLUINTEGER) (SQLULEN) ValuePtr < 1)
 	    {
 	      PUSHSQLERR (stmt->herr, en_HY024);
 	      return SQL_ERROR;
 	    }
-	  stmt->row_array_size = (SQLUINTEGER) ValuePtr;
+	  stmt->row_array_size = (SQLUINTEGER) (SQLULEN) ValuePtr;
 
 	  /* reallocate the row_status_ptr */
 	  if (stmt->row_status_ptr && stmt->row_status_allocated == SQL_TRUE)
