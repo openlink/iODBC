@@ -141,6 +141,15 @@ ODBC_Connect (char *connStr)
 #endif
 
   /*
+   *  Show the version number of the driver manager 
+   */
+  status = SQLGetInfo (hdbc, SQL_DM_VER, 
+	driverInfo, sizeof (driverInfo), &len1);
+  if (status == SQL_SUCCESS)
+    printf ("Driver Manager: %s\n", driverInfo);
+
+
+  /*
    *  Either use the connect string provided on the command line or
    *  ask for one. If an empty string or a ? is given, show a nice
    *  list of options
