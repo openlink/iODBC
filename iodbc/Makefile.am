@@ -87,9 +87,9 @@ noinst_HEADERS		= dlf.h dlproc.h hdbc.h henv.h herr.h \
 			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h \
 			  unicode.h
 
+if DARWIN
 libiodbc.la: $(libiodbc_la_OBJECTS) $(libiodbc_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libiodbc_la_LDFLAGS) $(libiodbc_la_OBJECTS) $(libiodbc_la_LIBADD) $(LIBS)
-if DARWIN
 	$(STRIP) -s ../mac/iodbc.exp -u .libs/*.dylib
 endif
 

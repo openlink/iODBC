@@ -126,9 +126,9 @@ dlf.c: $(top_srcdir)/iodbc/dlf.c
 	-rm -f dlf.c
 	$(LN_S) $(top_srcdir)/iodbc/dlf.c dlf.c
 
+if DARWIN
 libiodbcinst.la: $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libiodbcinst_la_LDFLAGS) $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_LIBADD) $(LIBS)
-if DARWIN
 	$(STRIP) -s ../mac/iodbcinst.exp -u .libs/*.dylib
 endif
 
