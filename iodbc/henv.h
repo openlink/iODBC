@@ -29,8 +29,8 @@
 #include <config.h>
 #include <dlproc.h>
 
-#include <isql.h>
-#include <isqlext.h>
+#include <sql.h>
+#include <sqlext.h>
 
 enum
   {

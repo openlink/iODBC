@@ -26,8 +26,8 @@
 
 #include <config.h>
 
-#include <isql.h>
-#include <isqlext.h>
+#include <sql.h>
+#include <sqlext.h>
 
 #include <dlproc.h>
 
