@@ -643,7 +643,8 @@ fi
 LIBADD_OS=""
 AC_MSG_CHECKING(for OS dependent libraries)
 case $host in
-  *-darwin*)	
+  *-darwin*)
+	AM_CONDITIONAL(DARWIN, true)	
 	LIBADD_OS="-Wl,-framework,Carbon"
 	;;
 esac
