@@ -142,14 +142,14 @@ ENV_t;
 	    retcode = SQL_INVALID_HANDLE; \
 	    goto done; \
 	  } \
-	CLEAR_ERRORS (genv);
+	CLEAR_ERRORS (genv)
 
 
 #define LEAVE_HENV(henv, trace) \
     done: \
      	TRACE(trace); \
 	ODBC_UNLOCK (); \
-	return (retcode);
+	return (retcode)
   
 
 /*

@@ -176,7 +176,7 @@ STMT_t;
 	CLEAR_ERRORS (pstmt); \
 	if (pstmt->asyn_on == en_NullProc && pstmt->params_inserted > 0) \
 	  _iodbcdm_FreeStmtParams(pstmt); \
-        ODBC_UNLOCK();
+        ODBC_UNLOCK()
 	
 
 #define LEAVE_STMT(hstmt, trace) \
@@ -185,7 +185,7 @@ STMT_t;
     done: \
     	TRACE(trace); \
 	ODBC_UNLOCK (); \
-	return (retcode);
+	return (retcode)
 
 
 enum

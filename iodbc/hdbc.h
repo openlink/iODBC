@@ -152,7 +152,7 @@ DBC_t;
 	pdbc->dbc_cip = 1; \
 	CLEAR_ERRORS (pdbc); \
 	if (!holdlock) \
-	  ODBC_UNLOCK();
+	  ODBC_UNLOCK()
 
 
 #define LEAVE_HDBC(hdbc, holdlock, trace) \
@@ -162,7 +162,7 @@ DBC_t;
     done: \
     	TRACE(trace); \
 	ODBC_UNLOCK (); \
-	return (retcode);
+	return (retcode)
 
 
 /* 
