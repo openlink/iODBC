@@ -131,7 +131,7 @@
 /*
  *  If not defined, use this as the system default odbc.ini file
  */
-#ifndef SYS_ODBC_INI
+#if !defined(SYS_ODBC_INI) || (defined(__APPLE__) && !defined(ODBC_INI_APP))
 # if defined(__BEOS__)
 # 	define SYS_ODBC_INI "/boot/beos/etc/odbc.ini"
 # elif defined(_MAC)
@@ -140,7 +140,7 @@
 # 	else
 # 		define SYS_ODBC_INI "Boot:System Folder:Preferences:ODBC Preferences"
 # 	endif
-# elif defined(_MACX)
+# elif defined(__APPLE__)
 # 	define SYS_ODBC_INI "/etc/odbc.ini"
 # 	define ODBC_INI_APP "/Library/ODBC/odbc.ini"
 # else
@@ -148,7 +148,7 @@
 # endif
 #endif
 
-#if !defined(SYS_ODBCINST_INI) && !defined(ODBCINST_INI_APP)
+#if !defined(SYS_ODBCINST_INI) || (defined(__APPLE__) && !defined(ODBCINST_INI_APP))
 #  if defined(__BEOS__)
 #    define SYS_ODBCINST_INI	"/boot/beos/etc/odbcinst.ini"
 #  elif defined(macintosh)

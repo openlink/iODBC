@@ -79,6 +79,10 @@
 #include "misc.h"
 #include "iodbc_error.h"
 
+#ifdef __APPLE__
+#include <Carbon/Carbon.h>
+#endif
+
 #ifndef WIN32
 #include <unistd.h>
 #define CALL_CONFIG_TRANSLATOR(path) \
@@ -128,7 +132,7 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   RETCODE ret;
   void *handle;
   char translator[1024];
-#ifdef _MACX
+#ifdef __APPLE__
   CFStringRef libname;
   CFBundleRef bundle;
   CFURLRef liburl;
@@ -138,12 +142,12 @@ BOOL INSTAPI GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   do
     {
       /* Load the Admin dialbox function */
-#ifdef _MACX
+#ifdef __APPLE__
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
       if (bundle)
         {
           /* Search for the drvproxy library */
-          liburl = CFBundleCopyExcutableURL (bundle);
+          liburl = CFBundleCopyExecutableURL (bundle);
           if (liburl
 	      && (libname =
 	          CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))

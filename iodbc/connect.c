@@ -90,7 +90,7 @@
 
 #include <unicode.h>
 
-#if defined(_MACX) && defined(GUI)
+#if defined(__APPLE__) && defined(GUI)
 #include <Carbon/Carbon.h>
 #endif
 

@@ -114,11 +114,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.6</string>
+	<string>3.51.0</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.0.6</string>
+	<string>3.51.0</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>
@@ -142,6 +142,7 @@
 				F535B3B402780BD401A801DE,
 				F535B3B602780C9E01A801DE,
 				F535B3C5027827A201A801DE,
+				F59CCFDB0504F64401000DFE,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -778,6 +779,7 @@
 				F535B3AC02780BB701A801DE,
 				F535B3B302780BD401A801DE,
 				F535B3B502780C9E01A801DE,
+				F59CCFDA0504F64401000DFE,
 			);
 			isa = PBXGroup;
 			name = iODBC;
@@ -923,6 +925,18 @@
 		};
 		F54DA8DA02795B3501A801DE = {
 			fileRef = F54DA8D902795B3501A801DE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F59CCFDA0504F64401000DFE = {
+			isa = PBXFileReference;
+			name = iodbcadm.h;
+			path = ../../iodbcadm/iodbcadm.h;
+			refType = 2;
+		};
+		F59CCFDB0504F64401000DFE = {
+			fileRef = F59CCFDA0504F64401000DFE;
 			isa = PBXBuildFile;
 			settings = {
 			};

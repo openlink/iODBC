@@ -73,7 +73,7 @@
 #include <iodbc.h>
 #include <iodbcinst.h>
 
-#ifdef _MACX
+#ifdef __APPLE__
 #  include <Carbon/Carbon.h>
 #endif
 
@@ -170,7 +170,7 @@ SQLConfigDataSource (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   BOOL retcode = FALSE;
   void *handle;
   pConfigDSNFunc pConfigDSN;
-#ifdef _MACX
+#ifdef __APPLE__
   CFStringRef libname;
   CFBundleRef bundle;
   CFURLRef liburl;
@@ -249,7 +249,7 @@ SQLConfigDataSource (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
     }
 
   /* The last ressort, a proxy driver */
-#ifdef _MACX
+#ifdef __APPLE__
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (bundle)
     {

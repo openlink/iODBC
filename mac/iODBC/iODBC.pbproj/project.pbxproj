@@ -115,11 +115,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.6</string>
+	<string>3.51.0</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.0.6</string>
+	<string>3.51.0</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>
@@ -147,7 +147,6 @@
 				F535B3590277FC2E01A801DE,
 				F535B35A0277FC2E01A801DE,
 				F55DDABD04949A6001000FFE,
-				F586819104949AE201000FFE,
 				F586819304949B4701000FFE,
 				F586819704949C2101000FFE,
 				F578097604CED1970194ADB8,
@@ -184,7 +183,6 @@
 				F535B34E0277FBC601A801DE,
 				F54DA8D80279592201A801DE,
 				F586819604949C2101000FFE,
-				F586819904949C7301000FFE,
 				F578093D04CED1970194ADB8,
 				F578093E04CED1970194ADB8,
 				F578093F04CED1970194ADB8,
@@ -311,7 +309,6 @@
 		08FB77ACFE841707C02AAC07 = {
 			children = (
 				F535B3150277FB3501A801DE,
-				F586818F04949ACB01000FFE,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -1818,27 +1815,6 @@
 			settings = {
 			};
 		};
-		F586818F04949ACB01000FFE = {
-			children = (
-				F586819004949AE201000FFE,
-				F586819804949C7301000FFE,
-			);
-			isa = PBXGroup;
-			name = mac;
-			refType = 4;
-		};
-		F586819004949AE201000FFE = {
-			isa = PBXFileReference;
-			name = wchar.h;
-			path = ../wchar.h;
-			refType = 2;
-		};
-		F586819104949AE201000FFE = {
-			fileRef = F586819004949AE201000FFE;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F586819204949B4701000FFE = {
 			isa = PBXFileReference;
 			name = iodbcext.h;
@@ -1871,18 +1847,6 @@
 		};
 		F586819704949C2101000FFE = {
 			fileRef = F586819504949C2101000FFE;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F586819804949C7301000FFE = {
-			isa = PBXFileReference;
-			name = wchar.c;
-			path = ../wchar.c;
-			refType = 2;
-		};
-		F586819904949C7301000FFE = {
-			fileRef = F586819804949C7301000FFE;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -77,6 +77,10 @@
 #include "iodbc_error.h"
 #include "dlf.h"
 
+#ifdef __APPLE__
+#include <Carbon/Carbon.h>
+#endif
+
 #define CALL_ADMIN_DIALBOX(path) \
 	if ((handle = DLL_OPEN(path)) != NULL) \
 	{ \
@@ -92,7 +96,7 @@ ManageDataSources (HWND hwndParent)
   void *handle;
   pAdminBoxFunc pAdminBox;
   BOOL retcode = FALSE;
-#ifdef _MACX
+#ifdef __APPLE__
   CFStringRef libname;
   CFBundleRef bundle;
   CFURLRef liburl;
@@ -100,12 +104,12 @@ ManageDataSources (HWND hwndParent)
 #endif
 
   /* Load the Admin dialbox function */
-#ifdef _MACX
+#ifdef __APPLE__
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.adm"));
   if (bundle)
     {
       /* Search for the drvproxy library */
-      liburl = CFBundleCopyExcutableURL (bundle);
+      liburl = CFBundleCopyExecutableURL (bundle);
       if (liburl
 	  && (libname =
 	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))

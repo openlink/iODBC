@@ -79,7 +79,7 @@
 #elif defined(HAVE_SHL_LOAD)
 #define DLDAPI_HP_SHL
 #elif defined(HAVE_DYLD)
-#define DLDAPI_DYLD
+#define DLDAPI_MACX
 #endif
 
 #if defined(DLDAPI_SVR4_DLFCN)

@@ -351,7 +351,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	  if (doCreate || access (buf, R_OK) == 0)
 	    return buf;
 
-#   ifdef _MACX
+#   ifdef __APPLE__
 	  /*
 	   * Try to check the ~/Library/ODBC/odbc.ini
 	   */
@@ -370,7 +370,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
                   return buf;
                 }
             }
-#   endif /* endif _MACX */
+#   endif /* endif __APPLE__ */
 	}
 
 #  endif /* endif VMS */
@@ -402,7 +402,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
             }
 	}
 
-#   ifdef _MACX
+#   ifdef __APPLE__
       /*
        * Try to check the /Library/ODBC/odbc.ini
        */
@@ -421,7 +421,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
               return buf;
             }
         }
-#   endif /* endif _MACX */
+#   endif /* endif __APPLE__ */
 
       STRNCPY (buf, bIsInst ? SYS_ODBCINST_INI : SYS_ODBC_INI, size);
       return buf;

@@ -95,6 +95,7 @@ typedef shl_t HDLL;
     defined(_MACX)		|| \
     defined(DLDAPI_AIX_LOAD)	|| \
     defined(DLDAPI_DYLD)	|| \
+    defined(DLDAPI_MACX)	|| \
     defined(DLDAPI_SVR4_DLFCN)	|| \
     defined(VMS)
 typedef void *HDLL;
