@@ -73,7 +73,7 @@ SQLExecute (SQLHSTMT hstmt)
 
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -233,7 +233,7 @@ SQLExecDirect (
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -360,7 +360,7 @@ SQLPutData (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -476,7 +476,7 @@ SQLParamData (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -615,7 +615,7 @@ SQLNumParams (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -695,7 +695,7 @@ SQLDescribeParam (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }

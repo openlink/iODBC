@@ -50,7 +50,7 @@ SQLPrepare (
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -176,7 +176,7 @@ SQLSetCursorName (
   SQLRETURN retcode = SQL_SUCCESS;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -269,7 +269,7 @@ SQLBindParameter (
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -379,7 +379,7 @@ SQLParamOptions (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -426,7 +426,7 @@ SQLSetScrollOptions (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }

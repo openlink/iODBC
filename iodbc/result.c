@@ -51,7 +51,7 @@ SQLBindCol (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -126,7 +126,7 @@ SQLGetCursorName (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -181,7 +181,7 @@ SQLRowCount (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -223,7 +223,7 @@ SQLNumResultCols (
   SQLRETURN retcode;
   SWORD ccol;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -316,7 +316,7 @@ SQLDescribeCol (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -424,7 +424,7 @@ SQLColAttributes (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }

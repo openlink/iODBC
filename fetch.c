@@ -45,7 +45,7 @@ SQLFetch (SQLHSTMT hstmt)
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC) 
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -158,7 +158,7 @@ SQLExtendedFetch (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -274,7 +274,7 @@ SQLGetData (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -416,7 +416,7 @@ SQLMoreResults (SQLHSTMT hstmt)
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -547,7 +547,7 @@ SQLSetPos (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }

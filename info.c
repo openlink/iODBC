@@ -90,7 +90,7 @@ SQLDataSources (
   static int num_entries = 0;
   static char **sect = NULL;
 
-  if (henv == SQL_NULL_HENV)
+  if (!IS_VALID_HENV (genv))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -218,7 +218,7 @@ SQLDrivers (
 {
   GENV_t FAR *genv = (GENV_t FAR *) henv;
 
-  if (henv == SQL_NULL_HENV)
+  if (!IS_VALID_HENV (genv))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -261,7 +261,7 @@ SQLGetInfo (
   int size = 0, len = 0;
   char buf[16] = {'\0'};
 
-  if (hdbc == SQL_NULL_HDBC || pdbc->henv == SQL_NULL_HENV)
+  if (!IS_VALID_HDBC (pdbc) || pdbc->henv == SQL_NULL_HENV)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -439,7 +439,7 @@ SQLGetFunctions (
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }

@@ -49,6 +49,11 @@ typedef struct STMT
   }
 STMT_t;
 
+#define IS_VALID_HSTMT(x) \
+	((x) != SQL_NULL_HSTMT && \
+	 (x)->type == SQL_HANDLE_STMT && \
+	 (x)->hdbc != SQL_NULL_HDBC)
+
 enum
   {
     en_stmt_allocated = 0,

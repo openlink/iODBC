@@ -47,11 +47,7 @@ SQLAllocConnect (
   GENV_t FAR *genv = (GENV_t FAR *) henv;
   DBC_t FAR *pdbc;
 
-#if (ODBCVER >= 0x0300)
-  if (henv == SQL_NULL_HENV || genv->type != SQL_HANDLE_ENV)
-#else
-  if (henv == SQL_NULL_HENV)
-#endif
+  if (!IS_VALID_HENV (genv))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -74,9 +70,10 @@ SQLAllocConnect (
       return SQL_ERROR;
     }
 
-#if (ODBCVER >= 0x0300) 
+  /*
+   *  Initialize this handle
+   */
   pdbc->type = SQL_HANDLE_DBC;
-#endif
 
   /* insert this dbc entry into the link list */
   pdbc->next = genv->hdbc;
@@ -117,7 +114,7 @@ SQLFreeConnect (SQLHDBC hdbc)
   DBC_t FAR *pdbc = (DBC_t FAR *) hdbc;
   DBC_t FAR *tpdbc;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -158,6 +155,11 @@ SQLFreeConnect (SQLHDBC hdbc)
 
   SQLSetConnectOption ((SQLHDBC) pdbc, SQL_OPT_TRACE, SQL_OPT_TRACE_OFF);
 
+  /*
+   *  Invalidate this handle
+   */
+  pdbc->type = 0;
+
   MEM_FREE (pdbc);
 
   return SQL_SUCCESS;
@@ -176,7 +178,7 @@ SQLSetConnectOption (
   int sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -509,7 +511,7 @@ SQLGetConnectOption (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -758,11 +760,11 @@ SQLTransact (
   HERR herr;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (hdbc != SQL_NULL_HDBC)
+  if (IS_VALID_HDBC (pdbc))
     {
       herr = pdbc->herr;
     }
-  else if (genv != SQL_NULL_HENV)
+  else if (IS_VALID_HENV (genv))
     {
       herr = genv->herr;
     }

@@ -130,8 +130,11 @@ typedef struct
   }
 ENV_t;
 
-/* Note:
+#define IS_VALID_HENV(x) \
+	((x) != SQL_NULL_HENV && (x)->type == SQL_HANDLE_ENV)
 
+/* Note:
+ *
  *  - ODBC applications only know about global environment handle, 
  *    a void pointer points to a GENV_t object. There is only one
  *    this object per process(however, to make the library reentrant,

@@ -75,7 +75,7 @@ _iodbcdm_driverload (
       return SQL_ERROR;
     }
 
-  if (pdbc == SQL_NULL_HDBC || pdbc->genv == SQL_NULL_HENV)
+  if (!IS_VALID_HDBC (pdbc) || pdbc->genv == SQL_NULL_HENV)
     {
       return SQL_INVALID_HANDLE;
     }
@@ -305,7 +305,7 @@ _iodbcdm_driverunload (HDBC hdbc)
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -627,7 +627,7 @@ SQLConnect (
   char *ptr;
   HPROC hproc;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -762,7 +762,7 @@ SQLDriverConnect (
   SQLRETURN retcode = SQL_SUCCESS;
   SQLRETURN setopterr = SQL_SUCCESS;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -970,7 +970,7 @@ SQLBrowseConnect (
   SQLRETURN retcode = SQL_SUCCESS;
   SQLRETURN setopterr = SQL_SUCCESS;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -1102,7 +1102,7 @@ SQLDisconnect (SQLHDBC hdbc)
 
   int sqlstat = en_00000;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -1191,7 +1191,7 @@ SQLNativeSql (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }

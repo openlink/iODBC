@@ -29,8 +29,7 @@
 typedef struct DBC
   {
     int type;			/* must be 1st field */
-    struct DBC FAR *
-     next;
+    struct DBC FAR * next;
 
     HENV genv;			/* back point to global env object */
 
@@ -53,16 +52,16 @@ typedef struct DBC
     SWORD cb_commit;
     SWORD cb_rollback;
 
-    char FAR *
-     current_qualifier;
+    char FAR * current_qualifier;
 
-    int trace;			/* trace flag */
-    char FAR *
-     tfile;
-    void FAR *
-     tstm;			/* trace stream */
+    int trace;				/* trace flag */
+    char FAR * tfile;
+    void FAR * tstm;			/* trace stream */
   }
 DBC_t;
+
+#define IS_VALID_HDBC(x) \
+	((x) != SQL_NULL_HDBC && (x)->type == SQL_HANDLE_DBC)
 
 /* 
  * Note:

@@ -50,10 +50,10 @@ SQLAllocEnv (SQLHENV FAR * phenv)
       return SQL_ERROR;
     }
 
-#if (ODBCVER >= 0x0300)
+  /*
+   *  Initialize this handle
+   */
   genv->type = SQL_HANDLE_ENV;
-#endif
-
   genv->henv = SQL_NULL_HENV;	/* driver's env list */
   genv->hdbc = SQL_NULL_HDBC;	/* driver's dbc list */
   genv->herr = SQL_NULL_HERR;	/* err list          */
@@ -69,7 +69,7 @@ SQLFreeEnv (SQLHENV henv)
 {
   GENV_t FAR *genv = (GENV_t *) henv;
 
-  if (henv == SQL_NULL_HENV)
+  if (!IS_VALID_HENV (genv))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -82,6 +82,11 @@ SQLFreeEnv (SQLHENV henv)
     }
 
   _iodbcdm_freesqlerrlist (genv->herr);
+
+  /*
+   *  Invalidate this handle
+   */
+  genv->type = 0;
 
   MEM_FREE (genv);
 

@@ -48,11 +48,7 @@ SQLAllocStmt (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
 
-#if (ODBCVER >= 0x0300)
-  if (hdbc == SQL_NULL_HDBC || pdbc->type != SQL_HANDLE_DBC)
-#else
-  if (hdbc == SQL_NULL_HDBC)
-#endif
+  if (!IS_VALID_HDBC (pdbc))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -91,9 +87,10 @@ SQLAllocStmt (
       return SQL_ERROR;
     }
 
-#if (ODBCVER >= 0x0300)
+  /*
+   *  Initialize this handle
+   */
   pstmt->type = SQL_HANDLE_STMT;
-#endif
 
   /* initiate the object */
   pstmt->herr = SQL_NULL_HERR;
@@ -161,7 +158,7 @@ _iodbcdm_dropstmt (HSTMT hstmt)
   STMT_t FAR *tpstmt;
   DBC_t FAR *pdbc;
 
-  if (hstmt == SQL_NULL_HSTMT)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -192,6 +189,11 @@ _iodbcdm_dropstmt (HSTMT hstmt)
 
   _iodbcdm_freesqlerrlist (pstmt->herr);
 
+  /*
+   *  Invalidate this handle
+   */
+  pstmt->type = 0;
+
   MEM_FREE (pstmt);
 
   return SQL_SUCCESS;
@@ -209,7 +211,7 @@ SQLFreeStmt (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -337,7 +339,7 @@ SQLSetStmtOption (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -444,7 +446,7 @@ SQLGetStmtOption (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -512,7 +514,7 @@ SQLCancel (SQLHSTMT hstmt)
   HPROC hproc;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }

@@ -147,7 +147,7 @@ SQLGetTypeInfo (
   int sqlstat = en_00000;
   SQLRETURN retcode;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -219,7 +219,7 @@ SQLSpecialColumns (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -314,7 +314,7 @@ SQLStatistics (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -401,7 +401,7 @@ SQLTables (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -477,7 +477,7 @@ SQLColumnPrivileges (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -553,7 +553,7 @@ SQLColumns (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -633,7 +633,7 @@ SQLForeignKeys (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -713,7 +713,7 @@ SQLPrimaryKeys (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -786,7 +786,7 @@ SQLProcedureColumns (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -860,7 +860,7 @@ SQLProcedures (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
@@ -932,7 +932,7 @@ SQLTablePrivileges (
   SQLRETURN retcode;
   int sqlstat = en_00000;
 
-  if (hstmt == SQL_NULL_HSTMT || pstmt->hdbc == SQL_NULL_HDBC)
+  if (!IS_VALID_HSTMT (pstmt))
     {
       return SQL_INVALID_HANDLE;
     }
