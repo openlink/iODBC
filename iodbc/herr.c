@@ -580,7 +580,11 @@ _iodbcdm_sqlerror (
 	  errmsg = (char FAR *) "";
 	}
 
+#if defined(HAVE_SNPRINTF)
+      snprintf (msgbuf, sizeof(msgbuf), "%s%s", sqlerrhd, (char*)errmsg);
+#else
       sprintf (msgbuf, "%s%s", sqlerrhd, (char*)errmsg);
+#endif
 
       len = STRLEN (msgbuf);
 
@@ -931,7 +935,11 @@ SQLGetDiagRec_Internal (
 	      errmsg = (char FAR *) "";
 	    }
 
+#if defined(HAVE_SNPRINTF)
+	  snprintf (msgbuf, sizeof (msgbuf), "%s%s", sqlerrhd, errmsg);
+#else
 	  sprintf (msgbuf, "%s%s", sqlerrhd, errmsg);
+#endif
 
 	  len = STRLEN (msgbuf);
 
@@ -969,7 +977,9 @@ SQLGetDiagRec_Internal (
 	}
       RecNumber -= nRecs;
 
-      unicode_driver = ((ENV_t FAR *) ((DBC_t FAR *)hdbc)->henv)->unicode_driver;
+      if (((DBC_t FAR *)hdbc)->henv)
+        unicode_driver = 
+		((ENV_t FAR *) ((DBC_t FAR *)hdbc)->henv)->unicode_driver;
 
       if ((unicode_driver && waMode != 'W') 
           || (!unicode_driver && waMode == 'W'))
