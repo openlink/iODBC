@@ -179,7 +179,7 @@ DB_Disconnect (void)
     SQLDisconnect (hdbc);
 
   if (hdbc)
-    QLFreeConnect (hdbc);
+    SQLFreeConnect (hdbc);
 
   if (henv)
     SQLFreeEnv (henv);
