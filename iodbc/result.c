@@ -515,7 +515,7 @@ SQLColAttributes (
 	  break;
 	}
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ColAttribute,
-	  (pstmt->dhstmt, icol, fDescType, rgbDesc, cbDescMax, pcbDesc, pfDesc));
+	  (pstmt->dhstmt, icol, new_attr, rgbDesc, cbDescMax, pcbDesc, pfDesc));
     }
   else
 #endif
