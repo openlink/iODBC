@@ -98,7 +98,7 @@ _trace_data (
     case SQL_C_BINARY:
       {
         int len;
-	if (pcbValue)
+	if (pcbValue && cbValueMax > 0)
 	  len = *((SQLINTEGER *) pcbValue);
 	else
 	  len = cbValueMax;
@@ -116,7 +116,12 @@ _trace_data (
 
     case SQL_C_CHAR:
       {
-	trace_emit_string ((SQLCHAR *) rgbValue, SQL_NTS, 0);
+        int len;
+        if (pcbValue && cbValueMax > 0)
+ 	  len =  *((SQLINTEGER *) pcbValue);
+        else
+	  len = cbValueMax;
+	trace_emit_string ((SQLCHAR *) rgbValue, len, 0);
       }
       break;
 
@@ -157,9 +162,10 @@ _trace_data (
 	SQLGUID *g = (SQLGUID *) rgbValue;
 	sprintf (buf,
 	    "%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-	    g->Data1, g->Data2, g->Data3, g->Data4[0], g->Data4[1],
-	    g->Data4[2], g->Data4[3], g->Data4[4], g->Data4[5], g->Data4[6],
-	    g->Data4[7]);
+	    (unsigned long) g->Data1,
+	    g->Data2, g->Data3,
+	    g->Data4[0], g->Data4[1], g->Data4[2], g->Data4[3],
+            g->Data4[4], g->Data4[5], g->Data4[6], g->Data4[7]);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -168,7 +174,8 @@ _trace_data (
     case SQL_C_INTERVAL_DAY:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld days", i->intval.day_second.day);
+	sprintf (buf, "%lu days",
+	    (unsigned long) i->intval.day_second.day);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -176,8 +183,9 @@ _trace_data (
     case SQL_C_INTERVAL_DAY_TO_HOUR:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld days %ld hours",
-	    i->intval.day_second.day, i->intval.day_second.hour);
+	sprintf (buf, "%lu days %lu hours",
+	    (unsigned long) i->intval.day_second.day,
+	    (unsigned long) i->intval.day_second.hour);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -185,9 +193,10 @@ _trace_data (
     case SQL_C_INTERVAL_DAY_TO_MINUTE:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld days %ld hours %ld minutes",
-	    i->intval.day_second.day,
-	    i->intval.day_second.hour, i->intval.day_second.minute);
+	sprintf (buf, "%lu days %lu hours %lu minutes",
+	    (unsigned long) i->intval.day_second.day,
+	    (unsigned long) i->intval.day_second.hour,
+	    (unsigned long) i->intval.day_second.minute);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -195,10 +204,11 @@ _trace_data (
     case SQL_C_INTERVAL_DAY_TO_SECOND:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld days %ld hours %ld minutes %ld seconds",
-	    i->intval.day_second.day,
-	    i->intval.day_second.hour,
-	    i->intval.day_second.minute, i->intval.day_second.second);
+	sprintf (buf, "%lu days %lu hours %lu minutes %lu seconds",
+	    (unsigned long) i->intval.day_second.day,
+	    (unsigned long) i->intval.day_second.hour,
+	    (unsigned long) i->intval.day_second.minute,
+	    (unsigned long) i->intval.day_second.second);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -206,7 +216,8 @@ _trace_data (
     case SQL_C_INTERVAL_HOUR:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld hours", i->intval.day_second.hour);
+	sprintf (buf, "%lu hours",
+	    (unsigned long) i->intval.day_second.hour);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -214,8 +225,9 @@ _trace_data (
     case SQL_C_INTERVAL_HOUR_TO_MINUTE:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld hours %ld minutes",
-	    i->intval.day_second.hour, i->intval.day_second.minute);
+	sprintf (buf, "%lu hours %lu minutes",
+	    (unsigned long) i->intval.day_second.hour,
+	    (unsigned long) i->intval.day_second.minute);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -223,9 +235,10 @@ _trace_data (
     case SQL_C_INTERVAL_HOUR_TO_SECOND:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld hours %ld minutes %ld seconds",
-	    i->intval.day_second.hour,
-	    i->intval.day_second.minute, i->intval.day_second.second);
+	sprintf (buf, "%lu hours %lu minutes %lu seconds",
+	    (unsigned long) i->intval.day_second.hour,
+	    (unsigned long) i->intval.day_second.minute,
+	    (unsigned long) i->intval.day_second.second);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -233,7 +246,8 @@ _trace_data (
     case SQL_C_INTERVAL_MINUTE:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld minutes", i->intval.day_second.minute);
+	sprintf (buf, "%lu minutes",
+	    (unsigned long) i->intval.day_second.minute);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -241,8 +255,9 @@ _trace_data (
     case SQL_C_INTERVAL_MINUTE_TO_SECOND:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld minutes %ld seconds",
-	    i->intval.day_second.minute, i->intval.day_second.second);
+	sprintf (buf, "%lu minutes %lu seconds",
+	    (unsigned long) i->intval.day_second.minute,
+	    (unsigned long) i->intval.day_second.second);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -250,7 +265,8 @@ _trace_data (
     case SQL_C_INTERVAL_MONTH:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld months", i->intval.year_month.month);
+	sprintf (buf, "%lu months",
+	    (unsigned long) i->intval.year_month.month);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -258,7 +274,8 @@ _trace_data (
     case SQL_C_INTERVAL_SECOND:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld seconds", i->intval.day_second.second);
+	sprintf (buf, "%lu seconds",
+	    (unsigned long) i->intval.day_second.second);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -266,7 +283,8 @@ _trace_data (
     case SQL_C_INTERVAL_YEAR:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld years", i->intval.year_month.year);
+	sprintf (buf, "%lu years",
+	    (unsigned long) i->intval.year_month.year);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -274,8 +292,9 @@ _trace_data (
     case SQL_C_INTERVAL_YEAR_TO_MONTH:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
-	sprintf (buf, "%ld years %ld months",
-	    i->intval.year_month.year, i->intval.year_month.month);
+	sprintf (buf, "%lu years %lu months",
+	    (unsigned long) i->intval.year_month.year,
+	    (unsigned long) i->intval.year_month.month);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -354,7 +373,8 @@ _trace_data (
 	TIMESTAMP_STRUCT *t = (TIMESTAMP_STRUCT *) rgbValue;
 	sprintf (buf, "%04d-%02d-%02d %02d:%02d:%02d.%06ld",
 	    t->year, t->month, t->day,
-	    t->hour, t->minute, t->second, t->fraction);
+	    t->hour, t->minute, t->second, 
+	    (long) t->fraction);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
@@ -378,7 +398,13 @@ _trace_data (
 
     case SQL_C_WCHAR:
       {
-	SQLCHAR *wstr = dm_SQL_W2A ((wchar_t *) rgbValue, SQL_NTS);
+	SQLCHAR *wstr;
+        int len;
+	if (pcbValue && cbValueMax > 0)
+	  len = *((SQLINTEGER *) pcbValue);
+	else
+	  len = cbValueMax;
+	wstr = dm_SQL_W2A ((wchar_t *) rgbValue, len);
 	trace_emit_string (wstr, SQL_NTS, 1);
 	free (wstr);
       }
