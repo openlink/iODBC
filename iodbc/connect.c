@@ -38,9 +38,9 @@
 
 #include	<itrace.h>
 
-extern	char*	_iodbcdm_getkeyvalbydsn();
-extern	char*	_iodbcdm_getkeyvalinstr();
-extern	SQLRETURN	_iodbcdm_driverunload();
+extern char *_iodbcdm_getkeyvalbydsn ();
+extern char *_iodbcdm_getkeyvalinstr ();
+extern SQLRETURN _iodbcdm_driverunload ();
 
 /*
  *  Identification string
@@ -159,7 +159,7 @@ _iodbcdm_driverload (
 	  /* call driver's SQLAllocHandle() or SQLAllocEnv() */
 
 #if (ODBCVER >= 0x0300)
-	  hproc = _iodbcdm_getproc (hdbc, en_AllocHandle);
+	  hproc = _iodbcdm_getproc (pdbc, en_AllocHandle);
 
 	  if (hproc)
 	    {
@@ -169,7 +169,7 @@ _iodbcdm_driverload (
 	  else			/* try driver's SQLAllocEnv() */
 #endif
 	    {
-	      hproc = _iodbcdm_getproc (hdbc, en_AllocEnv);
+	      hproc = _iodbcdm_getproc (pdbc, en_AllocEnv);
 
 	      if (hproc == SQL_NULL_HPROC)
 		{
@@ -213,7 +213,7 @@ _iodbcdm_driverload (
 	{
 
 #if (ODBCVER >= 0x0300)
-	  hproc = _iodbcdm_getproc (hdbc, en_AllocHandle);
+	  hproc = _iodbcdm_getproc (pdbc, en_AllocHandle);
 
 	  if (hproc)
 	    {
@@ -224,7 +224,7 @@ _iodbcdm_driverload (
 #endif
 
 	    {
-	      hproc = _iodbcdm_getproc (hdbc, en_AllocConnect);
+	      hproc = _iodbcdm_getproc (pdbc, en_AllocConnect);
 
 	      if (hproc == SQL_NULL_HPROC)
 		{
@@ -261,7 +261,7 @@ _iodbcdm_driverload (
    * its SQLConnect() call */
   if (pdbc->login_timeout != 0UL)
     {
-      hproc = _iodbcdm_getproc (hdbc, en_SetConnectOption);
+      hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption);
 
       if (hproc == SQL_NULL_HPROC)
 	{
@@ -320,7 +320,7 @@ _iodbcdm_driverunload (HDBC hdbc)
     }
 
 #if (ODBCVER >= 0x0300)
-  hproc = _iodbcdm_getproc (hdbc, en_FreeHandle);
+  hproc = _iodbcdm_getproc (pdbc, en_FreeHandle);
 
   if (hproc)
     {
@@ -331,7 +331,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 #endif
 
     {
-      hproc = _iodbcdm_getproc (hdbc, en_FreeConnect);
+      hproc = _iodbcdm_getproc (pdbc, en_FreeConnect);
 
       if (hproc != SQL_NULL_HPROC)
 	{
@@ -349,7 +349,7 @@ _iodbcdm_driverunload (HDBC hdbc)
     {
 
 #if (ODBCVER >= 0x0300)
-      hproc = _iodbcdm_getproc (hdbc, en_FreeHandle);
+      hproc = _iodbcdm_getproc (pdbc, en_FreeHandle);
 
       if (hproc)
 	{
@@ -360,7 +360,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 #endif
 
 	{
-	  hproc = _iodbcdm_getproc (hdbc, en_FreeEnv);
+	  hproc = _iodbcdm_getproc (pdbc, en_FreeEnv);
 
 	  if (hproc != SQL_NULL_HPROC)
 	    {
@@ -434,7 +434,7 @@ _iodbcdm_dbcdelayset (HDBC hdbc)
 
   penv = pdbc->henv;
 
-  hproc = _iodbcdm_getproc (hdbc, en_SetConnectOption);
+  hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption);
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -515,7 +515,7 @@ _iodbcdm_dbcdelayset (HDBC hdbc)
     }
 
   /* get cursor behavior on transaction commit or rollback */
-  hproc = _iodbcdm_getproc (hdbc, en_GetInfo);
+  hproc = _iodbcdm_getproc (pdbc, en_GetInfo);
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -692,7 +692,7 @@ SQLConnect (
        return retcode;
      }
 
-  hproc = _iodbcdm_getproc (hdbc, en_Connect);
+  hproc = _iodbcdm_getproc (pdbc, en_Connect);
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -907,7 +907,7 @@ SQLDriverConnect (
        return retcode;
      }
 
-  hproc = _iodbcdm_getproc (hdbc, en_DriverConnect);
+  hproc = _iodbcdm_getproc (pdbc, en_DriverConnect);
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -1041,7 +1041,7 @@ SQLBrowseConnect (
       return SQL_ERROR;
     }
 
-  hproc = _iodbcdm_getproc (hdbc, en_BrowseConnect);
+  hproc = _iodbcdm_getproc (pdbc, en_BrowseConnect);
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -1129,7 +1129,7 @@ SQLDisconnect (SQLHDBC hdbc)
 
   if (sqlstat == en_00000)
     {
-      hproc = _iodbcdm_getproc (hdbc, en_Disconnect);
+      hproc = _iodbcdm_getproc (pdbc, en_Disconnect);
 
       if (hproc == SQL_NULL_HPROC)
 	{
@@ -1222,7 +1222,7 @@ SQLNativeSql (
     }
 
   /* call driver */
-  hproc = _iodbcdm_getproc (hdbc, en_NativeSql);
+  hproc = _iodbcdm_getproc (pdbc, en_NativeSql);
 
   if (hproc == SQL_NULL_HPROC)
     {

@@ -391,7 +391,7 @@ SQLSetConnectOption (
        * and delay the setting process until the connection 
        * been established.  
        */
-      hproc = _iodbcdm_getproc (hdbc, en_SetConnectOption);
+      hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption);
 
       if (hproc == SQL_NULL_HPROC)
 	{
@@ -585,7 +585,7 @@ SQLGetConnectOption (
   if (pdbc->state != en_dbc_allocated)
     /* if already connected, we will invoke driver's function */
     {
-      hproc = _iodbcdm_getproc (hdbc, en_GetConnectOption);
+      hproc = _iodbcdm_getproc (pdbc, en_GetConnectOption);
 
       if (hproc == SQL_NULL_HPROC)
 	{
@@ -666,7 +666,7 @@ _iodbcdm_transact (
 	}
     }
 
-  hproc = _iodbcdm_getproc (hdbc, en_Transact);
+  hproc = _iodbcdm_getproc (pdbc, en_Transact);
 
   if (hproc == SQL_NULL_HPROC)
     {

@@ -104,7 +104,7 @@ SQLAllocStmt (
   /* call driver's function */
 
 #if (ODBCVER >= 0x0300)
-  hproc = _iodbcdm_getproc (hdbc, en_AllocHandle);
+  hproc = _iodbcdm_getproc (pdbc, en_AllocHandle);
 
   if (hproc)
     {
@@ -115,7 +115,7 @@ SQLAllocStmt (
 #endif
 
     {
-      hproc = _iodbcdm_getproc (hdbc, en_AllocStmt);
+      hproc = _iodbcdm_getproc (pdbc, en_AllocStmt);
 
       if (hproc == SQL_NULL_HPROC)
 	{
