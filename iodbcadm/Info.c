@@ -70,5 +70,4 @@
 
 #include <iodbc.h>
 
-char *iodbc_version = VERSION;
-char *iodbc_libname = "iODBC Administrator";
+char *iodbcadm_version = VERSION;

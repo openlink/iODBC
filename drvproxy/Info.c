@@ -69,5 +69,4 @@
  */
 #include <iodbc.h>
 
-char *iodbc_version = VERSION;
-char *iodbc_libname = "iODBC Driver Setup Proxy";
+char *iodbcproxy_version = VERSION;

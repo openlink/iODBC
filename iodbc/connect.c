@@ -100,7 +100,6 @@
  */
 static char sccsid[] = "@(#)iODBC driver manager " VERSION "\n";
 char *iodbc_version = VERSION;
-char *iodbc_libname = "iODBC Driver Manager";
 
 
 /*

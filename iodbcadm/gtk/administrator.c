@@ -79,9 +79,9 @@
 #if !defined(HAVE_DL_INFO)
 typedef struct
 {
-  __const char *dli_fname;	/* File name of defining object.  */
+  const char *dli_fname;	/* File name of defining object.  */
   void *dli_fbase;		/* Load address of that object.  */
-  __const char *dli_sname;	/* Name of nearest symbol.  */
+  const char *dli_sname;	/* Name of nearest symbol.  */
   void *dli_saddr;		/* Exact value of nearest symbol.  */
 } Dl_info;
 #endif /* HAVE_DL_INFO */
@@ -97,12 +97,16 @@ static char *szCpLabels[] = {
   "Pool timeout (seconds)"
 };
 
-static char *szComponentNames[] = {
-  "libiodbc.so",
-  "libiodbcadm.so",
-  "libiodbcinst.so",
-  "libdrvproxy.so",
-  "libtranslator.so"
+static struct {
+  char *lib_name;
+  char *lib_desc;
+  char *lib_ver_sym;
+} iODBC_Components[]  = {
+  { "libiodbc.so",	"iODBC Driver Manager", 	"iodbc_version"},
+  { "libiodbcadm.so", 	"iODBC Administrator",		"iodbcadm_version"},
+  { "libiodbcinst.so",	"iODBC Installer",		"iodbcinst_version"},
+  { "libdrvproxy.so", 	"iODBC Driver Setup Proxy",	"iodbcproxy_version"},
+  { "libtranslator.so", "iODBC Translation Manager", 	"iodbctrans_version"}
 };
 
 
@@ -120,40 +124,39 @@ addcomponents_to_list (GtkWidget *widget)
 
   if (!GTK_IS_CLIST (widget))
     return;
+
   gtk_clist_clear (GTK_CLIST (widget));
 
-  for (i = 0; i < sizeof (szComponentNames) / sizeof (char *); i++)
+  for (i = 0; i < sizeof (iODBC_Components) / sizeof (iODBC_Components[0]); i++)
     {
-      if ((handle = dlopen (szComponentNames[i], RTLD_LAZY)))
-	{
-	  /* Take the name of the library */
-	  if ((proc = dlsym (handle, "iodbc_libname")))
-	    {
-	      data[0] = *(char **) proc;
-	      data[1] = *(char **) dlsym (handle, "iodbc_version");
-	      data[2] = szComponentNames[i];
+      /*
+       *  Collect basic info on the components
+       */
+      data[0] = iODBC_Components[i].lib_desc;
+      data[1] = VERSION;
+      data[2] = iODBC_Components[i].lib_name;
+      data[3] = "";				/* Modification Date */
+      data[4] = "";				/* Size */
 
-	      /* Take some information about the library */
+      if ((handle = dlopen (iODBC_Components[i].lib_name, RTLD_LAZY)))
+	{
+	  /* Find out the version of the library */
+	  if ((proc = dlsym (handle, iODBC_Components[i].lib_ver_sym)))
+	    data[1] = *(char **) proc;
+
+	  /* Check the size and modification date of the library */
 #ifdef HAVE_DLADDR
-	      dladdr (proc, &info);
-	      if (!stat (info.dli_fname, &_stat))
-		{
-		  sprintf (_size, "%d Kb", _stat.st_size / 1024);
-		  sprintf (_date, "%s", ctime (&_stat.st_mtime));
-		  data[3] = _date;
-		  data[4] = _size;
-		}
-	      else
-		{
-		  data[3] = "";
-		  data[4] = "";
-		}
-#else
-	      data[3] = "";
-	      data[4] = "";
-#endif
-	      gtk_clist_append (GTK_CLIST (widget), data);
+	  dladdr (proc, &info);	
+	  if (!stat (info.dli_fname, &_stat))
+	    {
+	      sprintf (_size, "%d Kb", _stat.st_size / 1024);
+	      sprintf (_date, "%s", ctime (&_stat.st_mtime));
+	      _date[strlen (_date) - 1] = '\0';	/* remove last \n */
+	      data[3] = _date;
+	      data[4] = _size;
 	    }
+#endif
+	  gtk_clist_append (GTK_CLIST (widget), data);
 
 	  dlclose (handle);
 	}
