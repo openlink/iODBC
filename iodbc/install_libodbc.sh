@@ -98,7 +98,7 @@ cd "$PREFIX"/lib
 if test -f libiodbc.la
 then
     echo "Creating dynamic library for Generic ODBC driver Manager ..."
-    . libiodbc.la
+    . ./libiodbc.la
     for lib in $library_names
     do
 	case $lib in
