@@ -385,21 +385,25 @@ trace_stop(void)
   time_t now;
   struct tm *timeNow;
 
-  /*
-   * Show end time
-   */
-  tzset ();
-  time (&now);
-  timeNow = localtime (&now);
-  strftime (mesgBuf,
-      sizeof (mesgBuf), "** Trace finished on %a %b %d %H:%M:%S %Y", timeNow);
+  if (trace_fp)
+    {
+      /*
+       * Show end time
+       */
+      tzset ();
+      time (&now);
+      timeNow = localtime (&now);
+      strftime (mesgBuf,
+	  sizeof (mesgBuf), "** Trace finished on %a %b %d %H:%M:%S %Y",
+	  timeNow);
 
-  trace_emit ("\n%s\n", mesgBuf);
+      trace_emit ("\n%s\n", mesgBuf);
+
+      if (trace_fp_close)
+	fclose (trace_fp);
+    }
 
   ODBCSharedTraceFlag = SQL_OPT_TRACE_OFF;
-
-  if (trace_fp_close && trace_fp)
-    fclose (trace_fp);
   trace_fp = NULL;
   trace_fp_close = 0;
 }
