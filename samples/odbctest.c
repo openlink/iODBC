@@ -62,13 +62,14 @@ int connected;
  *	DSN=stores5_informix;PWD=demo
  */
 int
-DB_Connect (char *connStr)
+ODBC_Connect (char *connStr)
 {
   short buflen;
   char buf[257];
   SQLCHAR dataSource[120];
   SQLCHAR dsn[33];
   SQLCHAR desc[255];
+  SQLCHAR driverInfo[255];
   SWORD len1, len2;
   int status;
 
@@ -159,6 +160,11 @@ DB_Connect (char *connStr)
 
   connected = 1;
 
+  status = SQLGetInfo (hdbc, SQL_DRIVER_VER, 
+	driverInfo, sizeof (driverInfo), &len1);
+  if (status == SQL_SUCCESS)
+    printf ("Driver: %s\n", driverInfo);
+
 #if (ODBCVER < 0x0300)
   if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
     return -1;
@@ -175,7 +181,7 @@ DB_Connect (char *connStr)
  *  Disconnect from the database
  */
 int
-DB_Disconnect (void)
+ODBC_Disconnect (void)
 {
 #if (ODBCVER < 0x0300)
   if (hstmt)
@@ -195,7 +201,7 @@ DB_Disconnect (void)
        int sts;
        sts = SQLCloseCursor (hstmt);
        if (sts != SQL_ERROR)
-	   DB_Errors ("CloseCursor");
+	   ODBC_Errors ("CloseCursor");
        SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
     }
 
@@ -225,9 +231,9 @@ DB_Disconnect (void)
  *  When no message handler is installed, the messages are output to stderr
  */
 void
-DB_MesgHandler (char *reason)
+ODBC_MesgHandler (char *reason)
 {
-  fprintf (stderr, "DB_MesgHandler: %s\n", reason);
+  fprintf (stderr, "ODBC_MesgHandler: %s\n", reason);
 }
 
 
@@ -235,7 +241,7 @@ DB_MesgHandler (char *reason)
  *  Show all the error information that is available
  */
 int
-DB_Errors (char *where)
+ODBC_Errors (char *where)
 {
   unsigned char buf[250];
   unsigned char sqlstate[15];
@@ -275,7 +281,7 @@ DB_Errors (char *where)
  *  Test program to run on the connected database
  */
 int
-DB_Test ()
+ODBC_Test ()
 {
   char request[512];
   char fetchBuffer[1000];
@@ -314,7 +320,7 @@ DB_Test ()
 	  if (SQLTables (hstmt, NULL, SQL_NTS, NULL, SQL_NTS, NULL, SQL_NTS,
 		  NULL, SQL_NTS) != SQL_SUCCESS)
 	    {
-	      DB_Errors ("SQLTables");
+	      ODBC_Errors ("SQLTables");
 	      continue;
 	    }
 	}
@@ -327,12 +333,12 @@ DB_Test ()
 	   */
 	  if (SQLPrepare (hstmt, (UCHAR *) request, SQL_NTS) != SQL_SUCCESS)
 	    {
-	      DB_Errors ("SQLPrepare");
+	      ODBC_Errors ("SQLPrepare");
 	      continue;
 	    }
 	  if (SQLExecute (hstmt) != SQL_SUCCESS)
 	    {
-	      DB_Errors ("SQLExec");
+	      ODBC_Errors ("SQLExec");
 	      continue;
 	    }
 	}
@@ -349,7 +355,7 @@ DB_Test ()
 	   */
 	  if (SQLNumResultCols (hstmt, &numCols) != SQL_SUCCESS)
 	    {
-	      DB_Errors ("SQLNumResultCols");
+	      ODBC_Errors ("SQLNumResultCols");
 	      goto endCursor;
 	    }
 	  if (numCols == 0)
@@ -374,7 +380,7 @@ DB_Test ()
 		      sizeof (colName), NULL, &colType, &colPrecision,
 		      &colScale, &colNullable) != SQL_SUCCESS)
 		{
-		  DB_Errors ("SQLDescribeCol");
+		  ODBC_Errors ("SQLDescribeCol");
 		  goto endCursor;
 		}
 
@@ -458,7 +464,7 @@ DB_Test ()
 
 	      if (sts != SQL_SUCCESS)
 		{
-		  DB_Errors ("Fetch");
+		  ODBC_Errors ("Fetch");
 		  break;
 		}
 	      for (colNum = 1; colNum <= numCols; colNum++)
@@ -469,7 +475,7 @@ DB_Test ()
 		  if (SQLGetData (hstmt, colNum, SQL_CHAR, fetchBuffer,
 			  sizeof (fetchBuffer), &colIndicator) != SQL_SUCCESS)
 		    {
-		      DB_Errors ("SQLGetData");
+		      ODBC_Errors ("SQLGetData");
 		      goto endCursor;
 		    }
 
@@ -515,7 +521,7 @@ main (int argc, char **argv)
   /*
    *  Show a usage string when the user asks for this
    */
-  if (argc == 2 && !strcmp (argv[1], "-?"))
+  if (argc > 2 || (argc == 2 && argv[1][0] == '-'))
     {
       fprintf (stderr, "\nUsage:\n  odbctest [\"DSN=xxxx;UID=xxxx;PWD=xxxx\"]\n");
       exit(0);
@@ -524,20 +530,19 @@ main (int argc, char **argv)
   /*
    *  If we can connect to this datasource, run the test program
    */
-  if (DB_Connect (argv[1]) != 0)
+  if (ODBC_Connect (argv[1]) != 0)
     {
-      DB_Errors ("DB_Connect");
+      ODBC_Errors ("ODBC_Connect");
     }
-
-  else if (DB_Test () != 0)
+  else if (ODBC_Test () != 0)
     {
-      DB_Errors ("DB_Test");
+      ODBC_Errors ("ODBC_Test");
     }
 
   /*
    *  End the connection
    */
-  DB_Disconnect ();
+  ODBC_Disconnect ();
 
   printf ("\nHave a nice day.");
 
