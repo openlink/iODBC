@@ -44,6 +44,10 @@ typedef shl_t HDLL;
 typedef void *HDLL;
 #endif
 
+#ifdef	VMS
+typedef void *HDLL;
+#endif
+
 extern HPROC _iodbcdm_getproc ();
 extern HDLL _iodbcdm_dllopen (char FAR * dll);
 extern HPROC _iodbcdm_dllproc (HDLL hdll, char FAR * sym);

@@ -33,10 +33,15 @@
 #define DLDAPI_HP_SHL
 #endif
 
-#ifdef DLDAPI_SVR4_DLFCN
+#if defined(DLDAPI_SVR4_DLFCN)
 #include	<dlfcn.h>
-#elif DLDAPI_AIX_LOAD
+#elif defined(DLDAPI_AIX_LOAD)
 #include	<dlfcn.h>
+#elif defined(DLDAPI_VMS_IODBC)
+extern void FAR *iodbc_dlopen (char FAR * path, int mode);
+extern void FAR *iodbc_dlsym (void FAR * hdll, char FAR * sym);
+extern char FAR *iodbc_dlerror ();
+extern int iodbc_dlclose (void FAR * hdll);
 #else
 extern void FAR *dlopen (char FAR * path, int mode);
 extern void FAR *dlsym (void FAR * hdll, char FAR * sym);
@@ -48,8 +53,16 @@ extern int dlclose (void FAR * hdll);
 #define	RTLD_LAZY       1
 #endif
 
+#if defined(DLDAPI_VMS_IODBC)
+#define	DLL_OPEN(dll)		(void*)iodbc_dlopen((char*)(path), RTLD_LAZY)
+#define	DLL_PROC(hdll, sym)	(void*)iodbc_dlsym((void*)(hdll), (char*)sym)
+#define	DLL_ERROR()		(char*)iodbc_dlerror()
+#define	DLL_CLOSE(hdll)		iodbc_dlclose((void*)(hdll))
+#else
 #define	DLL_OPEN(dll)		(void*)dlopen((char*)(path), RTLD_LAZY)
 #define	DLL_PROC(hdll, sym)	(void*)dlsym((void*)(hdll), (char*)sym)
 #define	DLL_ERROR()		(char*)dlerror()
 #define	DLL_CLOSE(hdll)		dlclose((void*)(hdll))
+#endif
+
 #endif

@@ -578,6 +578,209 @@ dlclose (void FAR * hdll)
 
 /***********************************
  *
+ * 	VMS
+ *
+ ***********************************/
+
+#ifdef VMS
+#define	DLDAPI_DEFINED
+#ifdef DLDAPI_VMS_IODBC
+#include <stdio.h>
+#include <descrip.h>
+#include <starlet.h>
+#include <ssdef.h>
+#include <libdef.h>
+#include <lib$routines>
+#include <rmsdef.h>
+#include <fabdef.h>
+#include <namdef.h>
+
+#ifndef LIB$M_FIS_MIXCASE
+#define LIB$M_FIS_MIXCASE 1<<4
+#endif
+
+typedef struct {
+    struct dsc$descriptor_s filename_d;
+    struct dsc$descriptor_s image_d;
+    char filename[NAM$C_MAXRSS]; /* $PARSEd image name */
+} dll_t;
+
+/*
+ *  The following static int contains the last VMS error returned. It is kept
+ *  static so that dlerror() can get it. This method is dangerous if you have
+ *  threaded applications, but this is the way the UNIX dlopen() etc
+ *  is defined.
+ */
+static int saved_status = SS$_NORMAL;
+static char dlerror_buf[256];
+
+
+static int
+iodbc_find_image_symbol (
+    struct dsc$descriptor_s *filename_d,
+    struct dsc$descriptor_s *symbol_d,
+    void **rp,
+    struct dsc$descriptor_s *image_d, int flag)
+{
+  lib$establish (lib$sig_to_ret);
+  return lib$find_image_symbol (filename_d, symbol_d, rp, image_d, flag);
+}
+
+
+void *
+iodbc_dlopen (char *path, int unused_flag)
+{
+  int status;
+  dll_t *dll;
+  struct FAB imgfab;
+  struct NAM imgnam;
+  static char defimg[] = "SYS$SHARE:.EXE";
+
+  if (path == NULL)
+    {
+      saved_status = SS$_UNSUPPORTED;
+      return NULL;
+    }
+
+  dll = malloc (sizeof (dll_t));
+  if (dll == NULL)
+    {
+      saved_status = SS$_INSFMEM;
+      return NULL;
+    }
+
+  imgfab = cc$rms_fab;
+  imgfab.fab$l_fna = path;
+  imgfab.fab$b_fns = strlen (path);
+  imgfab.fab$w_ifi = 0;
+  imgfab.fab$l_dna = defimg;
+  imgfab.fab$b_dns = sizeof (defimg);
+  imgfab.fab$l_fop = FAB$M_NAM;
+  imgfab.fab$l_nam = &imgnam;
+  imgnam = cc$rms_nam;
+  imgnam.nam$l_esa = dll->filename;
+  imgnam.nam$b_ess = NAM$C_MAXRSS;
+  status = sys$parse (&imgfab);
+  if (!(status & 1))
+    {
+      free (dll);
+      saved_status = status;
+      return NULL;
+    }
+
+  dll->filename_d.dsc$b_dtype = DSC$K_DTYPE_T;
+  dll->filename_d.dsc$b_class = DSC$K_CLASS_S;
+  dll->filename_d.dsc$a_pointer = imgnam.nam$l_name;
+  dll->filename_d.dsc$w_length = imgnam.nam$b_name;
+  dll->image_d.dsc$b_dtype = DSC$K_DTYPE_T;
+  dll->image_d.dsc$b_class = DSC$K_CLASS_S;
+  dll->image_d.dsc$a_pointer = dll->filename;
+  dll->image_d.dsc$w_length = imgnam.nam$b_esl;
+
+  /*
+   *  VMS does not have the concept of first opening a shared library and then
+   *  asking for symbols; the LIB$FIND_IMAGE_SYMBOL routine does both.
+   *  Since I want my implementation of dlopen() to return an error if the
+   *  shared library can not be loaded, I try to find a dummy symbol in the
+   *  library.
+   */
+  iodbc_dlsym (dll, "THIS_ROUTINE_MIGHT_NOT_EXIST");
+  if (!((saved_status ^ LIB$_KEYNOTFOU) & ~7))
+    {
+      saved_status = SS$_NORMAL;
+    }
+  if (saved_status & 1)
+    {
+      return dll;
+    }
+  else
+    {
+      free (dll);
+      return NULL;
+    }
+}
+
+
+void *
+iodbc_dlsym (void *hdll, char *sym)
+{
+  int status;
+  dll_t *dll;
+  struct dsc$descriptor_s symbol_d;
+  void *rp;
+
+  dll = hdll;
+  if (dll == NULL)
+    return NULL;
+
+  symbol_d.dsc$b_dtype = DSC$K_DTYPE_T;
+  symbol_d.dsc$b_class = DSC$K_CLASS_S;
+  symbol_d.dsc$a_pointer = sym;
+  symbol_d.dsc$w_length = strlen (sym);
+  status = iodbc_find_image_symbol (&dll->filename_d, &symbol_d, &rp,
+      &dll->image_d, 0);
+  if (!((saved_status ^ LIB$_KEYNOTFOU) & ~7))
+    {
+      status = iodbc_find_image_symbol (&dll->filename_d, &symbol_d, &rp,
+	  &dll->image_d, LIB$M_FIS_MIXCASE);
+    }
+  if (status & 1)
+    {
+      return rp;
+    }
+  else
+    {
+      saved_status = status;
+      return NULL;
+    }
+}
+
+
+char *
+iodbc_dlerror ()
+{
+  struct dsc$descriptor desc;
+  short outlen;
+  int status;
+
+  if (saved_status & 1)
+    {
+      return NULL;
+    }
+
+  desc.dsc$b_dtype = DSC$K_DTYPE_T;
+  desc.dsc$b_class = DSC$K_CLASS_S;
+  desc.dsc$a_pointer = dlerror_buf;
+  desc.dsc$w_length = sizeof (dlerror_buf);
+  status = sys$getmsg (saved_status, &outlen, &desc, 15, 0);
+  if (status & 1)
+    {
+      dlerror_buf[outlen] = '\0';
+    }
+  else
+    {
+      sprintf (dlerror_buf, "Message number %8X", saved_status);
+    }
+  saved_status = SS$_NORMAL;
+  return (dlerror_buf);
+}
+
+
+int
+iodbc_dlclose (void *hdll)
+{
+  /*
+   *  Not really implemented since VMS doesn't support unloading images.
+   *  The hdll pointer is released though.
+   */
+  free (hdll);
+  return 0;
+}
+#endif /* DLDAPI_VMS_IODBC */
+#endif /* VMS */
+
+/***********************************
+ *
  * 	other platforms
  *
  ***********************************/

@@ -150,6 +150,16 @@ _iodbcdm_getinifile (char *buf, int size)
       return buf;
     }
 
+#ifdef VMS
+  j = STRLEN ("SYS$LOGIN:ODBC.INI") + 1;
+
+  if (size < j)
+    {
+      return NULL;
+    }
+
+  STRCPY (buf, "SYS$LOGIN:ODBC.INI");
+#else
   if ((ptr = getenv ("HOME")) == NULL)
     {
       ptr = (char *) getpwuid (getuid ());
@@ -174,7 +184,8 @@ _iodbcdm_getinifile (char *buf, int size)
 
   sprintf (buf, "%s%s", ptr, "/.odbc.ini");
   /* i.e. searching ~/.odbc.ini */
-#endif
+#endif /* VMS */
+#endif /* UNIX_PWD */
 
   return buf;
 }

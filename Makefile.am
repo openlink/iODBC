@@ -39,7 +39,7 @@ include_HEADERS		= isql.h isqlext.h isqltypes.h
 noinst_SCRIPTS		= config.guess config.sub configure \
 			  install-sh ltconfig ltmain.sh missing mkinstalldirs
 
-EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample
+EXTRA_DIST		= IAFA-PACKAGE odbc.ini.sample vmscompile.com
 
 
 
