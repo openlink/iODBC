@@ -70,10 +70,10 @@
 
 #ifdef _MACX
 #  include <iODBC/iodbc.h>
-#  include <iODBCinst/iodbcinst.h>
+#  include <iODBCinst/odbcinst.h>
 #else
 #  include <iodbc.h>
-#  include <iodbcinst.h>
+#  include <odbcinst.h>
 #endif
 
 #if defined(__BEOS__)

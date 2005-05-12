@@ -71,7 +71,7 @@
  */
 
 #include <iodbc.h>
-#include <iodbcinst.h>
+#include <odbcinst.h>
 #include <unicode.h>
 
 #include "inifile.h"

@@ -73,6 +73,7 @@ include_HEADERS         = \
 	sqlext.h \
 	sqlucode.h \
 	sqltypes.h \
+	odbcinst.h \
 	iodbcunix.h \
 	iodbcinst.h \
 	iodbcext.h

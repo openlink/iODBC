@@ -76,7 +76,7 @@
 #include <sql.h>
 #include <sqlext.h>
 #include <sqlucode.h>
-#include <iodbcinst.h>
+#include <odbcinst.h>
 
 #include <unicode.h>
 

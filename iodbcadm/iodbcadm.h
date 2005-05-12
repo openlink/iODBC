@@ -70,12 +70,12 @@
 
 #if defined(__APPLE__) && !defined(NO_FRAMEWORKS)
 #  include <iODBC/iodbc.h>
-#  include <iODBCinst/iodbcinst.h>
+#  include <iODBCinst/odbcinst.h>
 #  include <iODBC/sqlucode.h>
 #  include <iODBC/sqltypes.h>
 #else
 #  include <iodbc.h>
-#  include <iodbcinst.h>
+#  include <odbcinst.h>
 #  include <sqlucode.h>
 #  include <sqltypes.h>
 #endif
