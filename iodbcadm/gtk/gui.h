@@ -69,7 +69,7 @@
  */
 
 #include <iodbc.h>
-#include <iodbcinst.h>
+#include <odbcinst.h>
 #include <gtk/gtk.h>
 #include <unicode.h>
 

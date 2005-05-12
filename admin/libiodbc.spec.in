@@ -215,6 +215,7 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) /usr/include/sqltypes.h
 %attr(0644, root, root) /usr/include/sqlucode.h
 %attr(0644, root, root) /usr/include/sqlext.h
+%attr(0644, root, root) /usr/include/odbcinst.h
 %attr(0755, root, root) /usr/bin/iodbc-config
 %attr(0644, root, root) /usr/lib/libiodbc.a
 %attr(0644, root, root) /usr/lib/libiodbc.la

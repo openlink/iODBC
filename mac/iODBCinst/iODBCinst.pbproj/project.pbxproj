@@ -441,8 +441,8 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			name = iodbcinst.h;
-			path = ../../include/iodbcinst.h;
+			name = odbcinst.h;
+			path = ../../include/odbcinst.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};

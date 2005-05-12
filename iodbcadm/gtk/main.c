@@ -72,7 +72,7 @@
 
 #include <iodbc.h>
 #include <isql.h>
-#include <iodbcinst.h>
+#include <odbcinst.h>
 #include <unistd.h>
 #include <stdlib.h>
 

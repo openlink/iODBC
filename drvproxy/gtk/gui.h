@@ -68,7 +68,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <iodbc.h>
-#include <iodbcinst.h>
+#include <odbcinst.h>
 #include <gtk/gtk.h>
 
 #ifndef	_GTKGUI_H

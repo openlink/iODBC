@@ -75,5 +75,5 @@ do
 	-e "s/<sqltypes\.h/<iODBC\/sqltypes.h/" \
 	-e "s/<iodbcunix\.h/<iODBC\/iodbcunix.h/" \
 	-e "s/<iodbcext\.h/<iODBC\/iodbcext.h/" \
-	-e "s/<iodbcinst\.h/<IODBCinst\/iodbcinst.h/" < ../include/$i > include/$i
+	-e "s/<odbcinst\.h/<IODBCinst\/odbcinst.h/" < ../include/$i > include/$i
 done

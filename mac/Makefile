@@ -99,7 +99,7 @@ iODBCtestw:
 #  Generate iODBC framework style include files
 #
 .PHONY: include
-include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/iodbcinst.h
+include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/odbcinst.h
 	sh framework-include.sh
 
 #
