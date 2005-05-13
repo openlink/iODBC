@@ -367,6 +367,16 @@ trace_start(void)
     else
       trace_set_appname ("{No Application Name}");
   }
+#elif defined(__APPLE__)
+#ifdef MACOSX102
+  {
+    trace_set_appname ("{No Application Name}");
+  }
+#else
+  {
+    trace_set_appname (getprogname());
+  }
+#endif
 #endif
 
   /*
