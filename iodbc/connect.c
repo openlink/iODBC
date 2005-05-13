@@ -77,7 +77,7 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 #include <iodbcext.h>
-#include <iodbcinst.h>
+#include <odbcinst.h>
 
 #include <dlproc.h>
 
