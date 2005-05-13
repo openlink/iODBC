@@ -76,5 +76,5 @@ do
 	-e "s/<sqlucode\.h/<iODBC\/sqlucode.h/" \
 	-e "s/<iodbcunix\.h/<iODBC\/iodbcunix.h/" \
 	-e "s/<iodbcext\.h/<iODBC\/iodbcext.h/" \
-	-e "s/<odbcinst\.h/<IODBCinst\/odbcinst.h/" < ../include/$i > include/$i
+	-e "s/<odbcinst\.h/<iODBCinst\/odbcinst.h/" < ../include/$i > include/$i
 done
