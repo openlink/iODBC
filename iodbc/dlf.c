@@ -998,19 +998,16 @@ static struct dlopen_handle *dlopen_handles = NULL;
 static const struct dlopen_handle main_program_handle = { NULL };
 static char *dlerror_pointer = NULL;
 
-  enum bool
-  { false, true };
-
 /*
  * NSMakePrivateModulePublic() is not part of the public dyld API so we define
  * it here.  The internal dyld function pointer for
  * __dyld_NSMakePrivateModulePublic is returned so thats all that matters to get
  * the functionality need to implement the dlopen() interfaces.
  */
-static enum bool
+static int
 NSMakePrivateModulePublic (NSModule module)
 {
-  static enum bool (*p) (NSModule module) = NULL;
+  static int (*p) (NSModule module) = NULL;
 
   if (p == NULL)
     _dyld_func_lookup ("__dyld_NSMakePrivateModulePublic",
