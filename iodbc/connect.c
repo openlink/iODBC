@@ -1231,16 +1231,16 @@ SQLDriverConnect_Internal (
 
   if (waMode != 'W')
     {
-      drv = _iodbcdm_getkeyvalinstr ((char *)szConnStrIn, cbConnStrIn,
+      drv = _iodbcdm_getkeyvalinstr ((char *) szConnStrIn, cbConnStrIn,
 	  "DRIVER", (char *) drvbuf, sizeof (drvbuf));
-      dsn = _iodbcdm_getkeyvalinstr ((char *)szConnStrIn, cbConnStrIn,
+      dsn = _iodbcdm_getkeyvalinstr ((char *) szConnStrIn, cbConnStrIn,
 	  "DSN", (char *) dsnbuf, sizeof (dsnbuf));
     }
   else
     {
-      drv = _iodbcdm_getkeyvalinstrw ((wchar_t *)szConnStrIn, cbConnStrIn,
+      drv = _iodbcdm_getkeyvalinstrw ((wchar_t *) szConnStrIn, cbConnStrIn,
 	  L"DRIVER", drvbuf, sizeof (drvbuf) / sizeof (SQLWCHAR));
-      dsn = _iodbcdm_getkeyvalinstrw ((wchar_t *)szConnStrIn, cbConnStrIn,
+      dsn = _iodbcdm_getkeyvalinstrw ((wchar_t *) szConnStrIn, cbConnStrIn,
 	  L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (SQLWCHAR));
     }
 
@@ -1266,82 +1266,85 @@ SQLDriverConnect_Internal (
       /* Get data source dialog box function from
        * current executable */
       /* Not really sure here, but should load that from the iodbcadm */
-      if (waMode == 'A') strncpy ((char*)prov, szConnStrIn, sizeof(prov));
-      else wcsncpy (prov, szConnStrIn, sizeof(prov) / sizeof(wchar_t));
+      if (waMode == 'A')
+	strncpy ((char *) prov, szConnStrIn, sizeof (prov));
+      else
+	wcsncpy (prov, szConnStrIn, sizeof (prov) / sizeof (wchar_t));
 
-      ODBC_UNLOCK (); 
+      ODBC_UNLOCK ();
 #ifdef __APPLE__
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
       if (bundle)
-        {
-          /* Search for the drvproxy library */
-          liburl =
-  	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+	{
+	  /* Search for the drvproxy library */
+	  liburl =
+	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
 	      NULL, NULL);
-          if (liburl
-              && (libname =
-                  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-            {
-              CFStringGetCString (libname, name, sizeof (name),
-                kCFStringEncodingASCII);
-              STRCAT (name, "/Contents/MacOS/iODBCadm");
-              hdll = _iodbcdm_dllopen (name);
+	  if (liburl
+	      && (libname =
+		  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+	    {
+	      CFStringGetCString (libname, name, sizeof (name),
+		  kCFStringEncodingASCII);
+	      STRCAT (name, "/Contents/MacOS/iODBCadm");
+	      hdll = _iodbcdm_dllopen (name);
+	    }
+	  if (liburl)
+	    CFRelease (liburl);
+	  if (libname)
+	    CFRelease (libname);
+	}
 #else
       hdll = _iodbcdm_dllopen ("libiodbcadm.so");
 #endif
 
-	      if (waMode != 'W')
-	        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
-	      else
-	        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
+      if (!hdll)
+	break;
 
-	      if (dialproc == SQL_NULL_HPROC)
-	        {
-	          sqlstat = en_IM008;
-	          break;
-	        }
+      if (waMode != 'W')
+	dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
+      else
+	dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
 
-	      retcode = dialproc (hwnd,	/* window or display handle */
-	          prov,		        /* input/output dsn buf */
-                  sizeof (prov) / (waMode == 'A' ? 1 : sizeof (SQLWCHAR)), /* buf size */
-	          &sqlstat,		/* error code */
-	          fDriverCompletion,	/* type of completion */
-	          &config);		/* config mode */
+      if (dialproc == SQL_NULL_HPROC)
+	{
+	  sqlstat = en_IM008;
+	  break;
+	}
 
-#ifdef __APPLE__
-            }
-          if (liburl)
-            CFRelease (liburl);
-          if (libname)
-            CFRelease (libname);
-        }
-#endif
+      retcode = dialproc (hwnd,	/* window or display handle */
+	  prov,			/* input/output dsn buf */
+	  sizeof (prov) / (waMode == 'A' ? 1 : sizeof (SQLWCHAR)),	/* buf size */
+	  &sqlstat,		/* error code */
+	  fDriverCompletion,	/* type of completion */
+	  &config);		/* config mode */
 
-          ODBC_LOCK ();
 
-	  if (retcode != SQL_SUCCESS)
-	    {
-	      if (retcode != SQL_NO_DATA_FOUND)
-		PUSHSQLERR (pdbc->herr, sqlstat);
-	      goto end;
-	    }
+      ODBC_LOCK ();
 
-	  connStrIn = szConnStrIn = prov;
+      if (retcode != SQL_SUCCESS)
+	{
+	  if (retcode != SQL_NO_DATA_FOUND)
+	    PUSHSQLERR (pdbc->herr, sqlstat);
+	  goto end;
+	}
 
-	  if (cbConnStrIn == SQL_NTS)
-	    {
-	      if (waMode != 'W')
-		cbConnStrIn = STRLEN (szConnStrIn);
-	      else
-		cbConnStrIn = WCSLEN (szConnStrIn);
-	    }
+      connStrIn = szConnStrIn = prov;
 
+      if (cbConnStrIn == SQL_NTS)
+	{
 	  if (waMode != 'W')
-	    dsn = _iodbcdm_getkeyvalinstr ((char *) prov, STRLEN (prov),
-		"DSN", (char *) dsnbuf, sizeof (dsnbuf));
+	    cbConnStrIn = STRLEN (szConnStrIn);
 	  else
-	    dsn = _iodbcdm_getkeyvalinstrw (prov, WCSLEN (prov),
-		L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (SQLWCHAR));
+	    cbConnStrIn = WCSLEN (szConnStrIn);
+	}
+
+      if (waMode != 'W')
+	dsn = _iodbcdm_getkeyvalinstr ((char *) prov, STRLEN (prov),
+	    "DSN", (char *) dsnbuf, sizeof (dsnbuf));
+      else
+	dsn = _iodbcdm_getkeyvalinstrw (prov, WCSLEN (prov),
+	    L"DSN", dsnbuf, sizeof (dsnbuf) / sizeof (SQLWCHAR));
       break;
 
     default:
@@ -1359,7 +1362,7 @@ SQLDriverConnect_Internal (
     {
       if (dsn != NULL)
 	{
-          dsn = _dsn_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)dsn, SQL_NTS);
+	  dsn = _dsn_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) dsn, SQL_NTS);
 	  if (dsn == NULL)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_S1001);
@@ -1369,7 +1372,7 @@ SQLDriverConnect_Internal (
 
       if (drv != NULL)
 	{
-          drv = _drv_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)drv, SQL_NTS);
+	  drv = _drv_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) drv, SQL_NTS);
 	  if (drv == NULL)
 	    {
 	      PUSHSQLERR (pdbc->herr, en_S1001);
@@ -1387,7 +1390,8 @@ SQLDriverConnect_Internal (
   else
     /* if you want tracing, you must use a DSN */
     {
-      setopterr |= _iodbcdm_con_settracing (pdbc, (SQLCHAR *) dsn, SQL_NTS, waMode);
+      setopterr |=
+	  _iodbcdm_con_settracing (pdbc, (SQLCHAR *) dsn, SQL_NTS, waMode);
     }
 
   /*
@@ -1396,8 +1400,8 @@ SQLDriverConnect_Internal (
   thread_safe = 1;		/* Assume driver is thread safe */
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if (SQLGetPrivateProfileString ((char *) dsn, "ThreadManager", "", 
-	buf, sizeof (buf), "odbc.ini")
+  if (SQLGetPrivateProfileString ((char *) dsn, "ThreadManager", "",
+	  buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       thread_safe = 0;		/* Driver needs a thread manager */
@@ -1409,8 +1413,8 @@ SQLDriverConnect_Internal (
   unload_safe = 0;		/* Assume driver is not unload safe */
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
-  if (SQLGetPrivateProfileString ((char *) dsn, "UnloadSafe", "", 
-	buf, sizeof (buf), "odbc.ini")
+  if (SQLGetPrivateProfileString ((char *) dsn, "UnloadSafe", "",
+	  buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       unload_safe = 1;
@@ -1422,8 +1426,8 @@ SQLDriverConnect_Internal (
   if (drv == NULL || *(char *) drv == '\0')
     {
       SQLSetConfigMode (ODBC_BOTH_DSN);
-      if (SQLGetPrivateProfileString ((char *) dsn, "Driver", "", 
-		buf, sizeof (buf), "odbc.ini") != 0)
+      if (SQLGetPrivateProfileString ((char *) dsn, "Driver", "",
+	      buf, sizeof (buf), "odbc.ini") != 0)
 	{
 	  drv = buf;
 	}
@@ -1437,7 +1441,9 @@ SQLDriverConnect_Internal (
       return SQL_ERROR;
     }
 
-  retcode = _iodbcdm_driverload ((char *) drv, pdbc, thread_safe, unload_safe, waMode);
+  retcode =
+      _iodbcdm_driverload ((char *) drv, pdbc, thread_safe, unload_safe,
+      waMode);
 
   MEM_FREE (_dsn_u8);
   MEM_FREE (_drv_u8);
@@ -1520,12 +1526,14 @@ SQLDriverConnect_Internal (
       if (waMode != 'W')
 	{
 	  /* ansi<=unicode */
-          dm_StrCopyOut2_W2A ((SQLWCHAR *) connStrOut, (SQLCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
+	  dm_StrCopyOut2_W2A ((SQLWCHAR *) connStrOut,
+	      (SQLCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
 	}
       else
 	{
 	  /* unicode<=ansi */
-          dm_StrCopyOut2_A2W ((SQLCHAR *) connStrOut, (SQLWCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
+	  dm_StrCopyOut2_A2W ((SQLCHAR *) connStrOut,
+	      (SQLWCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
 	}
     }
 
