@@ -294,12 +294,13 @@ _iodbcdm_driverload (
   CONN (pdbc, hdbc);
   ENVR (penv, NULL);
   GENV (genv, NULL);
-  HDLL hdll;
+  HDLL hdll = SQL_NULL_HDLL;
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
   sqlstcode_t sqlstat = en_00000;
+  char *driverbuf[1024];
 
-  if (path == NULL || ((char*)path)[0] == '\0')
+  if (path == NULL || ((char *) path)[0] == '\0')
     {
       PUSHSQLERR (pdbc->herr, en_IM002);
       return SQL_ERROR;
@@ -310,11 +311,41 @@ _iodbcdm_driverload (
       return SQL_INVALID_HANDLE;
     }
 
+  /*
+   *  If path does not start with / or ., we may have a symbolic driver name
+   */
+  if (!(path[0] == '/' || path[0] == '.'))
+    {
+      char *tmp_path = NULL;
+
+      /*
+       *  Remove curly braces
+       */
+      if (path[0] == '{')
+	{
+	  tmp_path = strdup (path);
+	  if (tmp_path[strlen (path) - 1] == '}')
+	    tmp_path[strlen (path) - 1] = '\0';
+	  path = &tmp_path[1];
+	}
+
+      /*
+       *  Hopefully the driver was registered under that name in the 
+       *  odbcinst.ini file
+       */
+      if (SQLGetPrivateProfileString ((char *) path, "Driver", "",
+	      driverbuf, sizeof (driverbuf), "odbcinst.ini") && driverbuf[0])
+	path = driverbuf;
+
+      if (tmp_path)
+	free (tmp_path);
+    }
+
   genv = (GENV_t *) pdbc->genv;
 
   /* This will either load the driver dll or increase its reference count */
   hdll = _iodbcdm_dllopen ((char *) path);
-  
+
   /* Set flag if it is safe to unload the driver after use */
   if (unload_safe)
     _iodbcdm_safe_unload (hdll);
