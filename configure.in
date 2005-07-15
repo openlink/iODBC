@@ -702,6 +702,7 @@ AC_CONFIG_FILES([
     Makefile 
     admin/Makefile
     admin/libiodbc.spec
+    admin/libiodbc.pc
     bin/Makefile
     bin/iodbc-config
     etc/Makefile

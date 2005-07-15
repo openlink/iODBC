@@ -1,3 +1,4 @@
 Makefile.in
 Makefile
 libiodbc.spec
+libiodbc.pc

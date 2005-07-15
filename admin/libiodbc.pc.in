@@ -1,9 +1,13 @@
 #
-#  Makefile.am
+#  libiodbc.pc
+#
+#  $Id$
+#
+#  pkg-config specification file
 #
 #  The iODBC driver manager.
 #  
-#  Copyright (C) 1996-2002 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1999-2005 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -64,21 +68,20 @@
 #  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-EXTRA_DIST = \
-	acinclude.m4 \
-	gtk.m4 \
-	config.guess \
-	config.sub \
-	install-sh \
-	libiodbc.spec.in \
-	libiodbc.pc.in \
-	mkinstalldirs \
-	missing \
-	ltmain.sh 
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libiodbc.pc
+ODBCINI=@inidir@/odbc.ini
+ODBCINSTINI=@inidir@/odbcinst.ini
+odbcversion=@odbcmode@
 
-
-noinst_SCRIPTS = libiodbc.spec
+Name: iODBC
+Description: @PACKAGE_NAME@
+Version: @PACKAGE_VERSION@
+Requires:
+Libs: -L${libdir} -liodbc -liodbcinst -ldl
+Cflags: -I${includedir}
