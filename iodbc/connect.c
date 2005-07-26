@@ -1331,7 +1331,11 @@ SQLDriverConnect_Internal (
 
       connStrIn = szConnStrIn = prov;
 
-      if (cbConnStrIn == SQL_NTS)
+      /*
+       * Recalculate length of szConnStrIn if needed, as it may have been
+       * changed by iodbcdm_drvconn_dialbox
+       */
+      if (cbConnStrIn != SQL_NTS)
 	{
 	  if (waMode != 'W')
 	    cbConnStrIn = STRLEN (szConnStrIn);
