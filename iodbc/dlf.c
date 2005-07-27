@@ -1039,6 +1039,7 @@ iodbc_dlopen (char * path, int mode)
   unsigned long options;
   NSSymbol NSSymbol;
   void (*init) (void);
+  static char errbuf[640];
 
   dlerror_pointer = NULL;
 
@@ -1153,7 +1154,14 @@ iodbc_dlopen (char * path, int mode)
   NSDestroyObjectFileImage (objectFileImage);
   if (module == NULL)
     {
-      dlerror_pointer = "NSLinkModule() failed for dlopen()";
+      NSLinkEditErrors lerr;
+      int errNum;
+      const char *fname;
+      const char *errStr;
+      NSLinkEditError(&lerr, &errNum, &fname, &errStr);
+      sprintf(effbuf, "NSLinkModule() failed for dlopen() ([%.256s][%.256s])",
+      		fname, errStr);
+      dlerror_pointer = errbuf;
       return (NULL);
     }
 
