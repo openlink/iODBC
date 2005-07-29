@@ -1159,7 +1159,7 @@ iodbc_dlopen (char * path, int mode)
       const char *fname;
       const char *errStr;
       NSLinkEditError(&lerr, &errNum, &fname, &errStr);
-      sprintf(effbuf, "NSLinkModule() failed for dlopen() ([%.256s][%.256s])",
+      sprintf(errbuf, "NSLinkModule() failed for dlopen() ([%.256s][%.256s])",
       		fname, errStr);
       dlerror_pointer = errbuf;
       return (NULL);
