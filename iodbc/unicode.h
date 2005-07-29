@@ -113,6 +113,17 @@ int dm_StrCopyOut2_W2A (SQLWCHAR * inStr, SQLCHAR * outStr, SQLSMALLINT size,
 #define OPL_A2W(XA, XW, SIZE)      mbstowcs((wchar_t *) XW, (char *) XA, SIZE)
 # endif
 
+#if MACOSX >= 103
+#define HAVE_WCHAR_H 
+#define HAVE_WCSLEN 
+#define HAVE_WCSCPY 
+#define HAVE_WCSNCPY
+#define HAVE_WCSCHR
+#define HAVE_WCSCAT
+#define HAVE_WCSCMP
+#define HAVE_TOWLOWER
+#endif
+
 /*
  *  Replacement functions
  */
