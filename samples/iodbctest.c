@@ -172,6 +172,9 @@ strcpy_A2W (SQLWCHAR * destStr, char *sourStr)
  *
  *	DSN=pubs_sqlserver;PWD=demo
  */
+
+SQLTCHAR outdsn[4096];			/* Store completed DSN for later use */
+
 int
 ODBC_Connect (char *connStr)
 {
@@ -180,7 +183,6 @@ ODBC_Connect (char *connStr)
   SQLTCHAR dsn[33];
   SQLTCHAR desc[255];
   SQLTCHAR driverInfo[255];
-  SQLTCHAR outdsn[1024];
   SQLSMALLINT len1, len2;
   int status;
 #ifdef UNICODE
@@ -409,6 +411,65 @@ ODBC_Disconnect (void)
     SQLFreeHandle (SQL_HANDLE_ENV, henv);
 #endif
 
+  return 0;
+}
+
+
+/*
+ *  Perform a disconnect/reconnect using the DSN stored from the original
+ *  SQLDriverConnect
+ */
+int 
+ODBC_Reconnect (void)
+{
+  SQLRETURN status;
+  SQLTCHAR buf[4096];
+  SQLSMALLINT len;
+
+  /*
+   *  Free old statement handle
+   */
+#if (ODBCVER < 0x0300)
+  SQLFreeStmt (hstmt, SQL_DROP);
+#else
+  SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
+#endif
+
+  /*
+   *  Disconnect
+   */
+  SQLDisconnect (hdbc);
+
+  /*
+   *  Reconnect
+   */
+  status = SQLDriverConnect (hdbc, 0, outdsn, SQL_NTS,
+      buf, sizeof (buf), &len, SQL_DRIVER_NOPROMPT);
+
+  /*
+   *  Allocate new statement handle
+   */
+  if (SQL_SUCCEEDED (status))
+    {
+#if (ODBCVER < 0x0300)
+      status = SQLAllocStmt (hdbc, &hstmt);
+#else
+      status = SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt);
+#endif
+    }
+
+  /*
+   *  Show why we where unsuccessful and return an error
+   */
+  if (!SQL_SUCCEEDED (status))
+    {
+      ODBC_Errors ("DriverConnect (reconnect)");
+      return -1;
+    }
+
+  /*
+   *  Success
+   */
   return 0;
 }
 
@@ -675,6 +736,13 @@ ODBC_Test ()
 	      ODBC_Errors ("SQLGetTypeInfo");
 	      continue;
 	    }
+	}
+      else if (!TXTCMP (request, TEXT ("reconnect")))
+	{
+  	  if (ODBC_Reconnect())
+	    return -1;
+
+	  continue;
 	}
 #if defined (unix)
       else if (!TXTCMP (request, TEXT ("environment")))
