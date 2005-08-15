@@ -16,8 +16,7 @@
 		};
 		034768DEFF38A45A11DB9C8B = {
 			explicitFileType = wrapper.framework;
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			path = iODBCinst.framework;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -84,7 +83,7 @@
 				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
 				FRAMEWORK_SEARCH_PATHS = ../iODBC/build;
 				FRAMEWORK_VERSION = 3.0.6;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "../../include ../../iodbcinst ../../iodbc";
 				INSTALL_PATH = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O2";
@@ -153,6 +152,7 @@
 				F59CCFDB0504F64401000DFE,
 				71DF013706A3E372007AF56B,
 				7C530B6107F075D3000BBF8D,
+				CD2616E208B138FD00D9BE06,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,8 +276,6 @@
 //4F3
 //4F4
 		4F0BB7EC011F40E904CA0E50 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 3.52.1;
@@ -298,8 +296,6 @@
 			name = Development;
 		};
 		4F0BB7ED011F40E904CA0E50 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 3.52.1;
@@ -386,6 +382,34 @@
 //7C2
 //7C3
 //7C4
+//CD0
+//CD1
+//CD2
+//CD3
+//CD4
+		CD2616E108B138FD00D9BE06 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = iodbcinst.h;
+			path = /Users/patrick/src/iODBC.macosx/mac/include/iodbcinst.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		CD2616E208B138FD00D9BE06 = {
+			fileRef = CD2616E108B138FD00D9BE06;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+//CD0
+//CD1
+//CD2
+//CD3
+//CD4
 //F50
 //F51
 //F52
@@ -393,6 +417,7 @@
 //F54
 		F535B35B0278021D01A801DE = {
 			children = (
+				CD2616E108B138FD00D9BE06,
 				F535B35C0278023701A801DE,
 				7C530B5E07F075A7000BBF8D,
 				F535B35E0278027E01A801DE,
@@ -1167,8 +1192,7 @@
 			};
 		};
 		F54DA8D902795B3501A801DE = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = CoreFoundation.framework;
 			path = /System/Library/Frameworks/CoreFoundation.framework;
