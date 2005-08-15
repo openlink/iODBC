@@ -68,7 +68,7 @@
 
 
 mkdir -p include
-for i in sql.h sqlext.h sqltypes.h sqlucode.h odbcinst.h iodbcinst.h isql.h isqlext.h isqltypes.h iodbcunix.h iodbcext.h
+for i in sql.h sqlext.h sqltypes.h sqlucode.h odbcinst.h iodbcinst.h isql.h isqlext.h isqltypes.h iodbcunix.h iodbcext.h iodbcinst.h
 do
     sed -e "s/<sql\.h/<iODBC\/sql.h/" \
 	-e "s/<sqlext\.h/<iODBC\/sqlext.h/" \
