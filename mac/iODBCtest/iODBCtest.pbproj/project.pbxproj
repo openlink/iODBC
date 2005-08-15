@@ -6,8 +6,6 @@
 	objectVersion = 39;
 	objects = {
 		014CEA520018CE5811CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 3.52.1;
@@ -29,17 +27,17 @@
 			name = Development;
 		};
 		014CEA530018CE5811CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 3.52.1;
+				DEPLOYMENT_LOCATION = NO;
 				DYLIB_CURRENT_VERSION = 3.52.1;
 				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build ../../mac/iODBCinst/build";
 				FRAMEWORK_VERSION = 3.52;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				HEADER_SEARCH_PATHS = "../include ../../include";
+				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
 				RESMERGER_SOURCES_FORK = data;
 				ZERO_LINK = NO;
 			};
@@ -58,8 +56,7 @@
 //034
 		034768E8FF38A79811DB9C8B = {
 			explicitFileType = "compiled.mach-o.executable";
-			fallbackIsa = PBXFileReference;
-			isa = PBXExecutableFileReference;
+			isa = PBXFileReference;
 			path = iodbctest;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -226,8 +223,7 @@
 			};
 		};
 		F5CD65030497672D01A801EC = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = iODBC.framework;
 			path = ../iODBC/build/iODBC.framework;
@@ -241,8 +237,7 @@
 			};
 		};
 		F5CD650E0497673F01A801EC = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = iODBCinst.framework;
 			path = ../iODBCinst/build/iODBCinst.framework;
