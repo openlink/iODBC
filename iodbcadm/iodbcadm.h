@@ -68,17 +68,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if defined(__APPLE__) && !defined(NO_FRAMEWORKS)
-#  include <iODBC/iodbc.h>
-#  include <iODBCinst/odbcinst.h>
-#  include <iODBC/sqlucode.h>
-#  include <iODBC/sqltypes.h>
-#else
-#  include <iodbc.h>
-#  include <odbcinst.h>
-#  include <sqlucode.h>
-#  include <sqltypes.h>
-#endif
+#include <iodbc.h>
+#include <odbcinst.h>
+#include <sql.h>
+#include <sqltypes.h>
+#include <sqlucode.h>
 
 #ifndef	_IODBCADM_H
 #define	_IODBCADM_H

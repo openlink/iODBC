@@ -2562,6 +2562,6 @@ SQLRETURN SQL_API SQLAllocHandleStd (
 }
 #endif
 
-#include "sqlucode.h"
+#include <sqlucode.h>
 
 #endif	/* _SQLEXT_H */
