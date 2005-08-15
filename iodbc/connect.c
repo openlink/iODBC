@@ -90,7 +90,7 @@
 
 #include <unicode.h>
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined (_LP64)
 #include <Carbon/Carbon.h>
 #endif
 
@@ -1198,7 +1198,7 @@ SQLDriverConnect_Internal (
   char *_dsn_u8 = NULL;
   char *_drv_u8 = NULL;
   UWORD config;
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
   CFStringRef libname = NULL;
   CFBundleRef bundle = NULL;
   CFURLRef liburl = NULL;
@@ -1272,7 +1272,7 @@ SQLDriverConnect_Internal (
 	wcsncpy (prov, szConnStrIn, sizeof (prov) / sizeof (wchar_t));
 
       ODBC_UNLOCK ();
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
       if (bundle)
 	{

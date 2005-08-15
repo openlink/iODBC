@@ -190,7 +190,8 @@ int wcscmp (const wchar_t* s1, const wchar_t* s2)
 #endif
 
 #if !defined(HAVE_TOWLOWER)
-#if defined(__APPLE__) || defined(macintosh)
+#if (defined(__APPLE__) && !defined (_LP64)) || defined (macintosh)
+#include <Carbon/Carbon.h>
 wchar_t towlower(wchar_t wc)
 {
 #ifdef __APPLE__

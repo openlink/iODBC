@@ -77,7 +77,7 @@
 #include "iodbc_error.h"
 #include "dlf.h"
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
 #include <Carbon/Carbon.h>
 #endif
 
@@ -98,7 +98,7 @@ ManageDataSources (HWND hwndParent)
   void *handle;
   pAdminBoxFunc pAdminBox;
   BOOL retcode = FALSE;
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
   CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
@@ -106,7 +106,7 @@ ManageDataSources (HWND hwndParent)
 #endif
 
   /* Load the Admin dialbox function */
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {

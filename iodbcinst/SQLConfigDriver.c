@@ -76,7 +76,7 @@
 #include <odbcinst.h>
 #include <unicode.h>
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
 #  include <Carbon/Carbon.h>
 #endif
 
@@ -171,7 +171,7 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   void *handle;
   pConfigDriverFunc pConfigDriver;
   pConfigDriverWFunc pConfigDriverW;
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
   CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
@@ -335,7 +335,7 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
     }
 
   /* The last ressort, a proxy driver */
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {

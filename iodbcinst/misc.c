@@ -271,7 +271,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	  if (doCreate || access (buf, R_OK) == 0)
 	    return buf;
 
-#   ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
 	  /*
 	   * Try to check the ~/Library/ODBC/odbc.ini
 	   */
@@ -322,7 +322,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	    }
 	}
 
-#   ifdef __APPLE__
+#if defined(__APPLE__) && !defined (_LP64)
       /*
        * Try to check the /Library/ODBC/odbc.ini
        */
