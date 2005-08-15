@@ -94,7 +94,6 @@ mkdir -p "$PREFIX/include"
 #
 #  Create symlinks for all header files
 #
-ln -s "$ODBC_FW/Headers/iodbc.h"	"$PREFIX/include/iodbc.h"
 ln -s "$ODBC_FW/Headers/iodbcext.h"	"$PREFIX/include/iodbcext.h"
 ln -s "$ODBC_FW/Headers/iodbcunix.h"	"$PREFIX/include/iodbcunix.h"
 ln -s "$ODBC_FW/Headers/isql.h"		"$PREFIX/include/isql.h"
