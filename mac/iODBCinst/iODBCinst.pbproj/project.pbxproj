@@ -392,9 +392,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iodbcinst.h;
-			path = /Users/patrick/src/iODBC.macosx/mac/include/iodbcinst.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../include/iodbcinst.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		CD2616E208B138FD00D9BE06 = {
 			fileRef = CD2616E108B138FD00D9BE06;

@@ -10,7 +10,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 3.52.1;
 				DYLIB_CURRENT_VERSION = 3.52.1;
-				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build ../../mac/iODBCinst/build";
+				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build/Development ../../mac/iODBC/build ../../mac/iODBCinst/build/Development ../../mac/iODBCinst/build";
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -32,7 +32,7 @@
 				CURRENT_PROJECT_VERSION = 3.52.1;
 				DEPLOYMENT_LOCATION = NO;
 				DYLIB_CURRENT_VERSION = 3.52.1;
-				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build ../../mac/iODBCinst/build";
+				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build/Deployment ../../mac/iODBC/build ../../mac/iODBCinst/build/Deployment ../../mac/iODBCinst/build";
 				FRAMEWORK_VERSION = 3.52;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
