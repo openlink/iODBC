@@ -142,7 +142,7 @@ _iodbcdm_drvconn_dialbox (
 	{
 	  sprintf (curr, "UID=%s", log_t.user);
 	  curr += STRLEN (curr);
-	  *curr = '\0';
+	  *curr++ = '\0';
 	  free (log_t.user);
 	}
 
@@ -150,9 +150,12 @@ _iodbcdm_drvconn_dialbox (
 	{
 	  sprintf (curr, "PWD=%s", log_t.pwd);
 	  curr += STRLEN (curr);
-	  *curr = '\0';
+	  *curr++ = '\0';
 	  free (log_t.pwd);
 	}
+
+      /* add list-terminating '\0' */
+      *curr = '\0';
     }
 
   retcode = log_t.ok ? SQL_SUCCESS : SQL_NO_DATA_FOUND;
