@@ -74,12 +74,12 @@
 static char* STRCONN = "DSN=%s\0Description=%s\0\0";
 static int STRCONN_NB_TOKENS = 2;
 
-char *szKeysColumnNames[] = {
+static char *szKeysColumnNames[] = {
   "Keyword",
   "Value"
 };
 
-char *szKeysButtons[] = {
+static char *szKeysButtons[] = {
   "_Add",
   "_Update"
 };
@@ -133,9 +133,9 @@ parse_attribute_line(TGENSETUP *gensetup_t, LPCSTR dsn, LPCSTR attrs, BOOL add)
     {
       gtk_entry_set_text (GTK_ENTRY (gensetup_t->dsn_entry), dsn);
       if (add)
-	gtk_entry_set_editable (GTK_ENTRY (gensetup_t->dsn_entry), FALSE);
+	gtk_widget_set_sensitive (gensetup_t->dsn_entry, TRUE);
       else
-	gtk_entry_set_editable (GTK_ENTRY (gensetup_t->dsn_entry), TRUE);
+	gtk_widget_set_sensitive (gensetup_t->dsn_entry, FALSE);
     }
 
   addkeywords_to_list (gensetup_t->key_list, attrs, gensetup_t);
@@ -268,8 +268,8 @@ gensetup_ok_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
       size +=
 	  STRLEN (gtk_entry_get_text (GTK_ENTRY (gensetup_t->
 		  comment_entry))) + STRLEN ("Description=") + 1;
-      /* Malloc it */
-      if ((gensetup_t->connstr = (char *) malloc (++size)))
+      /* Malloc it (+1 for list-terminating NUL) */
+      if ((gensetup_t->connstr = (char *) malloc (size + 1)))
 	{
 	  for (curr = STRCONN, cour = gensetup_t->connstr;
 	      i < STRCONN_NB_TOKENS; i++, curr += (STRLEN (curr) + 1))
@@ -302,14 +302,16 @@ gensetup_ok_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
 	      if (gensetup_t->connstr)
 		{
 		  memcpy (gensetup_t->connstr, cour, size);
-		  sprintf (gensetup_t->connstr + size - 1, "%s=%s", szKey,
-		      szValue);
+		  sprintf (gensetup_t->connstr + size, "%s=%s", szKey, szValue);
 		  free (cour);
 		  size += STRLEN (szKey) + STRLEN (szValue) + 2;
 		}
 	      else
 		gensetup_t->connstr = cour;
 	    }
+
+	  /* add list-terminating NUL */
+	  gensetup_t->connstr[size] = '\0';
 	}
 
       gensetup_t->dsn_entry = gensetup_t->comment_entry = NULL;
