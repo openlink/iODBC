@@ -182,7 +182,7 @@ SQLRemoveDSNFromIni (LPCSTR lpszDSN)
 	  retcode = RemoveDSNFromIni ((SQLPOINTER) lpszDSN, 'A');
 	}
       goto quit;
-    };
+    }
 
   PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
   goto quit;
@@ -222,7 +222,7 @@ SQLRemoveDSNFromIniW (LPCWSTR lpszDSN)
 	  retcode = RemoveDSNFromIni ((SQLPOINTER) lpszDSN, 'W');
 	}
       goto quit;
-    };
+    }
 
   PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
   goto quit;

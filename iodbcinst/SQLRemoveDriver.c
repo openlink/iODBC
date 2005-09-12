@@ -107,7 +107,7 @@ SQLRemoveDriver (LPCSTR lpszDriver, BOOL fRemoveDSN, LPDWORD lpdwUsageCount)
     case ODBC_SYSTEM_DSN:
       wSystemDSN = SYSTEMDSN_ONLY;
       break;
-    };
+    }
 
   if (_iodbcdm_cfg_search_init (&pCfg, "odbc.ini", FALSE))
     {

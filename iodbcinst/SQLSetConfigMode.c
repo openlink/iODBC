@@ -99,7 +99,7 @@ SQLSetConfigMode (UWORD wConfigMode)
       break;
     default:
       PUSH_ERROR (ODBC_ERROR_INVALID_PARAM_SEQUENCE);
-    };
+    }
 
   return retcode;
 }

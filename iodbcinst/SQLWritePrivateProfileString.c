@@ -207,7 +207,7 @@ SQLWritePrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
 		pathbuf);
 	}
       goto quit;
-    };
+    }
 
   PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
   goto quit;

@@ -243,7 +243,7 @@ SQLGetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
 		lpszRetBuffer, cbRetBuffer, pathbuf);
 	}
       goto quit;
-    };
+    }
 
   PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
   goto quit;

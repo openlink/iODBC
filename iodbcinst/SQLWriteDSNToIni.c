@@ -235,7 +235,7 @@ SQLWriteDSNToIni_Internal (SQLPOINTER lpszDSN, SQLPOINTER lpszDriver,
 	  retcode = WriteDSNToIni (_dsn_u8, _driver_u8);
 	}
       goto quit;
-    };
+    }
 
   PUSH_ERROR (ODBC_ERROR_GENERAL_ERR);
   goto quit;

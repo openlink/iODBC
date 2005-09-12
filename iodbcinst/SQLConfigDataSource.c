@@ -267,7 +267,7 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
     default:
       PUSH_ERROR (ODBC_ERROR_INVALID_REQUEST_TYPE);
       goto resetdsnmode;
-    };
+    }
 
   if (waMode == 'W')
     {

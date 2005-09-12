@@ -124,7 +124,7 @@ SQLInstallTranslatorEx (LPCSTR lpszTranslator, LPCSTR lpszPathIn,
     default:
       PUSH_ERROR (ODBC_ERROR_INVALID_REQUEST_TYPE);
       goto quit;
-    };
+    }
 
   /* Check input parameters */
   if (!lpszTranslator || !STRLEN (lpszTranslator))
@@ -155,7 +155,7 @@ SQLInstallTranslatorEx (LPCSTR lpszTranslator, LPCSTR lpszPathIn,
     case ODBC_SYSTEM_DSN:
       wSystemDSN = SYSTEMDSN_ONLY;
       break;
-    };
+    }
 
   if (_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {

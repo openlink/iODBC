@@ -171,7 +171,7 @@ SQLGetInstalledDrivers_Internal (LPSTR lpszBuf, WORD cbBufMax,
 	case SQL_FETCH_FIRST_SYSTEM:
 	  fDir = SQL_FETCH_FIRST;
 	  break;
-	};
+	}
     }
   while (fDir != SQL_FETCH_FIRST);
 

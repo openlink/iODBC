@@ -249,7 +249,7 @@ SQLInstallDriverEx (LPCSTR lpszDriver, LPCSTR lpszPathIn, LPSTR lpszPathOut,
     default:
       PUSH_ERROR (ODBC_ERROR_INVALID_REQUEST_TYPE);
       goto quit;
-    };
+    }
 
   /* Check input parameters */
   if (!lpszDriver || !STRLEN (lpszDriver))
@@ -280,7 +280,7 @@ SQLInstallDriverEx (LPCSTR lpszDriver, LPCSTR lpszPathIn, LPSTR lpszPathOut,
     case ODBC_SYSTEM_DSN:
       wSystemDSN = SYSTEMDSN_ONLY;
       break;
-    };
+    }
 
   if (_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {

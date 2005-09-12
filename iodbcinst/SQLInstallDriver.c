@@ -263,7 +263,7 @@ SQLInstallDriver (LPCSTR lpszInfFile, LPCSTR lpszDriver, LPSTR lpszPath,
     case ODBC_SYSTEM_DSN:
       wSystemDSN = SYSTEMDSN_ONLY;
       break;
-    };
+    }
 
   if (_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {
