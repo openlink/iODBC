@@ -115,6 +115,106 @@ extern wchar_t * _iodbcdm_getkeyvalinstrw (wchar_t *cnstr, int cnlen,
     wchar_t *keywd, wchar_t *value, int size);
 
 
+#define CHECK_DRVCONN_DIALBOXW(path) \
+  { \
+    if ((handle = DLL_OPEN(path)) != NULL) \
+      { \
+        if (DLL_PROC(handle, "_iodbcdm_drvconn_dialboxw") != NULL) \
+          { \
+            DLL_CLOSE(handle); \
+            retVal = TRUE; \
+            goto quit; \
+          } \
+        else \
+          { \
+            if (DLL_PROC(handle, "_iodbcdm_drvconn_dialbox") != NULL) \
+              { \
+                DLL_CLOSE(handle); \
+                retVal = TRUE; \
+                goto quit; \
+              } \
+          } \
+        DLL_CLOSE(handle); \
+      } \
+  }
+
+
+
+static BOOL
+_iodbcdm_CheckDriverLoginDlg (
+    SQLPOINTER  drv,
+    SQLPOINTER  dsn,
+    UCHAR       waMode
+)
+{
+  wchar_t *szDSN = NULL;
+  wchar_t *szDriver = NULL;
+  wchar_t tokenstr[4096];
+  char *_szdriver_u8 = NULL;
+  char drvbuf[4096] = { L'\0'};
+  HDLL handle;
+  BOOL retVal = FALSE;
+
+  if (waMode != 'W')
+   {
+     szDSN = dm_SQL_A2W((SQLCHAR *)dsn, SQL_NTS);
+     szDriver = dm_SQL_A2W((SQLCHAR *)drv, SQL_NTS);
+   }
+
+  /* Check if the driver is provided */
+  if (szDriver == NULL)
+    {
+      SQLSetConfigMode (ODBC_BOTH_DSN);
+      SQLGetPrivateProfileStringW (L"ODBC Data Sources",
+        szDSN && szDSN[0] != L'\0' ? szDSN : L"default",
+        L"", tokenstr, sizeof (tokenstr)/sizeof(wchar_t), NULL);
+      szDriver = tokenstr;
+    }
+
+  /* Call the iodbcdm_drvconn_dialbox */
+  _szdriver_u8 = dm_SQL_W2A (szDriver, SQL_NTS);
+
+  SQLSetConfigMode (ODBC_USER_DSN);
+  if (!access (_szdriver_u8, X_OK))
+    { CHECK_DRVCONN_DIALBOXW (_szdriver_u8); }
+  if (SQLGetPrivateProfileString (_szdriver_u8, "Driver", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+  if (SQLGetPrivateProfileString (_szdriver_u8, "Setup", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+  if (SQLGetPrivateProfileString ("Default", "Driver", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+  if (SQLGetPrivateProfileString ("Default", "Setup", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+
+
+  SQLSetConfigMode (ODBC_SYSTEM_DSN);
+  if (!access (_szdriver_u8, X_OK))
+    { CHECK_DRVCONN_DIALBOXW (_szdriver_u8); }
+  if (SQLGetPrivateProfileString (_szdriver_u8, "Driver", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+  if (SQLGetPrivateProfileString (_szdriver_u8, "Setup", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+  if (SQLGetPrivateProfileString ("Default", "Driver", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+  if (SQLGetPrivateProfileString ("Default", "Setup", "", drvbuf,
+    sizeof (drvbuf), "odbcinst.ini"))
+    { CHECK_DRVCONN_DIALBOXW (drvbuf); }
+
+quit:
+
+  MEM_FREE (_szdriver_u8);
+
+  return retVal;
+}
+
+
 static SQLRETURN
 _iodbcdm_SetConnectOption_init (
     SQLHDBC		  hdbc,
@@ -1198,6 +1298,7 @@ SQLDriverConnect_Internal (
   char *_dsn_u8 = NULL;
   char *_drv_u8 = NULL;
   UWORD config;
+  BOOL bCallDmDlg = FALSE;
 #if defined(__APPLE__) && !defined (_LP64)
   CFStringRef libname = NULL;
   CFBundleRef bundle = NULL;
@@ -1270,6 +1371,18 @@ SQLDriverConnect_Internal (
 	strncpy ((char *) prov, szConnStrIn, sizeof (prov));
       else
 	wcsncpy (prov, szConnStrIn, sizeof (prov) / sizeof (wchar_t));
+
+      if (!dsn && !drv)
+        bCallDmDlg = TRUE;
+      else if ( _iodbcdm_CheckDriverLoginDlg(drv, dsn, waMode) == FALSE)
+        bCallDmDlg = TRUE;
+
+      /* not call iODBC function "iodbcdm_drvconn_dialbox", if there is
+       * the function "_iodbcdm_drvconn_dialbox" in the odbc driver,
+       * odbc driver must call its function itself
+       */
+      if (!bCallDmDlg)
+        break;
 
       ODBC_UNLOCK ();
 #if defined(__APPLE__) && !defined (_LP64)
