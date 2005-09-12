@@ -227,16 +227,19 @@ SQLGetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
 	  goto quit;
 	}
       if (_iodbcadm_getinifile (pathbuf, sizeof (pathbuf), FALSE, FALSE))
-	len =
+        {
+	  len =
 	    GetPrivateProfileString (lpszSection, lpszEntry, lpszDefault,
 	    lpszRetBuffer, cbRetBuffer, pathbuf);
-      else
-	{
-	  CLEAR_ERROR ();
-	  wSystemDSN = SYSTEMDSN_ONLY;
-	  if (_iodbcadm_getinifile (pathbuf, sizeof (pathbuf), FALSE, FALSE))
-	    len =
-		GetPrivateProfileString (lpszSection, lpszEntry, lpszDefault,
+          if (len)
+            goto quit;
+        }
+      CLEAR_ERROR ();
+      wSystemDSN = SYSTEMDSN_ONLY;
+      if (_iodbcadm_getinifile (pathbuf, sizeof (pathbuf), FALSE, FALSE))
+        {
+          len =
+  	    GetPrivateProfileString (lpszSection, lpszEntry, lpszDefault,
 		lpszRetBuffer, cbRetBuffer, pathbuf);
 	}
       goto quit;
