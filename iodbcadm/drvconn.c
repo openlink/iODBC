@@ -301,6 +301,7 @@ iodbcdm_drvconn_dialboxw (
   /* Check if the driver is provided */
   if (szDriver == NULL)
     {
+      SQLSetConfigMode (ODBC_BOTH_DSN);
       SQLGetPrivateProfileStringW (L"ODBC Data Sources",
         szDSN && szDSN[0] != L'\0' ? szDSN : L"default",
         L"", tokenstr, sizeof (tokenstr)/sizeof(wchar_t), NULL);
