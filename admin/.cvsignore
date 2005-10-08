@@ -2,3 +2,10 @@ Makefile.in
 Makefile
 libiodbc.spec
 libiodbc.pc
+compile
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
