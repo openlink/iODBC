@@ -389,7 +389,8 @@ typedef unsigned short SQLWCHAR;
 #else
 #  include <stdlib.h>
 
-#  if defined(_WCHAR_T)			|| \
+#  if defined(__cplusplus)		|| \
+      defined(_WCHAR_T)			|| \
       defined(_WCHAR_T_DEFINED)		|| \
       defined(_WCHAR_T_DECLARED)        || \
       defined(_BSD_WCHAR_T_DEFINED_)
