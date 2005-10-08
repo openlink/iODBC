@@ -81,6 +81,7 @@ libiodbcinst_la_LIBADD	= $(LIBADD_DL)
 
 libiodbcinst_la_SOURCES	= \
 	dlf.c \
+	unicode.c \
 	SQLConfigDataSource.c \
 	SQLConfigDriver.c \
 	SQLGetAvailableDrivers.c \
@@ -120,11 +121,15 @@ noinst_HEADERS		= \
 	misc.h
 
 
-CLEANFILES=	dlf.c
+CLEANFILES=	dlf.c unicode.c
 
 dlf.c: $(top_srcdir)/iodbc/dlf.c
 	-rm -f dlf.c
 	$(LN_S) $(top_srcdir)/iodbc/dlf.c dlf.c
+
+unicode.c: $(top_srcdir)/iodbc/unicode.c
+	-rm -f unicode.c
+	$(LN_S) $(top_srcdir)/iodbc/unicode.c unicode.c
 
 if DARWIN
 libiodbcinst.la: $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_DEPENDENCIES)

@@ -93,6 +93,7 @@ if GTK
 libdrvproxy_la_LIBADD	= \
 	$(LIBADD_DL) \
 	../iodbc/dlf.lo \
+	../iodbc/unicode.lo \
 	../drvproxy/gtk/confirm.lo \
 	../drvproxy/gtk/gensetup.lo \
 	../drvproxy/gtk/loginbox.lo \
@@ -103,6 +104,7 @@ else
 libdrvproxy_la_LIBADD	= \
 	$(LIBADD_DL) \
 	../iodbc/dlf.lo \
+	../iodbc/unicode.lo \
 	-L../iodbcinst -liodbcinst \
 	-L../iodbcadm -liodbcadm
 endif

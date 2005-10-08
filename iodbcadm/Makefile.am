@@ -95,6 +95,7 @@ if GTK
 libiodbcadm_la_LIBADD	= \
 	$(LIBADD_DL) \
 	../iodbc/dlf.lo \
+	../iodbc/unicode.lo \
 	../iodbcadm/gtk/administrator.lo \
 	../iodbcadm/gtk/confirm.lo \
 	../iodbcadm/gtk/connectionpooling.lo\
@@ -112,6 +113,7 @@ else
 libiodbcadm_la_LIBADD	= \
 	$(LIBADD_DL) \
 	../iodbc/dlf.lo \
+	../iodbc/unicode.lo \
 	-L../iodbcinst -liodbcinst \
 	-L../iodbc -liodbc
 endif
