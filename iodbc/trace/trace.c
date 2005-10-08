@@ -75,8 +75,12 @@
 #include <ctype.h>
 #include <pwd.h>
 #include <unistd.h>
-#include <time.h>
 #include <fcntl.h>
+
+#include <time.h>
+#ifdef TIME_WITH_SYS_TIME
+#include <sys/time.h>
+#endif
 
 #include <sql.h>
 #include <sqlext.h>
@@ -109,6 +113,10 @@ static FILE *trace_fp = NULL;
 static int   trace_fp_close = 0;
 
 void trace_emit (char *fmt, ...);
+
+#ifdef HAVE_GETTIMEOFDAY
+static struct timeval starttime = {0};
+#endif
 
 
 /*
@@ -262,6 +270,10 @@ trace_start(void)
    *  First stop any previous trace
    */
   trace_stop ();
+
+#ifdef HAVE_GETTIMEOFDAY
+  gettimeofday (&starttime, NULL);
+#endif
 
   /*
    *  If no trace filename is specified, use the default
@@ -634,6 +646,24 @@ _trace_print_function (int func, int trace_leave, int retcode)
 {
   extern char *odbcapi_symtab[];
   char *ptr = "invalid retcode";
+  struct timeval tv;
+
+  /*
+   * Calculate timestamp
+   */
+#ifdef HAVE_GETTIMEOFDAY
+  gettimeofday (&tv, NULL);
+  tv.tv_sec -= starttime.tv_sec;
+  tv.tv_usec -= starttime.tv_usec;
+  if (tv.tv_usec < 0)
+    {
+      tv.tv_sec--;
+      tv.tv_usec += 1000000L;
+    }
+  trace_emit ("\n[%06ld.%06ld]\n", tv.tv_sec, tv.tv_usec);
+#else
+  trace_emit ("\n");
+#endif
 
   switch (retcode)
     {
@@ -651,11 +681,11 @@ _trace_print_function (int func, int trace_leave, int retcode)
 #endif
 
   if (trace_leave == TRACE_LEAVE)
-    trace_emit ("\n%-15.15s %08lX EXIT  %s with return code %d (%s)\n",
+    trace_emit ("%-15.15s %08lX EXIT  %s with return code %d (%s)\n",
 	trace_appname ? trace_appname : "Application",
 	THREAD_IDENT, odbcapi_symtab[func], retcode, ptr);
   else
-    trace_emit ("\n%-15.15s %08lX ENTER %s\n",
+    trace_emit ("%-15.15s %08lX ENTER %s\n",
 	trace_appname ? trace_appname : "Application",
 	THREAD_IDENT, odbcapi_symtab[func]);
 }

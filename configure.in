@@ -265,6 +265,7 @@ AM_PROG_LIBTOOL
 ##									##
 ##########################################################################
 AC_HEADER_STDC
+AC_HEADER_TIME
 AC_CHECK_HEADERS(wchar.h)
 
 
@@ -273,7 +274,7 @@ AC_CHECK_HEADERS(wchar.h)
 ##  Check for specific library functions				##
 ##									##
 ##########################################################################
-AC_CHECK_FUNCS(strerror setenv wcslen wcscpy wcsncpy asprintf snprintf)
+AC_CHECK_FUNCS(strerror setenv wcslen wcscpy wcsncpy asprintf snprintf gettimeofday)
 
 
 ##########################################################################
