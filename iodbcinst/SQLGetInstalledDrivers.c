@@ -195,7 +195,7 @@ SQLGetInstalledDrivers_Internal (LPSTR lpszBuf, WORD cbBufMax,
 	    {
 	      dm_StrCopyOut2_A2W (sect[i], (LPWSTR) lpszBuf, cbBufMax, NULL);
 	      cbBufMax -= (STRLEN (sect[i]) + 1);
-	      ((wchar_t *) lpszBuf) += (STRLEN (sect[i]) + 1);
+	      lpszBuf += (STRLEN (sect[i]) + 1) * sizeof (wchar_t);
 	    }
 	}
 
