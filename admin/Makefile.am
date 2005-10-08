@@ -66,16 +66,9 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 EXTRA_DIST = \
-	acinclude.m4 \
 	gtk.m4 \
-	config.guess \
-	config.sub \
-	install-sh \
 	libiodbc.spec.in \
-	libiodbc.pc.in \
-	mkinstalldirs \
-	missing \
-	ltmain.sh 
+	libiodbc.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libiodbc.pc
