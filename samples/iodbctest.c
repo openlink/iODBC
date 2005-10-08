@@ -480,18 +480,23 @@ ODBC_Reconnect (void)
 int
 ODBC_Errors (char *where)
 {
-  SQLTCHAR buf[250];
+  SQLTCHAR buf[512];
   SQLTCHAR sqlstate[15];
   SQLINTEGER native_error = 0;
   int force_exit = 0;
+  SQLRETURN sts;
 
 #if (ODBCVER < 0x0300)
   /*
    *  Get statement errors
    */
-  while (hstmt && SQLError (henv, hdbc, hstmt, sqlstate, &native_error,
-	  buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
+  while (hstmt)
     {
+      sts = SQLError (henv, hdbc, hstmt, sqlstate, &native_error,
+	  buf, NUMTCHAR (buf), NULL);
+      if (!SQL_SUCCEEDED (sts))
+	break;
+
 #ifdef UNICODE
       fprintf (stderr, "%s = %S (%ld) SQLSTATE=%S\n",
 	  where, buf, (long) native_error, sqlstate);
@@ -511,9 +516,13 @@ ODBC_Errors (char *where)
   /*
    *  Get connection errors
    */
-  while (hdbc && SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
-	  buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
+  while (hdbc)
     {
+      sts = SQLError (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
+	  buf, NUMTCHAR (buf), NULL);
+      if (!SQL_SUCCEEDED (sts))
+	break;
+
 #ifdef UNICODE
       fprintf (stderr, "%s = %S (%ld) SQLSTATE=%S\n",
 	  where, buf, (long) native_error, sqlstate);
@@ -533,9 +542,13 @@ ODBC_Errors (char *where)
   /*
    *  Get environment errors
    */
-  while (henv && SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
-	  &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
+  while (henv)
     {
+      sts SQLError (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
+	  &native_error, buf, NUMTCHAR (buf), NULL);
+      if (!SQL_SUCCEEDED (sts))
+	break;
+
 #ifdef UNICODE
       fprintf (stderr, "%s = %S (%ld) SQLSTATE=%S\n",
 	  where, buf, (long) native_error, sqlstate);
@@ -558,9 +571,13 @@ ODBC_Errors (char *where)
    *  Get statement errors
    */
   i = 0;
-  while (hstmt && i < 5 && SQLGetDiagRec (SQL_HANDLE_STMT, hstmt, ++i,
-	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
+  while (hstmt && i < 5)
     {
+      sts = SQLGetDiagRec (SQL_HANDLE_STMT, hstmt, ++i,
+	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL);
+      if (!SQL_SUCCEEDED (sts))
+	break;
+
 #ifdef UNICODE
       fprintf (stderr, "%d: %s = %S (%ld) SQLSTATE=%S\n",
 	  i, where, buf, (long) native_error, sqlstate);
@@ -581,9 +598,13 @@ ODBC_Errors (char *where)
    *  Get connection errors
    */
   i = 0;
-  while (hdbc && i < 5 && SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
-	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
+  while (hdbc && i < 5)
     {
+      sts = SQLGetDiagRec (SQL_HANDLE_DBC, hdbc, ++i,
+	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL);
+      if (!SQL_SUCCEEDED (sts))
+	break;
+
 #ifdef UNICODE
       fprintf (stderr, "%d: %s = %S (%ld) SQLSTATE=%S\n",
 	  i, where, buf, (long) native_error, sqlstate);
@@ -604,9 +625,13 @@ ODBC_Errors (char *where)
    *  Get environment errors
    */
   i = 0;
-  while (henv && i < 5 && SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
-	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL) == SQL_SUCCESS)
+  while (henv && i < 5)
     {
+      sts = SQLGetDiagRec (SQL_HANDLE_ENV, henv, ++i,
+	  sqlstate, &native_error, buf, NUMTCHAR (buf), NULL);
+      if (!SQL_SUCCEEDED (sts))
+	break;
+
 #ifdef UNICODE
       fprintf (stderr, "%d: %s = %S (%ld) SQLSTATE=%S\n",
 	  i, where, buf, (long) native_error, sqlstate);
