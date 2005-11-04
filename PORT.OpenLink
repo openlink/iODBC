@@ -115,7 +115,7 @@ esac
 #  Optional argument for make clean
 #
 shift
-MAKERULE=${1:-""}
+MAKERULE=${*:-""}
 export MAKERULE
 
 
@@ -147,6 +147,10 @@ run_config()
 	cd build-64
 	../configure --prefix=$PREFIX $CONFLAGS --bindir='${prefix}/bin64' --libdir='${prefix}/lib64'
 	cd ..
+	;;
+
+    cur)
+	./configure --prefix=$PREFIX $CONFLAGS
 	;;
 
     *)
@@ -184,6 +188,10 @@ run_make()
 	cd build-64
 	$MAKE $MAKERULE
 	cd ..
+	;;
+
+    cur)
+    	$MAKE $MAKERULE
 	;;
 
     *)
@@ -239,7 +247,7 @@ case $OS in
     	CFLAGS="-O3"
 	CONFLAGS="--enable-gui --enable-maintainer-mode"
 	export CFLAGS CONFLAGS
-	$BUILD
+	$BUILD cur
 	;;
 
     powerpc-apple-darwin8*)
