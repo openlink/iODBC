@@ -272,6 +272,22 @@ case $OS in
 	$BUILD 64
 	;;
 
+    powerpc-ibm-aix5*)
+	CC=cc_r
+	CFLAGS="-O -q32"
+	LDFLAGS="-brtl"
+	OBJECT_MODE=32
+	export CC CFLAGS LDFLAGS OBJECT_MODE
+	$BUILD 32
+
+	CC=cc_r
+	CFLAGS="-O -q64"
+	LDFLAGS="-brtl"
+	OBJECT_MODE=64
+	export CC CFLAGS LDFLAGS OBJECT_MODE
+	$BUILD 64
+	;;
+
     *)
 	CFLAGS="-O"
 	export CFLAGS
