@@ -245,13 +245,21 @@ case $OS in
     powerpc-apple-darwin8*)
 	PREFIX=/usr/local/iODBC.darwin
 	CONFLAGS="--disable-shared --with-pic"
-	CFLAGS="-O -m32"
+	CFLAGS="-O -m32 -DNO_FRAMEWORKS"
 	export CFLAGS CONFLAGS PREFIX
 	$BUILD 32
 
-	CFLAGS="-O -m64"
+	CFLAGS="-O -m64 -DNO_FRAMEWORKS"
 	export CFLAGS
 	$BUILD 64
+	;;
+
+    powerpc-apple-darwin7*)
+	PREFIX=/usr/local/iODBC.darwin
+	CONFLAGS="--disable-shared --with-pic"
+	CFLAGS="-O -DNO_FRAMEWORKS"
+	export CFLAGS CONFLAGS PREFIX
+	$BUILD
 	;;
 
     *)
