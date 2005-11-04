@@ -113,13 +113,6 @@ fi
     echo
 }
 
-(xml2-config --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`xml2' installed on your system."
-    echo
-    DIE=1
-}
-
 if test "$DIE" -eq 1
 then
     echo
