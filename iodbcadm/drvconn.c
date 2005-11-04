@@ -198,7 +198,7 @@ iodbcdm_drvconn_dialboxw (
   pDriverConnFunc pDrvConn;
   pDriverConnWFunc pDrvConnW;
   int i;
-#ifdef __APPLE__
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
   CFStringRef libname = NULL;
   CFBundleRef bundle = NULL;
   CFURLRef liburl = NULL;
@@ -344,7 +344,7 @@ iodbcdm_drvconn_dialboxw (
     { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
 
   /* The last ressort, a proxy driver */
-#ifdef __APPLE__
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (!bundle)
     bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
@@ -371,7 +371,7 @@ iodbcdm_drvconn_dialboxw (
     *sqlStat = en_IM003;
 
 quit:
-#ifdef __APPLE__
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
   if (liburl) CFRelease (liburl);
   if (libname) CFRelease (libname);
 #endif
