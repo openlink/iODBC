@@ -96,13 +96,13 @@ AM_MAINTAINER_MODE
 #  Version information for SQLGetInfo(SQL_DM_VER) call
 #
 BUILD_MAJOR="3"			# last digit of version number
-BUILD_MINOR="051008"		# year/month/day of release
+BUILD_MINOR="051104"		# year/month/day of release
 BUILD_VER="${BUILD_MAJOR}${BUILD_MINOR}"
 
 #
 #  Library version numbers
 #
-lib3_version=3:12:1		# ODBC 3.x mode
+lib3_version=3:14:1		# ODBC 3.x mode
 lib2_version=2:55:0		# ODBC 2.x mode (do not change)
 
 
