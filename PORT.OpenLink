@@ -262,6 +262,16 @@ case $OS in
 	$BUILD
 	;;
 
+    ia64-hp-hpux11.23)
+	CFLAGS="-O -Ae +DD32"
+	export CFLAGS
+	$BUILD 32
+
+	CFLAGS="-O -Ae +DD64"
+	export CFLAGS
+	$BUILD 64
+	;;
+
     *)
 	CFLAGS="-O"
 	export CFLAGS

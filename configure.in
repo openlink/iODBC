@@ -630,6 +630,11 @@ then
 		AC_MSG_RESULT([use -pthread for FreeBSD])
 		;;
 
+	*-hpux*)
+		LIBS="$LIBS -lpthread -lcl"
+		AC_MSG_RESULT([use -lpthread for HP/UX])
+		;;
+
       *)
 		AC_MSG_RESULT([none])
 		;;
