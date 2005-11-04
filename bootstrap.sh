@@ -79,25 +79,45 @@ echo "Checking build environment ..."
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`autoconf' installed on your system."
+    echo
     DIE=1
 }
 
 (automake --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`automake' installed on your system."
+    echo
     DIE=1
 }
 
-(libtoolize --version) < /dev/null > /dev/null 2>&1 || {
+LIBTOOLIZE=
+if test "x$LIBTOOLIZE" = "x"
+then
+	(libtoolize --version) > /dev/null 2>&1 && LIBTOOLIZE=libtoolize
+fi
+if test "x$LIBTOOLIZE" = "x"
+then
+	(glibtoolize --version) > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize
+fi
+if test "x$LIBTOOLIZE" = "x"
+then
     echo
     echo "**Error**: You must have \`libtool' installed on your system."
+    echo
     DIE=1
-}
+fi
 
 (gtk-config --version) < /dev/null > /dev/null 2>&1 || {
     echo
-    echo "**Warning**: You may need \`GTK' installed on your system."
-    DIE=0
+    echo "*Warning*: You may need \`GTK' installed on your system."
+    echo
+}
+
+(xml2-config --version) < /dev/null > /dev/null 2>&1 || {
+    echo
+    echo "**Error**: You must have \`xml2' installed on your system."
+    echo
+    DIE=1
 }
 
 if test "$DIE" -eq 1
@@ -114,8 +134,8 @@ fi
 #
 #  Generate the build scripts
 #
-echo "Running libtoolize ..."
-libtoolize --force --copy
+echo "Running $LIBTOOLIZE ..."
+$LIBTOOLIZE --force --copy
 if test $? -ne 0
 then
     echo
@@ -159,7 +179,6 @@ then
     exit 1
 fi
 
-
 echo
 echo "Please check the INSTALL and README files for instructions to"
 echo "configure, build and install iODBC on your system."
@@ -168,5 +187,6 @@ echo "Certain build targets are only enabled in maintainer mode:"
 echo
 echo "    ./configure --enable-maintainer-mode ..."
 echo
-echo "Bootstrap scripted completed successfully."
+echo "Bootstrap script completed successfully."
+
 exit 0
