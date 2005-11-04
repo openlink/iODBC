@@ -80,7 +80,7 @@
 #include "misc.h"
 #include "iodbc_error.h"
 
-#if defined(__APPLE__) && !defined (_LP64)
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
 #include <Carbon/Carbon.h>
 #endif
 
@@ -134,7 +134,7 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   RETCODE ret = SQL_NO_DATA;
   void *handle;
   char translator[1024];
-#if defined(__APPLE__) && !defined (_LP64)
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
   CFStringRef libname = NULL;
   CFBundleRef bundle;
   CFURLRef liburl;
@@ -144,7 +144,7 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   do
     {
       /* Load the Admin dialbox function */
-#if defined(__APPLE__) && !defined (_LP64)
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
       if (bundle)
 	{
