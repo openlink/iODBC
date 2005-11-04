@@ -79,11 +79,11 @@
 #endif
 
 #ifndef VERSION
-#define VERSION	"3.52.1"
+#define VERSION	"3.52.3"
 #endif
 
 #ifndef IODBC_BUILD
-#define IODBC_BUILD 10928	/* 0001.0928 */
+#define IODBC_BUILD 3051104	/* 0001.0928 */
 #endif
 
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)

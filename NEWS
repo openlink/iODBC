@@ -1,3 +1,21 @@
+Nov 04 2004, V3.52.3:
+    * Added support for DSN-less connections
+    * Added timestamp to ENTER/EXIT lines in trace file
+    * Added build support for AIX 5.x, HP/UX 11.23 Itanium
+    * Added build support for Mac OS X 10.3 (32bit) and 10.4 (32bit+64bit)
+    * Fixed problem with certain compilers hating lvalue casting
+    * Fixed problem with truncated messages in iodbctest
+    * Fixed problem calling setup dialog multiple times
+    * Fixed problem with ODBC_BOTH_DSN
+    * Fixed problem with tracing SQLGetInfo
+    * Fixed problem with NUL termination on setup dialog
+    * Fixed problem building on Mac OS X 10.4 64bit
+    * Fixed problem calculating buffer length after calling setup dialog
+    * Fixed problem with SQLDriverConnect (SQL_DRIVER_PROMPT) if no
+      setup dialog had been registered
+    * Fixed symbol clash between Oracle Instant client and iODBC on Mac OS X
+    * Fixed problem building iODBCadm and drvproxy on Mac OS X
+
 Feb 04 2005, V3.52.2:
     * Added tracing option for root without overwriting existing files
     * Added PORT.OpenLink script
