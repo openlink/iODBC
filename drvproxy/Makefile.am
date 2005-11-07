@@ -97,16 +97,16 @@ libdrvproxy_la_LIBADD	= \
 	../drvproxy/gtk/confirm.lo \
 	../drvproxy/gtk/gensetup.lo \
 	../drvproxy/gtk/loginbox.lo \
-	-L../iodbcinst -liodbcinst \
-	-L../iodbcadm -liodbcadm \
+	../iodbcinst/libiodbcinst.la \
+	../iodbcadm/libiodbcadm.la \
 	@GTK_LIBS@
 else
 libdrvproxy_la_LIBADD	= \
 	$(LIBADD_DL) \
 	../iodbc/dlf.lo \
 	../iodbc/unicode.lo \
-	-L../iodbcinst -liodbcinst \
-	-L../iodbcadm -liodbcadm
+	../iodbcinst/libiodbcinst.la \
+	../iodbcadm/libiodbcadm.la
 endif
 
 libdrvproxy_la_SOURCES	= \
