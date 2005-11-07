@@ -15,6 +15,7 @@ Nov 04 2004, V3.52.3:
       setup dialog had been registered
     * Fixed symbol clash between Oracle Instant client and iODBC on Mac OS X
     * Fixed problem building iODBCadm and drvproxy on Mac OS X
+    * Fixed problem building on machines with older iODBC installation
 
 Feb 04 2005, V3.52.2:
     * Added tracing option for root without overwriting existing files
