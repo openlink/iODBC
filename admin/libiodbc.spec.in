@@ -226,6 +226,7 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) %{_mandir}/man1/iodbc-config.1*
 %attr(0644, root, root) /usr/share/libiodbc/samples/Makefile
 %attr(0644, root, root) /usr/share/libiodbc/samples/iodbctest.c
+%attr(0644, root, root) /usr/lib/pkgconfig/libiodbc.pc
 
 %files admin
 %attr(0755, root, root) /usr/bin/iodbcadm-gtk
