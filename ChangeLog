@@ -1,3 +1,367 @@
+2005-11-07 11:39  source
+
+	* Finalized iODBC-3.52.3 release (pvk)
+
+2005-11-07 09:51  source
+
+	* Fixed build issue with previously installed libraries (pvk)
+
+2005-11-04 17:34  source
+
+	* Fixed problem building on Mac OS X 64bit (pvk)
+
+2005-11-04 17:17  source
+
+	* Apple does not provide certain frameworks in 64bit mode yet (pvk)
+
+2005-11-04 16:59  source
+
+	* Added Unicode symbols (pvk)
+
+2005-11-04 16:24  source
+
+	* Added option to build in current directory (pvk)
+
+2005-11-04 16:08  source
+
+	* Updated DM build number and library version number (pvk)
+
+2005-11-04 16:06  source
+
+	* Updated version number to 3.52.3 (pvk)
+
+2005-11-04 13:48  source
+
+	* Added check for more wchar functions (pvk)
+
+2005-11-04 13:42  source
+
+	* Added support for AIX 5.x (pvk)
+
+2005-11-04 13:37  source
+
+	* Removed check for xml2 which is not needed for iODBC (pvk)
+
+2005-11-04 13:28  source
+
+	* Added support for HP/UX Itanium (pvk)
+
+2005-11-04 13:13  source
+
+	* Fixed support for building on Mac OS X 10.3 and 10.4 in Darwin mode (pvk)
+
+2005-11-04 13:11  source
+
+	* Added detection for glibtoolize for Mac OS X build (pvk)
+
+2005-11-04 13:08  source
+
+	* Apple does not provide certain frameworks in 64bit mode yet (pvk)
+
+2005-10-08 15:13  source
+
+	* Include config.h if present (pvk)
+
+2005-10-08 14:19  source
+
+	* Fixed calculating end of buffer without lvalue cast as some
+	  compilers did not like this construction
+	  (pvk)
+
+2005-10-08 14:09  source
+
+	* Ignore files from copied from autoconf/automake/libtool (pvk)
+
+2005-10-08 14:07  source
+
+	* Resurrected mkinstalldirs (pvk)
+
+2005-10-08 13:58  source
+
+	* Added timestamp to ENTER/EXIT trace lines to get better idea of
+	  where application time was spend; inside or outside of ODBC calls.
+	  (pvk)
+
+2005-10-08 13:20  source
+
+	* Removed files that are distributed by autoconf/automake/libtoolize (pvk)
+
+2005-10-08 12:48  source
+
+	* Updated build version and library version (pvk)
+
+2005-10-08 11:43  source
+
+	* Fixed problem with truncated messages in ODBC_Error function (pvk)
+
+2005-10-08 11:39  source
+
+	* C++ normally has wchar_t (pvk)
+
+2005-10-08 11:37  source
+
+	* Fixed problem with symbol hiding unicode translation functions (pvk)
+
+2005-09-21 10:14  source
+
+	 * connection attr matching implemented per "Attribute Matching"
+	 * connection attributes are properly reset when connection is taken
+	   from the pool per "Attribute Matching"
+	   (mk)
+
+2005-09-12 09:25  source
+
+	* Added initial support for connection pooling (mk)
+
+2005-09-12 08:46  source
+
+	* Merged diffs from HEAD (pvk)
+
+2005-09-12 08:35  source
+
+	* Avoid calling _iodbcdm_drvconn_dialbox twice (sm)
+
+2005-09-12 08:28  source
+
+	* Removed semicolon from end of statement block
+	* Small code cleanup
+	  (pvk)
+
+2005-09-12 08:18  source
+
+	* Set config mode before looking for driver name (sm)
+
+2005-09-12 08:18  source
+
+	* Fixed problem with ODBC_BOTH_DSN (sm)
+
+2005-08-30 12:59  source
+
+	* Reordered InfoTypes based on ODBC version
+	* Fixed problem with some types like SQL_POS_OPERATION and
+	  SQL_POSITIONED_STATEMENTS which where flagged ODBC 2.x only by mistake
+	  (pvk)
+
+2005-08-22 10:41  source
+
+	* Fixed building with filedsn code (mk)
+
+2005-08-22 10:40  source
+
+	* Removed old filedsn code (mk)
+
+2005-08-22 10:39  source
+
+	* Fixed FileDSN dialogs on GTK+ (mk)
+
+2005-08-22 08:38  source
+
+	* DRIVER in connection string should always override DRIVER from file dsn
+	  (mk)
+
+2005-08-22 08:37  source
+
+	* Fixed NUL termination problem
+	* DSN input was not disabled correctly
+	  (mk)
+
+2005-08-22 08:36  source
+
+	* Fixed NUL termination problem (mk)
+
+2005-08-16 00:07  source
+
+	* Fixed minor build problems on Mac OS X
+	* Allow both Xcode 1.5 and 2.1 style build directories
+	  (pvk)
+
+2005-08-15 22:53  source
+
+	* Disable Carbon framework in Mac OS X 64bit port (pvk)
+
+2005-08-15 22:44  source
+
+	* Fixed problem mixing framework type header files, which are prefixed
+	  with framework name, and internal header files
+	  (pvk)
+
+2005-08-15 22:41  source
+
+	* Add iodbcinst.h to install target (pvk)
+
+2005-08-15 22:40  source
+
+	* Do not distribute iodbc.h header anymore (pvk)
+
+2005-08-15 21:06  source
+
+	* Install iodbctest and iodbctestw in
+	  /Library/Application Support/iODBC/bin
+	  (pvk)
+
+2005-08-15 21:04  source
+
+	* Fixed include files for Mac OS X framework build (pvk)
+
+2005-08-11 11:01  source
+
+	* Fixed FileDSN support in GTK adminstrator (mk)
+
+2005-08-05 09:35  source
+
+	* Added initial support for FileDSN handling (mk)
+
+2005-08-03 10:18  source
+
+	* Added 'reconnect' command to iodbctest (pvk)
+
+2005-07-29 12:16  source
+
+	* Added defines for Mac OS X 10.3 and newer (sergei)
+
+2005-07-29 12:15  source
+
+	* Fixed typo (sergei)
+
+2005-07-27 10:48  source
+
+	* Improve the quality of error messages for dynamic linker problems
+	  (sergei)
+
+2005-07-26 23:16  source
+
+	* Added Max (pvk)
+
+2005-07-26 23:16  source
+
+	* Recalculate cbConnStrIn as szConnStrIn might have been changed by
+	  iodbcdm_drvconn_dialbox
+	  (mk)
+
+2005-07-19 10:19  source
+
+	* Changed SQL_DRIVER_PROMPT to SQL_DRIVER_COMPLETE which still allows
+	  drivers that have graphical setup screens to use them, but fixes a
+	  problem with the MyODBC driver which returns a very cryptic
+	  "No DSN entered".
+	  (pvk)
+
+2005-07-15 23:44  source
+
+	* Added initial support for pkg-config spec file (pvk)
+
+2005-07-15 23:23  source
+
+	* Fixed problem with SQLDriverConnect when graphical library could not
+	  be found, the driver manager automatically returned an error when
+	  performing SQLDriverConnect (....., SQL_DRIVER_PROMPT).
+	  Instead we now silently continue to call the driver and hope it either
+	  asks for the missing connection parameters, or return an error.
+	  (pvk)
+
+2005-07-15 23:10  source
+
+	* Added support for DSN-less connections (pvk)
+
+2005-05-13 09:57  source
+
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
+
+2005-05-13 09:47  source
+
+	* Replaced enum bool with int (pvk)
+
+2005-05-13 09:46  source
+
+	* Use getprogname on Mac OS X 10.3 and above (pvk)
+
+2005-05-13 09:40  source
+
+	* Fixed frameworkname for iODBCinst (pvk)
+
+2005-05-13 09:39  source
+
+	* Added support for sqlucode.h (pvk)
+
+2005-05-12 12:27  source
+
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
+
+2005-03-22 16:31  source
+
+	* Added missing unicode.[ch] into project file (pvk)
+
+2005-03-14 10:35  source
+
+	* Added Unicode functions to gtk graphical code
+	* Fixed small Unicode bugs
+	  (sm)
+
+2005-03-09 08:07  source
+
+	* Removed space from -D compile flag (pvk)
+
+2005-03-03 13:32  source
+
+	* Stubs for gtk code until we can fix the Unicode part (pvk)
+
+2005-03-02 17:17  source
+
+	* Build iODBCadm as a bundle rather than a Framework
+	* Fixed problems calling drvproxy code from iodbcadm
+	  (sm)
+
+2005-03-02 17:02  source
+
+	* Added support for missing wchar functions (ep+sm)
+
+2005-03-02 17:00  source
+
+	* Indented code to improve readability (pvk)
+
+2005-03-02 16:53  source
+
+	* Added support for iodbcinst Unicode functions (ep+sm)
+
+2005-03-02 15:52  source
+
+	* Updated debian build files with latest fixes from Christian (pvk)
+
+2005-03-01 16:23  source
+
+	* Ignore config.nice (pvk)
+
+2005-03-01 16:04  source
+
+	* Explain which layouts are available instead of cryptic error (pvk)
+
+2005-03-01 16:02  source
+
+	* Added extra configure flag --disable-libodbc to disable the building of
+	  the additional libodbc.so library some programs are linked against
+	  (pvk)
+
+2005-02-15 17:08  source
+
+	* Fixed problem compiling iodbctest.c with C++ compiler (pvk)
+
+2005-02-14 11:44  source
+
+	* Added initial support for building on MAC OS X 10.4 (pvk)
+
+2005-02-14 11:41  source
+
+	* Don't stop the build process if strip fails on Darwin (pvk)
+
+2005-02-14 09:56  source
+
+	* Fixed symbol clash between Oracle instant client and iODBC on Mac OS X
+	  (sergei)
+
+2005-02-08 11:29  source
+
+	* Removed static declaration from Done_iODBC (pvk)
+
 2005-02-04 17:20  source
 
 	* Finalized 3.52.2 release (pvk)
