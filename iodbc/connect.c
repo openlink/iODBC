@@ -398,7 +398,7 @@ _iodbcdm_driverload (
   HPROC hproc;
   SQLRETURN retcode = SQL_SUCCESS;
   sqlstcode_t sqlstat = en_00000;
-  char *driverbuf[1024];
+  char driverbuf[1024];
 
   if (path == NULL || ((char *) path)[0] == '\0')
     {
