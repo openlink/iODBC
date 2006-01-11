@@ -387,7 +387,7 @@ __iodbcdm_cfg_parse (PCONFIG pconfig)
 	    }
 	  lp = __iodbcdm_cfg_skipwhite (lp);
 	}
-      else if (*lp != ';')
+      else if (*lp != ';' && *lp != '#')
 	{
 	  /* Try to parse
 	   *   1. Key = Value
@@ -416,7 +416,7 @@ __iodbcdm_cfg_parse (PCONFIG pconfig)
 		}
 	      else if (*lp == '"' || *lp == '\'')
 		inString = *lp;
-	      else if (*lp == ';' && iswhite (lp[-1]))
+	      else if ((*lp == ';' || *lp == '#') && iswhite (lp[-1]))
 		{
 		  *lp = 0;
 		  comment = lp + 1;
@@ -430,7 +430,7 @@ __iodbcdm_cfg_parse (PCONFIG pconfig)
       /*
        *  Parse Comment
        */
-      if (*lp == ';')
+      if (*lp == ';' || *lp == '#')
 	comment = lp + 1;
 
       if (_iodbcdm_cfg_storeentry (pconfig, section, id, value, comment,
