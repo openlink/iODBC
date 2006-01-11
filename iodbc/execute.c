@@ -242,9 +242,8 @@ SQLExecute_Internal (SQLHSTMT hstmt)
       switch (retcode)
 	{
 	case SQL_ERROR:
-	  pstmt->state = en_stmt_allocated;
+	  pstmt->state = en_stmt_prepared;
 	  pstmt->cursor_state = en_stmt_cursor_no;
-	  pstmt->prep_state = 0;
 	  break;
 
 	case SQL_NEED_DATA:
