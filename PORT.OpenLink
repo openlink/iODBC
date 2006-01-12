@@ -149,6 +149,13 @@ run_config()
 	cd ..
 	;;
 
+    universal)
+	$TOP/admin/mkinstalldirs build-universal
+	cd build-universal
+	../configure --prefix=$PREFIX $CONFLAGS 
+	cd ..
+	;;
+
     cur)
 	./configure --prefix=$PREFIX $CONFLAGS
 	;;
@@ -186,6 +193,12 @@ run_make()
 
     64)
 	cd build-64
+	$MAKE $MAKERULE
+	cd ..
+	;;
+
+    universal)
+	cd build-universal
 	$MAKE $MAKERULE
 	cd ..
 	;;
@@ -260,6 +273,13 @@ case $OS in
 	CFLAGS="-O -m64 -DNO_FRAMEWORKS"
 	export CFLAGS
 	$BUILD 64
+
+
+	PREFIX=/usr/local/iODBC.universal
+	CONFLAGS="--disable-shared --with-pic --disable-dependency-tracking"
+	CFLAGS="-O -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch ppc64 -arch i386 -DNO_FRAMEWORKS"
+	export PREFIX CONFLAGS CFLAGS
+	$BUILD universal
 	;;
 
     powerpc-apple-darwin7*)
