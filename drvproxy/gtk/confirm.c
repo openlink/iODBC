@@ -68,6 +68,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <odbcinst.h>
+#include <unicode.h>
 #include "gui.h"
 #include "question.xpm"
 
