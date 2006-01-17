@@ -122,7 +122,7 @@ _trace_descfield_type (SQLSMALLINT type)
       _S (SQL_DESC_UNSIGNED);
       _S (SQL_DESC_UPDATABLE);
 
-#if (ODBCVER >= 0x03450)
+#if (ODBCVER >= 0x0350)
       _S (SQL_DESC_ROWVER);
 #endif
     }
