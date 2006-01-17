@@ -97,6 +97,7 @@ trace_SQLPrimaryKeys (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLPrimaryKeysW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -120,3 +121,4 @@ trace_SQLPrimaryKeysW (int trace_leave, int retcode,
   _trace_string_w (szTableName, cbTableName, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbTableName);
 }
+#endif

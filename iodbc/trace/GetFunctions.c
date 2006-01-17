@@ -197,6 +197,7 @@ _trace_func_result (
 	if (pfExists[i])
 	  _trace_func_name (i, 0);
     }
+#if (ODBCVER >= 0x0300)
   else if (fFunc == SQL_API_ODBC3_ALL_FUNCTIONS)
     {
       if (!output)
@@ -207,6 +208,7 @@ _trace_func_result (
 	if (SQL_FUNC_EXISTS (pfExists, i))
 	  _trace_func_name (i, 0);
     }
+#endif
   else
     {
       _trace_usmallint_p (pfExists, output);

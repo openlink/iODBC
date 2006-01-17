@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLSetEnvAttr (int trace_leave, int retcode,
   SQLHENV		  EnvironmentHandle,
@@ -88,3 +89,4 @@ trace_SQLSetEnvAttr (int trace_leave, int retcode,
   _trace_pointer (ValuePtr);
   _trace_bufferlen (StringLength);
 }
+#endif

@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLCopyDesc (int trace_leave, int retcode,
   SQLHDESC		  SourceDescHandle,
@@ -84,3 +85,4 @@ trace_SQLCopyDesc (int trace_leave, int retcode,
   _trace_handle (SQL_HANDLE_DESC, SourceDescHandle);
   _trace_handle (SQL_HANDLE_DESC, TargetDescHandle);
 }
+#endif

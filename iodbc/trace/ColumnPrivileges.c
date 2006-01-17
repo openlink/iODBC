@@ -100,6 +100,7 @@ trace_SQLColumnPrivileges (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLColumnPrivilegesW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -126,3 +127,4 @@ trace_SQLColumnPrivilegesW (int trace_leave, int retcode,
   _trace_string_w (szColumnName, cbColumnName, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbColumnName);
 }
+#endif

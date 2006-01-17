@@ -6,14 +6,14 @@
  *  Decode the SQLGetInfo responses and dump them to the trace log
  *
  *  The iODBC driver manager.
- *  
+ *
  *  Copyright (C) 1996-2003 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
  *  licenses:
  *
- *      - GNU Library General Public License (see LICENSE.LGPL) 
+ *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
  *
  *  While not mandated by the BSD license, any patches you make to the
@@ -1731,7 +1731,7 @@ print_mask:
   trace_emit ("\t\t%-15.15s   %d (%s)\n",
   	"SQLUSMALLINT", fInfoType, infoname);
   trace_emit ("\t\t%-15.15s   %p (0x%lX)\n",
-	"SQLPOINTER", rgbInfoValue, 
+	"SQLPOINTER", rgbInfoValue,
 	(unsigned long) *((unsigned int *) rgbInfoValue));
 
   if (*(int *) rgbInfoValue == 0)
@@ -1786,13 +1786,14 @@ trace_SQLGetInfo (int trace_leave, int retcode,
 
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_DBC, hdbc);
-  _trace_getinfo (fInfoType, rgbInfoValue, cbInfoValueMax, pcbInfoValue, 
+  _trace_getinfo (fInfoType, rgbInfoValue, cbInfoValueMax, pcbInfoValue,
   	TRACE_OUTPUT_SUCCESS, 'A');
   _trace_smallint (cbInfoValueMax);
   _trace_smallint_p (pcbInfoValue, TRACE_OUTPUT_SUCCESS);
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLGetInfoW (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
@@ -1811,3 +1812,4 @@ trace_SQLGetInfoW (int trace_leave, int retcode,
   _trace_smallint (cbInfoValueMax);
   _trace_smallint_p (pcbInfoValue, TRACE_OUTPUT_SUCCESS);
 }
+#endif

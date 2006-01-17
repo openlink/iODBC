@@ -130,6 +130,7 @@ trace_SQLStatistics (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLStatisticsW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -156,3 +157,4 @@ trace_SQLStatisticsW (int trace_leave, int retcode,
   _trace_stats_unique (fUnique);
   _trace_stats_accuracy (fAccuracy);
 }
+#endif

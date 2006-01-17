@@ -176,8 +176,10 @@ void trace_SQLConnectW (int trace_leave, int retcode, SQLHDBC hdbc,
     SQLWCHAR * szAuthStr, SQLSMALLINT cbAuthStr);
 
 /* CopyDesc.c */
+#if (ODBCVER >= 0x0300)
 void trace_SQLCopyDesc (int trace_leave, int retcode,
     SQLHDESC SourceDescHandle, SQLHDESC TargetDescHandle);
+#endif
 
 /* DataSources.c */
 void _trace_direction (SQLUSMALLINT dir);
@@ -336,6 +338,7 @@ void trace_SQLGetData (int trace_leave, int retcode, SQLHSTMT hstmt,
     SQLLEN cbValueMax, SQLLEN * pcbValue);
 
 /* GetDescField.c */
+#if (ODBCVER >= 0x0300)
 void _trace_descfield_type (SQLSMALLINT type);
 void trace_SQLGetDescField (int trace_leave, int retcode,
     SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber,
@@ -380,6 +383,7 @@ void trace_SQLGetDiagRecW (int trace_leave, int retcode,
     SQLSMALLINT HandleType, SQLHANDLE Handle, SQLSMALLINT RecNumber,
     SQLWCHAR * SqlState, SQLINTEGER * NativeErrorPtr, SQLWCHAR * MessageText,
     SQLSMALLINT BufferLength, SQLSMALLINT * TextLengthPtr);
+#endif
 
 /* GetEnvAttr.c */
 void _trace_envattr_type (SQLINTEGER type);
@@ -516,6 +520,7 @@ void trace_SQLSetCursorNameW (int trace_leave, int retcode, SQLHSTMT hstmt,
     SQLWCHAR * szCursor, SQLSMALLINT cbCursor);
 
 /* SetDescField.c */
+#if (ODBCVER >= 0x0300)
 void trace_SQLSetDescField (int trace_leave, int retcode,
     SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber,
     SQLSMALLINT FieldIdentifier, SQLPOINTER ValuePtr,
@@ -524,13 +529,16 @@ void trace_SQLSetDescFieldW (int trace_leave, int retcode,
     SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber,
     SQLSMALLINT FieldIdentifier, SQLPOINTER ValuePtr,
     SQLINTEGER BufferLength);
+#endif
 
 /* SetDescRec.c */
+#if (ODBCVER >= 0x0300)
 void trace_SQLSetDescRec (int trace_leave, int retcode,
     SQLHDESC DescriptorHandle, SQLSMALLINT RecNumber, SQLSMALLINT Type,
     SQLSMALLINT SubType, SQLLEN Length, SQLSMALLINT Precision,
     SQLSMALLINT Scale, SQLPOINTER Data, SQLLEN * StringLength,
     SQLLEN * Indicator);
+#endif
 
 /* SetEnvAttr.c */
 void trace_SQLSetEnvAttr (int trace_leave, int retcode,

@@ -88,6 +88,7 @@ trace_SQLSetConnectOption (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLSetConnectOptionW (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
@@ -102,3 +103,4 @@ trace_SQLSetConnectOptionW (int trace_leave, int retcode,
   _trace_connopt_type (fOption);
   _trace_ulen (vParam);
 }
+#endif

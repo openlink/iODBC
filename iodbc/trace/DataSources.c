@@ -81,8 +81,10 @@ _trace_direction (SQLUSMALLINT dir)
     {
       _S (SQL_FETCH_FIRST);
       _S (SQL_FETCH_NEXT);
+#if ODBCVER >= 0x0300
       _S (SQL_FETCH_FIRST_USER);
       _S (SQL_FETCH_FIRST_SYSTEM);
+#endif
     }
 
    trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT ", (int) dir, ptr);
@@ -117,6 +119,7 @@ trace_SQLDataSources (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLDataSourcesW (int trace_leave, int retcode,
   SQLHENV		  EnvironmentHandle,
@@ -143,3 +146,4 @@ trace_SQLDataSourcesW (int trace_leave, int retcode,
   _trace_stringlen ("SQLSMALLINT", BufferLength2);
   _trace_smallint_p (NameLength2Ptr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

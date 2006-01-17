@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLSetStmtAttr (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -106,3 +107,4 @@ trace_SQLSetStmtAttrW (int trace_leave, int retcode,
   _trace_pointer (ValuePtr);
   _trace_bufferlen (StringLength);
 }
+#endif

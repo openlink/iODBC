@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLAllocHandle(int trace_leave, int retcode, 
     SQLSMALLINT	  HandleType, 
@@ -86,3 +87,4 @@ trace_SQLAllocHandle(int trace_leave, int retcode,
   _trace_handle (0, InputHandle);
   _trace_handle_p (0, OutputHandlePtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

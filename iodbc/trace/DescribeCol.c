@@ -128,6 +128,7 @@ trace_SQLDescribeCol (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLDescribeColW (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -154,3 +155,4 @@ trace_SQLDescribeColW (int trace_leave, int retcode,
   _trace_smallint_p (DecimalDigitsPtr, TRACE_OUTPUT_SUCCESS);
   _trace_desc_null (NullablePtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLFetchScroll (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -86,3 +87,4 @@ trace_SQLFetchScroll (int trace_leave, int retcode,
   _trace_fetchtype (FetchOrientation);
   _trace_len (FetchOffset);
 }
+#endif

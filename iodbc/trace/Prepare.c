@@ -88,6 +88,7 @@ trace_SQLPrepare (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLPrepareW (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -102,3 +103,4 @@ trace_SQLPrepareW (int trace_leave, int retcode,
   _trace_string_w (StatementText, TextLength, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLINTEGER", TextLength);
 }
+#endif

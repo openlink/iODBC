@@ -104,6 +104,7 @@ _trace_colattr2_type (SQLUSMALLINT type)
 }
 
 
+#if ODBCVER >= 0x0300
 void
 _trace_colattr3_type (SQLUSMALLINT type)
 {
@@ -143,7 +144,10 @@ _trace_colattr3_type (SQLUSMALLINT type)
 
   trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
 }
+#endif
 
+
+#if ODBCVER >= 0x0300
 static void
 _trace_colattr3_data (
   SQLUSMALLINT		  FieldIdentifier,
@@ -312,8 +316,10 @@ _trace_colattr3_data (
 
   return;
 }
+#endif
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLColAttribute (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -336,8 +342,10 @@ trace_SQLColAttribute (int trace_leave, int retcode,
   _trace_colattr3_data (FieldIdentifier, CharacterAttributePtr, BufferLength,
       StringLengthPtr, NumericAttributePtr, 0, TRACE_OUTPUT_SUCCESS);
 }
+#endif
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLColAttributeW (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -360,6 +368,7 @@ trace_SQLColAttributeW (int trace_leave, int retcode,
   _trace_colattr3_data (FieldIdentifier, CharacterAttributePtr, BufferLength,
       StringLengthPtr, NumericAttributePtr, 1, TRACE_OUTPUT_SUCCESS);
 }
+#endif
 
 
 void
@@ -373,7 +382,7 @@ trace_SQLColAttributes (int trace_leave, int retcode,
   SQLLEN		* pfDesc)
 {
   /* Trace function */
-  _trace_print_function (en_ColAttribute, trace_leave, retcode);
+  _trace_print_function (en_ColAttributes, trace_leave, retcode);
 
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, StatementHandle);
@@ -386,6 +395,7 @@ trace_SQLColAttributes (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLColAttributesW (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -408,3 +418,4 @@ trace_SQLColAttributesW (int trace_leave, int retcode,
   _trace_smallint_p (pcbDesc, TRACE_OUTPUT_SUCCESS);
   _trace_len_p (pfDesc, TRACE_OUTPUT_SUCCESS);
 }
+#endif

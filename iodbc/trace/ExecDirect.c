@@ -88,6 +88,7 @@ trace_SQLExecDirect (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLExecDirectW (int trace_leave, int retcode, 
   SQLHSTMT 		  hstmt,
@@ -102,3 +103,4 @@ trace_SQLExecDirectW (int trace_leave, int retcode,
   _trace_string_w (szSqlStr, cbSqlStr, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLINTEGER", cbSqlStr);
 }
+#endif

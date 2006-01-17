@@ -91,6 +91,7 @@ trace_SQLGetCursorName (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLGetCursorNameW (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -108,3 +109,4 @@ trace_SQLGetCursorNameW (int trace_leave, int retcode,
   _trace_stringlen ("SQLSMALLINT", BufferLength);
   _trace_smallint_p (NameLengthPtr, trace_leave);
 }
+#endif

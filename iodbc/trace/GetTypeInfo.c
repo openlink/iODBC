@@ -108,9 +108,11 @@ _trace_typeinfo (SQLSMALLINT type)
 #endif
       _S (SQL_TIMESTAMP);
       _S (SQL_TINYINT);
+#if ODBCVER >= 0x0300
       _S (SQL_TYPE_DATE);
       _S (SQL_TYPE_TIME);
       _S (SQL_TYPE_TIMESTAMP);
+#endif
       _S (SQL_VARBINARY);
       _S (SQL_VARCHAR);
       _S (SQL_WCHAR);
@@ -136,6 +138,7 @@ trace_SQLGetTypeInfo (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLGetTypeInfoW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -148,3 +151,4 @@ trace_SQLGetTypeInfoW (int trace_leave, int retcode,
   _trace_handle (SQL_HANDLE_STMT, hstmt);
   _trace_typeinfo (fSqlType);
 }
+#endif

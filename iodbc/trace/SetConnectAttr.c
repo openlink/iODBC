@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLSetConnectAttr (int trace_leave, int retcode,
   SQLHDBC		  ConnectionHandle,
@@ -106,3 +107,4 @@ trace_SQLSetConnectAttrW (int trace_leave, int retcode,
   _trace_pointer (ValuePtr);
   _trace_bufferlen (StringLength);
 }
+#endif

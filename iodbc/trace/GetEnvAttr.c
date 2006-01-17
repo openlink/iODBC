@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 _trace_envattr_type (SQLINTEGER type)
 {
@@ -107,3 +108,4 @@ trace_SQLGetEnvAttr (int trace_leave, int retcode,
   _trace_bufferlen (BufferLength);
   _trace_integer_p (StringLengthPtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

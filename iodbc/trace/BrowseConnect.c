@@ -95,6 +95,7 @@ trace_SQLBrowseConnect (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLBrowseConnectW (int trace_leave, int retcode,
   SQLHDBC		  ConnectionHandle,
@@ -116,3 +117,4 @@ trace_SQLBrowseConnectW (int trace_leave, int retcode,
   _trace_smallint (BufferLength);
   _trace_smallint_p (StringLength2Ptr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

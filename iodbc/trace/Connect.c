@@ -99,6 +99,7 @@ trace_SQLConnect (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLConnectW (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
@@ -124,3 +125,4 @@ trace_SQLConnectW (int trace_leave, int retcode,
   _trace_string_w (szAuthStr, SQL_NTS, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbAuthStr);
 }
+#endif

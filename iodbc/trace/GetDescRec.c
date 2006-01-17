@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLGetDescRec (int trace_leave, int retcode,
   SQLHDESC		  DescriptorHandle,
@@ -134,3 +135,4 @@ trace_SQLGetDescRecW (int trace_leave, int retcode,
   _trace_smallint_p (ScalePtr, TRACE_OUTPUT_SUCCESS);
   _trace_desc_null (NullablePtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

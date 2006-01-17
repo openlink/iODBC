@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void trace_SQLEndTran (int trace_leave, int retcode,
   SQLSMALLINT		  HandleType,
   SQLHANDLE		  Handle,
@@ -85,3 +86,4 @@ void trace_SQLEndTran (int trace_leave, int retcode,
   _trace_handle (HandleType, Handle);
   _trace_tran_completion (CompletionType);
 }
+#endif

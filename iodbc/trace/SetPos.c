@@ -95,9 +95,11 @@ _trace_setpos_oper (SQLUSMALLINT type)
       _S (SQL_UPDATE);
       _S (SQL_DELETE);
       _S (SQL_ADD);
+#if ODBCVER >= 0x0300
       _S (SQL_UPDATE_BY_BOOKMARK);
       _S (SQL_DELETE_BY_BOOKMARK);
       _S (SQL_FETCH_BY_BOOKMARK);
+#endif
     }
 
   trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT", (int) type, ptr);

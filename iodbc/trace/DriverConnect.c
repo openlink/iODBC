@@ -270,6 +270,7 @@ trace_SQLDriverConnect (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLDriverConnectW (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
@@ -295,3 +296,4 @@ trace_SQLDriverConnectW (int trace_leave, int retcode,
   _trace_smallint_p (pcbConnStrOut, TRACE_OUTPUT_SUCCESS);
   _trace_drvcn_completion (fDriverCompletion);
 }
+#endif

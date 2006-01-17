@@ -715,8 +715,10 @@ _trace_handletype (SQLSMALLINT type)
       _S (SQL_HANDLE_ENV);
       _S (SQL_HANDLE_DBC);
       _S (SQL_HANDLE_STMT);
+#if ODBCVER >= 0x0300
       _S (SQL_HANDLE_DESC);
       _S (SQL_HANDLE_SENV);
+#endif
     }
 
   trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLSMALLINT", (int) type, ptr);
@@ -998,6 +1000,7 @@ _trace_c_type (SQLSMALLINT type)
 #if (ODBCVER >= 0x0350)
       _S (SQL_C_GUID);
 #endif
+#if ODBCVER >= 0x0300
       _S (SQL_C_INTERVAL_DAY);
       _S (SQL_C_INTERVAL_DAY_TO_HOUR);
       _S (SQL_C_INTERVAL_DAY_TO_MINUTE);
@@ -1011,9 +1014,12 @@ _trace_c_type (SQLSMALLINT type)
       _S (SQL_C_INTERVAL_SECOND);
       _S (SQL_C_INTERVAL_YEAR);
       _S (SQL_C_INTERVAL_YEAR_TO_MONTH);
+#endif
       _S (SQL_C_LONG);
+#if ODBCVER >= 0x0300
       _S (SQL_C_NUMERIC);
       _S (SQL_C_SBIGINT);
+#endif
       _S (SQL_C_SHORT);
       _S (SQL_C_SLONG);
       _S (SQL_C_SSHORT);
@@ -1021,17 +1027,21 @@ _trace_c_type (SQLSMALLINT type)
       _S (SQL_C_TIME);
       _S (SQL_C_TIMESTAMP);
       _S (SQL_C_TINYINT);
+#if ODBCVER >= 0x0300
       _S (SQL_C_TYPE_DATE);
       _S (SQL_C_TYPE_TIME);
       _S (SQL_C_TYPE_TIMESTAMP);
       _S (SQL_C_UBIGINT);
+#endif
       _S (SQL_C_ULONG);
       _S (SQL_C_USHORT);
       _S (SQL_C_UTINYINT);
       /* _S (SQL_C_VARBOOKMARK); */
       _S (SQL_C_WCHAR);
 
+#if ODBCVER >= 0x0300
       _S (SQL_ARD_TYPE);
+#endif
     }
 
   trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLSMALLINT ", type, ptr);
@@ -1090,9 +1100,11 @@ _trace_sql_type (SQLSMALLINT type)
 #endif
       _S (SQL_TIMESTAMP);
       _S (SQL_TINYINT);
+#if ODBCVER >= 0x0300
       _S (SQL_TYPE_DATE);
       _S (SQL_TYPE_TIME);
       _S (SQL_TYPE_TIMESTAMP);
+#endif
       _S (SQL_VARBINARY);
       _S (SQL_VARCHAR);
       _S (SQL_WCHAR);
@@ -1153,9 +1165,11 @@ _trace_sql_type_p (SQLSMALLINT *p, int output)
 #endif
       _S (SQL_TIMESTAMP);
       _S (SQL_TINYINT);
+#if ODBCVER >= 0x0300
       _S (SQL_TYPE_DATE);
       _S (SQL_TYPE_TIME);
       _S (SQL_TYPE_TIMESTAMP);
+#endif
       _S (SQL_VARBINARY);
       _S (SQL_VARCHAR);
       _S (SQL_WCHAR);
@@ -1167,6 +1181,7 @@ _trace_sql_type_p (SQLSMALLINT *p, int output)
 }
 
 
+#if ODBCVER >= 0x0300
 void
 _trace_sql_subtype (SQLSMALLINT *type, SQLSMALLINT *sub, int output)
 {
@@ -1218,6 +1233,7 @@ _trace_sql_subtype (SQLSMALLINT *type, SQLSMALLINT *sub, int output)
   else
     trace_emit ("\t\t%-15.15s * %p (%d)\n", "SQLSMALLINT", sub, *sub);
 }
+#endif
 
 
 void
@@ -1229,11 +1245,13 @@ _trace_bufferlen (SQLINTEGER length)
   switch (length)
    {
 	_S (SQL_NTS);
+#if ODBCVER >= 0x0300
 	_S (SQL_IS_POINTER);
 	_S (SQL_IS_UINTEGER);
 	_S (SQL_IS_INTEGER);
 	_S (SQL_IS_USMALLINT);
 	_S (SQL_IS_SMALLINT);
+#endif
    }
 
   /*

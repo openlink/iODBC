@@ -126,7 +126,9 @@ _trace_data (
       break;
 
     case SQL_C_DATE:
+#if ODBCVER >= 0x0300
     case SQL_C_TYPE_DATE:
+#endif
       {
 	DATE_STRUCT *d = (DATE_STRUCT *) rgbValue;
 	sprintf (buf, "%04d-%02d-%02d", d->year, d->month, d->day);
@@ -171,6 +173,7 @@ _trace_data (
       break;
 #endif
 
+#if ODBCVER >= 0x0300
     case SQL_C_INTERVAL_DAY:
       {
 	SQL_INTERVAL_STRUCT *i = (SQL_INTERVAL_STRUCT *) rgbValue;
@@ -298,6 +301,7 @@ _trace_data (
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
       break;
+#endif
 
     case SQL_C_LONG:
     case SQL_C_SLONG:
@@ -317,10 +321,13 @@ _trace_data (
       break;
 
 
+#if ODBCVER >= 0x0300
     case SQL_C_NUMERIC:
       /* NOT YET */
       break;
+#endif
 
+#if ODBCVER >= 0x0300
     case SQL_C_SBIGINT:
 #if defined (ODBCINT64)
       {
@@ -340,6 +347,7 @@ _trace_data (
       }
 #endif
       break;
+#endif
 
     case SQL_C_SHORT:
     case SQL_C_SSHORT:
@@ -359,7 +367,9 @@ _trace_data (
       break;
 
     case SQL_C_TIME:
+#if ODBCVER >= 0x0300
     case SQL_C_TYPE_TIME:
+#endif
       {
 	TIME_STRUCT *t = (TIME_STRUCT *) rgbValue;
 	sprintf (buf, "%02d:%02d:%02d", t->hour, t->minute, t->second);
@@ -368,7 +378,9 @@ _trace_data (
       break;
 
     case SQL_C_TIMESTAMP:
+#if ODBCVER >= 0x0300
     case SQL_C_TYPE_TIMESTAMP:
+#endif
       {
 	TIMESTAMP_STRUCT *t = (TIMESTAMP_STRUCT *) rgbValue;
 	sprintf (buf, "%04d-%02d-%02d %02d:%02d:%02d.%06ld",

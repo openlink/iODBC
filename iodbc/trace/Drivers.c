@@ -100,6 +100,7 @@ trace_SQLDrivers (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLDriversW (int trace_leave, int retcode,
   SQLHENV		  EnvironmentHandle,
@@ -126,3 +127,4 @@ trace_SQLDriversW (int trace_leave, int retcode,
   _trace_stringlen ("SQLSMALLINT", BufferLength2);
   _trace_smallint_p (AttributesLengthPtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

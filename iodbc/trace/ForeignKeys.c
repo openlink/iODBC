@@ -110,6 +110,7 @@ trace_SQLForeignKeys (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLForeignKeysW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -146,3 +147,4 @@ trace_SQLForeignKeysW (int trace_leave, int retcode,
   _trace_string_w (szFkTableName, cbFkTableName, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbFkTableName);
 }
+#endif

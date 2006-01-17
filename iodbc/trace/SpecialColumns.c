@@ -148,6 +148,7 @@ trace_SQLSpecialColumns (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLSpecialColumnsW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -176,3 +177,4 @@ trace_SQLSpecialColumnsW (int trace_leave, int retcode,
   _trace_spcols_scope (fScope);
   _trace_spcols_null (fNullable);
 }
+#endif

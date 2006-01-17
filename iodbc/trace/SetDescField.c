@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLSetDescField (int trace_leave, int retcode,
   SQLHDESC		  DescriptorHandle,
@@ -110,3 +111,4 @@ trace_SQLSetDescFieldW (int trace_leave, int retcode,
   _trace_pointer (ValuePtr);
   _trace_bufferlen (BufferLength);
 }
+#endif

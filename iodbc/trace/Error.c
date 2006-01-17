@@ -98,6 +98,7 @@ trace_SQLError (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLErrorW (int trace_leave, int retcode,
   SQLHENV		  henv,
@@ -122,3 +123,4 @@ trace_SQLErrorW (int trace_leave, int retcode,
   _trace_stringlen ("SQLINTEGER", cbErrorMsgMax);
   _trace_smallint_p (pcbErrorMsg, TRACE_OUTPUT_SUCCESS);
 }
+#endif

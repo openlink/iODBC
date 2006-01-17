@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLCloseCursor (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle)
@@ -82,3 +83,4 @@ trace_SQLCloseCursor (int trace_leave, int retcode,
   /* Trace Arguments */
   _trace_handle (SQL_HANDLE_STMT, StatementHandle);
 }
+#endif

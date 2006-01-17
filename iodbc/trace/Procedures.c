@@ -97,6 +97,7 @@ trace_SQLProcedures (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLProceduresW (int trace_leave, int retcode,
   SQLHSTMT		  hstmt,
@@ -120,3 +121,4 @@ trace_SQLProceduresW (int trace_leave, int retcode,
   _trace_string_w (szProcName, cbProcName, NULL, TRACE_INPUT);
   _trace_stringlen ("SQLSMALLINT", cbProcName);
 }
+#endif

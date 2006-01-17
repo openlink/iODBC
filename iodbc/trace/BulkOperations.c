@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLBulkOperations (int trace_leave, int retcode,
   SQLHSTMT		  StatementHandle,
@@ -84,3 +85,4 @@ trace_SQLBulkOperations (int trace_leave, int retcode,
   _trace_handle (SQL_HANDLE_STMT, StatementHandle);
   _trace_setpos_oper (Operation);
 }
+#endif

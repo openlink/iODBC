@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLGetDiagRec (int trace_leave, int retcode,
   SQLSMALLINT		  HandleType,
@@ -124,3 +125,4 @@ trace_SQLGetDiagRecW (int trace_leave, int retcode,
   _trace_stringlen ("SQLSMALLINT", BufferLength);
   _trace_smallint_p (TextLengthPtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

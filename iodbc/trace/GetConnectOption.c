@@ -128,6 +128,7 @@ trace_SQLGetConnectOption (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void
 trace_SQLGetConnectOptionW (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
@@ -142,3 +143,4 @@ trace_SQLGetConnectOptionW (int trace_leave, int retcode,
   _trace_connopt_type (fOption);
   _trace_pointer (pvParam);
 }
+#endif

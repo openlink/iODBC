@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLFreeHandle (int trace_leave, int retcode,
   SQLSMALLINT		  HandleType,
@@ -84,3 +85,4 @@ trace_SQLFreeHandle (int trace_leave, int retcode,
   _trace_handletype (HandleType);
   _trace_handle (HandleType, Handle);
 }
+#endif

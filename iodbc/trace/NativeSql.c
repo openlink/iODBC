@@ -99,6 +99,7 @@ trace_SQLNativeSql (int trace_leave, int retcode,
 }
 
 
+#if ODBCVER >= 0x0300
 void 
 trace_SQLNativeSqlW (int trace_leave, int retcode,
   SQLHDBC		  hdbc,
@@ -124,3 +125,4 @@ trace_SQLNativeSqlW (int trace_leave, int retcode,
   _trace_stringlen ("SQLINTEGER", BufferLength);
   _trace_integer_p (TextLength2Ptr, TRACE_OUTPUT_SUCCESS);
 }
+#endif

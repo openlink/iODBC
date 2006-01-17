@@ -72,6 +72,7 @@
 #include "trace.h"
 
 
+#if ODBCVER >= 0x0300
 void 
 _trace_descfield_type (SQLSMALLINT type)
 {
@@ -173,3 +174,4 @@ trace_SQLGetDescFieldW (int trace_leave, int retcode,
   _trace_bufferlen (BufferLength);
   _trace_integer_p (StringLengthPtr, TRACE_OUTPUT_SUCCESS);
 }
+#endif
