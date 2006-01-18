@@ -615,8 +615,12 @@ then
     AC_MSG_CHECKING(for OS dependent thread flags)
     case $host in
       *-aix*)	
-		CC=cc_r7
-		AC_MSG_RESULT([use cc_r7 for AIX])
+		#  Unless overruled by the user, we prefer this compiler
+		if test "x$CC" = "xcc"
+		then
+		    CC=cc_r7
+		fi
+		AC_MSG_RESULT([using $CC for AIX])
 		;;
 
       *UnixWare*)
