@@ -266,6 +266,7 @@ SQLGetTypeInfo (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLGetTypeInfoA (SQLHSTMT hstmt,
     SQLSMALLINT fSqlType)
@@ -292,6 +293,7 @@ SQLGetTypeInfoW (SQLHSTMT hstmt,
   LEAVE_STMT (hstmt,
     trace_SQLGetTypeInfoW (TRACE_LEAVE, hstmt, fSqlType));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -463,6 +465,7 @@ SQLSpecialColumns (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLSpecialColumnsA (SQLHSTMT hstmt,
     SQLUSMALLINT fColType,
@@ -549,6 +552,7 @@ SQLSpecialColumnsW (SQLHSTMT hstmt,
 	fScope,
 	fNullable));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -708,6 +712,7 @@ SQLStatistics (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLStatisticsA (SQLHSTMT hstmt,
     SQLCHAR * szTableQualifier,
@@ -786,6 +791,7 @@ SQLStatisticsW (SQLHSTMT hstmt,
 	fUnique,
 	fAccuracy));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -935,6 +941,7 @@ SQLTables (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLTablesA (SQLHSTMT hstmt,
     SQLCHAR * szTableQualifier,
@@ -1007,6 +1014,7 @@ SQLTablesW (SQLHSTMT hstmt,
 	szTableName, cbTableName,
 	szTableType, cbTableType));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1156,6 +1164,7 @@ SQLColumnPrivileges (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLColumnPrivilegesA (SQLHSTMT hstmt,
     SQLCHAR * szTableQualifier,
@@ -1226,6 +1235,7 @@ SQLColumnPrivilegesW (SQLHSTMT hstmt,
 	szTableName, cbTableName,
 	szColumnName, cbColumnName));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1375,6 +1385,7 @@ SQLColumns (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLColumnsA (SQLHSTMT hstmt,
     SQLCHAR * szTableQualifier,
@@ -1447,6 +1458,7 @@ SQLColumnsW (SQLHSTMT hstmt,
 	szTableName, cbTableName,
 	szColumnName, cbColumnName));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1626,6 +1638,7 @@ SQLForeignKeys (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLForeignKeysA (SQLHSTMT hstmt,
     SQLCHAR * szPkTableQualifier,
@@ -1718,6 +1731,7 @@ SQLForeignKeysW (SQLHSTMT hstmt,
 	szFkTableOwner, cbFkTableOwner,
 	szFkTableName, cbFkTableName));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1852,6 +1866,7 @@ SQLPrimaryKeys (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLPrimaryKeysA (SQLHSTMT hstmt,
     SQLCHAR * szTableQualifier,
@@ -1914,6 +1929,7 @@ SQLPrimaryKeysW (SQLHSTMT hstmt,
 	szTableOwner, cbTableOwner,
 	szTableName, cbTableName));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -2063,6 +2079,7 @@ SQLProcedureColumns (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLProcedureColumnsA (SQLHSTMT hstmt,
     SQLCHAR * szProcQualifier,
@@ -2135,6 +2152,7 @@ SQLProcedureColumnsW (SQLHSTMT hstmt,
 	szProcName, cbProcName,
 	szColumnName, cbColumnName));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -2269,6 +2287,7 @@ SQLProcedures (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLProceduresA (SQLHSTMT hstmt,
     SQLCHAR * szProcQualifier,
@@ -2331,6 +2350,7 @@ SQLProceduresW (SQLHSTMT hstmt,
 	szProcOwner, cbProcOwner,
 	szProcName, cbProcName));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -2465,6 +2485,7 @@ SQLTablePrivileges (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLTablePrivilegesA (SQLHSTMT hstmt,
     SQLCHAR * szTableQualifier,
@@ -2527,3 +2548,4 @@ SQLTablePrivilegesW (SQLHSTMT hstmt,
 	szTableOwner, cbTableOwner,
 	szTableName,cbTableName));
 }
+#endif

@@ -707,6 +707,7 @@ SQLSetConnectOption (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLSetConnectOptionA (
   SQLHDBC		  hdbc,
@@ -737,6 +738,7 @@ SQLSetConnectOptionW (
   LEAVE_HDBC (hdbc, 1,
     trace_SQLSetConnectOptionW (TRACE_LEAVE, hdbc, fOption, vParam));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1039,6 +1041,7 @@ SQLGetConnectOption (SQLHDBC hdbc,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLGetConnectOptionA (
   SQLHDBC		  hdbc,
@@ -1069,6 +1072,7 @@ SQLGetConnectOptionW (
   LEAVE_HDBC (hdbc, 1,
     trace_SQLGetConnectOptionW (TRACE_LEAVE, hdbc, fOption, pvParam));
 }
+#endif
 
 
 static SQLRETURN

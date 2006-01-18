@@ -250,6 +250,7 @@ SQLPrepare (SQLHSTMT hstmt,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLPrepareA (SQLHSTMT hstmt,
     SQLCHAR * szSqlStr,
@@ -278,6 +279,7 @@ SQLPrepareW (SQLHSTMT hstmt,
   LEAVE_STMT (hstmt,
     trace_SQLPrepareW (TRACE_LEAVE, hstmt, szSqlStr, cbSqlStr));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -401,6 +403,7 @@ SQLSetCursorName (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLSetCursorNameA (
     SQLHSTMT		  hstmt,
@@ -431,6 +434,7 @@ SQLSetCursorNameW (
   LEAVE_STMT (hstmt,
     trace_SQLSetCursorNameW (TRACE_LEAVE, hstmt, szCursor, cbCursor));
 }
+#endif
 
 
 static SQLRETURN

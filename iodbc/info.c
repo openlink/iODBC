@@ -316,6 +316,7 @@ SQLDataSources (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLDataSourcesA (
   SQLHENV		  henv,
@@ -412,6 +413,7 @@ SQLDataSourcesW (
 	szDSN, cbDSNMax, pcbDSN,
 	szDesc, cbDescMax, pcbDesc));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -603,6 +605,7 @@ SQLDrivers (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLDriversA (
   SQLHENV		  henv,
@@ -698,6 +701,7 @@ SQLDriversW (SQLHENV henv,
 	szDrvDesc, cbDrvDescMax, pcbDrvDesc, 
 	szDrvAttr, cbDrvAttrMax, pcbDrvAttr));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1115,6 +1119,7 @@ SQLGetInfo (SQLHDBC hdbc,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLGetInfoA (SQLHDBC hdbc,
   SQLUSMALLINT		  fInfoType,
@@ -1168,6 +1173,7 @@ SQLGetInfoW (
 	fInfoType, 
 	rgbInfoValue, cbInfoValueMax, pcbInfoValue));
 }
+#endif
 
 
 static int FunctionNumbers[] =

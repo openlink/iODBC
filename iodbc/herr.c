@@ -684,6 +684,7 @@ SQLError (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLErrorA (
   SQLHENV		  henv,
@@ -772,6 +773,7 @@ SQLErrorW (
   ODBC_UNLOCK ();
   return retcode;
 }
+#endif
 
 
 #if (ODBCVER >= 0x0300)

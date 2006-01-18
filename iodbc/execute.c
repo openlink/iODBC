@@ -446,6 +446,7 @@ SQLExecDirect (SQLHSTMT hstmt, SQLCHAR * szSqlStr, SQLINTEGER cbSqlStr)
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLExecDirectA (SQLHSTMT hstmt, SQLCHAR * szSqlStr, SQLINTEGER cbSqlStr)
 {
@@ -470,6 +471,7 @@ SQLExecDirectW (SQLHSTMT hstmt, SQLWCHAR * szSqlStr, SQLINTEGER cbSqlStr)
   LEAVE_STMT (hstmt,
     trace_SQLExecDirectW (TRACE_LEAVE, hstmt, szSqlStr, cbSqlStr));
 }
+#endif
 
 
 static SQLRETURN

@@ -802,6 +802,7 @@ SQLSetStmtOption (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API 
 SQLSetStmtOptionA (
   SQLHSTMT		  hstmt,
@@ -816,6 +817,7 @@ SQLSetStmtOptionA (
   LEAVE_STMT (hstmt,
     trace_SQLSetStmtOption (TRACE_LEAVE, hstmt, fOption, vParam));
 }
+#endif
 
 
 SQLRETURN
@@ -963,6 +965,7 @@ SQLGetStmtOption (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API 
 SQLGetStmtOptionA (
     SQLHSTMT hstmt,
@@ -977,6 +980,7 @@ SQLGetStmtOptionA (
   LEAVE_STMT (hstmt,
     trace_SQLGetStmtOption (TRACE_LEAVE, hstmt, fOption, pvParam));
 }
+#endif
 
 
 static SQLRETURN 

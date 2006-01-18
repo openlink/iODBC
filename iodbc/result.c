@@ -366,6 +366,7 @@ SQLGetCursorName (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLGetCursorNameA (
   SQLHSTMT 		  hstmt,
@@ -411,6 +412,7 @@ SQLGetCursorNameW (SQLHSTMT hstmt,
     	hstmt,
 	szCursor, cbCursorMax, pcbCursor));
 }
+#endif
 
 
 static SQLRETURN 
@@ -818,6 +820,7 @@ SQLDescribeCol (SQLHSTMT hstmt,
 } 
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLDescribeColA (SQLHSTMT hstmt,
     SQLUSMALLINT	  icol,
@@ -903,6 +906,7 @@ SQLDescribeColW (
 	pibScale,
 	pfNullable));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1227,6 +1231,7 @@ SQLColAttributes (
 }
 
 
+#if ODBCVER >= 0x0300
 RETCODE SQL_API
 SQLColAttributesA (
   SQLHSTMT 		  statementHandle,
@@ -1297,3 +1302,4 @@ SQLColAttributesW (
 	rgbDesc, cbDescMax, pcbDesc, 
 	pfDesc));
 }
+#endif

@@ -1203,6 +1203,7 @@ SQLConnect (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLConnectA (
   SQLHDBC		  hdbc,
@@ -1265,6 +1266,7 @@ SQLConnectW (SQLHDBC hdbc,
 	szUID, cbUID,
 	szAuthStr, cbAuthStr));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -1719,6 +1721,7 @@ SQLDriverConnect (SQLHDBC hdbc,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLDriverConnectA (SQLHDBC hdbc,
     SQLHWND hwnd,
@@ -1789,6 +1792,7 @@ SQLDriverConnectW (SQLHDBC hdbc,
 	szConnStrOut, cbConnStrOutMax, pcbConnStrOut,
 	fDriverCompletion));
 }
+#endif
 
 
 SQLRETURN SQL_API
@@ -2044,6 +2048,7 @@ SQLBrowseConnect (SQLHDBC hdbc,
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLBrowseConnectA (SQLHDBC hdbc,
     SQLCHAR * szConnStrIn,
@@ -2098,6 +2103,7 @@ SQLBrowseConnectW (SQLHDBC hdbc,
 	szConnStrIn, cbConnStrIn,
 	szConnStrOut, cbConnStrOutMax, pcbConnStrOut));
 }
+#endif
 
 
 static SQLRETURN
@@ -2335,6 +2341,7 @@ SQLNativeSql (
 }
 
 
+#if ODBCVER >= 0x0300
 SQLRETURN SQL_API
 SQLNativeSqlA (
     SQLHDBC hdbc,
@@ -2391,3 +2398,4 @@ SQLNativeSqlW (
 	szSqlStrIn, cbSqlStrIn,
 	szSqlStr, cbSqlStrMax, pcbSqlStr));
 }
+#endif
