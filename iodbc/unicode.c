@@ -194,7 +194,7 @@ int wcscmp (const wchar_t* s1, const wchar_t* s2)
 #include <Carbon/Carbon.h>
 wchar_t towlower(wchar_t wc)
 {
-#ifdef __APPLE__
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #ifndef __CORESERVICES__
 #include <CoreServices/CoreServices.h>
 #endif
