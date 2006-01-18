@@ -297,6 +297,14 @@ case $OS in
 	$BUILD
 	;;
 
+    powerpc-apple-darwin6*)
+	PREFIX=/usr/local/iODBC.darwin
+	CONFLAGS="--disable-shared --with-pic"
+	CFLAGS="-O -DNO_FRAMEWORKS -DMACOSX102"
+	export CFLAGS CONFLAGS PREFIX
+	$BUILD
+	;;
+
     ia64-hp-hpux11.23)
 	CFLAGS="-O -Ae +DD32"
 	export CFLAGS
