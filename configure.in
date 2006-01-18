@@ -483,7 +483,9 @@ AC_HELP_STRING([--disable-odbc3], [build ODBC 2.x compatible driver manager])dnl
 [
     case "${enableval}" in
       yes)	odbcmode=3 ;;
-      no)	odbcmode=2 ;;
+      no)	odbcmode=2 
+      		AC_MSG_ERROR(--disable-odbc3 temporarily disabled)
+		;;
       *)	AC_MSG_ERROR(bad value ${enableval} for --enable-odbc3) ;;
     esac
 ],
