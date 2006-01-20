@@ -69,23 +69,22 @@
 
 SUBDIRS			= trace .
 
-INCLUDES		= -I$(top_srcdir)/include
+INCLUDES		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbcinst
 
 lib_LTLIBRARIES		= libiodbc.la
 
 libiodbc_la_LDFLAGS	= -version-info @lib_version@ \
 	                  -export-symbols $(srcdir)/iodbc.exp
 libiodbc_la_LIBADD	= trace/libiodbctrace.la \
-			  ../iodbcinst/libiodbcinst.la \
+			  ../iodbcinst/libiodbc_common.la \
 			  $(LIBADD_DL) $(LIBADD_OS)
-libiodbc_la_SOURCES	= catalog.c connect.c dlf.c dlproc.c execute.c \
+libiodbc_la_SOURCES	= catalog.c connect.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
-			  misc.c prepare.c result.c odbc3.c \
-			  unicode.c
+			  misc.c prepare.c result.c odbc3.c
 
-noinst_HEADERS		= dlf.h dlproc.h hdbc.h henv.h herr.h \
-			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h \
-			  unicode.h
+noinst_HEADERS		= dlproc.h hdbc.h henv.h herr.h \
+			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h
+			  
 
 if DARWIN
 libiodbc.la: $(libiodbc_la_OBJECTS) $(libiodbc_la_DEPENDENCIES)
