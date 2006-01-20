@@ -92,21 +92,17 @@ libdrvproxy_la_LDFLAGS	= -version-info @lib_version@ \
 if GTK
 libdrvproxy_la_LIBADD	= \
 	$(LIBADD_DL) \
-	../iodbc/dlf.lo \
-	../iodbc/unicode.lo \
-	../drvproxy/gtk/confirm.lo \
-	../drvproxy/gtk/gensetup.lo \
-	../drvproxy/gtk/loginbox.lo \
-	../iodbcinst/libiodbcinst.la \
 	../iodbcadm/libiodbcadm.la \
+	../drvproxy/gtk/libdrvproxy-gtk.la \
+	../iodbcinst/libiodbc_common.la \
+	../iodbcinst/libiodbcinst.la \
 	@GTK_LIBS@
 else
 libdrvproxy_la_LIBADD	= \
 	$(LIBADD_DL) \
-	../iodbc/dlf.lo \
-	../iodbc/unicode.lo \
-	../iodbcinst/libiodbcinst.la \
-	../iodbcadm/libiodbcadm.la
+	../iodbcadm/libiodbcadm.la \
+	../iodbcinst/libiodbc_common.la \
+	../iodbcinst/libiodbcinst.la
 endif
 
 libdrvproxy_la_SOURCES	= \
