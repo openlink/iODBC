@@ -67,21 +67,34 @@
 #  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+noinst_LTLIBRARIES	= libiodbc_common.la
 lib_LTLIBRARIES		= libiodbcinst.la
+
 INCLUDES		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcinst \
 	-I$(top_srcdir)/iodbcadm
 
+libiodbc_common_la_SOURCES	= \
+	SQLGetConfigMode.c \
+	SQLGetPrivateProfileString.c \
+	SQLSetConfigMode.c \
+	SQLValidDSN.c \
+	SQLWritePrivateProfileString.c \
+	dlf.c \
+	inifile.c \
+	iodbc_error.c \
+	misc.c \
+	unicode.c
+
 libiodbcinst_la_LDFLAGS	= -version-info @lib_version@ \
 			  -export-symbols $(srcdir)/iodbcinst.exp
 
-libiodbcinst_la_LIBADD	= $(LIBADD_DL)
+libiodbcinst_la_LIBADD	= libiodbc_common.la $(LIBADD_DL)
 
 libiodbcinst_la_SOURCES	= \
-	dlf.c \
-	unicode.c \
 	SQLConfigDataSource.c \
 	SQLConfigDriver.c \
 	SQLGetAvailableDrivers.c \
@@ -89,10 +102,7 @@ libiodbcinst_la_SOURCES	= \
 	SQLInstallDriver.c \
 	SQLRemoveDSNFromIni.c \
 	SQLRemoveDriver.c \
-	SQLValidDSN.c \
 	SQLWriteDSNToIni.c \
-	SQLGetConfigMode.c \
-	SQLSetConfigMode.c \
 	SQLReadFileDSN.c \
 	SQLWriteFileDSN.c \
 	SQLInstallDriverEx.c \
@@ -108,32 +118,19 @@ libiodbcinst_la_SOURCES	= \
 	SQLInstallerError.c \
 	SQLPostInstallerError.c \
 	SQLGetTranslator.c \
-	SQLWritePrivateProfileString.c \
-	SQLGetPrivateProfileString.c \
-	inifile.c \
-	misc.c \
-	iodbc_error.c \
 	Info.c
 
 noinst_HEADERS		= \
+	dlf.h \
 	inifile.h \
 	iodbc_error.h \
+	unicode.h \
 	misc.h
 
 
-CLEANFILES=	dlf.c unicode.c
-
-dlf.c: $(top_srcdir)/iodbc/dlf.c
-	-rm -f dlf.c
-	$(LN_S) $(top_srcdir)/iodbc/dlf.c dlf.c
-
-unicode.c: $(top_srcdir)/iodbc/unicode.c
-	-rm -f unicode.c
-	$(LN_S) $(top_srcdir)/iodbc/unicode.c unicode.c
-
 if DARWIN
 libiodbcinst.la: $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libiodbcinst_la_LDFLAGS) $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_LIBADD) $(LIBS)
+	$(LINK) -rpath $(libdir) $(libiodbcinst_la_LDFLAGS) $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_LIBADD) $(LIBS) 
 	-$(STRIP) -s $(top_srcdir)/mac/iodbcinst.exp -u .libs/*.dylib
 endif
 
