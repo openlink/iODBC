@@ -352,7 +352,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = unicode.c;
-			path = ../../iodbc/unicode.c;
+			path = ../../iodbcinst/unicode.c;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -367,7 +367,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = unicode.h;
-			path = ../../iodbc/unicode.h;
+			path = ../../iodbcinst/unicode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1151,7 +1151,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = dlf.c;
-			path = ../../iodbc/dlf.c;
+			path = ../../iodbcinst/dlf.c;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1160,7 +1160,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dlf.h;
-			path = ../../iodbc/dlf.h;
+			path = ../../iodbcinst/dlf.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
