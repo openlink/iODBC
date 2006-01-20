@@ -115,7 +115,7 @@
 			);
 			buildSettings = {
 				DEBUGGING_SYMBOLS = NO;
-				FRAMEWORK_SEARCH_PATHS = "../iODBC/build ../iODBCinst/build";
+				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build/Development ../../mac/iODBC/build ../../mac/iODBCinst/build/Development ../../mac/iODBCinst/build";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "";
