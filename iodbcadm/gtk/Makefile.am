@@ -97,13 +97,5 @@ libiodbcadm_gtk_la_SOURCES	= \
 	main.c \
 	messagebox.c \
 	translatorchooser.c 
-EXTRA_libiodbcadm_gtk_la_SOURCES = question.xpm
 
-CLEANFILES	= confirm.c question.xpm
-
-confirm.c: $(top_srcdir)/drvproxy/gtk/confirm.c
-	-rm -f question.xpm confirm.c
-	$(LN_S) $(top_srcdir)/drvproxy/gtk/question.xpm question.xpm
-	$(LN_S) $(top_srcdir)/drvproxy/gtk/confirm.c confirm.c
-
-noinst_HEADERS			= error.xpm img.xpm odbc4.xpm gui.h
+noinst_HEADERS			= error.xpm img.xpm odbc4.xpm gui.h question.xpm

@@ -80,10 +80,7 @@ libdrvproxy_gtk_la_LDFLAGS	= #-static
 libdrvproxy_gtk_la_LIBADD	= @GTK_LIBS@
 
 libdrvproxy_gtk_la_SOURCES	= \
-	confirm.c \
 	gensetup.c \
 	loginbox.c
 
-noinst_HEADERS			= \
-	gui.h \
-	question.xpm
+noinst_HEADERS			= gui.h
