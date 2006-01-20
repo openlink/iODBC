@@ -93,27 +93,16 @@ libiodbcadm_la_LDFLAGS	= \
 
 if GTK
 libiodbcadm_la_LIBADD	= \
+	../iodbcadm/gtk/libiodbcadm-gtk.la \
 	$(LIBADD_DL) \
-	../iodbc/dlf.lo \
-	../iodbc/unicode.lo \
-	../iodbcadm/gtk/administrator.lo \
-	../iodbcadm/gtk/confirm.lo \
-	../iodbcadm/gtk/connectionpooling.lo\
-	../iodbcadm/gtk/driverchooser.lo \
-	../iodbcadm/gtk/driversetup.lo \
-	../iodbcadm/gtk/dsnchooser.lo \
-	../iodbcadm/gtk/errorbox.lo \
-	../iodbcadm/gtk/filedsn.lo \
-	../iodbcadm/gtk/messagebox.lo \
-	../iodbcadm/gtk/translatorchooser.lo \
 	@GTK_LIBS@ \
+	../iodbcinst/libiodbc_common.la \
 	../iodbcinst/libiodbcinst.la \
 	../iodbc/libiodbc.la
 else
 libiodbcadm_la_LIBADD	= \
 	$(LIBADD_DL) \
-	../iodbc/dlf.lo \
-	../iodbc/unicode.lo \
+	../iodbcinst/libiodbc_common.la \
 	../iodbcinst/libiodbcinst.la \
 	../iodbc/libiodbc.la
 endif
