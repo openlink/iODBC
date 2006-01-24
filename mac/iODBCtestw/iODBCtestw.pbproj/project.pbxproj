@@ -17,7 +17,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				HEADER_SEARCH_PATHS = "../../include ../../../include ../include";
+				HEADER_SEARCH_PATHS = "../../include";
 				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-DUNICODE";
@@ -36,7 +36,7 @@
 				FRAMEWORK_VERSION = 3.52;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				HEADER_SEARCH_PATHS = "../../include ../../../include ../include";
+				HEADER_SEARCH_PATHS = "../../include";
 				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
 				OPTIMIZATION_CFLAGS = "-DUNICODE -O2";
 				RESMERGER_SOURCES_FORK = data;
@@ -117,8 +117,8 @@
 			buildSettings = {
 				DEBUGGING_SYMBOLS = NO;
 				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build/Deployment ../../mac/iODBC/build ../../mac/iODBCinst/build/Deployment ../../mac/iODBCinst/build";
-				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = "$(HOME)/bin";
+				HEADER_SEARCH_PATHS = "../../include ../../../include ../include";
+				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O2";
 				OTHER_CFLAGS = "";
