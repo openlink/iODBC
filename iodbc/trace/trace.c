@@ -396,7 +396,7 @@ trace_start(void)
   }
 #else
   {
-    trace_set_appname (getprogname());
+    trace_set_appname ((char *) getprogname ());
   }
 #endif
 #endif
@@ -656,12 +656,13 @@ _trace_print_function (int func, int trace_leave, int retcode)
 {
   extern char *odbcapi_symtab[];
   char *ptr = "invalid retcode";
-  struct timeval tv;
 
   /*
    * Calculate timestamp
    */
 #ifdef HAVE_GETTIMEOFDAY
+  struct timeval tv;
+
   gettimeofday (&tv, NULL);
   tv.tv_sec -= starttime.tv_sec;
   tv.tv_usec -= starttime.tv_usec;

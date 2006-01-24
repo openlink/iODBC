@@ -101,9 +101,6 @@ SPINLOCK_DECLARE (iodbcdm_global_lock);
 
 static int _iodbcdm_initialized = 0;
 
-void Init_iODBC(void);
-void Done_iODBC(void);
-
 
 static void
 _iodbcdm_env_settracing (GENV_t *genv)

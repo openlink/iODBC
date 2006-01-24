@@ -169,6 +169,13 @@ extern SPINLOCK_DECLARE(iodbcdm_global_lock);
 #define ODBC_UNLOCK()
 #endif
 
+/*
+ * Prototypes
+ */
+void Init_iODBC(void);
+void Done_iODBC(void);
+
+
 
 /* Note:
  *

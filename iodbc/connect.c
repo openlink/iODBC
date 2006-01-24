@@ -1288,7 +1288,7 @@ SQLDriverConnect_Internal (
 {
   CONN (pdbc, hdbc);
   ENVR (penv, NULL);
-  HDLL hdll;
+  HDLL hdll = NULL;
   void *drv;
   SQLWCHAR drvbuf[1024];
   void *dsn;
