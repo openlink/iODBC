@@ -84,6 +84,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#if defined(__WCHAR_TYPE__) && !defined(MACOSX102)
+#include <wchar.h>
+#endif
+
+
 /*
  *  Windows-style declarations
  */

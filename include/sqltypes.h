@@ -398,7 +398,8 @@ typedef unsigned short SQLWCHAR;
       defined(_WCHAR_T)			|| \
       defined(_WCHAR_T_DEFINED)		|| \
       defined(_WCHAR_T_DECLARED)        || \
-      defined(_BSD_WCHAR_T_DEFINED_)
+      defined(_BSD_WCHAR_T_DEFINED_)    || \
+      defined(_BSD_WCHAR_T_)
 typedef wchar_t SQLWCHAR;
 #  else
 #    error Please make sure your system supports the wchar_t type
