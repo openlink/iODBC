@@ -77,7 +77,9 @@
 #ifndef _SQLUCODE_H
 #define _SQLUCODE_H
 
+#ifndef _SQLEXT_H
 #include <sqlext.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
