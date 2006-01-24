@@ -76,6 +76,7 @@
 #include <iodbc.h>
 #include <odbcinst.h>
 #include <iodbc_error.h>
+#include <iodbcadm.h>
 
 #include "gui.h"
 
@@ -127,7 +128,7 @@ ConfigDriver (
       if (hwndParent
 	  && SQLGetPrivateProfileString ("ODBC Drivers", lpszDriver, "",
 	      driverread, sizeof (driverread), "odbcinst.ini")
-	  && !create_confirmadm (hwndParent, NULL,
+	  && !create_confirm (hwndParent, NULL,
 	      "Are you sure you want to overwrite this driver ?"))
 #  else
       if (hwndParent

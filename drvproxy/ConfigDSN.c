@@ -78,6 +78,7 @@
 #include <iodbc.h>
 #include <odbcinst.h>
 #include <iodbc_error.h>
+#include <iodbcadm.h>
 
 #include "gui.h"
 
