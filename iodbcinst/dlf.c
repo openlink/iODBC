@@ -1013,7 +1013,7 @@ dlclose (void *hdll)
  *********************************/
 #ifdef	DLDAPI_MACX
 static struct dlopen_handle *dlopen_handles = NULL;
-static const struct dlopen_handle main_program_handle = { NULL };
+static const struct dlopen_handle main_program_handle = { 0 };
 static char *dlerror_pointer = NULL;
 
 /*
@@ -1029,7 +1029,7 @@ NSMakePrivateModulePublic (NSModule module)
 
   if (p == NULL)
     _dyld_func_lookup ("__dyld_NSMakePrivateModulePublic",
-	(unsigned long *) &p);
+	(void *) &p);
   if (p == NULL)
     {
 #ifdef DEBUG

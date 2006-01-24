@@ -103,7 +103,7 @@ extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 	if ((handle = DLL_OPEN(path)) != NULL) \
 	{ \
 		if ((pDrvConnW = (pDrvConnWFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
-		  pDrvConn(parent, dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+		  pDrvConnW(parent, dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
       retcode = TRUE; \
 		DLL_CLOSE(handle); \
 	}
@@ -115,8 +115,8 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
   UWORD config = ODBC_USER_DSN;
   BOOL retcode = FALSE;
   void *handle;
-  pDrvConnFunc pDrvConn;
-  pDrvConnWFunc pDrvConnW;
+  pDrvConnFunc pDrvConn = NULL;
+  pDrvConnWFunc pDrvConnW = NULL;
 #if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
   CFStringRef libname = NULL;
   CFBundleRef bundle;
