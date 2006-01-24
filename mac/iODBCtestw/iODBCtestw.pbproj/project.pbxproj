@@ -117,7 +117,7 @@
 			buildSettings = {
 				DEBUGGING_SYMBOLS = NO;
 				FRAMEWORK_SEARCH_PATHS = "../../mac/iODBC/build/Deployment ../../mac/iODBC/build ../../mac/iODBCinst/build/Deployment ../../mac/iODBCinst/build";
-				HEADER_SEARCH_PATHS = "../../include ../../../include ../include";
+				HEADER_SEARCH_PATHS = "../../include";
 				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O2";
