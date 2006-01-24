@@ -72,14 +72,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-#ifdef _MACX
-#  include <iODBC/iodbc.h>
-#  include <iODBCinst/odbcinst.h>
-#else
-#  include <iodbc.h>
-#  include <odbcinst.h>
-#endif
+#include <iodbc.h>
+#include <odbcinst.h>
 
 #if defined(__BEOS__)
 #include "be/gui.h"
@@ -89,6 +83,8 @@
 #include "gtk/gui.h"
 #elif defined(__QT__)
 #include "qt/gui.h"
+#elif defined(__APPLE__)
+#include "macosx/gui.h"
 #endif
 
 #ifdef __cplusplus
