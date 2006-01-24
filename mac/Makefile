@@ -70,34 +70,43 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-all: iODBCinst iODBC iODBCtest iODBCtestw
+#
+#  Determine which version of Mac OS X we are running
+#
+macosx_version	:= `sw_vers -productVersion`
 
 #
-# ascertain whether to use pbxbuild (jaguar) or xcodebuild (panther)
+#  Mac OS X 10.2 
 #
+ifeq (,$(findstring 10.2, $(macosx_version)))
+    PROJBUILD := /usr/bin/pbxbuild -buildstyle Deployment
+endif
 
-PROJBUILD:=$(shell (ls -1 /usr/bin/{pbxbuild,xcodebuild}|head -1)2>/dev/null)
+#
+#  Mac OS X 10.3
+#
+ifeq (,$(findstring 10.3, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -buildstyle Deployment
+endif
+
+#
+#  Mac OS X 10.4 
+#
+ifeq (,$(findstring 10.3, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration Deployment
+endif
+
 
 #
 #  Build the libraries 
 #
-.PHONY: iODBCinst iODBC
-iODBC: include iODBCinst
-	cd iODBC; $(PROJBUILD) build -buildstyle Deployment
-
-iODBCinst: include 
-	echo "Projbuild is [$(PROJBUILD)]"
-	cd iODBCinst; $(PROJBUILD) build -buildstyle Deployment
-
-#
-#  Build the test program
-#
-.PHONY: iODBCtest iODBCtestw
-iODBCtest:
-	cd iODBCtest; $(PROJBUILD) build -buildstyle Deployment
-
-iODBCtestw:
-	cd iODBCtestw ; $(PROJBUILD) build -buildstyle Deployment
+all: include
+	@echo "Building on Mac OS X $(macosx_version)"
+	@echo "Projbuild is [$(PROJBUILD)]"
+	cd iODBCinst;	$(PROJBUILD) build 
+	cd iODBC;	$(PROJBUILD) build 
+	cd iODBCtest;	$(PROJBUILD) build
+	cd iODBCtestw;	$(PROJBUILD) build
 
 #
 #  Generate iODBC framework style include files
@@ -112,10 +121,10 @@ include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sq
 install:
 	-sudo rm /Library/Frameworks/iODBC.framework/Versions/Current
 	-sudo rm /Library/Frameworks/iODBCinst.framework/Versions/Current
-	cd iODBC; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
-	cd iODBCinst; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
-	cd iODBCtest; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
-	cd iODBCtestw; sudo $(PROJBUILD) install -buildstyle Deployment DSTROOT=/
+	cd iODBC;	sudo $(PROJBUILD) install DSTROOT=/
+	cd iODBCinst;	sudo $(PROJBUILD) install DSTROOT=/
+	cd iODBCtest;	sudo $(PROJBUILD) install DSTROOT=/
+	cd iODBCtestw;	sudo $(PROJBUILD) install DSTROOT=/
 	sudo sh link-inclibs.sh
 
 #
@@ -123,7 +132,7 @@ install:
 #
 clean:
 	rm -rf include
-	cd iODBC;     $(PROJBUILD) clean
-	cd iODBCinst; $(PROJBUILD) clean
-	cd iODBCtest; $(PROJBUILD) clean
-	cd iODBCtestw; $(PROJBUILD) clean
+	cd iODBC;	$(PROJBUILD) clean
+	cd iODBCinst;	$(PROJBUILD) clean
+	cd iODBCtest;	$(PROJBUILD) clean
+	cd iODBCtestw;	$(PROJBUILD) clean
