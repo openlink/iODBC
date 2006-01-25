@@ -81,12 +81,14 @@ INCLUDES		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcinst \
+	-I$(top_srcdir)/iodbcadm \
 	@GTK_CFLAGS@ -D__GTK__
 else
 INCLUDES		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
-	-I$(top_srcdir)/iodbcinst
+	-I$(top_srcdir)/iodbcinst\
+	-I$(top_srcdir)/iodbcadm 
 endif
 
 libdrvproxy_la_LDFLAGS	= -version-info @lib_version@ \
