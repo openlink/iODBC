@@ -70,41 +70,42 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+
 #
 #  Determine which version of Mac OS X we are running
 #
-macosx_version	:= `sw_vers -productVersion`
+macosx_version	:= $(shell sw_vers -productVersion)
 
 #
-#  Mac OS X 10.2 
+#  Mac OS X 10.2
 #
-ifeq (,$(findstring 10.2, $(macosx_version)))
+ifeq (10.2, $(findstring 10.2, $(macosx_version)))
     PROJBUILD := /usr/bin/pbxbuild -buildstyle Deployment
 endif
 
 #
 #  Mac OS X 10.3
 #
-ifeq (,$(findstring 10.3, $(macosx_version)))
+ifeq (10.3, $(findstring 10.3, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -buildstyle Deployment
 endif
 
 #
-#  Mac OS X 10.4 
+#  Mac OS X 10.4
 #
-ifeq (,$(findstring 10.3, $(macosx_version)))
+ifeq (10.4, $(findstring 10.4, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -configuration Deployment
 endif
 
 
 #
-#  Build the libraries 
+#  Build the libraries
 #
 all: include
 	@echo "Building on Mac OS X $(macosx_version)"
 	@echo "Projbuild is [$(PROJBUILD)]"
-	cd iODBCinst;	$(PROJBUILD) build 
-	cd iODBC;	$(PROJBUILD) build 
+	cd iODBCinst;	$(PROJBUILD) build
+	cd iODBC;	$(PROJBUILD) build
 	cd iODBCtest;	$(PROJBUILD) build
 	cd iODBCtestw;	$(PROJBUILD) build
 
