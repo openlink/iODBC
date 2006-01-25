@@ -92,11 +92,17 @@ EXTRA_DIST		= \
 	mac/iodbc.exp \
 	mac/iodbcinst.exp \
 	mac/iODBC/English.lproj/InfoPlist.strings \
+	mac/iODBC/Info-iODBC.plist \
 	mac/iODBC/iODBC.pbproj/project.pbxproj \
+	mac/iODBC/iODBC.xcodeproj/project.pbxproj \
 	mac/iODBCinst/English.lproj/InfoPlist.strings \
+	mac/iODBCinst/Info-iODBCinst.plist \
 	mac/iODBCinst/iODBCinst.pbproj/project.pbxproj \
+	mac/iODBCinst/iODBCinst.xcodeproj/project.pbxproj \
 	mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
+	mac/iODBCtest/iODBCtest.xcodeproj/project.pbxproj \
 	mac/iODBCtestw/iODBCtestw.pbproj/project.pbxproj \
+	mac/iODBCtestw/iODBCtestw.xcodeproj/project.pbxproj \
 	debian/changelog \
 	debian/compat \
 	debian/control \
