@@ -133,7 +133,7 @@
 			);
 			isa = PBXToolTarget;
 			name = iodbctestw;
-			productInstallPath = "$(HOME)/bin";
+			productInstallPath = "/Library/Application Support/iODBC/bin";
 			productName = iodbctestw;
 			productReference = 034768E8FF38A79811DB9C8B;
 		};
