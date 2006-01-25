@@ -57,7 +57,7 @@
 		034768E8FF38A79811DB9C8B = {
 			explicitFileType = "compiled.mach-o.executable";
 			isa = PBXFileReference;
-			path = odbcimport;
+			path = odbcuninstall;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -93,7 +93,7 @@
 				1AB674ADFE9D54B511CA2CBB,
 			);
 			isa = PBXGroup;
-			name = odbcimport;
+			name = odbcuninstall;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -123,7 +123,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = odbcimport;
+				PRODUCT_NAME = odbcuninstall;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -131,9 +131,9 @@
 			dependencies = (
 			);
 			isa = PBXToolTarget;
-			name = odbcimport;
+			name = odbcuninstall;
 			productInstallPath = "/Library/Application Support/iODBC/bin";
-			productName = odbcimport;
+			productName = odbcuninstall;
 			productReference = 034768E8FF38A79811DB9C8B;
 		};
 		08FB77A0FE84155DC02AAC07 = {
@@ -200,8 +200,8 @@
 			explicitFileType = sourcecode.c.c;
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			name = odbcimport.c;
-			path = ../samples/odbcimport.c;
+			name = odbcuninstall.c;
+			path = ../samples/odbcuninstall.c;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
