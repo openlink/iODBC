@@ -72,6 +72,14 @@
 
 
 #
+#  Determine build model (Deployment/Development)
+#
+ifeq (,$(MODEL))
+MODEL	:= Deployment
+endif
+
+
+#
 #  Determine which version of Mac OS X we are running
 #
 macosx_version	:= $(shell sw_vers -productVersion)
@@ -80,21 +88,21 @@ macosx_version	:= $(shell sw_vers -productVersion)
 #  Mac OS X 10.2
 #
 ifeq (10.2, $(findstring 10.2, $(macosx_version)))
-    PROJBUILD := /usr/bin/pbxbuild -buildstyle Deployment
+    PROJBUILD := /usr/bin/pbxbuild -buildstyle $(MODEL)
 endif
 
 #
 #  Mac OS X 10.3
 #
 ifeq (10.3, $(findstring 10.3, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -buildstyle Deployment
+    PROJBUILD := /usr/bin/xcodebuild -buildstyle $(MODEL)
 endif
 
 #
 #  Mac OS X 10.4
 #
 ifeq (10.4, $(findstring 10.4, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration Deployment
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
 endif
 
 
@@ -109,12 +117,14 @@ all: include
 	cd iODBCtest;	$(PROJBUILD) build
 	cd iODBCtestw;	$(PROJBUILD) build
 
+
 #
 #  Generate iODBC framework style include files
 #
 include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/odbcinst.h
 	sh framework-include.sh
 	touch include
+
 
 #
 #  Install libraries in /Library/Frameworks
@@ -127,6 +137,7 @@ install:
 	cd iODBCtest;	sudo $(PROJBUILD) install DSTROOT=/
 	cd iODBCtestw;	sudo $(PROJBUILD) install DSTROOT=/
 	sudo sh link-inclibs.sh
+
 
 #
 #  Clean out the targets
