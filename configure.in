@@ -707,6 +707,7 @@ AM_CONDITIONAL(DARWIN, false)
 case $host in
   *-darwin*)
 	AM_CONDITIONAL(DARWIN, true)	
+	CFLAGS="$CFLAGS -DNO_FRAMEWORKS"
 	LIBADD_OS="-Wl,-framework,Carbon"
 	;;
 esac
