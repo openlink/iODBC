@@ -167,7 +167,7 @@ main (int argc, char *argv[])
 
   printf ("iODBC Administrator (GTK)\n");
   printf ("%s\n", PACKAGE_STRING);
-  printf ("Copyright (C) 2000-2003 OpenLink Software\n");
+  printf ("Copyright (C) 2000-2006 OpenLink Software\n");
   printf ("Please report all bugs to <%s>\n\n", PACKAGE_BUGREPORT);
 
   /* Check options commands */
