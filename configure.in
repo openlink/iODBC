@@ -702,17 +702,24 @@ fi
 ##									##
 ##########################################################################
 LIBADD_OS=""
-AC_MSG_CHECKING(for OS dependent libraries)
+AC_MSG_CHECKING(for OS dependent libraries and link flags)
 AM_CONDITIONAL(DARWIN, false)	
 case $host in
+  *-hpux*)
+	LDFLAGS="$LDFLAGS -Wl,+s"
+	AC_MSG_RESULT([use -Wl,+s for HP/UX])
+	;;
   *-darwin*)
 	AM_CONDITIONAL(DARWIN, true)	
 	CFLAGS="$CFLAGS -DNO_FRAMEWORKS"
 	LIBADD_OS="-Wl,-framework,Carbon"
+	AC_MSG_RESULT([$LIBADD_OS])
+	;;
+  *)
+	AC_MSG_RESULT(none)
 	;;
 esac
 AC_SUBST(LIBADD_OS)
-AC_MSG_RESULT([$LIBADD_OS])
 
 
 ########################################################################## 
