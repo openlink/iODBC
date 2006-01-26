@@ -1,4 +1,18 @@
-Nov 04 2004, V3.52.3:
+Jan 26 2006, V3.52.4:
+    * Added support for Mac OS X 10.4 Universal kit (ppc, ppc64 and i386)
+    * Removed dependency between iodbc and iodbcinst shared libraries
+    * Cleanup Mac OS X build process
+    * Clarify LGPL license conditions
+    * Fixed problem with error on subsequent SQLExecute statements
+    * Fixed problem building 64bit GUI components
+    * Fixed compiler warnings
+    * Fixed problem determining which compiler to use on AIX
+    * Enabled SHLIB_PATH on HP/UX
+    * Fixed problem using # as comment in odbc.ini file
+    * Disabled --disable-odbc3 flag
+    * Small code cleanups and fixes
+
+Nov 04 2005, V3.52.3:
     * Added support for DSN-less connections
     * Added timestamp to ENTER/EXIT lines in trace file
     * Added build support for AIX 5.x, HP/UX 11.23 Itanium
