@@ -148,3 +148,6 @@ clean:
 	cd iODBCinst;	$(PROJBUILD) clean
 	cd iODBCtest;	$(PROJBUILD) clean
 	cd iODBCtestw;	$(PROJBUILD) clean
+
+realclean: clean
+	rm -rf iODBC/build iODBCinst/build iODBCtest/build iODBCtestw/build
