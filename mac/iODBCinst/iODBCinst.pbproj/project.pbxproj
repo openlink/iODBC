@@ -467,7 +467,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = odbcinst.h;
-			path = ../../include/odbcinst.h;
+			path = ../include/odbcinst.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
