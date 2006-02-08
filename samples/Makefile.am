@@ -91,6 +91,10 @@ install-exec-hook:
 	$(mkinstalldirs) ${DESTDIR}${pkgdatadir}/samples
 	cp $(srcdir)/iodbctest.c ${DESTDIR}${pkgdatadir}/samples/iodbctest.c
 	cp $(srcdir)/Makefile.sample ${DESTDIR}${pkgdatadir}/samples/Makefile
+if DARWIN
+	-/usr/bin/lipo ${DESTDIR}${bindir}/iodbctest -remove ppc64 -output ${DESTDIR}${bindir}/iodbctest
+	-/usr/bin/lipo ${DESTDIR}${bindir}/iodbctestw -remove ppc64 -output ${DESTDIR}${bindir}/iodbctestw
+endif
 
 uninstall-hook:
 	rm -f ${DESTDIR}${pkgdatadir}/samples/iodbctest.c
