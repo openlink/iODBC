@@ -98,7 +98,7 @@
 
 #ifdef	DLDAPI_SVR4_DLFCN
 #define DLDAPI_DEFINED
-static char sccsid[] = "@(#)dynamic load interface -- SVR4 dlfcn";
+static char sccsid[] = "@(#)dynamic load interface -- SVR4 (dlfcn)";
 #endif
 
 /********************************* 
@@ -109,10 +109,10 @@ static char sccsid[] = "@(#)dynamic load interface -- SVR4 dlfcn";
 
 #ifdef	DLDAPI_HP_SHL
 #define	DLDAPI_DEFINED
+static char sccsid[] = "@(#)dynamic load interface -- HP/UX (shl)";
 
 #include <dl.h>
 
-static char sccsid[] = "@(#)dynamic load interface -- HP/UX dl(shl)";
 
 void *
 dlopen (char *path, int mode)
@@ -185,6 +185,7 @@ dlclose (void *hdll)
 
 #ifdef	DLDAPI_AIX_LOAD
 #define	DLDAPI_DEFINED
+static char sccsid[] = "@(#)dynamic load interface -- AIX (ldr)";
 
 #include <sys/types.h>
 #include <sys/ldr.h>
@@ -614,6 +615,7 @@ dlsym (void *hdl, char *sym)
 
 #ifdef	DLDAPI_WINDOWS
 #define	DLDAPI_DEFINED
+static char sccsid[] = "@(#)dynamic load interface -- Windows (LoadLibrary)";
 
 #include <windows.h>
 
@@ -669,6 +671,7 @@ dlclose (void * hdll)
 #ifdef VMS
 #define	DLDAPI_DEFINED
 #ifdef DLDAPI_VMS_IODBC
+static char sccsid[] = "@(#)dynamic load interface -- VMS";
 
 #include <stdio.h>
 #include <descrip.h>
@@ -874,10 +877,10 @@ iodbc_dlclose (void *hdll)
  *********************************/
 #ifdef	DLDAPI_DYLD
 #define	DLDAPI_DEFINED
+static char sccsid[] = "@(#)dynamic load interface -- Mac OS X (dyld)";
+
 #include <stdio.h>
 #include <mach-o/dyld.h>
-
-static char sccsid[] = "@(#)dynamic load interface -- MacOS X dl(dyld)";
 
 
 static void
@@ -1012,6 +1015,9 @@ dlclose (void *hdll)
  *
  *********************************/
 #ifdef	DLDAPI_MACX
+#define	DLDAPI_DEFINED
+static char sccsid[] = "@(#)dynamic load interface -- Mac OS X 10.x (dyld)";
+
 static struct dlopen_handle *dlopen_handles = NULL;
 static const struct dlopen_handle main_program_handle = { 0 };
 static char *dlerror_pointer = NULL;
@@ -1368,7 +1374,6 @@ iodbc_dlclose (void * handle)
   return (-1);
 }
 
-#define	DLDAPI_DEFINED
 #endif /* end of Rhapsody Section */
 
 /********************************* 
@@ -1377,6 +1382,7 @@ iodbc_dlclose (void * handle)
  *
  *********************************/
 #ifdef	DLDAPI_MAC
+static char sccsid[] = "@(#)dynamic load interface -- Mac Classic";
 
 #include <CodeFragments.h>
 #include <strconv.h>
@@ -1529,6 +1535,7 @@ dlclose (void *hdll)
  *********************************/
 #ifdef	DLDAPI_BE
 #define	DLDAPI_DEFINED
+static char sccsid[] = "@(#)dynamic load interface -- BeOS";
 
 #include <kernel/image.h>
 #include <be/support/Errors.h>
