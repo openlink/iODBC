@@ -69,7 +69,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-version=3.52.4
+version=@IODBC_VERSION@
 
 prefix=/usr/local/iODBC
 exec_prefix=${prefix}
