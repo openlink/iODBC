@@ -1379,6 +1379,7 @@ SQLDriverConnect_Internal (
       else
 	wcsncpy (prov, szConnStrIn, sizeof (prov) / sizeof (wchar_t));
 
+#if 0
       if (!dsn && !drv)
         bCallDmDlg = TRUE;
       else if ( _iodbcdm_CheckDriverLoginDlg(drv, dsn, waMode) == FALSE)
@@ -1390,6 +1391,7 @@ SQLDriverConnect_Internal (
        */
       if (!bCallDmDlg)
         break;
+#endif
 
       ODBC_UNLOCK ();
 #if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
@@ -1441,6 +1443,7 @@ SQLDriverConnect_Internal (
 
 
       ODBC_LOCK ();
+      fDriverCompletion = SQL_DRIVER_NOPROMPT;
 
       if (retcode != SQL_SUCCESS)
 	{
