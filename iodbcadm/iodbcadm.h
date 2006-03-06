@@ -120,6 +120,6 @@ typedef SQLRETURN SQL_API (*pDrvConnFunc) (HWND hwnd, LPSTR szInOutConnStr,
     DWORD cbInOutConnStr, int *sqlStat, SQLUSMALLINT fDriverCompletion,
     UWORD * config);
 typedef SQLRETURN SQL_API (*pDrvConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT *fDriverCompletion, 
+    DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, 
     UWORD *config);
 #endif
