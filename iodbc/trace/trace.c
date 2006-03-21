@@ -147,6 +147,30 @@ trace_get_filename (void)
 }
 
 
+static void
+trace_strftime_now (char *buf, size_t buflen, char *format)
+{
+  time_t now;
+  struct tm *timeNow;
+#ifdef HAVE_LOCALTIME_R
+  struct tm keeptime;
+#endif
+
+  tzset ();
+  time (&now);
+
+#ifdef HAVE_LOCALTIME_R
+  timeNow = localtime_r (&now, &keeptime);
+#else
+  timeNow = localtime (&now);
+#endif
+
+  strftime (buf, buflen, format, timeNow);
+}
+
+
+
+
 void
 trace_set_filename (char *fname)
 {
@@ -245,14 +269,7 @@ trace_set_filename (char *fname)
 	    case 't':
 	    case 'T':
 	      {
-		time_t now;
-		struct tm *timeNow;
-
-		tzset ();
-		time (&now);
-		timeNow = localtime (&now);
-
-		strftime (tmp, sizeof (tmp), "%Y%m%d-%H%M%S", timeNow);
+		trace_strftime_now (tmp, sizeof (tmp), "%Y%m%d-%H%M%S");
 		strcpy (&buf[buf_pos], tmp);
 		buf_pos += strlen (tmp);
 		break;
@@ -339,20 +356,14 @@ trace_start(void)
   else
     {
       char mesgBuf[200];
-      time_t now;
-      struct tm *timeNow;
 
       trace_emit ("** iODBC Trace file\n");
 
       /*
        *  Show start time
        */
-      tzset ();
-      time (&now);
-      timeNow = localtime (&now);
-      strftime (mesgBuf,
-	  sizeof (mesgBuf), "** Trace started on %a %b %d %H:%M:%S %Y",
-	  timeNow);
+      trace_strftime_now (mesgBuf, sizeof (mesgBuf),
+	  "** Trace started on %a %b %d %H:%M:%S %Y");
       trace_emit ("%s\n", mesgBuf);
 
       /*
@@ -422,13 +433,8 @@ trace_stop(void)
       /*
        * Show end time
        */
-      tzset ();
-      time (&now);
-      timeNow = localtime (&now);
-      strftime (mesgBuf,
-	  sizeof (mesgBuf), "** Trace finished on %a %b %d %H:%M:%S %Y",
-	  timeNow);
-
+      trace_strftime_now (mesgBuf, sizeof (mesgBuf),
+	  "** Trace finished on %a %b %d %H:%M:%S %Y");
       trace_emit ("\n%s\n", mesgBuf);
 
       if (trace_fp_close)

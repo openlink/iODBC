@@ -280,7 +280,7 @@ AC_CHECK_HEADERS(wchar.h)
 ##  Check for specific library functions				##
 ##									##
 ##########################################################################
-AC_CHECK_FUNCS(strerror setenv asprintf snprintf gettimeofday)
+AC_CHECK_FUNCS(strerror setenv asprintf snprintf gettimeofday localtime_r)
 
 dnl Unicode
 AC_CHECK_FUNCS(wcslen wcscpy wcsncpy wcschr wcscat wcscmp towlower wcsncasecmp)
