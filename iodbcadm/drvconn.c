@@ -202,7 +202,7 @@ iodbcdm_drvconn_dialboxw (
   HDLL handle;
   pDriverConnFunc pDrvConn;
   pDriverConnWFunc pDrvConnW;
-  int i;
+  int i, skip;
 #if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
   CFStringRef libname = NULL;
   CFBundleRef bundle = NULL;
@@ -231,8 +231,15 @@ iodbcdm_drvconn_dialboxw (
   /* Conversion to the list of key pairs */
   wcsncpy (string, szInOutConnStr, cbInOutConnStr);
   string[WCSLEN (string) + 1] = L'\0';
+  skip = 0;
   for (i = WCSLEN (string) - 1 ; i >= 0 ; i--)
-    if (string[i] == L';') string[i] = L'\0';
+  {
+    if (string[i] == L'}')
+      skip = 1;
+    else if (string[i] == L'{')
+      skip = 0;
+    else if (skip == 0 && string[i] == L';') string[i] = L'\0';
+  }
 
   /* Look for the DSN and DRIVER keyword */
   for (prov = string ; *prov != L'\0' ; prov += WCSLEN (prov) + 1)
