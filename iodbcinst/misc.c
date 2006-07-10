@@ -401,3 +401,126 @@ _iodbcdm_remove_quotes(const char *szString)
 
   return szWork;
 }
+
+/*
+ * Get FILEDSN file name
+ *
+ * If file name does not contain path component, the default directory for
+ * saving and loading a .dsn file will be defined as follows:
+ * 1. if FILEDSNPATH is set in environment: use environment
+ * 2. if odbcinst.ini [odbc] FILEDSNPATH is set: use this
+ * 3. else use DEFAULT_FILEDSNPATH
+ *
+ * ".dsn" extension is always appended to the resulting filename
+ * (if not already exists).
+ */
+void
+_iodbcdm_getdsnfile(const char *filedsn, char *buf, size_t buf_sz)
+{
+  char *p;
+  char *default_path;
+
+  if (strchr (filedsn, '/') != NULL)
+    {
+      /* has path component -- copy as is */
+      _iodbcdm_strlcpy (buf, filedsn, buf_sz);
+      goto done;
+    }
+
+  /* get default path */
+  if ((default_path = getenv ("FILEDSNPATH")) != NULL)
+    _iodbcdm_strlcpy (buf, default_path, buf_sz);
+  else
+    {
+      SQLSetConfigMode (ODBC_BOTH_DSN);
+      if (!SQLGetPrivateProfileString ("ODBC", "FileDSNPath", "",
+				       buf, buf_sz, "odbcinst.ini"))
+        _iodbcdm_strlcpy (buf, DEFAULT_FILEDSNPATH, buf_sz);
+    }
+
+  /* append filedsn file name */
+  _iodbcdm_strlcat (buf, "/", buf_sz);
+  _iodbcdm_strlcat (buf, filedsn, buf_sz);
+
+done:
+  /* append ".dsn" if extension is not ".dsn" */
+  if ((p = strrchr (buf, '.')) == NULL ||
+      strcasecmp (p, ".dsn") != 0)
+    _iodbcdm_strlcat (buf, ".dsn", buf_sz);
+}
+
+
+/*
+ * Copy src to string dst of size siz.  At most siz-1 characters
+ * will be copied.  Always NUL terminates (unless siz == 0).
+ * Returns strlen(src); if retval >= siz, truncation occurred.
+ *
+ * Taken from FreeBSD libc.
+ */
+size_t
+_iodbcdm_strlcpy(char *dst, const char *src, size_t siz)
+{
+  char *d = dst;
+  const char *s = src;
+  size_t n = siz;
+
+  /* Copy as many bytes as will fit */
+  if (n != 0 && --n != 0)
+    {
+      do {
+        if ((*d++ = *s++) == 0)
+          break;
+      } while (--n != 0);
+    }
+
+  /* Not enough room in dst, add NUL and traverse rest of src */
+  if (n == 0)
+    {
+      if (siz != 0)
+        *d = '\0';		/* NUL-terminate dst */
+      while (*s++)
+        ;
+    }
+
+   return(s - src - 1);		/* count does not include NUL */
+}
+
+
+/*
+ * Appends src to string dst of size siz (unlike strncat, siz is the
+ * full size of dst, not space left).  At most siz-1 characters
+ * will be copied.  Always NUL terminates (unless siz <= strlen(dst)).
+ * Returns strlen(src) + MIN(siz, strlen(initial dst)).
+ * If retval >= siz, truncation occurred.
+ *
+ * Taken from FreeBSD libc.
+ */
+size_t
+_iodbcdm_strlcat(char *dst, const char *src, size_t siz)
+{
+  char *d = dst;
+  const char *s = src;
+  size_t n = siz;
+  size_t dlen;
+
+  /* Find the end of dst and adjust bytes left but don't go past end */
+  while (n-- != 0 && *d != '\0')
+    d++;
+  dlen = d - dst;
+  n = siz - dlen;
+
+  if (n == 0)
+    return(dlen + strlen(s));
+  while (*s != '\0')
+    {
+      if (n != 1)
+        {
+          *d++ = *s;
+          n--;
+        }
+      s++;
+    }
+  *d = '\0';
+
+  return(dlen + (s - src));	/* count does not include NUL */
+}

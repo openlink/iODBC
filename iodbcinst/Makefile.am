@@ -85,6 +85,8 @@ libiodbc_common_la_SOURCES	= \
 	SQLSetConfigMode.c \
 	SQLValidDSN.c \
 	SQLWritePrivateProfileString.c \
+	SQLReadFileDSN.c \
+	SQLWriteFileDSN.c \
 	dlf.c \
 	inifile.c \
 	iodbc_error.c \
@@ -105,8 +107,6 @@ libiodbcinst_la_SOURCES	= \
 	SQLRemoveDSNFromIni.c \
 	SQLRemoveDriver.c \
 	SQLWriteDSNToIni.c \
-	SQLReadFileDSN.c \
-	SQLWriteFileDSN.c \
 	SQLInstallDriverEx.c \
 	SQLInstallODBC.c \
 	SQLInstallTranslator.c \

@@ -74,7 +74,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #include <iodbc.h>
 #include <odbcinst.h>
 #include <unicode.h>
@@ -91,6 +90,7 @@ SQLWriteFileDSN (LPCSTR lpszFileName, LPCSTR lpszAppName, LPCSTR lpszKeyName,
     LPSTR lpszString)
 {
   BOOL retcode = FALSE;
+  char filename[1024];
 
   /* Check input parameters */
   CLEAR_ERROR ();
@@ -98,9 +98,10 @@ SQLWriteFileDSN (LPCSTR lpszFileName, LPCSTR lpszAppName, LPCSTR lpszKeyName,
   /* Is a file is specified */
   if (lpszFileName)
     {
+      _iodbcdm_getdsnfile (lpszFileName, filename, sizeof (filename));
       retcode =
 	  WritePrivateProfileString (lpszAppName, lpszKeyName, lpszString,
-	  lpszFileName);
+	  filename);
       goto quit;
     }
 

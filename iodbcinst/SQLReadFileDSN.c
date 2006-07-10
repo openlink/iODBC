@@ -74,7 +74,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #include <iodbc.h>
 #include <odbcinst.h>
 #include <unicode.h>
@@ -93,6 +92,7 @@ SQLReadFileDSN (LPCSTR lpszFileName, LPCSTR lpszAppName, LPCSTR lpszKeyName,
 {
   BOOL retcode = FALSE;
   WORD len = 0, i;
+  char filename[1024];
 
   /* Check input parameters */
   CLEAR_ERROR ();
@@ -112,9 +112,10 @@ SQLReadFileDSN (LPCSTR lpszFileName, LPCSTR lpszAppName, LPCSTR lpszKeyName,
   /* Is a file is specified */
   if (lpszFileName)
     {
+      _iodbcdm_getdsnfile (lpszFileName, filename, sizeof (filename));
       len =
 	  GetPrivateProfileString (lpszAppName, lpszKeyName, "", lpszString,
-	  cbString, lpszFileName);
+	  cbString, filename);
       if (numerrors == -1)
 	retcode = TRUE;
       goto quit;
