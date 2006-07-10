@@ -761,27 +761,34 @@ AC_OUTPUT
 ##  Display configuration information					##
 ##									##
 ##########################################################################
+
+# ----------------------------------------------------------------------
+#  Color settings
+# ----------------------------------------------------------------------
+B=`tput bold 2>/dev/null`
+N=`tput sgr0 2>/dev/null`
+
 echo ""
 echo ""
-echo "${PACKAGE_STRING} configuration summary"
+echo "${B}${PACKAGE_STRING} configuration summary${N}"
 echo "${PACKAGE_STRING} configuration summary" | sed 's/./=/g'
 echo ""
-echo "Installation variables"
+echo "${B}Installation variables${N}"
 echo "AC_HELP_STRING(layout,		[${iodbc_layout}])"
 echo "AC_HELP_STRING(prefix,		[${prefix}])"
 echo "AC_HELP_STRING(exec_prefix,	[${exec_prefix}])"
 echo ""
-echo "Installation paths"
+echo "${B}Installation paths${N}"
 echo "AC_HELP_STRING(programs,		[${bindir}])"
 echo "AC_HELP_STRING(include files, 	[${includedir}])"
 echo "AC_HELP_STRING(libraries, 	[${libdir}])"
 echo "AC_HELP_STRING(manual pages, 	[${mandir}])"
 echo ""
-echo "Configuration files"
+echo "${B}Configuration files${N}"
 echo "AC_HELP_STRING(odbc.ini , 	[${inidir}/odbc.ini])"
 echo "AC_HELP_STRING(odbcinst.ini , 	[${inidir}/odbcinst.ini])"
 echo ""
-echo "Extensions"
+echo "${B}Extensions${N}"
 echo "AC_HELP_STRING(ODBC Version, 	[${odbcmode}])"
 echo "AC_HELP_STRING(GUI Extensions,	[${USE_GUI}])"
 echo "AC_HELP_STRING(ThreadSafe,	[${USE_PTHREADS}])"
