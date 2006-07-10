@@ -88,6 +88,7 @@ static sqlerrmsg_t sqlerrmsg_tab[] =
   { en_01S02, "01S02", "Optional value changed" },
   { en_01S03, "01S03", "No rows updated or deleted" },
   { en_01S04, "01S04", "More than one row updated or deleted" },
+  { en_01S08, "01S08", "Error saving file DSN" },
   { en_07001, "07001", "Wrong number of parameters" },
   { en_07006, "07006", "Restricted data type attribute violation" },
   { en_08001, "08001", "Unable to connect to data source" },
@@ -121,6 +122,7 @@ static sqlerrmsg_t sqlerrmsg_tab[] =
   { en_HY024, "HY024", "Invalid attribute value" },
   { en_HY091, "HY091", "Invalid descriptor field identifier" },
   { en_HY092, "HY092", "Invalid attribute/option identifier" },
+  { en_HY110, "HY110", "Invalid driver completion" },
   { en_HYC00, "HYC00", "Optional feature not implemented" },
   { en_IM001, "IM001", "Driver does not support this function" },
   { en_IM002, "IM002", "Data source name not found and no default "

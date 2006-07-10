@@ -193,6 +193,17 @@ SQLAllocConnect_Internal (
   if (genv->odbc_ver == 0)
     genv->odbc_ver = SQL_OV_ODBC2;
   pdbc->hdesc = NULL;
+
+  pdbc->cp_pdbc = NULL;
+  pdbc->cp_in_use = FALSE;
+  pdbc->cp_timeout = 0;
+  pdbc->cp_expiry_time = 0;
+  pdbc->cp_retry_wait = 0;
+  pdbc->cp_probe = NULL;
+  pdbc->cp_dsn = NULL;
+  pdbc->cp_uid = NULL;
+  pdbc->cp_pwd = NULL;
+  pdbc->cp_connstr = NULL;
 #endif
   pdbc->genv = genv;
 

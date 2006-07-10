@@ -78,6 +78,7 @@
 
 #include <iodbc.h>
 
+#include <assert.h>
 #include <sql.h>
 #include <sqlext.h>
 
@@ -93,6 +94,7 @@
 /*
  *  Use static initializer where possible
  */
+
 #if defined (PTHREAD_MUTEX_INITIALIZER)
 SPINLOCK_DECLARE (iodbcdm_global_lock) = PTHREAD_MUTEX_INITIALIZER;
 #else
@@ -156,6 +158,9 @@ SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
   genv->herr = SQL_NULL_HERR;	/* err list          */
 #if (ODBCVER >= 0x300)
   genv->odbc_ver = odbc_ver;
+  genv->connection_pooling = _iodbcdm_attr_connection_pooling;
+  genv->cp_match = SQL_CP_MATCH_DEFAULT;
+  genv->pdbc_pool = NULL;
 #endif
   genv->err_rec = 0;
 
@@ -199,6 +204,8 @@ SQLAllocEnv (SQLHENV * phenv)
 }
 
 
+extern void _iodbcdm_pool_drop_conn (HDBC hdbc, HDBC hdbc_prev);
+
 SQLRETURN
 SQLFreeEnv_Internal (SQLHENV henv)
 {
@@ -216,6 +223,12 @@ SQLFreeEnv_Internal (SQLHENV henv)
 
       return SQL_ERROR;
     }
+
+#if (ODBCVER >= 0x300)
+  /* Drop connections from the pool */
+  while (genv->pdbc_pool != NULL)
+    _iodbcdm_pool_drop_conn (genv->pdbc_pool, NULL);
+#endif
 
   /*
    *  Invalidate this handle

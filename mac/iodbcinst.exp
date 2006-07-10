@@ -54,3 +54,12 @@ _SQLWriteFileDSNW
 _SQLInstallDriverExW
 _SQLInstallTranslatorExW
 _iodbcinst_version
+__iodbcdm_cfg_done
+__iodbcdm_cfg_find
+__iodbcdm_cfg_nextentry
+__iodbcdm_cfg_rewind
+__iodbcdm_cfg_write
+__iodbcdm_strlcat
+__iodbcdm_strlcpy
+__iodbcdm_cfg_freeimage
+__iodbcdm_cfg_storeentry

@@ -1,6 +1,8 @@
 #
 #  Makefile.am
 #
+#  $Id$
+#
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1996-2006 by OpenLink Software <iodbc@openlinksw.com>
@@ -98,9 +100,9 @@ libiodbcadm_gtk_la_SOURCES	= \
 	driversetup.c \
 	dsnchooser.c \
 	errorbox.c \
-	filedsn.c \
+	gensetup.c \
 	main.c \
 	messagebox.c \
 	translatorchooser.c 
 
-noinst_HEADERS			= error.xpm img.xpm odbc4.xpm gui.h question.xpm
+noinst_HEADERS		= error.xpm img.xpm odbc4.xpm question.xpm gui.h 

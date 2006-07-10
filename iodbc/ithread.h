@@ -122,7 +122,7 @@
 
 # define MUTEX_DECLARE(M)		pthread_mutex_t M
 # define MUTEX_INIT(M)			pthread_mutex_init (&M, NULL)
-# define MUTEX_DONE(M)			pthread_mutex_destroy (&M);
+# define MUTEX_DONE(M)			pthread_mutex_destroy (&M)
 # define MUTEX_LOCK(M)			pthread_mutex_lock(&M)
 # define MUTEX_UNLOCK(M)		pthread_mutex_unlock(&M)
 

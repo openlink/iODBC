@@ -96,6 +96,14 @@ enum odbcapi_t
   } ;
 
 
+#if (ODBCVER >= 0x300)
+/*
+ * SQL_ATTR_CONNECTION_POOLING value
+ */
+extern SQLINTEGER _iodbcdm_attr_connection_pooling;
+#endif
+
+
 typedef struct
   {
     int type;			/* must be 1st field */
@@ -107,6 +115,11 @@ typedef struct
     int state;
 #if (ODBCVER >= 0x300)
     SQLUINTEGER odbc_ver;    /* ODBC version of the application */
+
+    SQLINTEGER connection_pooling; /* SQL_ATTR_CONNECTION_POOLING value at the
+				      time of env creation */
+    SQLINTEGER cp_match;	/* connection pool matching method */
+    struct DBC *pdbc_pool;	/* connection pool */
 #endif    
 
     SQLSMALLINT err_rec;

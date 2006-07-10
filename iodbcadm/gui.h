@@ -102,6 +102,7 @@ BOOL create_confirmw (HWND hwnd, LPCWSTR dsn, LPCWSTR text);
 
 void create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t);
 void create_driverchooser (HWND hwnd, TDRIVERCHOOSER * choose_t);
+void create_fdriverchooser (HWND hwnd, TFDRIVERCHOOSER * choose_t);
 void create_translatorchooser (HWND hwnd, TTRANSLATORCHOOSER * choose_t);
 void create_administrator (HWND hwnd);
 void create_error (HWND hwnd, LPCSTR dsn, LPCSTR text, LPCSTR errmsg);
@@ -110,7 +111,7 @@ void create_message (HWND hwnd, LPCSTR dsn, LPCSTR text);
 void create_messagew (HWND hwnd, LPCWSTR dsn, LPCWSTR text);
 LPSTR create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add, BOOL user);
 LPSTR create_filedsn (HWND hwnd);
-LPSTR create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout);
+BOOL create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t);
 
 typedef SQLRETURN SQL_API (*pSQLGetInfoFunc) (SQLHDBC hdbc,
     SQLUSMALLINT fInfoType, SQLPOINTER rgbInfoValue,

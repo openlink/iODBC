@@ -82,13 +82,16 @@ connectionpool_finish_clicked (GtkWidget *widget,
 {
   if (connectionpool_t)
     {
-      connectionpool_t->timeout =
-	  (char *) malloc (sizeof (char) *
-	  (STRLEN (gtk_entry_get_text (GTK_ENTRY (connectionpool_t->
-			  timeout_entry))) + 1));
-      if (connectionpool_t->timeout)
-	strcpy (connectionpool_t->timeout,
-	    gtk_entry_get_text (GTK_ENTRY (connectionpool_t->timeout_entry)));
+      connectionpool_t->changed = TRUE;
+
+      memset(connectionpool_t->timeout, 0, sizeof(connectionpool_t->timeout)); 
+      memset(connectionpool_t->probe, 0, sizeof(connectionpool_t->probe)); 
+      strncpy (connectionpool_t->timeout,
+	    gtk_entry_get_text (GTK_ENTRY (connectionpool_t->timeout_entry)),
+	    sizeof(connectionpool_t->timeout)-1);
+      strncpy (connectionpool_t->probe,
+	    gtk_entry_get_text (GTK_ENTRY (connectionpool_t->probe_entry)),
+	    sizeof(connectionpool_t->probe)-1);
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (connectionpool_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -104,7 +107,7 @@ connectionpool_cancel_clicked (GtkWidget *widget,
 {
   if (connectionpool_t)
     {
-      connectionpool_t->timeout = NULL;
+      connectionpool_t->changed = FALSE;
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (connectionpool_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -124,30 +127,26 @@ delete_event (GtkWidget *widget,
 }
 
 
-LPSTR
-create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout)
+BOOL
+create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
 {
   GtkWidget *connectionpool, *dialog_vbox1, *fixed1, *l_question;
   GtkWidget *t_cptimeout, *dialog_action_area1, *hbuttonbox1;
+  GtkWidget *t_probe, *l_time, *l_probe;
   GtkWidget *b_finish, *b_cancel;
   guint b_finish_key, b_cancel_key;
   GtkAccelGroup *accel_group;
-  TCONNECTIONPOOLING connectionpool_t;
   char msg[1024];
 
-  if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
-    return NULL;
+  if (hwnd == NULL || !GTK_IS_WIDGET (hwnd) || !choose_t)
+    return FALSE;
 
   accel_group = gtk_accel_group_new ();
 
   connectionpool = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (connectionpool), "connectionpool",
       connectionpool);
-  if (driver)
-    sprintf (msg, "Connection pooling time-out for %s", driver);
-  else
-    sprintf (msg, "Connection pooling time-out ...");
-  gtk_window_set_title (GTK_WINDOW (connectionpool), msg);
+  gtk_window_set_title (GTK_WINDOW (connectionpool), "Connection pooling attributes");
   gtk_window_set_position (GTK_WINDOW (connectionpool), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (connectionpool), TRUE);
   gtk_window_set_policy (GTK_WINDOW (connectionpool), FALSE, FALSE, FALSE);
@@ -167,7 +166,7 @@ create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout)
 
   l_question =
       gtk_label_new
-      ("You have now to specify the connection pooling timeout\nin seconds of the specified driver :");
+      ("You have now to specify the connection pooling timeout\nin seconds of the specified driver and probe query");
   gtk_widget_ref (l_question);
   gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_question",
       l_question, (GtkDestroyNotify) gtk_widget_unref);
@@ -177,17 +176,49 @@ create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout)
   gtk_widget_set_usize (l_question, 376, 24);
   gtk_label_set_justify (GTK_LABEL (l_question), GTK_JUSTIFY_LEFT);
 
+  l_time = gtk_label_new ("Timeout:");
+  gtk_widget_ref (l_time);
+  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_time",
+      l_time, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (l_time);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 40);
+  gtk_widget_set_uposition (l_time, 8, 40);
+  gtk_widget_set_usize (l_time, 60, 24);
+  gtk_label_set_justify (GTK_LABEL (l_time), GTK_JUSTIFY_RIGHT);
+
   t_cptimeout = gtk_entry_new ();
   gtk_widget_ref (t_cptimeout);
   gtk_object_set_data_full (GTK_OBJECT (connectionpool), "t_cptimeout",
       t_cptimeout, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (t_cptimeout);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 40, 40);
-  gtk_widget_set_uposition (t_cptimeout, 40, 40);
-  gtk_widget_set_usize (t_cptimeout, 340, 22);
+  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 40);
+  gtk_widget_set_uposition (t_cptimeout, 80, 40);
+  gtk_widget_set_usize (t_cptimeout, 300, 22);
 
-  if (oldtimeout)
-    gtk_entry_set_text (GTK_ENTRY (t_cptimeout), oldtimeout);
+  if (choose_t)
+    gtk_entry_set_text (GTK_ENTRY (t_cptimeout), choose_t->timeout);
+
+  l_probe = gtk_label_new ("Query:");
+  gtk_widget_ref (l_probe);
+  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_probe",
+      l_probe, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (l_probe);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 70);
+  gtk_widget_set_uposition (l_probe, 8, 70);
+  gtk_widget_set_usize (l_probe, 60, 24);
+  gtk_label_set_justify (GTK_LABEL (l_probe), GTK_JUSTIFY_RIGHT);
+
+  t_probe = gtk_entry_new ();
+  gtk_widget_ref (t_probe);
+  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "t_probe",
+      t_probe, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (t_probe);
+  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 70);
+  gtk_widget_set_uposition (t_probe, 80, 70);
+  gtk_widget_set_usize (t_probe, 300, 22);
+
+  if (choose_t)
+    gtk_entry_set_text (GTK_ENTRY (t_probe), choose_t->probe);
 
   dialog_action_area1 = GTK_DIALOG (connectionpool)->action_area;
   gtk_object_set_data (GTK_OBJECT (connectionpool), "dialog_action_area1",
@@ -235,24 +266,24 @@ create_connectionpool (HWND hwnd, LPCSTR driver, LPCSTR oldtimeout)
 
   /* Finish button events */
   gtk_signal_connect (GTK_OBJECT (b_finish), "clicked",
-      GTK_SIGNAL_FUNC (connectionpool_finish_clicked), &connectionpool_t);
+      GTK_SIGNAL_FUNC (connectionpool_finish_clicked), choose_t);
   /* Cancel button events */
   gtk_signal_connect (GTK_OBJECT (b_cancel), "clicked",
-      GTK_SIGNAL_FUNC (connectionpool_cancel_clicked), &connectionpool_t);
+      GTK_SIGNAL_FUNC (connectionpool_cancel_clicked), choose_t);
   /* Close window button events */
   gtk_signal_connect (GTK_OBJECT (connectionpool), "delete_event",
-      GTK_SIGNAL_FUNC (delete_event), &connectionpool_t);
+      GTK_SIGNAL_FUNC (delete_event), choose_t);
   gtk_signal_connect (GTK_OBJECT (connectionpool), "destroy",
       GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
 
   gtk_window_add_accel_group (GTK_WINDOW (connectionpool), accel_group);
 
-  connectionpool_t.timeout_entry = t_cptimeout;
-  connectionpool_t.mainwnd = connectionpool;
-  connectionpool_t.timeout = NULL;
+  choose_t->timeout_entry = t_cptimeout;
+  choose_t->probe_entry = t_probe;
+  choose_t->mainwnd = connectionpool;
 
   gtk_widget_show_all (connectionpool);
   gtk_main ();
 
-  return connectionpool_t.timeout;
+  return choose_t->changed;
 }

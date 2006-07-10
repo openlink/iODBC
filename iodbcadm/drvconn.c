@@ -197,8 +197,11 @@ iodbcdm_drvconn_dialboxw (
   RETCODE retcode = SQL_ERROR;
   TDSNCHOOSER choose_t;
   wchar_t *string = NULL, *prov, *prov1, *szDSN = NULL, *szDriver = NULL;
-  wchar_t tokenstr[4096], drvbuf[4096];
+  wchar_t *szFILEDSN = NULL, *szSAVEFILE = NULL;
+  wchar_t tokenstr[4096];
+  wchar_t drvbuf[4096] = { L'\0'};
   char *_szdriver_u8 = NULL;
+  wchar_t *_szdriver_w = NULL;
   HDLL handle;
   pDriverConnFunc pDrvConn;
   pDriverConnWFunc pDrvConnW;
@@ -254,6 +257,16 @@ iodbcdm_drvconn_dialboxw (
           szDriver = prov + WCSLEN (L"DRIVER=");
           continue;
         }
+      if (!wcsncasecmp (prov, L"FILEDSN=", WCSLEN (L"FILEDSN=")))
+        {
+          szFILEDSN = prov + WCSLEN (L"FILEDSN=");
+          continue;
+        }
+      if (!wcsncasecmp (prov, L"SAVEFILE=", WCSLEN (L"SAVEFILE=")))
+        {
+          szSAVEFILE = prov + WCSLEN (L"SAVEFILE=");
+          continue;
+        }
     }
 
   if (!szDSN && !szDriver)
@@ -262,8 +275,13 @@ iodbcdm_drvconn_dialboxw (
       create_dsnchooser (hwnd, &choose_t);
 
       /* Check output parameters */
-      if (choose_t.dsn)
+      if (choose_t.dsn || choose_t.fdsn)
         {
+#if (ODBCVER>=0x3000)
+          int errSqlStat = en_HY092;
+#else
+          int errSqlStat = en_HY092;
+#endif
           /* Change the config mode */
           switch (choose_t.type_dsn)
             {
@@ -275,23 +293,96 @@ iodbcdm_drvconn_dialboxw (
                 break;
             };
 
-          /* Try to copy the DSN */
-          if (cbInOutConnStr > WCSLEN (choose_t.dsn) + WCSLEN (L"DSN=") + 1)
+          if (choose_t.dsn && (choose_t.type_dsn == USER_DSN || choose_t.type_dsn == SYSTEM_DSN))
             {
-              WCSCPY (string, L"DSN=");
-              WCSCAT (string, choose_t.dsn);
-              string[WCSLEN (string) + 1] = L'\0';
-              szDSN = string + WCSLEN (L"DSN=");
-              retcode = SQL_SUCCESS;
+              /* Try to copy the DSN */
+              if (cbInOutConnStr > WCSLEN (choose_t.dsn) + WCSLEN (L"DSN=") + 2)
+                {
+                  WCSCPY (string, L"DSN=");
+                  WCSCAT (string, choose_t.dsn);
+                  string[WCSLEN (string) + 1] = L'\0';
+                  szDSN = string + WCSLEN (L"DSN=");
+                  retcode = SQL_SUCCESS;
+                }
+              else
+                {
+                  if (sqlStat)
+                    *sqlStat = errSqlStat;
+                }
+            }
+          else if (choose_t.fdsn && choose_t.type_dsn == FILE_DSN)
+            {
+              DWORD sz, sz_entry;
+              wchar_t entries[4096];
+              WORD read_len;
+              wchar_t *p, *p_next;
+
+              sz = WCSLEN(choose_t.fdsn) + WCSLEN(L"FILEDSN=") + 2;
+              if (cbInOutConnStr > sz)
+                {
+                  WCSCPY (string, L"FILEDSN=");
+                  WCSCAT (string, choose_t.fdsn);
+                  WCSCAT (string, L";");
+                  retcode = SQL_SUCCESS;
+                }
+
+              /* Get list of entries in .dsn file */
+              if (retcode == SQL_SUCCESS
+                  && SQLReadFileDSNW (choose_t.fdsn, L"ODBC", NULL,
+		       entries, sizeof (entries)/sizeof(wchar_t), &read_len))
+                {
+                  /* add params from the .dsn file */
+                  for (p = entries; *p != '\0'; p = p_next)
+                    {
+                      wchar_t value[1024];
+
+                      /* get next entry */
+                      p_next = wcschr (p, L';');
+                      if (p_next)
+                        *p_next++ = L'\0';
+
+                      if (!SQLReadFileDSNW (choose_t.fdsn, L"ODBC", p, value, 
+                              sizeof(value)/sizeof(wchar_t), &read_len))
+                        {
+                          retcode = SQL_ERROR;
+                          break;
+                        }
+
+                      if (!wcsncasecmp (p, L"DRIVER", WCSLEN(L"DRIVER")))
+                        {
+                          szDriver = _szdriver_w = (wchar_t*) malloc((WCSLEN(value) + 1) * sizeof(wchar_t));
+                          if (szDriver)
+                            WCSCPY(szDriver, value);
+                        }
+
+                      sz_entry = WCSLEN(p) + 1 + WCSLEN(value) + 2;
+                      if (cbInOutConnStr > sz + sz_entry)
+                        {
+                          WCSCAT (string, p);
+                          WCSCAT (string, L"=");
+                          WCSCAT (string, value);
+                          WCSCAT (string, L";");
+                          sz += sz_entry;
+                        }
+                      else
+                        {
+                          retcode = SQL_ERROR;
+                        }
+                    }
+                }
+              if (retcode == SQL_SUCCESS)
+                {
+                  string[WCSLEN (string) + 1] = L'\0';
+                  for (i = WCSLEN (string) - 1 ; i >= 0 ; i--)
+                    if (string[i] == L';') string[i] = L'\0';
+                }
+              else if (sqlStat)
+                *sqlStat = errSqlStat;
             }
           else
             {
               if (sqlStat)
-#if (ODBCVER>=0x3000)
-                *sqlStat = en_HY092;
-#else
-                *sqlStat = en_S1000;
-#endif
+                *sqlStat = errSqlStat;
             }
         }
       else
@@ -299,10 +390,13 @@ iodbcdm_drvconn_dialboxw (
 
       if (choose_t.dsn)
 	free (choose_t.dsn);
+      if (choose_t.fdsn)
+	free (choose_t.fdsn);
 
       if (retcode != SQL_SUCCESS)
 	goto quit;
     }
+
 
   /* Constitute the string connection */
   for (prov = szInOutConnStr, prov1 = string, i = 0 ; *prov1 != L'\0' ;
@@ -390,6 +484,7 @@ quit:
 
   MEM_FREE (string);
   MEM_FREE (_szdriver_u8);
+  MEM_FREE (_szdriver_w);
 
   return retcode;
 }

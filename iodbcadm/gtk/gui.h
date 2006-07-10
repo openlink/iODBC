@@ -72,7 +72,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #include <iodbc.h>
 #include <odbcinst.h>
 #include <gtk/gtk.h>
@@ -95,13 +94,14 @@ typedef struct TFILEDSN
 
 typedef struct TDSNCHOOSER
 {
-  GtkWidget *mainwnd, *udsnlist, *sdsnlist;
+  GtkWidget *mainwnd, *udsnlist, *sdsnlist; 
   GtkWidget *uadd, *uremove, *utest, *uconfigure;
   GtkWidget *sadd, *sremove, *stest, *sconfigure;
-  GtkWidget *fadd, *fremove, *ftest, *fconfigure;
+  GtkWidget *fadd, *fremove, *ftest, *fconfigure, *fsetdir;
   GtkWidget *dir_list, *file_list, *file_entry, *dir_combo;
   wchar_t *dsn;
-  char *curr_dir;
+  wchar_t *fdsn;
+  char curr_dir[1024];
   int type_dsn;
 } TDSNCHOOSER;
 
@@ -111,12 +111,26 @@ typedef struct TDRIVERCHOOSER
   wchar_t *driver;
 } TDRIVERCHOOSER;
 
+typedef struct TFDRIVERCHOOSER
+{
+  GtkWidget *driverlist, *mainwnd;
+  GtkWidget *dsn_entry, *b_back, *b_continue;
+  GtkWidget *mess_entry, *tab_panel, *browse_sel;
+  char *curr_dir;
+  char *attrs;
+  char *dsn;
+  BOOL verify_conn;
+  wchar_t *driver;
+  BOOL ok;
+} TFDRIVERCHOOSER;
+
 typedef struct TCONNECTIONPOOLING
 {
   GtkWidget *driverlist, *mainwnd, *enperfmon_rb, *disperfmon_rb,
-      *retwait_entry, *timeout_entry;
+      *retwait_entry, *timeout_entry, *probe_entry;
   BOOL changed;
-  char *timeout;
+  char timeout[64];
+  char probe[512];
 } TCONNECTIONPOOLING;
 
 typedef struct TTRANSLATORCHOOSER
@@ -153,6 +167,18 @@ typedef struct TDRIVERSETUP
 } TDRIVERSETUP;
 
 
+typedef struct TGENSETUP
+{
+  GtkWidget *dsn_entry, *key_list, *bupdate;
+  GtkWidget *key_entry, *value_entry;
+  GtkWidget *mainwnd;
+  GtkWidget *verify_conn_cb;
+  LPSTR connstr;
+  BOOL verify_conn;
+} TGENSETUP;
+
+
+
 void adddsns_to_list(GtkWidget* widget, BOOL systemDSN);
 void userdsn_add_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
 void userdsn_remove_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
@@ -166,6 +192,7 @@ void filedsn_add_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
 void filedsn_remove_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
 void filedsn_configure_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
 void filedsn_test_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
+void filedsn_setdir_clicked(GtkWidget* widget, TDSNCHOOSER *choose_t);
 void userdsn_list_select(GtkWidget* widget, gint row, gint column, GdkEvent *event, TDSNCHOOSER *choose_t);
 void userdsn_list_unselect(GtkWidget* widget, gint row, gint column, GdkEvent *event, TDSNCHOOSER *choose_t);
 void systemdsn_list_select(GtkWidget* widget, gint row, gint column, GdkEvent *event, TDSNCHOOSER *choose_t);
@@ -179,5 +206,7 @@ void addtranslators_to_list(GtkWidget* widget, GtkWidget* dlg);
 void adddirectories_to_list(HWND hwnd, GtkWidget* widget, LPCSTR path);
 void addfiles_to_list(HWND hwnd, GtkWidget* widget, LPCSTR path);
 void addlistofdir_to_optionmenu(GtkWidget* widget, LPCSTR path, TDSNCHOOSER *choose_t);
+LPSTR create_keyval (HWND wnd, LPCSTR attrs, BOOL *verify_conn);
+LPSTR create_gensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_conn);
 
 #endif

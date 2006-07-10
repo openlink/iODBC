@@ -92,7 +92,7 @@
 #include <itrace.h>
 #include <unicode.h>
 
-static SQLRETURN
+SQLRETURN
 SQLFetch_Internal (SQLHSTMT hstmt)
 {
   STMT (pstmt, hstmt);

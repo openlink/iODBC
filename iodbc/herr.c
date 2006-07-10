@@ -97,6 +97,7 @@
 #include <itrace.h>
 
 #include "herr.ci"
+#include "misc.h"
 
 static HERR 
 _iodbcdm_popsqlerr (HERR herr)
@@ -1894,7 +1895,7 @@ SQLGetDiagField_Internal (
 		        if (len > nBufferLength)
 		          len = nBufferLength;
 		        if (len)
-		          strncpy ((char *) pDiagInfoPtr, szval, len);
+		          _iodbcdm_strlcpy ((char *) pDiagInfoPtr, szval, len);
 		      }
 		    if (pnStringLengthPtr)
 		      *pnStringLengthPtr = strlen (szval);

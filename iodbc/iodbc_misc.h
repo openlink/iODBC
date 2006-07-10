@@ -1,11 +1,13 @@
 /*
- *  iodbcadm.h
+ *  iodbc_misc.h
  *
  *  $Id$
  *
+ *  Misc functions
+ *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2006 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 2005 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -13,10 +15,6 @@
  *
  *      - GNU Library General Public License (see LICENSE.LGPL)
  *      - The BSD License (see LICENSE.BSD).
- *
- *  Note that the only valid version of the LGPL license as far as this
- *  project is concerned is the original GNU Library General Public License
- *  Version 2, dated June 1991.
  *
  *  While not mandated by the BSD license, any patches you make to the
  *  iODBC source code may be contributed back into the iODBC project
@@ -30,8 +28,8 @@
  *  ============================================
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
- *  License as published by the Free Software Foundation; only
- *  Version 2 of the License dated June 1991.
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
  *
  *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,7 +38,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, write to the Free
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
  *  The BSD License
@@ -71,55 +69,15 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef	_IODBC_MISC_H_
+#define	_IODBC_MISC_H_
 
+#include "inifile.h"
 
-#include <iodbc.h>
-#include <odbcinst.h>
-#include <sql.h>
-#include <sqltypes.h>
-#include <sqlucode.h>
+int _iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide);
+int _iodbcdm_cfg_parse_str (PCONFIG pconfig, void *str, int size, int wide);
+void *_iodbcdm_cfg_lookup (PCONFIG pconfig, const char *id);
+int _iodbcdm_cfg_to_string (PCONFIG pconfig, char *section,
+			    char *buf, size_t buf_sz);
 
-#ifndef	_IODBCADM_H
-#define	_IODBCADM_H
-
-#define USER_DSN		0
-#define SYSTEM_DSN		1
-#define FILE_DSN		2
-
-SQLRETURN SQL_API iodbcdm_drvconn_dialbox (HWND hwnd, LPSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int *sqlStat, SQLUSMALLINT fDriverCompletion,
-    UWORD * config);
-SQLRETURN SQL_API iodbcdm_drvconn_dialboxw (HWND hwnd, LPWSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int *sqlStat, SQLUSMALLINT fDriverCompletion,
-    UWORD * config);
-
-SQLRETURN SQL_API _iodbcdm_drvchoose_dialbox (HWND hwnd, LPSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int *sqlStat);
-SQLRETURN SQL_API _iodbcdm_drvchoose_dialboxw (HWND hwnd, LPWSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int * sqlStat);
-
-SQLRETURN SQL_API _iodbcdm_trschoose_dialbox (HWND hwnd, LPSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int *sqlStat);
-SQLRETURN SQL_API _iodbcdm_trschoose_dialboxw (HWND hwnd, LPWSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int * sqlStat);
-
-void SQL_API _iodbcdm_errorbox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
-void SQL_API _iodbcdm_errorboxw (HWND hwnd, LPCWSTR szDSN, LPCWSTR szText);
-void SQL_API _iodbcdm_messagebox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
-void SQL_API _iodbcdm_messageboxw (HWND hwnd, LPCWSTR szDSN, LPCWSTR szText);
-BOOL SQL_API _iodbcdm_confirmbox (HWND hwnd, LPCSTR szDSN, LPCSTR szText);
-BOOL SQL_API _iodbcdm_confirmboxw (HWND hwnd, LPCWSTR szDSN, LPCWSTR szText);
-void _iodbcdm_nativeerrorbox (HWND hwnd, HENV henv, HDBC hdbc, HSTMT hstmt);
-
-SQLRETURN SQL_API _iodbcdm_admin_dialbox (HWND hwnd);
-
-typedef SQLRETURN SQL_API (*pAdminBoxFunc) (HWND hwnd);
-typedef SQLRETURN SQL_API (*pTrsChooseFunc) (HWND hwnd, LPSTR szInOutDrvStr,
-    DWORD cbInOutDrvStr, int *sqlStat);
-typedef SQLRETURN SQL_API (*pDrvConnFunc) (HWND hwnd, LPSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int *sqlStat, SQLUSMALLINT fDriverCompletion,
-    UWORD * config);
-typedef SQLRETURN SQL_API (*pDrvConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
-    DWORD cbInOutConnStr, int * sqlStat, SQLUSMALLINT fDriverCompletion, 
-    UWORD *config);
-#endif
+#endif /* _IODBC_MISC_H_ */

@@ -98,6 +98,12 @@
 
 
 /*
+ * SQL_ATTR_CONNECTION_POOLING value
+ */
+SQLINTEGER _iodbcdm_attr_connection_pooling = SQL_CP_DEFAULT;
+
+
+/*
  *  Externals
  */
 SQLRETURN SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver);
@@ -500,7 +506,7 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
 
   StringLength = StringLength; /*UNUSED*/
 
-  if (genv->hdbc)
+  if (genv != NULL && genv->hdbc)
     {
       PUSHSQLERR (genv->herr, en_HY010);
       return SQL_ERROR;
@@ -514,10 +520,12 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
 	case SQL_CP_OFF:
 	case SQL_CP_ONE_PER_DRIVER:
 	case SQL_CP_ONE_PER_HENV:
-	  return SQL_SUCCESS;	/* not implemented yet */
+          _iodbcdm_attr_connection_pooling = (SQLINTEGER) (SQLULEN) ValuePtr;
+	  return SQL_SUCCESS;
 
 	default:
-	  PUSHSQLERR (genv->herr, en_HY024);
+	  if (genv)
+	    PUSHSQLERR (genv->herr, en_HY024);
 	  return SQL_ERROR;
 	}
 
@@ -526,7 +534,8 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
 	{
 	case SQL_CP_STRICT_MATCH:
 	case SQL_CP_RELAXED_MATCH:
-	  return SQL_SUCCESS;	/* not implemented yet */
+          genv->cp_match = (SQLINTEGER) (SQLULEN) ValuePtr;
+	  return SQL_SUCCESS;
 
 	default:
 	  PUSHSQLERR (genv->herr, en_HY024);
@@ -575,22 +584,49 @@ SQLSetEnvAttr (
   SQLPOINTER		  ValuePtr,
   SQLINTEGER		  StringLength)
 {
-  ENTER_HENV (EnvironmentHandle,
-    trace_SQLSetEnvAttr (TRACE_ENTER,
-    	EnvironmentHandle,
-	Attribute,
-	ValuePtr, StringLength));
+  if (Attribute == SQL_ATTR_CONNECTION_POOLING)
+    {
+	SQLRETURN retcode = SQL_SUCCESS;
 
-  retcode = SQLSetEnvAttr_Internal (
-    	EnvironmentHandle,
-	Attribute,
-	ValuePtr, StringLength);
+	/* ENTER_HENV without EnvironmentHandle check */
+	ODBC_LOCK ();
+	TRACE (trace_SQLSetEnvAttr (TRACE_ENTER,
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, StringLength));
 
-  LEAVE_HENV (EnvironmentHandle,
-    trace_SQLSetEnvAttr (TRACE_LEAVE,
-    	EnvironmentHandle,
-	Attribute,
-	ValuePtr, StringLength));
+        retcode = SQLSetEnvAttr_Internal (
+	      EnvironmentHandle,
+	      Attribute,
+	      ValuePtr, StringLength);
+
+	/* LEAVE_HENV without done: label */
+	TRACE (trace_SQLSetEnvAttr (TRACE_LEAVE,
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, StringLength));
+	ODBC_UNLOCK ();
+	return retcode;
+    }
+  else
+    {
+      ENTER_HENV (EnvironmentHandle,
+        trace_SQLSetEnvAttr (TRACE_ENTER,
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, StringLength));
+
+      retcode = SQLSetEnvAttr_Internal (
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, StringLength);
+
+      LEAVE_HENV (EnvironmentHandle,
+        trace_SQLSetEnvAttr (TRACE_LEAVE,
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, StringLength));
+   }
 }
 
 
@@ -625,13 +661,13 @@ SQLGetEnvAttr_Internal (
   if (Attribute == SQL_ATTR_CONNECTION_POOLING)
     {
       if (ValuePtr)
-	*((SQLUINTEGER *) ValuePtr) = SQL_CP_OFF;
+	*((SQLUINTEGER *) ValuePtr) = _iodbcdm_attr_connection_pooling;
       return SQL_SUCCESS;
     }
   if (Attribute == SQL_ATTR_CP_MATCH)
     {
       if (ValuePtr)
-	*((SQLUINTEGER *) ValuePtr) = SQL_CP_STRICT_MATCH;
+	*((SQLUINTEGER *) ValuePtr) = genv->cp_match;
       return SQL_SUCCESS;
     }
   if (Attribute == SQL_ATTR_OUTPUT_NTS)
@@ -698,22 +734,49 @@ SQLGetEnvAttr (
   SQLINTEGER		  BufferLength,
   SQLINTEGER		* StringLengthPtr)
 {
-  ENTER_HENV (EnvironmentHandle,
-    trace_SQLGetEnvAttr (TRACE_ENTER,
-  	EnvironmentHandle,
-	Attribute,
-	ValuePtr, BufferLength, StringLengthPtr));
+  if (Attribute == SQL_ATTR_CONNECTION_POOLING)
+    {
+	SQLRETURN retcode = SQL_SUCCESS;
 
-  retcode = SQLGetEnvAttr_Internal (
-  	EnvironmentHandle,
-	Attribute,
-	ValuePtr, BufferLength, StringLengthPtr);
+	/* ENTER_HENV without EnvironmentHandle check */
+	ODBC_LOCK ();
+	TRACE (trace_SQLGetEnvAttr (TRACE_ENTER,
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, BufferLength, StringLengthPtr));
 
-  LEAVE_HENV (EnvironmentHandle,
-    trace_SQLGetEnvAttr (TRACE_LEAVE,
-  	EnvironmentHandle,
-	Attribute,
-	ValuePtr, BufferLength, StringLengthPtr));
+        retcode = SQLGetEnvAttr_Internal (
+	      EnvironmentHandle,
+	      Attribute,
+	      ValuePtr, BufferLength, StringLengthPtr);
+
+	/* LEAVE_HENV without done: label */
+	TRACE (trace_SQLGetEnvAttr (TRACE_LEAVE,
+	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, BufferLength, StringLengthPtr));
+	ODBC_UNLOCK ();
+	return retcode;
+    }
+  else
+    {
+      ENTER_HENV (EnvironmentHandle,
+        trace_SQLGetEnvAttr (TRACE_ENTER,
+  	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, BufferLength, StringLengthPtr));
+
+      retcode = SQLGetEnvAttr_Internal (
+  	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, BufferLength, StringLengthPtr);
+
+      LEAVE_HENV (EnvironmentHandle,
+        trace_SQLGetEnvAttr (TRACE_LEAVE,
+  	    EnvironmentHandle,
+	    Attribute,
+	    ValuePtr, BufferLength, StringLengthPtr));
+    }
 }
 
 

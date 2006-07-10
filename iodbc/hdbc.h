@@ -107,6 +107,17 @@ typedef struct DBC
     HSTMT hstmt;		/* list of statement object handle(s) */
 #if (ODBCVER >= 0x300)
     HDESC hdesc;    		/* list of connection descriptors */
+
+    struct DBC * cp_pdbc;	/* pooled connection */
+    BOOL cp_in_use;		/* connection in pool is in use */
+    time_t cp_timeout;		/* CPTimeout parameter */
+    time_t cp_expiry_time;	/* expiration time (abs time value) */
+    time_t cp_retry_wait;	/* timeout before retry (abs time value) */
+    char *cp_probe;		/* CPProbe -- probe SQL statement */
+    char *cp_dsn;
+    char *cp_uid;
+    char *cp_pwd;
+    char *cp_connstr;
 #endif    
 
     int state;
