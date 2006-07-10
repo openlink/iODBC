@@ -74,55 +74,104 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-
+# ----------------------------------------------------------------------
+#  Globals
+# ----------------------------------------------------------------------
 DIE=0
+ELINES=3
+
+
+# ----------------------------------------------------------------------
+#  Color settings
+# ----------------------------------------------------------------------
+B=`tput bold 2>/dev/null`
+N=`tput sgr0 2>/dev/null`
+
+ERROR="${B}** ERROR **${N}"
+WARNING="${B}* WARNING *${N}"
+
+
+# ----------------------------------------------------------------------
+#  Functions
+# ----------------------------------------------------------------------
+CHECK() {
+    for PROG in $*
+    do
+	VERSION=`$PROG --version 2>/dev/null | head -1 | sed -e "s/$PROG //"`
+	if test \! -z "$VERSION"
+	then
+	    echo "Using $PROG $VERSION"
+	    USE_PROG=$PROG
+	    break
+	fi
+    done
+
+    if test -z "VERSION"
+    then
+	echo
+	echo "${ERROR} : You must have \`${B}${PROG}${N}' installed on your system."
+	echo
+	DIE=1
+    fi
+}
+
+
+CHECK_WARN() {
+    for PROG in $*
+    do
+	VERSION=`$PROG --version 2>/dev/null | head -1 | sed -e "s/$PROG //"`
+	if test \! -z "$VERSION"
+	then
+	    echo "Using $PROG $VERSION"
+	    USE_PROG=$PROG
+	    break
+	fi
+    done
+
+    if test -z "VERSION"
+    then
+	echo
+	echo "${WARNING} : You may need \`${B}${PROG}${N}' installed on your system."
+	echo
+    fi
+}
+
+
+RUN() {
+    PROG=$1; shift
+    ARGS=$*
+
+    echo "Running ${B}${PROG}${N} ..."
+    $PROG $ARGS 2>> bootstrap.log
+    if test $? -ne 0
+    then
+	echo
+	echo "${ERROR}"
+	tail -$ELINES bootstrap.log
+	echo
+	echo "Bootstrap script aborting (see bootstrap.log for details) ..."
+	exit 1
+    fi
+}
+
 
 #
 #  Check availability of build tools
 #
-echo "Checking build environment ..."
+echo
+echo "${B}Checking build environment${N} ..."
 
-(autoconf --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`autoconf' installed on your system."
-    echo
-    DIE=1
-}
-
-(automake --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`automake' installed on your system."
-    echo
-    DIE=1
-}
-
-LIBTOOLIZE=
-if test "x$LIBTOOLIZE" = "x"
-then
-	(libtoolize --version) > /dev/null 2>&1 && LIBTOOLIZE=libtoolize
-fi
-if test "x$LIBTOOLIZE" = "x"
-then
-	(glibtoolize --version) > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize
-fi
-if test "x$LIBTOOLIZE" = "x"
-then
-    echo
-    echo "**Error**: You must have \`libtool' installed on your system."
-    echo
-    DIE=1
-fi
-
-(gtk-config --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "*Warning*: You may need \`GTK' installed on your system."
-    echo
-}
+CHECK libtoolize glibtoolize; LIBTOOLIZE=$USE_PROG
+CHECK aclocal
+CHECK autoheader
+CHECK automake
+CHECK autoconf
+CHECK_WARN gtk-config
 
 if test "$DIE" -eq 1
 then
     echo
-    echo "Please read the README.CVS file for a list of packages you need"
+    echo "Please read the ${B}README.CVS${N} file for a list of packages you need"
     echo "to install on your system before bootstrapping this project."
     echo
     echo "Bootstrap script aborting ..."
@@ -133,53 +182,19 @@ fi
 #
 #  Generate the build scripts
 #
-echo "Running $LIBTOOLIZE ..."
-$LIBTOOLIZE --force --copy
-if test $? -ne 0
-then
-    echo
-    echo "Bootstrap script aborting ..."
-    exit 1
-fi
-
-echo "Running aclocal ..."
-aclocal -I admin
-if test $? -ne 0
-then
-    echo
-    echo "Bootstrap script aborting ..."
-    exit 1
-fi
-
-echo "Running autoheader ..."
-autoheader
-if test $? -ne 0
-then
-    echo
-    echo "Bootstrap script aborting ..."
-    exit 1
-fi
-
-echo "Running automake ..."
-automake --add-missing --copy --include-deps
-if test $? -ne 0
-then
-    echo
-    echo "Bootstrap script aborting ..."
-    exit 1
-fi
-
-echo "Running autoconf ..."
-autoconf
-if test $? -ne 0
-then
-    echo
-    echo "Bootstrap script aborting ..."
-    exit 1
-fi
+> bootstrap.log
 
 echo
-echo "Please check the INSTALL and README files for instructions to"
+echo "${B}Generating build scripts${N} ..."
+
+RUN $LIBTOOLIZE --force --copy
+RUN aclocal -I admin
+RUN autoheader
+RUN automake --copy --add-missing
+RUN autoconf
+
+echo
+echo "Please check the ${B}INSTALL${N} and ${B}README${N} files for instructions to"
 echo "configure, build and install iODBC on your system."
 echo
 echo "Certain build targets are only enabled in maintainer mode:"
