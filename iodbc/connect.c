@@ -275,15 +275,14 @@ _iodbcdm_SetConnectOption_init (
           != SQL_NULL_HPROC)
         {
           CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-              en_SetConnectOptionW, (pdbc->dhdbc, fOption, ptr));
+	      (pdbc->dhdbc, fOption, ptr));
         }
 #if (ODBCVER >= 0x300)
-      else
-      if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrW))
+      else if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrW))
           != SQL_NULL_HPROC)
         {
           CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-              en_SetConnectAttrW, (pdbc->dhdbc, fOption, ptr, strLength));
+	      (pdbc->dhdbc, fOption, ptr, strLength));
         }
 #endif
     }
@@ -295,29 +294,26 @@ _iodbcdm_SetConnectOption_init (
            != SQL_NULL_HPROC)
         {
           CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-	          en_SetConnectOption, (pdbc->dhdbc, fOption, vParam));
+	      (pdbc->dhdbc, fOption, vParam));
         }
-      else
-      if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionA))
+      else if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionA))
            != SQL_NULL_HPROC)
         {
           CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-              en_SetConnectOptionA, (pdbc->dhdbc, fOption, vParam));
+	      (pdbc->dhdbc, fOption, vParam));
         }
 #if (ODBCVER >= 0x300)
-      else
-      if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr))
+      else if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr))
           != SQL_NULL_HPROC)
         {
           CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-              en_SetConnectAttr, (pdbc->dhdbc, fOption, vParam, strLength));
+	      (pdbc->dhdbc, fOption, vParam, strLength));
         }
-      else
-      if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrA))
+      else if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrA))
           != SQL_NULL_HPROC)
         {
           CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-             en_SetConnectAttrA,(pdbc->dhdbc, fOption, vParam, strLength));
+	      (pdbc->dhdbc, fOption, vParam, strLength));
         }
 #endif
     }
@@ -399,8 +395,7 @@ _iodbcdm_finish_disconnect (HDBC hdbc, BOOL driver_disconnect)
           return SQL_ERROR;
         }
 
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_Disconnect, (
-	  pdbc->dhdbc));
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc, (pdbc->dhdbc));
 
       if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
@@ -1199,7 +1194,7 @@ _iodbcdm_driverload (
 
 	  if (hproc)
 	    {
-	      CALL_DRIVER (hdbc, genv, retcode, hproc, en_AllocHandle,
+	      CALL_DRIVER (hdbc, genv, retcode, hproc,
 		  (SQL_HANDLE_ENV, SQL_NULL_HANDLE, &(penv->dhenv)));
 	      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 		{		
@@ -1214,7 +1209,7 @@ _iodbcdm_driverload (
 		  hproc = _iodbcdm_getproc (pdbc, en_SetEnvAttr);
 		  if (hproc != SQL_NULL_HPROC)
 		    {
-		      CALL_DRIVER (hdbc, genv, retcode, hproc, en_SetEnvAttr,
+		      CALL_DRIVER (hdbc, genv, retcode, hproc,
 			  (penv->dhenv, SQL_ATTR_ODBC_VERSION, genv->odbc_ver, 
 			  0));
 		      if (retcode == SQL_SUCCESS)
@@ -1237,8 +1232,7 @@ _iodbcdm_driverload (
 #if (ODBCVER >= 0x0300)
 		  penv->dodbc_ver = SQL_OV_ODBC2;
 #endif
-		  CALL_DRIVER (hdbc, genv, retcode, hproc,
-		      en_AllocEnv, (&(penv->dhenv)));
+		  CALL_DRIVER (hdbc, genv, retcode, hproc, (&(penv->dhenv)));
 		}
 	    }
 
@@ -1277,7 +1271,7 @@ _iodbcdm_driverload (
 
 	  if (hproc)
 	    {
-	      CALL_DRIVER (hdbc, genv, retcode, hproc, en_AllocHandle,
+	      CALL_DRIVER (hdbc, genv, retcode, hproc,
 		  (SQL_HANDLE_DBC, penv->dhenv, &(pdbc->dhdbc)));
 	    }
 	  else
@@ -1293,7 +1287,7 @@ _iodbcdm_driverload (
 	      else
 		{
 		  CALL_DRIVER (hdbc, genv, retcode, hproc,
-		      en_AllocConnect, (penv->dhenv, &(pdbc->dhdbc)));
+		      (penv->dhenv, &(pdbc->dhdbc)));
 		}
 	    }
 
@@ -1391,8 +1385,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 
   if (hproc)
     {
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_FreeHandle,
-	  (SQL_HANDLE_DBC, pdbc->dhdbc));
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc, (SQL_HANDLE_DBC, pdbc->dhdbc));
     }
   else
 #endif
@@ -1402,8 +1395,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 
       if (hproc != SQL_NULL_HPROC)
 	{
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc,
-	      en_FreeConnect, (pdbc->dhdbc));
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, (pdbc->dhdbc));
 
 	  pdbc->dhdbc = SQL_NULL_HDBC;
 	}
@@ -1420,7 +1412,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 
       if (hproc)
 	{
-	  CALL_DRIVER (hdbc, genv, retcode, hproc, en_FreeHandle,
+	  CALL_DRIVER (hdbc, genv, retcode, hproc,
 	      (SQL_HANDLE_ENV, penv->dhenv));
 	}
       else
@@ -1431,8 +1423,7 @@ _iodbcdm_driverunload (HDBC hdbc)
 
 	  if (hproc != SQL_NULL_HPROC)
 	    {
-	      CALL_DRIVER (hdbc, genv, retcode, hproc, en_FreeEnv,
-		  (penv->dhenv));
+	      CALL_DRIVER (hdbc, genv, retcode, hproc, (penv->dhenv));
 
 	      penv->dhenv = SQL_NULL_HENV;
 	    }

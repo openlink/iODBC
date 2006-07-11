@@ -395,8 +395,7 @@ _iodbcdm_sqlerror (
                   != SQL_NULL_HPROC)
                 {
                  (*perr_rec) = (*perr_rec) + 1;
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc,
-                       en_GetDiagRecW, (
+                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
                           handleType, 
                           dhandle3, 
                           (*perr_rec),
@@ -413,8 +412,7 @@ _iodbcdm_sqlerror (
               if ((hproc = _iodbcdm_getproc (thdbc, en_ErrorW)) 
                   != SQL_NULL_HPROC)
                 {
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc,
-                       en_ErrorW, (
+                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
                           dhenv, 
                           dhdbc, 
                           dhstmt, 
@@ -437,8 +435,7 @@ _iodbcdm_sqlerror (
                   != SQL_NULL_HPROC)
                 {
                  (*perr_rec) = (*perr_rec) + 1;
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc,
-                       en_GetDiagRec, (
+                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
                           handleType, 
                           dhandle3, 
                           (*perr_rec),
@@ -453,8 +450,7 @@ _iodbcdm_sqlerror (
                   != SQL_NULL_HPROC)
                 {
                  (*perr_rec) = (*perr_rec) + 1;
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc,
-                       en_GetDiagRecA, (
+                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
                           handleType, 
                           dhandle3, 
                           (*perr_rec),
@@ -471,8 +467,7 @@ _iodbcdm_sqlerror (
               if ((hproc = _iodbcdm_getproc (thdbc, en_Error)) 
                   != SQL_NULL_HPROC)
                 {
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc,
-                       en_Error, (
+                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
                           dhenv, 
                           dhdbc, 
                           dhstmt, 
@@ -486,8 +481,7 @@ _iodbcdm_sqlerror (
               if ((hproc = _iodbcdm_getproc (thdbc, en_ErrorA)) 
                   != SQL_NULL_HPROC)
                 {
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc,
-                       en_ErrorA, (
+                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
                           dhenv, 
                           dhdbc, 
                           dhstmt, 
@@ -1022,8 +1016,7 @@ SQLGetDiagRec_Internal (
           if ((hproc = _iodbcdm_getproc (hdbc, en_GetDiagRecW)) 
               != SQL_NULL_HPROC)
             {
-              CALL_DRIVER (hdbc, Handle, retcode, hproc,
-                   en_GetDiagRecW, (
+              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
                       HandleType, 
                       dhandle, 
                       RecNumber,
@@ -1042,8 +1035,7 @@ SQLGetDiagRec_Internal (
 	           MEM_FREE(_MessageText);
 	           return SQL_NO_DATA_FOUND;
 	        }
-              CALL_DRIVER (hdbc, Handle, retcode, hproc,
-                   en_ErrorW, (
+              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
                       SQL_NULL_HENV,
                       HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
                       HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
@@ -1061,8 +1053,7 @@ SQLGetDiagRec_Internal (
           if ((hproc = _iodbcdm_getproc (hdbc, en_GetDiagRec)) 
               != SQL_NULL_HPROC)
             {
-              CALL_DRIVER (hdbc, Handle, retcode, hproc,
-                   en_GetDiagRec, (
+              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
                       HandleType, 
                       dhandle, 
                       RecNumber,
@@ -1076,8 +1067,7 @@ SQLGetDiagRec_Internal (
           if ((hproc = _iodbcdm_getproc (hdbc, en_GetDiagRecA)) 
               != SQL_NULL_HPROC)
             {
-              CALL_DRIVER (hdbc, Handle, retcode, hproc,
-                   en_GetDiagRecA, (
+              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
                       HandleType, 
                       dhandle, 
                       RecNumber,
@@ -1096,8 +1086,7 @@ SQLGetDiagRec_Internal (
 	           MEM_FREE(_MessageText);
 	           return SQL_NO_DATA_FOUND;
 	        }
-              CALL_DRIVER (hdbc, Handle, retcode, hproc,
-                   en_Error, (
+              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
                       SQL_NULL_HENV,
                       HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
                       HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
@@ -1116,8 +1105,7 @@ SQLGetDiagRec_Internal (
 	           MEM_FREE(_MessageText);
 	           return SQL_NO_DATA_FOUND;
 	        }
-              CALL_DRIVER (hdbc, Handle, retcode, hproc,
-                   en_ErrorA, (
+              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
                       SQL_NULL_HENV,
                       HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
                       HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
@@ -1417,7 +1405,7 @@ SQLGetDiagField_Internal (
 		  {
 		    return SQL_ERROR;
 		  }
-		CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc, en_RowCount,
+		CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		    (stmt->dhstmt, pDiagInfoPtr));
               }
 	    return retcode;

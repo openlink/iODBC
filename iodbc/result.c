@@ -190,12 +190,12 @@ SQLBindCol_Internal (
 
   if (icol != 0 && !penv->unicode_driver && nCType == SQL_C_WCHAR)
     {
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindCol,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
           (pstmt->dhstmt, icol, SQL_C_CHAR, rgbValue, 
            cbValueMax, pcbValue));
     }
   else
-    CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindCol,
+    CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
         (pstmt->dhstmt, icol, nCType, rgbValue, cbValueMax, pcbValue));
 
   if (icol != 0 && !penv->unicode_driver && nCType == SQL_C_WCHAR 
@@ -448,7 +448,7 @@ SQLRowCount_Internal (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_RowCount,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, pcrow));
 
   return retcode;
@@ -508,7 +508,7 @@ _iodbcdm_NumResultCols (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_NumResultCols,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, &ccol));
 
   /* state transition */
@@ -1034,8 +1034,7 @@ SQLColAttributes_Internal (
       if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributeW)) 
           != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
-               en_ColAttributeW, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
        	          pstmt->dhstmt, 
        	          icol, 
        	          new_attr, 
@@ -1049,8 +1048,7 @@ SQLColAttributes_Internal (
       if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributesW)) 
           != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
-               en_ColAttributesW, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
       	          pstmt->dhstmt, 
       	          icol, 
       	          fDescType, 
@@ -1068,8 +1066,7 @@ SQLColAttributes_Internal (
       if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttribute)) 
           != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
-               en_ColAttribute, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
        	          pstmt->dhstmt, 
        	          icol, 
        	          new_attr, 
@@ -1083,8 +1080,7 @@ SQLColAttributes_Internal (
       if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributes)) 
           != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
-               en_ColAttributes, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
       	          pstmt->dhstmt, 
       	          icol, 
       	          fDescType, 
@@ -1098,8 +1094,7 @@ SQLColAttributes_Internal (
       if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributeA)) 
           != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
-               en_ColAttributeA, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
        	          pstmt->dhstmt, 
        	          icol, 
        	          new_attr, 
@@ -1113,8 +1108,7 @@ SQLColAttributes_Internal (
       if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributesA)) 
           != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
-               en_ColAttributesA, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
       	          pstmt->dhstmt, 
       	          icol, 
       	          fDescType, 

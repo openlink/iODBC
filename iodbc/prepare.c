@@ -586,7 +586,7 @@ SQLBindParameter_Internal (
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_BindParam);
       if (hproc)
 	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindParam,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (pstmt->dhstmt, ipar, nCType, nSqlType, cbColDef,
 		  ibScale, rgbValue, pcbValue));
 	  return retcode;
@@ -604,7 +604,7 @@ SQLBindParameter_Internal (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_BindParameter,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, ipar, fParamType, nCType, nSqlType, cbColDef,
 	  ibScale, rgbValue, cbValueMax, pcbValue));
 
@@ -671,11 +671,11 @@ SQLParamOptions_Internal (
 
   if (hproc != SQL_NULL_HPROC)
     {
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt, SQL_ATTR_PARAMSET_SIZE, crow, 0));
       if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (pstmt->dhstmt, SQL_ATTR_PARAMS_PROCESSED_PTR, pirow, 0));
 	}
     }
@@ -692,7 +692,7 @@ SQLParamOptions_Internal (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ParamOptions,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt, crow, pirow));
     }
 
@@ -776,7 +776,7 @@ SQLSetScrollOptions_Internal (
 
       if (hproc != SQL_NULL_HPROC)
         {
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetScrollOptions,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (pstmt->dhstmt, fConcurrency, crowKeyset, crowRowset));
 	}
       else
@@ -816,7 +816,7 @@ SQLSetScrollOptions_Internal (
 	      break;
 	    }
 
-	  CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc2, en_GetInfo,
+	  CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc2,
 	      (pdbc->dhdbc, InfoType, &InfoValue, 0, NULL));
 
 	  if (retcode != SQL_SUCCESS)
@@ -859,13 +859,13 @@ SQLSetScrollOptions_Internal (
 	      break;
 	    }
 
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1,
 	      (pstmt->dhstmt, SQL_ATTR_CURSOR_TYPE, Value, 0));
 
 	  if (retcode != SQL_SUCCESS)
 	    return retcode;
 
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1,
 	      (pstmt->dhstmt, SQL_ATTR_CONCURRENCY, fConcurrency, 0));
 
 	  if (retcode != SQL_SUCCESS)
@@ -873,14 +873,14 @@ SQLSetScrollOptions_Internal (
 
 	  if (crowKeyset > 0)
 	    {
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1,
 		  (pstmt->dhstmt, SQL_ATTR_KEYSET_SIZE, crowKeyset, 0));
 
 	      if (retcode != SQL_SUCCESS)
 		return retcode;
 	    }
 
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1, en_SetStmtAttr,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc1,
 	      (pstmt->dhstmt, SQL_ROWSET_SIZE, crowRowset, 0));
 
 	  if (retcode != SQL_SUCCESS)

@@ -1308,8 +1308,7 @@ SQLGetFunctions_Internal (
 
   if (hproc != SQL_NULL_HPROC)
     {
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_GetFunctions,
-	  (pdbc->dhdbc, fFunc, pfExists));
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc, (pdbc->dhdbc, fFunc, pfExists));
 
       return retcode;
     }

@@ -142,7 +142,7 @@ SQLFetch_Internal (SQLHSTMT hstmt)
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_ExtendedFetch);
       if (hproc)
 	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ExtendedFetch,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (pstmt->dhstmt, SQL_FETCH_NEXT, 0, pstmt->rows_fetched_ptr,
 		  pstmt->row_status_ptr));
 	}
@@ -159,7 +159,7 @@ SQLFetch_Internal (SQLHSTMT hstmt)
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Fetch,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt));
     }
 
@@ -303,7 +303,7 @@ _iodbcdm_ExtendedFetch (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ExtendedFetch,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, fFetchType, irow, pcrow, rgfRowStatus));
 
   /* state transition */
@@ -519,7 +519,7 @@ SQLGetData_Internal (
       cbValueMax /= sizeof(wchar_t);
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetData,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, icol, nCType, rgbValue, cbValueMax, pcbValue));
 
   /* state transition */
@@ -647,7 +647,7 @@ SQLMoreResults_Internal (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_MoreResults,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt));
 
   /* state transition */
@@ -814,7 +814,7 @@ _iodbcdm_SetPos (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetPos,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, irow, fOption, fLock));
 
   /* state transition */

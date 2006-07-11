@@ -549,7 +549,7 @@ _iodbcdm_SetConnectOption (
 	    case SQL_ATTR_QUIET_MODE:
 	    case SQL_ATTR_TRANSLATE_OPTION:
 	    case SQL_ATTR_TXN_ISOLATION:
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 		  (pdbc->dhdbc, fOption, vParam, 0));
 	      break;
 
@@ -565,7 +565,7 @@ _iodbcdm_SetConnectOption (
 
 	    default:		/* string & driver defined */
 
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 		  (pdbc->dhdbc, fOption, vParam, SQL_NTS));
 	    }
 	}
@@ -599,7 +599,7 @@ _iodbcdm_SetConnectOption (
 	      return SQL_ERROR;
 	    }
 
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 	      (pdbc->dhdbc, fOption, vParam));
 	}
 
@@ -932,7 +932,7 @@ _iodbcdm_GetConnectOption (
 	    case SQL_ATTR_QUIET_MODE:
 	    case SQL_ATTR_TRANSLATE_OPTION:
 	    case SQL_ATTR_TXN_ISOLATION:
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 		  (pdbc->dhdbc, fOption, paramOut, 0, NULL));
 	      break;
 
@@ -948,7 +948,7 @@ _iodbcdm_GetConnectOption (
 
 	    default:		/* string & driver defined */
 
-	      CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 		  (pdbc->dhdbc, fOption, paramOut, SQL_MAX_OPTION_STRING_LENGTH, NULL));
 
 	    }
@@ -983,7 +983,7 @@ _iodbcdm_GetConnectOption (
 	      return SQL_ERROR;
 	    }
 
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, procid,
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 	      (pdbc->dhdbc, fOption, paramOut));
 	}
 
@@ -1133,7 +1133,7 @@ _iodbcdm_transact (
 
   if (hproc != SQL_NULL_HPROC)
     {
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_Transact,
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 	  (SQL_NULL_HENV, pdbc->dhdbc, fType));
     }
   else
@@ -1142,7 +1142,7 @@ _iodbcdm_transact (
       hproc = _iodbcdm_getproc (pdbc, en_EndTran);
       if (hproc != SQL_NULL_HPROC)
 	{
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_EndTran,
+	  CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 	      (SQL_HANDLE_DBC, pdbc->dhdbc, fType));
 	}
       else

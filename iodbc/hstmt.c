@@ -206,7 +206,7 @@ SQLAllocStmt_Internal (
 
   if (hproc)
     {
-      CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc, en_AllocHandle,
+      CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc,
 	  (SQL_HANDLE_STMT, pdbc->dhdbc, &(pstmt->dhstmt)));
     }
   else
@@ -224,7 +224,7 @@ SQLAllocStmt_Internal (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc, en_AllocStmt,
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
 	  (pdbc->dhdbc, &(pstmt->dhstmt)));
     }
 
@@ -314,7 +314,7 @@ SQLAllocStmt_Internal (
 	      pstmt->imp_desc[i]->hdbc = hdbc;
 	      pstmt->imp_desc[i]->hstmt = *phstmt;
 	      pstmt->imp_desc[i]->herr = NULL;
-	      CALL_DRIVER (hdbc, pstmt, rc1, hproc, en_GetStmtAttr,
+	      CALL_DRIVER (hdbc, pstmt, rc1, hproc,
 		  (pstmt->dhstmt, desc_type, &pstmt->imp_desc[i]->dhdesc, 0,
 		      NULL));
 	      if (rc1 != SQL_SUCCESS && rc1 != SQL_SUCCESS_WITH_INFO)
@@ -366,7 +366,7 @@ alloc_stmt_failed:
 
   if (hproc)
     {
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeHandle,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (SQL_HANDLE_STMT, pstmt->dhstmt));
     }
   else
@@ -374,7 +374,7 @@ alloc_stmt_failed:
     {
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt, SQL_DROP));
     }
 
@@ -514,7 +514,7 @@ SQLFreeStmt_Internal (
 
       if (hproc)
 	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeHandle,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (SQL_HANDLE_STMT, pstmt->dhstmt));
 	}
     }
@@ -530,7 +530,7 @@ SQLFreeStmt_Internal (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_FreeStmt,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt, fOption));
     }
 
@@ -723,7 +723,7 @@ SQLSetStmtOption_Internal (
 	  case SQL_ATTR_ROW_NUMBER:
 	  case SQL_ATTR_SIMULATE_CURSOR:
 	  case SQL_ATTR_USE_BOOKMARKS:
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
+	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 		  (pstmt->dhstmt, fOption, vParam, 0));
 	      break;	  
 
@@ -751,7 +751,7 @@ SQLSetStmtOption_Internal (
 	      return SQL_ERROR;
 
 	  default:
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtAttr,
+	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 		  (pstmt->dhstmt, fOption, vParam, SQL_NTS));
 	}
     }
@@ -767,7 +767,7 @@ SQLSetStmtOption_Internal (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_SetStmtOption,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt, fOption, vParam));
     }
 
@@ -901,7 +901,7 @@ SQLGetStmtOption_Internal (
 	case SQL_ATTR_ROW_NUMBER:
 	case SQL_ATTR_SIMULATE_CURSOR:
 	case SQL_ATTR_USE_BOOKMARKS:
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtAttr,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (pstmt->dhstmt, fOption, pvParam, 0, NULL));
 	  break;
 
@@ -929,7 +929,7 @@ SQLGetStmtOption_Internal (
 	  return SQL_ERROR;
 
 	default:
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtAttr,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	      (pstmt->dhstmt, fOption, pvParam, SQL_MAX_OPTION_STRING_LENGTH,
 		  NULL));
 	  break;
@@ -946,7 +946,7 @@ SQLGetStmtOption_Internal (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_GetStmtOption,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
 	  (pstmt->dhstmt, fOption, pvParam));
     }
 
@@ -1009,8 +1009,7 @@ SQLCancel_Internal (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Cancel,
-      (pstmt->dhstmt));
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (pstmt->dhstmt));
 
   /* state transition */
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)

@@ -195,8 +195,7 @@ SQLExecute_Internal (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_Execute,
-      (pstmt->dhstmt));
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (pstmt->dhstmt));
 
   /* stmt state transition */
   if (pstmt->asyn_on == en_Execute)
@@ -525,7 +524,7 @@ SQLPutData_Internal (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_PutData,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, 
       (pstmt->dhstmt, rgbValue, cbValue));
 
   /* state transition */
@@ -643,8 +642,7 @@ SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_ParamData,
-      (pstmt->dhstmt, prgbValue));
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (pstmt->dhstmt, prgbValue));
 
   /* state transition */
   if (pstmt->asyn_on == en_ParamData)
@@ -795,8 +793,7 @@ SQLNumParams_Internal (SQLHSTMT hstmt, SQLSMALLINT * pcpar)
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_NumParams,
-      (pstmt->dhstmt, pcpar));
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (pstmt->dhstmt, pcpar));
 
   /* state transition */
   if (pstmt->asyn_on == en_NumParams)
@@ -892,7 +889,7 @@ SQLDescribeParam_Internal (
       return SQL_ERROR;
     }
 
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, en_DescribeParam,
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
       (pstmt->dhstmt, ipar, pfSqlType, pcbColDef, pibScale, pfNullable));
 
   /*

@@ -98,57 +98,38 @@ extern int ODBCSharedTraceFlag;
 #define TRACE_ENTER	0, retcode
 #define TRACE_LEAVE	1, retcode
 
-
-#define CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist ) \
-    { \
-	ret = proc plist; \
-	if (errHandle) ((GENV_t *)(errHandle))->rc = ret; \
-    }
-
-
-#define CALL_DRIVER( hdbc, errHandle, ret, proc, procid, plist ) \
+#define CALL_DRIVER(hdbc, errHandle, ret, proc, plist) \
     {\
 	DBC_t *	t_pdbc = (DBC_t *)(hdbc);\
 	ENV_t * t_penv = (ENV_t *)(t_pdbc->henv);\
 \
-	if (!t_penv->thread_safe)\
-	    MUTEX_LOCK (t_penv->drv_lock);\
+	if (!t_penv->thread_safe) MUTEX_LOCK (t_penv->drv_lock); \
 \
-	CALL_DRIVER_FUNC( hdbc, errHandle, ret, proc, plist )\
+	ret = proc plist; \
+	if (errHandle) ((GENV_t *)(errHandle))->rc = ret; \
 \
-	if (!t_penv->thread_safe)\
-	    MUTEX_UNLOCK (t_penv->drv_lock);\
+	if (!t_penv->thread_safe) MUTEX_UNLOCK (t_penv->drv_lock); \
     }
+
 
 #define CALL_UDRIVER(hdbc, errHandle, retcode, hproc, unicode_driver, procid, plist) \
     { \
 	if (unicode_driver) \
 	{ \
 	    /* SQL_XXX_W */ \
-	    if ((hproc = _iodbcdm_getproc (hdbc, procid ## W)) \
-		!= SQL_NULL_HPROC) \
-	    { \
-		CALL_DRIVER (hdbc, errHandle, retcode, hproc, \
-		    procid ## W, plist) \
-	    } \
+	    hproc = _iodbcdm_getproc (hdbc, procid ## W); \
 	} \
 	else \
 	{ \
 	    /* SQL_XXX */   \
 	    /* SQL_XXX_A */ \
-	    if ((hproc = _iodbcdm_getproc (hdbc, procid)) \
-		!= SQL_NULL_HPROC) \
-	    { \
-		CALL_DRIVER (hdbc, errHandle, retcode, hproc, \
-		    procid, plist) \
+	    hproc = _iodbcdm_getproc (hdbc, procid); \
+	    if (hproc == SQL_NULL_HPROC) \
+	        hproc = _iodbcdm_getproc (hdbc, procid ## A); \
 	    } \
-	    else \
-	      if ((hproc = _iodbcdm_getproc (hdbc, procid ## A)) \
-		  != SQL_NULL_HPROC) \
+        if (hproc != SQL_NULL_HPROC) \
 	      { \
-		  CALL_DRIVER (hdbc, errHandle, retcode, hproc, \
-		      procid ## A, plist) \
-	      } \
+	    CALL_DRIVER (hdbc, errHandle, retcode, hproc, plist) \
 	} \
     }
 
