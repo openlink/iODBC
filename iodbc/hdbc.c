@@ -485,7 +485,6 @@ _iodbcdm_SetConnectOption (
        * been established.  
        */
      void * _vParam = NULL;
-     int procid = 0;
 
      if ((penv->unicode_driver && waMode != 'W') 
         || (!penv->unicode_driver && waMode == 'W'))
@@ -519,21 +518,15 @@ _iodbcdm_SetConnectOption (
      if (penv->unicode_driver)
        {
          /* SQL_XXX_W */
-         if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrW))
-             != SQL_NULL_HPROC)
-           procid = en_SetConnectAttrW;
+         hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrW);
        }
      else
        {
          /* SQL_XXX */
          /* SQL_XXX_A */
-         if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr))
-             != SQL_NULL_HPROC)
-           procid = en_SetConnectAttr;
-         else
-         if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrA))
-             != SQL_NULL_HPROC)
-           procid = en_SetConnectAttrA;
+         hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr);
+	 if (hproc == SQL_NULL_HPROC)
+	   hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrA);
        }
 
       if (hproc != SQL_NULL_HPROC)
@@ -575,21 +568,15 @@ _iodbcdm_SetConnectOption (
           if (penv->unicode_driver)
             {
              /* SQL_XXX_W */
-             if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionW))
-                 != SQL_NULL_HPROC)
-               procid = en_SetConnectOptionW;
+             hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionW);
             }
           else
             {
              /* SQL_XXX */
              /* SQL_XXX_A */
-             if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption))
-                != SQL_NULL_HPROC)
-               procid = en_SetConnectOption;
-             else
-             if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionA))
-                != SQL_NULL_HPROC)
-               procid = en_SetConnectOptionA;
+             hproc = _iodbcdm_getproc (pdbc, en_SetConnectOption);
+	     if (hproc == SQL_NULL_HPROC)
+               hproc = _iodbcdm_getproc (pdbc, en_SetConnectOptionA);
             }
 
 	  if (hproc == SQL_NULL_HPROC)
@@ -864,7 +851,6 @@ _iodbcdm_GetConnectOption (
 
       void * _Param = NULL;
       void * paramOut = pvParam;
-      int procid = 0;
 
       switch (fOption)
         {
@@ -902,21 +888,15 @@ _iodbcdm_GetConnectOption (
      if (penv->unicode_driver)
        {
          /* SQL_XXX_W */
-         if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttrW))
-             != SQL_NULL_HPROC)
-           procid = en_GetConnectAttrW;
+         hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttrW);
        }
      else
        {
          /* SQL_XXX */
          /* SQL_XXX_A */
-         if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttr))
-             != SQL_NULL_HPROC)
-           procid = en_GetConnectAttr;
-         else
-         if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttrA))
-             != SQL_NULL_HPROC)
-           procid = en_GetConnectAttrA;
+         hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttr);
+	 if (hproc == SQL_NULL_HPROC)
+           hproc = _iodbcdm_getproc (pdbc, en_GetConnectAttrA);
        }
 
       if (hproc != SQL_NULL_HPROC)
@@ -959,21 +939,15 @@ _iodbcdm_GetConnectOption (
           if (penv->unicode_driver)
             {
              /* SQL_XXX_W */
-             if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectOptionW))
-                 != SQL_NULL_HPROC)
-               procid = en_GetConnectOptionW;
+             hproc = _iodbcdm_getproc (pdbc, en_GetConnectOptionW);
             }
           else
             {
              /* SQL_XXX */
              /* SQL_XXX_A */
-             if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectOption))
-                != SQL_NULL_HPROC)
-               procid = en_GetConnectOption;
-             else
-             if ((hproc = _iodbcdm_getproc (pdbc, en_GetConnectOptionA))
-                != SQL_NULL_HPROC)
-               procid = en_GetConnectOptionA;
+             hproc = _iodbcdm_getproc (pdbc, en_GetConnectOption);
+	     if (hproc == SQL_NULL_HPROC)
+               hproc = _iodbcdm_getproc (pdbc, en_GetConnectOptionA);
             }
 
 	  if (hproc == SQL_NULL_HPROC)
