@@ -87,7 +87,7 @@ libiodbc_la_SOURCES	= catalog.c connect.c dlproc.c execute.c \
 			  fetch.c hdbc.c henv.c herr.c hstmt.c info.c \
 			  misc.c prepare.c result.c odbc3.c
 
-noinst_HEADERS		= dlproc.h hdbc.h henv.h herr.h \
+noinst_HEADERS		= dlproc.h hdbc.h henv.h herr.h iodbc_misc.h \
 			  hstmt.h itrace.h henv.ci herr.ci hdesc.h ithread.h
 			  
 
