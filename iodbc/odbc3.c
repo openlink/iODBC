@@ -109,7 +109,7 @@ SQLINTEGER _iodbcdm_attr_connection_pooling = SQL_CP_DEFAULT;
 SQLRETURN SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver);
 SQLRETURN SQLFreeEnv_Internal (SQLHENV henv);
 SQLRETURN SQLAllocConnect_Internal (SQLHENV henv, SQLHDBC * phdbc);
-SQLRETURN SQLFreeConnect_Internal (SQLHDBC hdbc);
+SQLRETURN SQLFreeConnect_Internal (SQLHDBC hdbc, int ver);
 SQLRETURN SQLAllocStmt_Internal (SQLHDBC hdbc, SQLHSTMT * phstmt);
 SQLRETURN SQLFreeStmt_Internal (SQLHSTMT hstmt, SQLUSMALLINT fOption);
 SQLRETURN SQLTransact_Internal (SQLHENV henv, SQLHDBC hdbc, SQLUSMALLINT fType);
@@ -144,7 +144,17 @@ SQLAllocHandle_Internal (
       }
 
     case SQL_HANDLE_STMT:
-      return SQLAllocStmt_Internal (inputHandle, outputHandlePtr);
+      {
+	CONN (con, inputHandle);
+
+	if (!IS_VALID_HDBC (con))
+	  {
+	    return SQL_INVALID_HANDLE;
+	  }
+	CLEAR_ERRORS (con);
+
+        return SQLAllocStmt_Internal (inputHandle, outputHandlePtr);
+      }
 
     case SQL_HANDLE_DESC:
       {
@@ -152,6 +162,12 @@ SQLAllocHandle_Internal (
 	HPROC hproc = SQL_NULL_HPROC;
 	RETCODE retcode;
 	DESC_t *new_desc;
+
+	if (!IS_VALID_HDBC (con))
+	  {
+	    return SQL_INVALID_HANDLE;
+	  }
+	CLEAR_ERRORS (con);
 
 	if (((ENV_t *)(con->henv))->dodbc_ver == SQL_OV_ODBC2)
 	  {
@@ -360,7 +376,7 @@ _SQLFreeHandle_DBC (
   ENTER_HDBC ((SQLHDBC) handle, 1,
       trace_SQLFreeHandle (TRACE_ENTER, handleType, handle));
 
-  retcode = SQLFreeConnect_Internal ((SQLHDBC) handle);
+  retcode = SQLFreeConnect_Internal ((SQLHDBC) handle, 3);
 
   LEAVE_HDBC ((SQLHDBC) handle, 1,
       trace_SQLFreeHandle (TRACE_LEAVE, handleType, handle);
@@ -872,7 +888,6 @@ SQLGetStmtAttr_Internal (
       return SQL_SUCCESS;
 
     case SQL_ATTR_ROW_ARRAY_SIZE:
-
       if (((ENV_t *) ((DBC_t *) stmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC3)
 	{
           CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
@@ -1090,6 +1105,7 @@ SQLGetStmtAttr_Internal (
 	      return SQL_ERROR;
 	    }
 	}
+
     default:
       CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, 
         penv->unicode_driver, en_GetStmtAttr, (stmt->dhstmt, Attribute, ValuePtr, 
@@ -1735,9 +1751,12 @@ SQLSetConnectAttr_Internal (
   CONN (con, connectionHandle);
   ENVR (penv, con->henv);
   HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ValuePtr = NULL;
   SWORD unicode_driver = (penv ? penv->unicode_driver : 0);
+  SQLUINTEGER odbc_ver = ((GENV_t *) con->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) con->henv)->dodbc_ver;
 
   if (con->state == en_dbc_needdata)
     {
@@ -1772,11 +1791,16 @@ SQLSetConnectAttr_Internal (
         }
     }
 
-  CALL_UDRIVER(con, con, retcode, hproc, unicode_driver, 
-    en_SetConnectAttr, (con->dhdbc, Attribute, ValuePtr, StringLength));
-  if (hproc != SQL_NULL_HPROC)
+  GET_UHPROC(con, hproc2, en_SetConnectOption, unicode_driver);
+
+  if (dodbc_ver == SQL_OV_ODBC3 &&
+      (  odbc_ver == SQL_OV_ODBC3 
+       || (odbc_ver == SQL_OV_ODBC2 && hproc2 == SQL_NULL_HPROC)))
     {
-      return retcode;
+      CALL_UDRIVER(con, con, retcode, hproc, unicode_driver, 
+        en_SetConnectAttr, (con->dhdbc, Attribute, ValuePtr, StringLength));
+      if (hproc != SQL_NULL_HPROC)
+        return retcode;
     }
 
   switch (Attribute)
@@ -1887,10 +1911,13 @@ SQLGetConnectAttr_Internal (
   CONN (con, connectionHandle);
   ENVR (penv, con->henv);
   HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
   RETCODE retcode = SQL_SUCCESS;
   void * _Value = NULL;
   void * valueOut = ValuePtr;
   SWORD unicode_driver = (penv ? penv->unicode_driver : 0);
+  SQLUINTEGER odbc_ver = ((GENV_t *) con->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) con->henv)->dodbc_ver;
 
   if (con->state == en_dbc_needdata)
     {
@@ -1933,15 +1960,23 @@ SQLGetConnectAttr_Internal (
         }
     }
 
-  CALL_UDRIVER(con, con, retcode, hproc, unicode_driver, 
-    en_GetConnectAttr, (con->dhdbc, Attribute, valueOut, StringLength,
-    StringLengthPtr));
+  GET_UHPROC(con, hproc2, en_GetConnectOption, unicode_driver);
+
+  if (dodbc_ver == SQL_OV_ODBC3 &&
+      (  odbc_ver == SQL_OV_ODBC3 
+       || (odbc_ver == SQL_OV_ODBC2 && hproc2 == SQL_NULL_HPROC)))
+    {
+      CALL_UDRIVER(con, con, retcode, hproc, unicode_driver, 
+        en_GetConnectAttr, (con->dhdbc, Attribute, valueOut, StringLength,
+        StringLengthPtr));
+    }
+
   if (hproc != SQL_NULL_HPROC)
     {
       if (ValuePtr 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((unicode_driver && waMode != 'W') 
-          || (!unicode_driver && waMode == 'W')))
+          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+          &&  ((unicode_driver && waMode != 'W') 
+              || (!unicode_driver && waMode == 'W')))
         {
           switch(Attribute)
             {
@@ -2791,9 +2826,12 @@ SQLColAttribute_Internal (
   ENVR (penv, pdbc->henv);
   GENV (genv, pdbc->genv);
   HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * charAttrOut = CharacterAttributePtr;
   void * _charAttr = NULL;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   if ((penv->unicode_driver && waMode != 'W') 
       || (!penv->unicode_driver && waMode == 'W'))
@@ -2838,9 +2876,16 @@ SQLColAttribute_Internal (
         }
     }
 
-  CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, penv->unicode_driver, 
-    en_ColAttribute, (stmt->dhstmt, ColumnNumber, FieldIdentifier, charAttrOut,
-    BufferLength, StringLengthPtr, NumericAttributePtr));
+  GET_UHPROC(stmt->hdbc, hproc2, en_ColAttributes, penv->unicode_driver);
+
+  if (dodbc_ver == SQL_OV_ODBC3 &&
+      (  odbc_ver == SQL_OV_ODBC3 
+       || (odbc_ver == SQL_OV_ODBC2 && hproc2 == SQL_NULL_HPROC)))
+    {
+      CALL_UDRIVER(stmt->hdbc, stmt, retcode, hproc, penv->unicode_driver, 
+        en_ColAttribute, (stmt->dhstmt, ColumnNumber, FieldIdentifier, 
+        charAttrOut, BufferLength, StringLengthPtr, NumericAttributePtr));
+    }
 
   if (hproc != SQL_NULL_HPROC)
     {
@@ -3324,8 +3369,12 @@ SQLFetchScroll_Internal (
   SQLLEN		  fetchOffset)
 {
   STMT (stmt, statementHandle);
-  HPROC hproc;
+  HPROC hproc = SQL_NULL_HPROC;
   RETCODE retcode;
+  CONN (pdbc, stmt->hdbc);
+  HPROC hproc2 = SQL_NULL_HPROC;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   /* check arguments */
   switch (fetchOrientation)
@@ -3368,13 +3417,21 @@ SQLFetchScroll_Internal (
       return SQL_ERROR;
     }
 
-  hproc = _iodbcdm_getproc (stmt->hdbc, en_FetchScroll);
-  if (hproc)
+  hproc2 = _iodbcdm_getproc (stmt->hdbc, en_ExtendedFetch);
+
+  if (dodbc_ver == SQL_OV_ODBC3 &&
+      (  odbc_ver == SQL_OV_ODBC3 
+       || (odbc_ver == SQL_OV_ODBC2 && hproc2 == SQL_NULL_HPROC)))
     {
-      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
-	  (stmt->dhstmt, fetchOrientation, fetchOffset));
+      hproc = _iodbcdm_getproc (stmt->hdbc, en_FetchScroll);
+      if (hproc)
+        {
+          CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
+	      (stmt->dhstmt, fetchOrientation, fetchOffset));
+        }
     }
-  else
+
+  if (hproc == SQL_NULL_HPROC)
     {
       if (!stmt->row_status_ptr)
 	{
@@ -3496,11 +3553,12 @@ static SQLRETURN
 SQLCloseCursor_Internal (SQLHSTMT hstmt)
 {
   STMT (pstmt, hstmt);
-  CONN (pdbc, NULL);
+  CONN (pdbc, pstmt->hdbc);
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
-
-  pdbc = (DBC_t *) (pstmt->hdbc);
+  HPROC hproc2 = SQL_NULL_HPROC;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   /* check state */
   if (pstmt->state >= en_stmt_needdata || pstmt->asyn_on != en_NullProc)
@@ -3510,21 +3568,27 @@ SQLCloseCursor_Internal (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_CloseCursor);
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
 
-  if (hproc)
+  if (dodbc_ver == SQL_OV_ODBC3 &&
+      (  odbc_ver == SQL_OV_ODBC3 
+       || (odbc_ver == SQL_OV_ODBC2 && hproc2 == SQL_NULL_HPROC)))
     {
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
-	  (pstmt->dhstmt));
+      hproc = _iodbcdm_getproc (pstmt->hdbc, en_CloseCursor);
+      if (hproc)
+        {
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+	      (pstmt->dhstmt));
+        }
     }
-  else
+
+  if (hproc == SQL_NULL_HPROC)
     {
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
 
       if (hproc == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
-
 	  return SQL_ERROR;
 	}
 

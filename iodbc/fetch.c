@@ -126,11 +126,10 @@ SQLFetch_Internal (SQLHSTMT hstmt)
       PUSHSQLERR (pstmt->herr, en_S1010);
       return SQL_ERROR;
     }
+
 #if (ODBCVER >= 0x0300)
-  if (((ENV_t *) ((DBC_t *) pstmt->hdbc)->henv)->dodbc_ver ==
-      SQL_OV_ODBC2
-      && ((GENV_t *) ((DBC_t *) pstmt->hdbc)->genv)->odbc_ver ==
-      SQL_OV_ODBC3)
+  if (((ENV_t *) ((DBC_t *) pstmt->hdbc)->henv)->dodbc_ver ==  SQL_OV_ODBC2
+      && ((GENV_t *) ((DBC_t *) pstmt->hdbc)->genv)->odbc_ver == SQL_OV_ODBC3)
     {				
 	/* 
 	 *  Try to map SQLFetch to SQLExtendedFetch for ODBC3 app calling 
@@ -140,6 +139,7 @@ SQLFetch_Internal (SQLHSTMT hstmt)
 	 *  requires it 
 	 */
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_ExtendedFetch);
+
       if (hproc)
 	{
 	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
@@ -155,7 +155,6 @@ SQLFetch_Internal (SQLHSTMT hstmt)
       if (hproc == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
-
 	  return SQL_ERROR;
 	}
 
@@ -499,14 +498,6 @@ SQLGetData_Internal (
       return SQL_ERROR;
     }
 
-  /* call driver */
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_GetData);
-
-  if (hproc == SQL_NULL_HPROC)
-    {
-      PUSHSQLERR (pstmt->herr, en_IM001);
-      return SQL_ERROR;
-    }
 
   /*
    *  Convert C type to ODBC version of driver
@@ -517,6 +508,16 @@ SQLGetData_Internal (
     {
       nCType = SQL_C_CHAR;
       cbValueMax /= sizeof(wchar_t);
+    }
+
+
+  /* call driver */
+  hproc = _iodbcdm_getproc (pstmt->hdbc, en_GetData);
+
+  if (hproc == SQL_NULL_HPROC)
+    {
+      PUSHSQLERR (pstmt->herr, en_IM001);
+      return SQL_ERROR;
     }
 
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,

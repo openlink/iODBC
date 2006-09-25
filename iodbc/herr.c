@@ -268,7 +268,8 @@ _iodbcdm_sqlerror (
   HSTMT dhstmt = SQL_NULL_HSTMT;
 
   HERR herr = SQL_NULL_HERR;
-  HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
 #if (ODBCVER >= 0x0300)  
   SQLINTEGER handleType = 0;
   SQLHANDLE handle3;
@@ -277,6 +278,7 @@ _iodbcdm_sqlerror (
 #endif
   SWORD unicode_driver = 0;
   SQLUINTEGER dodbc_ver = SQL_OV_ODBC2;	
+  SQLUINTEGER odbc_ver = SQL_OV_ODBC2;	
   wchar_t _sqlState[6] = {L"\0"};
   void *SqlstateOut = szSqlstate;
   void *_ErrorMsg = NULL;
@@ -364,6 +366,7 @@ _iodbcdm_sqlerror (
       /* call driver */
       unicode_driver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->unicode_driver;
       dodbc_ver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->dodbc_ver;
+      odbc_ver = ((GENV_t *) ((DBC_t *)thdbc)->genv)->odbc_ver;
 
       if ((unicode_driver && waMode != 'W') 
           || (!unicode_driver && waMode == 'W'))
@@ -388,116 +391,61 @@ _iodbcdm_sqlerror (
       if (unicode_driver)
         {
           /* SQL_XXX_W */
-#if (ODBCVER >= 0x0300)
-          if (dodbc_ver >= SQL_OV_ODBC3)
-            {
-              if ((hproc = _iodbcdm_getproc (thdbc, en_GetDiagRecW)) 
-                  != SQL_NULL_HPROC)
-                {
-                 (*perr_rec) = (*perr_rec) + 1;
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
-                          handleType, 
-                          dhandle3, 
-                          (*perr_rec),
-                          SqlstateOut, 
-                          pfNativeError, 
-                          errorMsgOut,
-                          cbErrorMsgMax, 
-                          pcbErrorMsg));
-                }
-            }
-          else
+          hproc2 = _iodbcdm_getproc (thdbc, en_ErrorW);
+#if (ODBCVER >= 0x300)
+          hproc3 = _iodbcdm_getproc (thdbc, en_GetDiagRecW);
 #endif
-            {
-              if ((hproc = _iodbcdm_getproc (thdbc, en_ErrorW)) 
-                  != SQL_NULL_HPROC)
-                {
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
-                          dhenv, 
-                          dhdbc, 
-                          dhstmt, 
-                          SqlstateOut, 
-                          pfNativeError, 
-                          errorMsgOut,
-                          cbErrorMsgMax, 
-                          pcbErrorMsg));
-                }
-            }
         }
       else
         {
           /* SQL_XXX */
           /* SQL_XXX_A */
-#if (ODBCVER >= 0x0300)
-          if (dodbc_ver >= SQL_OV_ODBC3)
-            {
-              if ((hproc = _iodbcdm_getproc (thdbc, en_GetDiagRec)) 
-                  != SQL_NULL_HPROC)
-                {
-                 (*perr_rec) = (*perr_rec) + 1;
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
-                          handleType, 
-                          dhandle3, 
-                          (*perr_rec),
-                          SqlstateOut, 
-                          pfNativeError, 
-                          errorMsgOut,
-                          cbErrorMsgMax, 
-                          pcbErrorMsg));
-                }
-              else
-              if ((hproc = _iodbcdm_getproc (thdbc, en_GetDiagRecA)) 
-                  != SQL_NULL_HPROC)
-                {
-                 (*perr_rec) = (*perr_rec) + 1;
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
-                          handleType, 
-                          dhandle3, 
-                          (*perr_rec),
-                          SqlstateOut, 
-                          pfNativeError, 
-                          errorMsgOut,
-                          cbErrorMsgMax, 
-                          pcbErrorMsg));
-                }
-            }
-          else
+          hproc2 = _iodbcdm_getproc (thdbc, en_Error);
+          if (hproc2 == SQL_NULL_HPROC)
+            hproc2 = _iodbcdm_getproc (thdbc, en_ErrorA);
+#if (ODBCVER >= 0x300)
+          hproc3 = _iodbcdm_getproc (thdbc, en_GetDiagRec);
+          if (hproc3 == SQL_NULL_HPROC)
+            hproc3 = _iodbcdm_getproc (thdbc, en_GetDiagRecA);
 #endif
-            {
-              if ((hproc = _iodbcdm_getproc (thdbc, en_Error)) 
-                  != SQL_NULL_HPROC)
-                {
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
-                          dhenv, 
-                          dhdbc, 
-                          dhstmt, 
-                          SqlstateOut, 
-                          pfNativeError, 
-                          errorMsgOut,
-                          cbErrorMsgMax, 
-                          pcbErrorMsg));
-                }
-              else
-              if ((hproc = _iodbcdm_getproc (thdbc, en_ErrorA)) 
-                  != SQL_NULL_HPROC)
-                {
-                  CALL_DRIVER (thdbc, NULL, retcode, hproc, (
-                          dhenv, 
-                          dhdbc, 
-                          dhstmt, 
-                          SqlstateOut, 
-                          pfNativeError, 
-                          errorMsgOut,
-                          cbErrorMsgMax, 
-                          pcbErrorMsg));
-                }
-            }
         }
-    
-      if (hproc == SQL_NULL_HPROC)
+
+      if (odbc_ver == SQL_OV_ODBC2 && 
+          (  dodbc_ver == SQL_OV_ODBC2
+           || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+        hproc3 = SQL_NULL_HPROC;
+
+#if (ODBCVER >= 0x300)
+      if (hproc3 != SQL_NULL_HPROC)
         {
-          MEM_FREE(_ErrorMsg);
-          return SQL_NO_DATA_FOUND;
+          (*perr_rec) = (*perr_rec) + 1;
+          CALL_DRIVER (thdbc, NULL, retcode, hproc3, (
+                  handleType, 
+                  dhandle3, 
+                  (*perr_rec),
+                  SqlstateOut, 
+                  pfNativeError, 
+                  errorMsgOut,
+                  cbErrorMsgMax, 
+                  pcbErrorMsg));
+        }
+      else
+#endif
+        {
+          if (hproc2 == SQL_NULL_HPROC)
+            {
+              MEM_FREE(_ErrorMsg);
+              return SQL_NO_DATA_FOUND;
+            }
+           CALL_DRIVER (thdbc, NULL, retcode, hproc2, (
+                   dhenv, 
+                   dhdbc, 
+                   dhstmt, 
+                   SqlstateOut, 
+                   pfNativeError, 
+                   errorMsgOut,
+                   cbErrorMsgMax, 
+                   pcbErrorMsg));
         }
     
       if (szErrorMsg 
@@ -813,11 +761,14 @@ SQLGetDiagRec_Internal (
   sqlerr_t *curr_err = NULL;
   HERR err = NULL;
   int nRecs;
-  HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   HDBC hdbc = SQL_NULL_HDBC;
   RETCODE retcode = SQL_SUCCESS;
   SQLHANDLE dhandle = SQL_NULL_HANDLE;
   SWORD unicode_driver = 0;
+  SQLUINTEGER dodbc_ver = SQL_OV_ODBC3;	
+  SQLUINTEGER odbc_ver = SQL_OV_ODBC3;	
   wchar_t _sqlState[6] = {L"\0"};
   void *_MessageText = NULL;
   void *messageTextOut = MessageText;
@@ -984,7 +935,13 @@ SQLGetDiagRec_Internal (
       RecNumber -= nRecs;
 
       if (((DBC_t *)hdbc)->henv)
-        unicode_driver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->unicode_driver;
+        {
+          unicode_driver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->unicode_driver;
+          dodbc_ver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->dodbc_ver;
+        }
+
+      if (((DBC_t *)hdbc)->genv)
+        odbc_ver = ((GENV_t *) ((DBC_t *)hdbc)->genv)->odbc_ver;
 
       if ((unicode_driver && waMode != 'W') 
           || (!unicode_driver && waMode == 'W'))
@@ -1013,114 +970,66 @@ SQLGetDiagRec_Internal (
       if (unicode_driver)
         {
           /* SQL_XXX_W */
-          if ((hproc = _iodbcdm_getproc (hdbc, en_GetDiagRecW)) 
-              != SQL_NULL_HPROC)
-            {
-              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
-                      HandleType, 
-                      dhandle, 
-                      RecNumber,
-                      SqlstateOut, 
-                      NativeErrorPtr, 
-                      messageTextOut,
-                      BufferLength, 
-                      TextLengthPtr));
-            }
-          else
-          if ((hproc = _iodbcdm_getproc (hdbc, en_ErrorW)) 
-              != SQL_NULL_HPROC)
-            {
-   	      if (RecNumber > 1 || HandleType == SQL_HANDLE_DESC)
-	        {
-	           MEM_FREE(_MessageText);
-	           return SQL_NO_DATA_FOUND;
-	        }
-              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
-                      SQL_NULL_HENV,
-                      HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
-                      HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
-                      SqlstateOut, 
-                      NativeErrorPtr, 
-                      messageTextOut,
-                      BufferLength, 
-                      TextLengthPtr));
-                }
+          hproc2 = _iodbcdm_getproc (hdbc, en_ErrorW);
+#if (ODBCVER >= 0x300)
+          hproc3 = _iodbcdm_getproc (hdbc, en_GetDiagRecW);
+#endif
         }
       else
         {
           /* SQL_XXX */
           /* SQL_XXX_A */
-          if ((hproc = _iodbcdm_getproc (hdbc, en_GetDiagRec)) 
-              != SQL_NULL_HPROC)
-            {
-              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
-                      HandleType, 
-                      dhandle, 
-                      RecNumber,
-                      SqlstateOut, 
-                      NativeErrorPtr, 
-                      messageTextOut,
-                      BufferLength, 
-                      TextLengthPtr));
-            }
-          else
-          if ((hproc = _iodbcdm_getproc (hdbc, en_GetDiagRecA)) 
-              != SQL_NULL_HPROC)
-            {
-              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
-                      HandleType, 
-                      dhandle, 
-                      RecNumber,
-                      SqlstateOut, 
-                      NativeErrorPtr, 
-                      messageTextOut,
-                      BufferLength, 
-                      TextLengthPtr));
-            }
-          else                                   /* no SQLGetDiagRec */
-          if ((hproc = _iodbcdm_getproc (hdbc, en_Error)) 
-              != SQL_NULL_HPROC)
-            {
-   	      if (RecNumber > 1 || HandleType == SQL_HANDLE_DESC)
-	        {
-	           MEM_FREE(_MessageText);
-	           return SQL_NO_DATA_FOUND;
-	        }
-              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
-                      SQL_NULL_HENV,
-                      HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
-                      HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
-                      SqlstateOut, 
-                      NativeErrorPtr, 
-                      messageTextOut,
-                      BufferLength, 
-                      TextLengthPtr));
-            }
-          else
-          if ((hproc = _iodbcdm_getproc (hdbc, en_ErrorA)) 
-              != SQL_NULL_HPROC)
-            {
-   	      if (RecNumber > 1 || HandleType == SQL_HANDLE_DESC)
-	        {
-	           MEM_FREE(_MessageText);
-	           return SQL_NO_DATA_FOUND;
-	        }
-              CALL_DRIVER (hdbc, Handle, retcode, hproc, (
-                      SQL_NULL_HENV,
-                      HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
-                      HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
-                      SqlstateOut, 
-                      NativeErrorPtr, 
-                      messageTextOut,
-                      BufferLength, 
-                      TextLengthPtr));
-            }
+          hproc2 = _iodbcdm_getproc (hdbc, en_Error);
+          if (hproc2 == SQL_NULL_HPROC)
+            hproc2 = _iodbcdm_getproc (hdbc, en_ErrorA);
+#if (ODBCVER >= 0x300)
+          hproc3 = _iodbcdm_getproc (hdbc, en_GetDiagRec);
+          if (hproc3 == SQL_NULL_HPROC)
+            hproc3 = _iodbcdm_getproc (hdbc, en_GetDiagRecA);
+#endif
         }
-    
-      if (hproc == SQL_NULL_HPROC)
+
+      if (odbc_ver == SQL_OV_ODBC2 && 
+          (  dodbc_ver == SQL_OV_ODBC2
+           || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+        hproc3 = SQL_NULL_HPROC;
+
+#if (ODBCVER >= 0x300)
+      if (hproc3 != SQL_NULL_HPROC)
         {
-          MEM_FREE(_MessageText);
-          return SQL_ERROR;
+          CALL_DRIVER (hdbc, Handle, retcode, hproc3, (
+                  HandleType, 
+                  dhandle, 
+                  RecNumber,
+                  SqlstateOut, 
+                  NativeErrorPtr, 
+                  messageTextOut,
+                  BufferLength, 
+                  TextLengthPtr));
+        }
+      else
+#endif
+        {
+          if (hproc2 == SQL_NULL_HPROC)
+            {
+              MEM_FREE(_MessageText);
+              return SQL_ERROR;
+            }
+
+   	  if (RecNumber > 1 || HandleType == SQL_HANDLE_DESC)
+	    {
+	       MEM_FREE(_MessageText);
+	       return SQL_NO_DATA_FOUND;
+	    }
+          CALL_DRIVER (hdbc, Handle, retcode, hproc2, (
+                  SQL_NULL_HENV,
+                  HandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
+                  HandleType == SQL_HANDLE_STMT ? dhandle : SQL_NULL_HSTMT,
+                  SqlstateOut, 
+                  NativeErrorPtr, 
+                  messageTextOut,
+                  BufferLength, 
+                  TextLengthPtr));
         }
     
       if (MessageText 

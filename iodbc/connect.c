@@ -112,7 +112,7 @@ char *iodbc_version = VERSION;
 /*
  *  Prototypes
  */
-extern SQLRETURN _iodbcdm_driverunload (HDBC hdbc);
+extern SQLRETURN _iodbcdm_driverunload (HDBC hdbc, int ver);
 extern SQLRETURN SQL_API _iodbcdm_SetConnectOption (SQLHDBC hdbc,
     SQLUSMALLINT fOption, SQLULEN vParam, SQLCHAR waMode);
 
@@ -1106,7 +1106,7 @@ _iodbcdm_driverload (
     {
       if (penv->hdll != hdll)
 	{
-	  _iodbcdm_driverunload (hdbc);
+	  _iodbcdm_driverunload (hdbc, 3);
 	  penv->hdll = hdll;
 	}
       else
@@ -1298,7 +1298,7 @@ _iodbcdm_driverload (
 
 	  if (sqlstat != en_00000)
 	    {
-	      _iodbcdm_driverunload (hdbc);
+	      _iodbcdm_driverunload (hdbc, 3);
 
 	      pdbc->dhdbc = SQL_NULL_HDBC;
 	      PUSHSQLERR (pdbc->herr, en_IM005);
@@ -1360,13 +1360,13 @@ _iodbcdm_driverload (
  * - state transition to allocated
  */
 SQLRETURN
-_iodbcdm_driverunload (HDBC hdbc)
+_iodbcdm_driverunload (HDBC hdbc, int ver)
 {
   CONN (pdbc, hdbc);
   ENVR (penv, pdbc->henv);
   GENV (genv, pdbc->genv);
   ENV_t *tpenv;
-  HPROC hproc;
+  HPROC hproc2, hproc3;
   SQLRETURN retcode = SQL_SUCCESS;
 
   if (!IS_VALID_HDBC (pdbc))
@@ -1380,62 +1380,73 @@ _iodbcdm_driverunload (HDBC hdbc)
       return SQL_SUCCESS;
     }
 
+  /*
+   *  When calling from an ODBC 2.x application, we favor the ODBC 2.x call 
+   *  in the driver if the driver implements both
+   */
+  hproc2 = _iodbcdm_getproc (pdbc, en_FreeConnect);
 #if (ODBCVER >= 0x0300)
-  hproc = _iodbcdm_getproc (pdbc, en_FreeHandle);
+  hproc3 = _iodbcdm_getproc (pdbc, en_FreeHandle);
 
-  if (hproc)
-    {
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc, (SQL_HANDLE_DBC, pdbc->dhdbc));
-    }
-  else
+  if (ver == 3 && hproc2 != SQL_NULL_HPROC && hproc3 != SQL_NULL_HPROC)
+    hproc2 = SQL_NULL_HPROC;
+#else
+  hproc3 = SQL_NULL_HPROC;
 #endif
 
+  if (hproc2 != SQL_NULL_HPROC)
     {
-      hproc = _iodbcdm_getproc (pdbc, en_FreeConnect);
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc2, (pdbc->dhdbc));
 
-      if (hproc != SQL_NULL_HPROC)
-	{
-	  CALL_DRIVER (hdbc, pdbc, retcode, hproc, (pdbc->dhdbc));
-
-	  pdbc->dhdbc = SQL_NULL_HDBC;
-	}
+      pdbc->dhdbc = SQL_NULL_HDBC;
     }
+#if (ODBCVER >= 0x0300)
+  else if (hproc3 != SQL_NULL_HPROC)
+    {
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc3,
+	  (SQL_HANDLE_DBC, pdbc->dhdbc));
+    }
+#endif
 
   penv->refcount--;
 
   if (!penv->refcount)
     /* no other connections still attaching with this driver */
     {
-
+      /*
+       *  When calling from an ODBC 2.x application, we favor the ODBC 2.x call 
+       *  in the driver if the driver implements both
+       */
+      hproc2 = _iodbcdm_getproc (pdbc, en_FreeEnv);
 #if (ODBCVER >= 0x0300)
-      hproc = _iodbcdm_getproc (pdbc, en_FreeHandle);
+      hproc3 = _iodbcdm_getproc (pdbc, en_FreeHandle);
 
-      if (hproc)
-	{
-	  CALL_DRIVER (hdbc, genv, retcode, hproc,
-	      (SQL_HANDLE_ENV, penv->dhenv));
-	}
-      else
+      if (ver == 3 && hproc2 != SQL_NULL_HPROC && hproc3 != SQL_NULL_HPROC)
+	hproc2 = SQL_NULL_HPROC;
+#else
+      hproc3 = SQL_NULL_HPROC;
 #endif
 
+      if (hproc2 != SQL_NULL_HPROC)
 	{
-	  hproc = _iodbcdm_getproc (pdbc, en_FreeEnv);
+	  CALL_DRIVER (hdbc, genv, retcode, hproc2, (penv->dhenv));
 
-	  if (hproc != SQL_NULL_HPROC)
-	    {
-	      CALL_DRIVER (hdbc, genv, retcode, hproc, (penv->dhenv));
-
-	      penv->dhenv = SQL_NULL_HENV;
-	    }
+	  penv->dhenv = SQL_NULL_HENV;
 	}
+#if (ODBCVER >= 0x0300)
+      else if (hproc3 != SQL_NULL_HPROC)
+	{
+	  CALL_DRIVER (hdbc, genv, retcode, hproc3,
+	      (SQL_HANDLE_ENV, penv->dhenv));
+	}
+#endif
 
       _iodbcdm_dllclose (penv->hdll);
 
       penv->hdll = SQL_NULL_HDLL;
 
       for (tpenv = (ENV_t *) genv->henv;
-	  tpenv != NULL;
-	  tpenv = (ENV_t *) penv->next)
+	  tpenv != NULL; tpenv = (ENV_t *) penv->next)
 	{
 	  if (tpenv == penv)
 	    {
@@ -2067,7 +2078,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 
   if (hproc == SQL_NULL_HPROC)
     {
-      _iodbcdm_driverunload (pdbc);
+      _iodbcdm_driverunload (pdbc, 3);
       PUSHSQLERR (pdbc->herr, en_IM001);
       RETURN (SQL_ERROR);
     }
@@ -2077,7 +2088,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
       /* not unload driver for retrieve error
        * message from driver */
 		/*********
-		_iodbcdm_driverunload( hdbc );
+		_iodbcdm_driverunload( hdbc , 3);
 		**********/
 
       RETURN (retcode);
@@ -2759,7 +2770,7 @@ SQLDriverConnect_Internal (
 
   if (hproc == SQL_NULL_HPROC)
     {
-      _iodbcdm_driverunload (pdbc);
+      _iodbcdm_driverunload (pdbc, 3);
       PUSHSQLERR (pdbc->herr, en_IM001);
       RETURN (SQL_ERROR);
     }
@@ -2843,7 +2854,7 @@ SQLDriverConnect_Internal (
       /* don't unload driver here for retrieve
        * error message from driver */
 		/********
-		_iodbcdm_driverunload( hdbc );
+		_iodbcdm_driverunload( hdbc , 3);
 		*********/
 
       RETURN (retcode);
@@ -3180,7 +3191,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
   if (hproc == SQL_NULL_HPROC)
     {
       MEM_FREE(_ConnStrOut);
-      _iodbcdm_driverunload (pdbc);
+      _iodbcdm_driverunload (pdbc, 3);
       pdbc->state = en_dbc_allocated;
       PUSHSQLERR (pdbc->herr, en_IM001);
       return SQL_ERROR;

@@ -134,3 +134,32 @@ extern int ODBCSharedTraceFlag;
     }
 
 #endif
+
+
+#define GET_HPROC(hdbc, hproc, procid) \
+    { \
+      /* SQL_XXX */   \
+      /* SQL_XXX_A */ \
+      hproc = _iodbcdm_getproc (hdbc, procid); \
+      if (hproc == SQL_NULL_HPROC) \
+        hproc = _iodbcdm_getproc (hdbc, procid ## A); \
+    }
+
+
+#define GET_UHPROC(hdbc, hproc, procid, unicode_driver) \
+    { \
+      if (unicode_driver) \
+        { \
+	  /* SQL_XXX_W */ \
+	  hproc = _iodbcdm_getproc (hdbc, procid ## W); \
+        } \
+      else \
+        { \
+          /* SQL_XXX */   \
+          /* SQL_XXX_A */ \
+          hproc = _iodbcdm_getproc (hdbc, procid); \
+          if (hproc == SQL_NULL_HPROC) \
+            hproc = _iodbcdm_getproc (hdbc, procid ## A); \
+        } \
+    }
+

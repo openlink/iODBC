@@ -113,9 +113,12 @@ SQLAllocStmt_Internal (
 {
   CONN (pdbc, hdbc);
   STMT (pstmt, NULL);
-  HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int i;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   if (phstmt == NULL)
     {
@@ -181,9 +184,8 @@ SQLAllocStmt_Internal (
   pstmt->params_processed_ptr = NULL;
   pstmt->paramset_size = 0;
   pstmt->rows_fetched_ptr = NULL;
-  if (((ENV_t *) ((DBC_t *) pstmt->hdbc)->henv)->dodbc_ver == SQL_OV_ODBC2 && 
-     ((GENV_t *) ((DBC_t *) pstmt->hdbc)->genv)->odbc_ver == SQL_OV_ODBC3)
-    {				/* if it's a odbc3 app calling odbc2 driver */
+  if (dodbc_ver == SQL_OV_ODBC2 && odbc_ver == SQL_OV_ODBC3)
+    {		    /* if it's a odbc3 app calling odbc2 driver */
       pstmt->row_status_ptr =
 	  MEM_ALLOC (sizeof (SQLUINTEGER) * pstmt->row_array_size);
       if (!pstmt->row_status_ptr)
@@ -201,20 +203,28 @@ SQLAllocStmt_Internal (
       pstmt->row_status_ptr = NULL;
       pstmt->row_status_allocated = SQL_FALSE;
     }
+#endif
 
-  hproc = _iodbcdm_getproc (pdbc, en_AllocHandle);
+  hproc2 = _iodbcdm_getproc (pdbc, en_AllocStmt);
+#if (ODBCVER >= 0x0300)
+  hproc3 = _iodbcdm_getproc (pdbc, en_AllocHandle);
+#endif
 
-  if (hproc)
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
+
+#if (ODBCVER >= 0x0300)
+  if (hproc3)
     {
-      CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pdbc, retcode, hproc3,
 	  (SQL_HANDLE_STMT, pdbc->dhdbc, &(pstmt->dhstmt)));
     }
   else
 #endif
     {
-      hproc = _iodbcdm_getproc (pdbc, en_AllocStmt);
-
-      if (hproc == SQL_NULL_HPROC)
+      if (hproc2 == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
 	  *phstmt = SQL_NULL_HSTMT;
@@ -224,7 +234,7 @@ SQLAllocStmt_Internal (
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (hdbc, pdbc, retcode, hproc,
+      CALL_DRIVER (hdbc, pdbc, retcode, hproc2,
 	  (pdbc->dhdbc, &(pstmt->dhstmt)));
     }
 
@@ -242,7 +252,7 @@ SQLAllocStmt_Internal (
   memset (&pstmt->imp_desc, 0, sizeof (pstmt->imp_desc));
   memset (&pstmt->desc, 0, sizeof (pstmt->desc));
 
-  if (((ENV_t *) pdbc->henv)->dodbc_ver == SQL_OV_ODBC2)
+  if (dodbc_ver == SQL_OV_ODBC2)
     {
       /* 
        *  this is an ODBC2 driver - so alloc dummy implicit desc handles  
@@ -268,14 +278,17 @@ SQLAllocStmt_Internal (
   else
     {				/* the ODBC3 driver */
       if (((ENV_t *) pdbc->henv)->unicode_driver)
-	hproc = _iodbcdm_getproc (pdbc, en_GetStmtAttrW);
+	hproc3 = _iodbcdm_getproc (pdbc, en_GetStmtAttrW);
       else
-	hproc = _iodbcdm_getproc (pdbc, en_GetStmtAttr);
+        {
+	  hproc3 = _iodbcdm_getproc (pdbc, en_GetStmtAttr);
+	  if (hproc3 == SQL_NULL_HPROC)
+	    hproc3 = _iodbcdm_getproc (pdbc, en_GetStmtAttrA);
+	}
 
-      if (hproc == SQL_NULL_HPROC)
+      if (hproc3 == SQL_NULL_HPROC)
 	{			/* with no GetStmtAttr ! */
 	  PUSHSQLERR (pdbc->herr, en_HYC00);
-
 	  goto alloc_stmt_failed;
 	}
       else
@@ -314,7 +327,7 @@ SQLAllocStmt_Internal (
 	      pstmt->imp_desc[i]->hdbc = hdbc;
 	      pstmt->imp_desc[i]->hstmt = *phstmt;
 	      pstmt->imp_desc[i]->herr = NULL;
-	      CALL_DRIVER (hdbc, pstmt, rc1, hproc,
+	      CALL_DRIVER (hdbc, pstmt, rc1, hproc3,
 		  (pstmt->dhstmt, desc_type, &pstmt->imp_desc[i]->dhdesc, 0,
 		      NULL));
 	      if (rc1 != SQL_SUCCESS && rc1 != SQL_SUCCESS_WITH_INFO)
@@ -360,21 +373,35 @@ alloc_stmt_failed:
   /*
    *  Tell the driver to remove the statement handle
    */
-  hproc = SQL_NULL_HPROC;
-#if (ODBCVER >= 0x0300)
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeHandle);
+  hproc2 = SQL_NULL_HPROC;
+  hproc3 = SQL_NULL_HPROC;
 
-  if (hproc)
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
+#if (ODBCVER >= 0x0300)
+  hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_FreeHandle);
+#endif
+
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
+
+#if (ODBCVER >= 0x0300)
+  if (hproc3 != SQL_NULL_HPROC)
     {
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	  (SQL_HANDLE_STMT, pstmt->dhstmt));
     }
   else
 #endif
     {
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
+      if (hproc2 == SQL_NULL_HPROC)
+        {
+          PUSHSQLERR (pdbc->herr, en_IM001);
+          return SQL_ERROR;
+        }
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
 	  (pstmt->dhstmt, SQL_DROP));
     }
 
@@ -477,12 +504,12 @@ SQLFreeStmt_Internal (
     SQLUSMALLINT fOption)
 {
   STMT (pstmt, hstmt);
-  CONN (pdbc, NULL);
-
-  HPROC hproc = SQL_NULL_HPROC;
+  CONN (pdbc, pstmt->hdbc);
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
-
-  pdbc = (DBC_t *) (pstmt->hdbc);
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   /* check option */
   switch (fOption)
@@ -505,32 +532,33 @@ SQLFreeStmt_Internal (
       return SQL_ERROR;
     }
 
-  hproc = SQL_NULL_HPROC;
 
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
 #if (ODBCVER >= 0x0300)
-  if (fOption == SQL_DROP)
-    {
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeHandle);
-
-      if (hproc)
-	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
-	      (SQL_HANDLE_STMT, pstmt->dhstmt));
-	}
-    }
+  hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_FreeHandle);
 #endif
 
-  if (hproc == SQL_NULL_HPROC)
-    {
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_FreeStmt);
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
 
-      if (hproc == SQL_NULL_HPROC)
+#if (ODBCVER >= 0x0300)
+  if (fOption == SQL_DROP && hproc3 != SQL_NULL_HPROC)
+    {
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
+	      (SQL_HANDLE_STMT, pstmt->dhstmt));
+    }
+#endif
+  else
+    {
+      if (hproc2 == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
 	  (pstmt->dhstmt, fOption));
     }
 
@@ -620,9 +648,13 @@ SQLSetStmtOption_Internal (
     SQLUINTEGER vParam)
 {
   STMT (pstmt, hstmt);
-  HPROC hproc;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode;
+  CONN (pdbc, pstmt->hdbc);
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -630,7 +662,6 @@ SQLSetStmtOption_Internal (
       fOption > SQL_STMT_OPT_MAX)
     {
       PUSHSQLERR (pstmt->herr, en_S1092);
-
       return SQL_ERROR;
     }
 #endif	/* ODBCVER < 0x0300 */
@@ -701,11 +732,20 @@ SQLSetStmtOption_Internal (
 
       return SQL_ERROR;
     }
+
+
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtOption);
 #if (ODBCVER >= 0x0300)
+  hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+#endif
 
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
 
-  if (hproc != SQL_NULL_HPROC)
+#if (ODBCVER >= 0x0300)
+  if (hproc3 != SQL_NULL_HPROC)
     {
       switch (fOption)
 	{
@@ -723,7 +763,7 @@ SQLSetStmtOption_Internal (
 	  case SQL_ATTR_ROW_NUMBER:
 	  case SQL_ATTR_SIMULATE_CURSOR:
 	  case SQL_ATTR_USE_BOOKMARKS:
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 		  (pstmt->dhstmt, fOption, vParam, 0));
 	      break;	  
 
@@ -751,23 +791,20 @@ SQLSetStmtOption_Internal (
 	      return SQL_ERROR;
 
 	  default:
-	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+	      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 		  (pstmt->dhstmt, fOption, vParam, SQL_NTS));
 	}
     }
   else
 #endif
     {
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtOption);
-
-      if (hproc == SQL_NULL_HPROC)
+      if (hproc2 == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
-
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
 	  (pstmt->dhstmt, fOption, vParam));
     }
 
@@ -832,9 +869,14 @@ SQLGetStmtOption_Internal (
     SQLPOINTER pvParam)
 {
   STMT (pstmt, hstmt);
-  HPROC hproc;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode;
+  CONN (pdbc, pstmt->hdbc);
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
+
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -842,7 +884,6 @@ SQLGetStmtOption_Internal (
       fOption > SQL_STMT_OPT_MAX)
     {
       PUSHSQLERR (pstmt->herr, en_S1092);
-
       return SQL_ERROR;
     }
 #endif /* ODBCVER < 0x0300 */
@@ -879,11 +920,18 @@ SQLGetStmtOption_Internal (
       return SQL_ERROR;
     }
 
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_GetStmtOption);
 #if (ODBCVER >= 0x0300)
+  hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_GetStmtAttr);
+#endif
 
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_GetStmtAttr);
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
 
-  if (hproc != SQL_NULL_HPROC)
+#if (ODBCVER >= 0x0300)
+  if (hproc3 != SQL_NULL_HPROC)
     {
       switch (fOption)
 	{
@@ -901,7 +949,7 @@ SQLGetStmtOption_Internal (
 	case SQL_ATTR_ROW_NUMBER:
 	case SQL_ATTR_SIMULATE_CURSOR:
 	case SQL_ATTR_USE_BOOKMARKS:
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	      (pstmt->dhstmt, fOption, pvParam, 0, NULL));
 	  break;
 
@@ -929,7 +977,7 @@ SQLGetStmtOption_Internal (
 	  return SQL_ERROR;
 
 	default:
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	      (pstmt->dhstmt, fOption, pvParam, SQL_MAX_OPTION_STRING_LENGTH,
 		  NULL));
 	  break;
@@ -938,18 +986,14 @@ SQLGetStmtOption_Internal (
   else
 #endif
     {
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_GetStmtOption);
-
-      if (hproc == SQL_NULL_HPROC)
-	{
-	  PUSHSQLERR (pstmt->herr, en_IM001);
-	  return SQL_ERROR;
-	}
-
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      if (hproc2 == SQL_NULL_HPROC)
+        {
+          PUSHSQLERR (pstmt->herr, en_IM001);
+          return SQL_ERROR;
+        }
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
 	  (pstmt->dhstmt, fOption, pvParam));
     }
-
   return retcode;
 }
 

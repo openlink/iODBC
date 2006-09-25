@@ -927,12 +927,15 @@ SQLColAttributes_Internal (
   STMT(pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
   ENVR (penv, pdbc->henv);
-  HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   void * _Desc = NULL;
   void * descOut = rgbDesc;
   sqlstcode_t sqlstat = en_00000;
   SQLUSMALLINT new_attr = fDescType;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   /* check arguments */
   if (icol == 0 && fDescType != SQL_COLUMN_COUNT)
@@ -1029,12 +1032,20 @@ SQLColAttributes_Internal (
 
   if (penv->unicode_driver)
     {
-      /* SQL_XXX_W */
+      hproc2 = _iodbcdm_getproc (pdbc, en_ColAttributesW);
 #if (ODBCVER >= 0x0300)
-      if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributeW)) 
-          != SQL_NULL_HPROC)
+      hproc3 = _iodbcdm_getproc (pdbc, en_ColAttributeW);
+#endif
+
+      if (odbc_ver == SQL_OV_ODBC2 && 
+          (  dodbc_ver == SQL_OV_ODBC2
+           || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+        hproc3 = SQL_NULL_HPROC;
+
+#if (ODBCVER >= 0x0300)
+      if (hproc3 != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3, (
        	          pstmt->dhstmt, 
        	          icol, 
        	          new_attr, 
@@ -1043,12 +1054,17 @@ SQLColAttributes_Internal (
        	          pcbDesc, 
        	          pfDesc));
         }
-      else 
+      else
 #endif
-      if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributesW)) 
-          != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
+          if (hproc2 == SQL_NULL_HPROC)
+            {
+              _iodbcdm_FreeStmtParams(pstmt);
+              PUSHSQLERR (pstmt->herr, en_IM001);
+              return SQL_ERROR;
+            }
+
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2, (
       	          pstmt->dhstmt, 
       	          icol, 
       	          fDescType, 
@@ -1056,17 +1072,30 @@ SQLColAttributes_Internal (
       	          cbDescMax, 
       	          pcbDesc, 
       	          pfDesc));
-       	}
+        }
     }
   else
     {
       /* SQL_XXX */
       /* SQL_XXX_A */
+      hproc2 = _iodbcdm_getproc (pdbc, en_ColAttributes);
+      if (hproc2 == SQL_NULL_HPROC)
+        hproc2 = _iodbcdm_getproc (pdbc, en_ColAttributesA);
 #if (ODBCVER >= 0x0300)
-      if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttribute)) 
-          != SQL_NULL_HPROC)
+      hproc3 = _iodbcdm_getproc (pdbc, en_ColAttribute);
+      if (hproc3 == SQL_NULL_HPROC)
+        hproc3 = _iodbcdm_getproc (pdbc, en_ColAttributeA);
+#endif
+      
+      if (odbc_ver == SQL_OV_ODBC2 && 
+          (  dodbc_ver == SQL_OV_ODBC2
+           || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+        hproc3 = SQL_NULL_HPROC;
+
+#if (ODBCVER >= 0x0300)
+      if (hproc3 != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3, (
        	          pstmt->dhstmt, 
        	          icol, 
        	          new_attr, 
@@ -1074,41 +1103,18 @@ SQLColAttributes_Internal (
        	          cbDescMax, 
        	          pcbDesc, 
        	          pfDesc));
-        }
-      else 
-#endif
-      if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributes)) 
-          != SQL_NULL_HPROC)
-        {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
-      	          pstmt->dhstmt, 
-      	          icol, 
-      	          fDescType, 
-      	          descOut, 
-      	          cbDescMax, 
-      	          pcbDesc, 
-      	          pfDesc));
         }
       else
-#if (ODBCVER >= 0x0300)
-      if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributeA)) 
-          != SQL_NULL_HPROC)
-        {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
-       	          pstmt->dhstmt, 
-       	          icol, 
-       	          new_attr, 
-       	          descOut, 
-       	          cbDescMax, 
-       	          pcbDesc, 
-       	          pfDesc));
-        }
-      else 
 #endif
-      if ((hproc = _iodbcdm_getproc (pdbc, en_ColAttributesA)) 
-          != SQL_NULL_HPROC)
         {
-          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (
+          if (hproc2 == SQL_NULL_HPROC)
+            {
+              _iodbcdm_FreeStmtParams(pstmt);
+              PUSHSQLERR (pstmt->herr, en_IM001);
+              return SQL_ERROR;
+            }
+
+          CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2, (
       	          pstmt->dhstmt, 
       	          icol, 
       	          fDescType, 
@@ -1117,13 +1123,6 @@ SQLColAttributes_Internal (
       	          pcbDesc, 
       	          pfDesc));
         }
-    }
-
-  if (hproc == SQL_NULL_HPROC)
-    {
-      _iodbcdm_FreeStmtParams(pstmt);
-      PUSHSQLERR (pstmt->herr, en_IM001);
-      return SQL_ERROR;
     }
 
   if (rgbDesc 

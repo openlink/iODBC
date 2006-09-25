@@ -458,12 +458,15 @@ SQLBindParameter_Internal (
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
   ENVR (penv, pdbc->henv);
-  HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   SQLSMALLINT nCType;
   SQLSMALLINT nSqlType;
-
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
+
 
 #if (ODBCVER >= 0x0300)
   if (0)
@@ -580,33 +583,35 @@ SQLBindParameter_Internal (
    */
   nSqlType = _iodbcdm_map_sql_type (fSqlType, penv->dodbc_ver);
 
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_BindParameter);
 #if (ODBCVER >=0x0300)
-  if (fParamType == SQL_PARAM_INPUT)
-    {
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_BindParam);
-      if (hproc)
-	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
-	      (pstmt->dhstmt, ipar, nCType, nSqlType, cbColDef,
-		  ibScale, rgbValue, pcbValue));
-	  return retcode;
-	}
-    }
+  hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_BindParam);
 #endif
 
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_BindParameter);
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
 
-  if (hproc == SQL_NULL_HPROC)
+#if (ODBCVER >=0x0300)
+  if (fParamType == SQL_PARAM_INPUT && hproc3 != SQL_NULL_HPROC)
     {
-
-      PUSHSQLERR (pstmt->herr, en_IM001);
-
-      return SQL_ERROR;
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
+	      (pstmt->dhstmt, ipar, nCType, nSqlType, cbColDef,
+	      ibScale, rgbValue, pcbValue));
     }
-
-  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
-      (pstmt->dhstmt, ipar, fParamType, nCType, nSqlType, cbColDef,
+  else
+#endif
+    {
+      if (hproc2 == SQL_NULL_HPROC)
+        {
+          PUSHSQLERR (pstmt->herr, en_IM001);
+          return SQL_ERROR;
+        }
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
+          (pstmt->dhstmt, ipar, fParamType, nCType, nSqlType, cbColDef,
 	  ibScale, rgbValue, cbValueMax, pcbValue));
+    }
 
   return retcode;
 }
@@ -648,8 +653,12 @@ SQLParamOptions_Internal (
   SQLULEN 		* pirow)
 {
   STMT (pstmt, hstmt);
-  HPROC hproc = SQL_NULL_HPROC;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
   SQLRETURN retcode;
+  CONN (pdbc, pstmt->hdbc);
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   if (crow == (SQLULEN) 0UL)
     {
@@ -665,34 +674,38 @@ SQLParamOptions_Internal (
       return SQL_ERROR;
     }
 
+
+  hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_ParamOptions);
 #if (ODBCVER >= 0x0300)
+  hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+#endif
 
-  hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtAttr);
+  if (odbc_ver == SQL_OV_ODBC2 && 
+      (  dodbc_ver == SQL_OV_ODBC2
+       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+    hproc3 = SQL_NULL_HPROC;
 
-  if (hproc != SQL_NULL_HPROC)
+#if (ODBCVER >= 0x0300)
+  if (hproc3 != SQL_NULL_HPROC)
     {
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	  (pstmt->dhstmt, SQL_ATTR_PARAMSET_SIZE, crow, 0));
       if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 	{
-	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	      (pstmt->dhstmt, SQL_ATTR_PARAMS_PROCESSED_PTR, pirow, 0));
 	}
     }
   else
 #endif
     {
-
-      hproc = _iodbcdm_getproc (pstmt->hdbc, en_ParamOptions);
-
-      if (hproc == SQL_NULL_HPROC)
+      if (hproc2 == SQL_NULL_HPROC)
 	{
 	  PUSHSQLERR (pstmt->herr, en_IM001);
-
 	  return SQL_ERROR;
 	}
 
-      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
 	  (pstmt->dhstmt, crow, pirow));
     }
 
@@ -728,6 +741,8 @@ SQLSetScrollOptions_Internal (
   HPROC hproc = SQL_NULL_HPROC;
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
   for (;;)
     {
@@ -773,6 +788,9 @@ SQLSetScrollOptions_Internal (
 #endif
 
       hproc = _iodbcdm_getproc (pstmt->hdbc, en_SetScrollOptions);
+
+      if (dodbc_ver == SQL_OV_ODBC3 &&  odbc_ver == SQL_OV_ODBC3)
+        hproc = SQL_NULL_HPROC;
 
       if (hproc != SQL_NULL_HPROC)
         {
