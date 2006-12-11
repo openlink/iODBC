@@ -333,6 +333,8 @@ _iodbcdm_SetConnectOption (
   HPROC hproc3 = SQL_NULL_HPROC;
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -537,8 +539,9 @@ _iodbcdm_SetConnectOption (
 	   hproc2 = _iodbcdm_getproc (pdbc, en_SetConnectOptionA);
        }
 
-     if (((GENV_t *) pdbc->genv)->odbc_ver == SQL_OV_ODBC2)
-       hproc3 = SQL_NULL_HPROC;
+      if (odbc_ver == SQL_OV_ODBC2 && (dodbc_ver == SQL_OV_ODBC2
+	      || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+	hproc3 = SQL_NULL_HPROC;
 
 #if (ODBCVER >= 0x0300)
       if (hproc3 != SQL_NULL_HPROC)
@@ -755,6 +758,8 @@ _iodbcdm_GetConnectOption (
   HPROC hproc3 = SQL_NULL_HPROC;
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -905,8 +910,9 @@ _iodbcdm_GetConnectOption (
            hproc2 = _iodbcdm_getproc (pdbc, en_GetConnectOptionA);
        }
 
-     if (((GENV_t *) pdbc->genv)->odbc_ver == SQL_OV_ODBC2)
-       hproc3 = SQL_NULL_HPROC;
+      if (odbc_ver == SQL_OV_ODBC2 && (dodbc_ver == SQL_OV_ODBC2
+	      || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+	hproc3 = SQL_NULL_HPROC;
 
 #if (ODBCVER >= 0x0300)
       if (hproc3 != SQL_NULL_HPROC)
@@ -1107,9 +1113,9 @@ _iodbcdm_transact (
   hproc3 = _iodbcdm_getproc (pdbc, en_EndTran);
 #endif
 
-  if (odbc_ver == SQL_OV_ODBC2 && 
-      (  dodbc_ver == SQL_OV_ODBC2
-       || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
+  if (odbc_ver == SQL_OV_ODBC2 &&
+      (dodbc_ver == SQL_OV_ODBC2
+	  || (dodbc_ver == SQL_OV_ODBC3 && hproc2 != SQL_NULL_HPROC)))
     hproc3 = SQL_NULL_HPROC;
 
 
