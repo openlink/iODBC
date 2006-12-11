@@ -1240,7 +1240,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
+	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_PARAM_DESC] = SQL_NULL_HDESC;
@@ -1269,7 +1269,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
+	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_PARAM_DESC] = (DESC_t *) ValuePtr;
@@ -1290,7 +1290,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
+	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_ROW_DESC] = SQL_NULL_HDESC;
@@ -1319,7 +1319,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
+	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_ROW_DESC] = (DESC_t *) ValuePtr;
@@ -2013,7 +2013,7 @@ SQLGetConnectAttr_Internal (
   MEM_FREE(_Value);
 
   retcode = _iodbcdm_GetConnectOption (con, Attribute, ValuePtr, waMode);
-  if (retcode != SQL_SUCCESS || retcode != SQL_SUCCESS_WITH_INFO)
+  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     return retcode;
 
   if (StringLengthPtr)
