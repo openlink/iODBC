@@ -1,3 +1,17 @@
+Dec 11 2005, V3.53.5-rc1:
+    * Added support for FileDSN
+    * Added support for Connection Pooling
+    * Added check for /Library/ODBC for Mac OS X
+    * Call ODBC 2.x functions in driver if application uses ODBC 2.x only calls
+    * Fixed problem parsing driver result in SQLSetStmtAttr
+    * Fixed source code readability
+    * Fixed bug in overwriting driver name
+    * Rewrote bootstrap script and configure summary
+    * Fixed prototypes
+    * Use localtime_r in tracing when available
+    * Fixed build issues with Mac OS X
+    * Small code cleanups and fixes
+
 Jan 26 2006, V3.52.4:
     * Added support for Mac OS X 10.4 Universal kit (ppc, ppc64 and i386)
     * Removed dependency between iodbc and iodbcinst shared libraries
