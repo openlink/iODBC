@@ -1,3 +1,44 @@
+libiodbc2 (3.52.4-3) unstable; urgency=low
+
+  * New maintainer.  Closes: #230646.
+  * debian/copyright: Updated by removing the existing patches.  This fixes
+    the FSF address, and this restores some subtle upstream license choices.
+  * debian/iodbc.lintian-overrides: Updated.
+  * debian/libiodbc2.lintian-overrides: Updated.
+  * debian/control, debian/rules: Use automake1.9.
+  * debian/control: Standards version.
+  * debian/control: Added homepage.
+
+ -- Bart Martens <bartm@knars.be>  Sat, 22 Apr 2006 16:38:52 +0200
+
+libiodbc2 (3.52.4-2) unstable; urgency=low
+
+  * Fixed FTBFS due to bug in iodbc control file which has recently started
+    to let dpkg-genchanges fail.
+
+ -- Christian Hammers <ch@debian.org>  Mon,  6 Feb 2006 20:28:19 +0100
+
+libiodbc2 (3.52.4-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #339501 
+
+ -- Christian Hammers <ch@debian.org>  Mon, 30 Jan 2006 21:37:30 +0100
+
+libiodbc2 (3.52.3-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #309935, #309936, #301304
+  * Removed Debian specific patches and added --layout=debian to configure.
+
+ -- Christian Hammers <ch@debian.org>  Wed, 16 Nov 2005 02:56:21 +0100
+
+libiodbc2 (3.52.2-4) unstable; urgency=low
+
+  * Raised automake version from 1.6 to 1.7 on request of Eric Dorland. 
+
+ -- Christian Hammers <ch@debian.org>  Sun, 31 Jul 2005 23:50:25 +0200
+
 libiodbc2 (3.52.2-3) unstable; urgency=low
 
   * Andreas Jochens reported a build problem on amd64 which uses the

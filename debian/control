@@ -1,15 +1,14 @@
 Source: libiodbc2
 Section: libs
 Priority: optional
-Maintainer: Christian Hammers <ch@debian.org>
-Build-Depends: debhelper (>= 4.1.0), libgtk1.2-dev, autotools-dev, libtool (>= 1.5-2), automake1.6, autoconf, autotools-dev, cdbs
-Standards-Version: 3.6.1
+Maintainer: Bart Martens <bartm@knars.be>
+Build-Depends: debhelper (>= 4.1.0), libgtk1.2-dev, autotools-dev, libtool (>= 1.5-2), automake1.9, autoconf, autotools-dev, cdbs
+Standards-Version: 3.6.2
 
 Package: iodbc
 Section: misc
 Architecture: any
 Depends: ${shlibs:Depends}
-Replaces: libiodbc2 libiodbc2-dev
 Description: GTK config frontend for the iODBC Driver Manager
  The iODBC (intrinsic Open Database Connectivity) driver manager is compatible
  with ODBC 2.x and 3.x specification and performs exact the jobs of a
@@ -23,6 +22,8 @@ Description: GTK config frontend for the iODBC Driver Manager
  one process through suitable iODBC drivers.
  .
  This package contains the configuration binaries.
+ .
+  Homepage: http://www.iodbc.org/
 
 Package: libiodbc2
 Section: libs
@@ -42,6 +43,8 @@ Description: iODBC Driver Manager
  one process through suitable iODBC drivers.
  .
  This package contains the library files. Look for the iodbc package, too!
+ .
+  Homepage: http://www.iodbc.org/
 
 Package: libiodbc2-dev
 Section: libdevel
@@ -61,3 +64,5 @@ Description: iODBC Driver Manager (development files)
  one process through suitable iODBC drivers.
  .
  This package contains the development files.
+ .
+  Homepage: http://www.iodbc.org/
