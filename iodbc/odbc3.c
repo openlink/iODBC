@@ -198,7 +198,7 @@ SQLAllocHandle_Internal (
 	CALL_DRIVER (con, con, retcode, hproc,
 	    (handleType, con->dhdbc, &new_desc->dhdesc));
 
-	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+	if (!SQL_SUCCEEDED (retcode))
 	  {
 	    MEM_FREE (new_desc);
 	    return SQL_ERROR;
@@ -1240,7 +1240,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+	  if (!SQL_SUCCEEDED (retcode))
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_PARAM_DESC] = SQL_NULL_HDESC;
@@ -1269,7 +1269,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+	  if (!SQL_SUCCEEDED (retcode))
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_PARAM_DESC] = (DESC_t *) ValuePtr;
@@ -1290,7 +1290,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+	  if (!SQL_SUCCEEDED (retcode))
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_ROW_DESC] = SQL_NULL_HDESC;
@@ -1319,7 +1319,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-	  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+	  if (!SQL_SUCCEEDED (retcode))
 	    return SQL_ERROR;
 
 	  stmt->desc[APP_ROW_DESC] = (DESC_t *) ValuePtr;
@@ -1446,7 +1446,7 @@ SQLSetStmtAttr_Internal (
 	      return SQL_ERROR;
             }
 
-          if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+          if (SQL_SUCCEEDED (retcode))
             {
               stmt->rowset_size = Attribute;
               if (retcode == SQL_SUCCESS_WITH_INFO)
@@ -1491,7 +1491,7 @@ SQLSetStmtAttr_Internal (
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, SQL_ROWSET_SIZE, stmt->row_array_size));
 
-              if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+              if (SQL_SUCCEEDED (retcode))
                 {
                   stmt->rowset_size = Attribute;;
                   if (retcode == SQL_SUCCESS_WITH_INFO)
@@ -1511,7 +1511,7 @@ SQLSetStmtAttr_Internal (
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, SQL_ROWSET_SIZE, stmt->row_array_size));
 
-              if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+              if (SQL_SUCCEEDED (retcode))
                 {
                   stmt->rowset_size = Attribute;;
                   if (retcode == SQL_SUCCESS_WITH_INFO)
@@ -1586,8 +1586,7 @@ SQLSetStmtAttr_Internal (
 	      return SQL_ERROR;
             }
 
-          if (Attribute == SQL_ATTR_ROW_BIND_TYPE 
-              && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+          if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
             stmt->bind_type = Attribute;
 
           return retcode;
@@ -1599,8 +1598,7 @@ SQLSetStmtAttr_Internal (
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, Attribute, ValuePtr));
-              if (Attribute == SQL_ATTR_ROW_BIND_TYPE 
-                  && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+              if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
                 stmt->bind_type = Attribute;
 	      return retcode;
 	    }
@@ -1610,8 +1608,7 @@ SQLSetStmtAttr_Internal (
 	    {
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, Attribute, ValuePtr));
-              if (Attribute == SQL_ATTR_ROW_BIND_TYPE 
-                  && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+              if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
                 stmt->bind_type = Attribute;
 	      return retcode;
 	    }
@@ -1974,8 +1971,8 @@ SQLGetConnectAttr_Internal (
   if (hproc != SQL_NULL_HPROC)
     {
       if (ValuePtr 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-          &&  ((unicode_driver && waMode != 'W') 
+          && SQL_SUCCEEDED (retcode)
+          && ((unicode_driver && waMode != 'W') 
               || (!unicode_driver && waMode == 'W')))
         {
           switch(Attribute)
@@ -2013,7 +2010,7 @@ SQLGetConnectAttr_Internal (
   MEM_FREE(_Value);
 
   retcode = _iodbcdm_GetConnectOption (con, Attribute, ValuePtr, waMode);
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     return retcode;
 
   if (StringLengthPtr)
@@ -2189,8 +2186,8 @@ SQLGetDescField_Internal (
     }    
 
   if (ValuePtr 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W') 
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W') 
           || (!penv->unicode_driver && waMode == 'W')))
     {
       switch(FieldIdentifier)
@@ -2527,8 +2524,8 @@ SQLGetDescRec_Internal (
     }    
 
   if (Name 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W') 
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W') 
           || (!penv->unicode_driver && waMode == 'W')))
     {
       if (waMode != 'W')
@@ -2901,7 +2898,7 @@ SQLColAttribute_Internal (
       }
 
       if (CharacterAttributePtr 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+          && SQL_SUCCEEDED (retcode)
           &&  ((penv->unicode_driver && waMode != 'W') 
               || (!penv->unicode_driver && waMode == 'W')))
         {
@@ -3109,8 +3106,8 @@ SQLColAttribute_Internal (
       }
 
       if (CharacterAttributePtr 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-          &&  ((penv->unicode_driver && waMode != 'W') 
+          && SQL_SUCCEEDED (retcode)
+          && ((penv->unicode_driver && waMode != 'W') 
               || (!penv->unicode_driver && waMode == 'W')))
         {
           switch(FieldIdentifier)
@@ -3328,7 +3325,7 @@ SQLBulkOperations_Internal (
 	  (stmt->dhstmt, Operation));
       
       if (Operation == SQL_FETCH_BY_BOOKMARK 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+          && SQL_SUCCEEDED (retcode))
         _iodbcdm_ConvBindData (stmt);
       return retcode;
     }
@@ -3523,7 +3520,7 @@ SQLFetchScroll (
 	FetchOrientation, 
 	FetchOffset);
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     _iodbcdm_ConvBindData ((STMT_t *) StatementHandle);
 
   LEAVE_STMT (StatementHandle,

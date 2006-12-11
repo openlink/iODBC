@@ -402,7 +402,7 @@ SQLDataSourcesW (
 	_Desc, cbDescMax * UTF8_MAX_CHAR_LEN, pcbDesc, 
 	'W');
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     {
       dm_StrCopyOut2_U8toW (_DSN, szDSN, cbDSNMax, pcbDSN);
       dm_StrCopyOut2_U8toW (_Desc, szDesc, cbDescMax, pcbDesc);
@@ -690,7 +690,7 @@ SQLDriversW (SQLHENV henv,
 	_Attrs, cbDrvAttrMax * UTF8_MAX_CHAR_LEN, pcbDrvAttr, 
 	'W');
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     {
       dm_StrCopyOut2_U8toW (_Driver, szDrvDesc, cbDrvDescMax, pcbDrvDesc);
       dm_StrCopyOut2_U8toW (_Attrs, szDrvAttr, cbDrvAttrMax, pcbDrvAttr);
@@ -1022,8 +1022,8 @@ SQLGetInfo_Internal (
 
     }
   else if (rgbInfoValue 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-          &&  ((penv->unicode_driver && waMode != 'W') 
+          && SQL_SUCCEEDED (retcode)
+          && ((penv->unicode_driver && waMode != 'W') 
               || (!penv->unicode_driver && waMode == 'W')))
     {
       switch(fInfoType)

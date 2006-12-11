@@ -238,7 +238,7 @@ SQLAllocStmt_Internal (
 	  (pdbc->dhdbc, &(pstmt->dhstmt)));
     }
 
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       *phstmt = SQL_NULL_HSTMT;
       pstmt->type = 0;
@@ -562,7 +562,7 @@ SQLFreeStmt_Internal (
 	  (pstmt->dhstmt, fOption));
     }
 
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       return retcode;
     }
@@ -808,7 +808,7 @@ SQLSetStmtOption_Internal (
 	  (pstmt->dhstmt, fOption, vParam));
     }
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     {
       if (fOption == SQL_ROWSET_SIZE || fOption == SQL_ATTR_ROW_ARRAY_SIZE)
         {
@@ -1056,7 +1056,7 @@ SQLCancel_Internal (SQLHSTMT hstmt)
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (pstmt->dhstmt));
 
   /* state transition */
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       return retcode;
     }

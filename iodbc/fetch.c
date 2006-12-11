@@ -229,7 +229,7 @@ SQLFetch (SQLHSTMT hstmt)
 
   retcode = SQLFetch_Internal (hstmt);
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     _iodbcdm_ConvBindData (pstmt);
 
   LEAVE_STMT (hstmt,
@@ -368,7 +368,7 @@ SQLExtendedFetch (
   retcode =
       _iodbcdm_ExtendedFetch (hstmt, fFetchType, irow, pcrow, rgfRowStatus);
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     _iodbcdm_ConvBindData (pstmt);
 
   LEAVE_STMT (hstmt,

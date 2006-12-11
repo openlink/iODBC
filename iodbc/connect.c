@@ -397,7 +397,7 @@ _iodbcdm_finish_disconnect (HDBC hdbc, BOOL driver_disconnect)
 
       CALL_DRIVER (hdbc, pdbc, retcode, hproc, (pdbc->dhdbc));
 
-      if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+      if (!SQL_SUCCEEDED (retcode))
         {
           /* diff from MS specs. We disallow
            * driver SQLDisconnect() return
@@ -678,17 +678,17 @@ _iodbcdm_pool_exec_cpprobe (HDBC hdbc, char *cp_probe)
 
   /* allocate statement handle */
   retcode = SQLAllocStmt_Internal (hdbc, &hstmt);
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     RETURN (retcode);
 
   /* execute statement */
   retcode = SQLExecDirect_Internal (hstmt, cp_probe, SQL_NTS, 'A');
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     RETURN (retcode);
 
   /* check that there is a result set */
   retcode = _iodbcdm_NumResultCols (hstmt, &num_cols);
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     RETURN (retcode);
 
   /* if there was no result set -- success */
@@ -699,7 +699,7 @@ _iodbcdm_pool_exec_cpprobe (HDBC hdbc, char *cp_probe)
   do
     {
       retcode = SQLFetch_Internal (hstmt);
-      if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+      if (!SQL_SUCCEEDED (retcode))
         RETURN (retcode);
     }
   while (retcode != SQL_NO_DATA);
@@ -731,8 +731,7 @@ _iodbcdm_pool_conn_dead (HDBC hdbc)
   /* first try SQLGetConnectAttr */
   CALL_UDRIVER(pdbc, pdbc, retcode, hproc, 'A', en_GetConnectAttr,
       (pdbc->dhdbc, SQL_ATTR_CONNECTION_DEAD, &attr_dead, 0, NULL));
-  if (hproc != SQL_NULL_HPROC &&
-      (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+  if (hproc != SQL_NULL_HPROC && SQL_SUCCEEDED (retcode))
     {
       DPRINTF ((stderr, "DEBUG: GetConnectAttr: attr_dead = %ld (conn %p)\n",
           attr_dead, hdbc));
@@ -742,8 +741,7 @@ _iodbcdm_pool_conn_dead (HDBC hdbc)
   /* try SQLGetConnectOption */
   CALL_UDRIVER(pdbc, pdbc, retcode, hproc, 'A', en_GetConnectOption,
       (pdbc->dhdbc, SQL_ATTR_CONNECTION_DEAD, &attr_dead));
-  if (hproc != SQL_NULL_HPROC &&
-      (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+  if (hproc != SQL_NULL_HPROC && SQL_SUCCEEDED (retcode))
     {
       DPRINTF ((stderr, "DEBUG: GetConnectOption: attr_dead = %ld (conn %p)\n",
           attr_dead, hdbc));
@@ -754,7 +752,7 @@ _iodbcdm_pool_conn_dead (HDBC hdbc)
   if (pdbc->cp_probe != NULL && STRLEN(pdbc->cp_probe) > 0)
     {
       retcode = _iodbcdm_pool_exec_cpprobe (pdbc, pdbc->cp_probe);
-      return retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO;
+      return SQL_SUCCEEDED (retcode);
     }
 
   /* don't know, assume it is alive */
@@ -1196,7 +1194,7 @@ _iodbcdm_driverload (
 	    {
 	      CALL_DRIVER (hdbc, genv, retcode, hproc,
 		  (SQL_HANDLE_ENV, SQL_NULL_HANDLE, &(penv->dhenv)));
-	      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+	      if (SQL_SUCCEEDED (retcode))
 		{		
 		  /* 
 		   * This appears to be an ODBC3 driver
@@ -1577,7 +1575,7 @@ _iodbcdm_dbcdelayset (HDBC hdbc, UCHAR waMode)
     }
 
   /* check error code for driver's SQLSetConnectOption() call */
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       PUSHSQLERR (pdbc->herr, en_IM006);
       retcode = SQL_ERROR;
@@ -1878,7 +1876,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
         }
 
       retcode = _iodbcdm_pool_get_conn (pdbc, _dsn, _uid, _pwd, NULL);
-      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+      if (SQL_SUCCEEDED (retcode))
         {
 	  /*
 	   * Got connection from the pool
@@ -2083,7 +2081,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
       RETURN (SQL_ERROR);
     }
 
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       /* not unload driver for retrieve error
        * message from driver */
@@ -2105,7 +2103,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 
 end:
 #if (ODBCVER >= 0x300)
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO &&
+  if (!SQL_SUCCEEDED (retcode) &&
       pdbc->cp_pdbc != NULL)
     {
       int rc;
@@ -2346,7 +2344,7 @@ SQLDriverConnect_Internal (
 	}
 
       retcode = _iodbcdm_pool_get_conn (pdbc, NULL, NULL, NULL, _connstr);
-      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+      if (SQL_SUCCEEDED (retcode))
         {
 	  /*
 	   * Got connection from the pool
@@ -2776,7 +2774,7 @@ SQLDriverConnect_Internal (
     }
 
   if (szConnStrOut
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+      && SQL_SUCCEEDED (retcode)
       && ((penv->unicode_driver && waMode != 'W')
 	  || (!penv->unicode_driver && waMode == 'W')))
     {
@@ -2849,7 +2847,7 @@ SQLDriverConnect_Internal (
         *(SQLSMALLINT *) pcbConnStrOut = strlen (szConnStrOut);
     }
 
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       /* don't unload driver here for retrieve
        * error message from driver */
@@ -2884,7 +2882,7 @@ SQLDriverConnect_Internal (
 
 end:
 #if (ODBCVER >= 0x300)
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO &&
+  if (!SQL_SUCCEEDED (retcode) &&
       pdbc->cp_pdbc != NULL)
     {
       int rc;
@@ -3198,8 +3196,8 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
     }
 
   if (szConnStrOut
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W')
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W')
           || (!penv->unicode_driver && waMode == 'W')))
     {
       if (waMode != 'W')
@@ -3490,8 +3488,8 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
     }
 
   if (szSqlStr
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W')
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W')
           || (!penv->unicode_driver && waMode == 'W')))
     {
       if (waMode != 'W')

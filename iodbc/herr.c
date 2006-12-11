@@ -449,8 +449,8 @@ _iodbcdm_sqlerror (
         }
     
       if (szErrorMsg 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-          &&  ((unicode_driver && waMode != 'W') 
+          && SQL_SUCCEEDED (retcode)
+          && ((unicode_driver && waMode != 'W') 
               || (!unicode_driver && waMode == 'W')))
         {
           if (waMode != 'W')
@@ -1033,8 +1033,8 @@ SQLGetDiagRec_Internal (
         }
     
       if (MessageText 
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-          &&  ((unicode_driver && waMode != 'W') 
+          && SQL_SUCCEEDED (retcode)
+          && ((unicode_driver && waMode != 'W') 
               || (!unicode_driver && waMode == 'W')))
         {
           if (waMode != 'W')
@@ -1589,8 +1589,8 @@ SQLGetDiagField_Internal (
             if (hproc != SQL_NULL_HPROC)
               {
                 if (pDiagInfoPtr
-                    && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-                    &&  ((unicode_driver && waMode != 'W')
+                    && SQL_SUCCEEDED (retcode)
+                    && ((unicode_driver && waMode != 'W')
                         || (!unicode_driver && waMode == 'W')))
                   {
                     switch(nDiagIdentifier)
@@ -1708,9 +1708,8 @@ SQLGetDiagField_Internal (
 		        return SQL_INVALID_HANDLE;
                       }
                     if (pDiagInfoPtr
-                        && (retcode == SQL_SUCCESS 
-                            || retcode == SQL_SUCCESS_WITH_INFO)
-                        &&  ((unicode_driver && waMode != 'W')
+                        && SQL_SUCCEEDED (retcode)
+                        && ((unicode_driver && waMode != 'W')
                             || (!unicode_driver && waMode == 'W')))
                       {
                         if (waMode != 'W')
@@ -1757,9 +1756,8 @@ SQLGetDiagField_Internal (
 		        return SQL_INVALID_HANDLE;
                       }
                     if (pDiagInfoPtr
-                        && (retcode == SQL_SUCCESS 
-                            || retcode == SQL_SUCCESS_WITH_INFO)
-                        &&  ((unicode_driver && waMode != 'W')
+                        && SQL_SUCCEEDED (retcode)
+                        && ((unicode_driver && waMode != 'W')
                             || (!unicode_driver && waMode == 'W')))
                       {
                         if (waMode != 'W')

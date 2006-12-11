@@ -592,7 +592,7 @@ _iodbcdm_SetConnectOption (
 	}
 
       MEM_FREE(_vParam);
-      if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+      if (!SQL_SUCCEEDED (retcode))
 	{
 	  return retcode;
 	}
@@ -965,8 +965,8 @@ _iodbcdm_GetConnectOption (
 
 
       if (pvParam
-          && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-          &&  ((penv->unicode_driver && waMode != 'W') 
+          && SQL_SUCCEEDED (retcode)
+          && ((penv->unicode_driver && waMode != 'W') 
               || (!penv->unicode_driver && waMode == 'W')))
         {
           switch (fOption)
@@ -1139,7 +1139,7 @@ _iodbcdm_transact (
 
 
   /* state transition */
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       return retcode;
     }
@@ -1252,7 +1252,7 @@ SQLTransact_Internal (
 	}
     }
 
-  if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+  if (!SQL_SUCCEEDED (retcode))
     {
       /* fail on one of the connection */
       return SQL_ERROR;

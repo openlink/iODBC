@@ -199,7 +199,7 @@ SQLBindCol_Internal (
         (pstmt->dhstmt, icol, nCType, rgbValue, cbValueMax, pcbValue));
 
   if (icol != 0 && !penv->unicode_driver && nCType == SQL_C_WCHAR 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO))
+      && SQL_SUCCEEDED (retcode))
     {
       BIND_t tbind;
 
@@ -324,8 +324,8 @@ SQLGetCursorName_Internal (
     }
 
   if (szCursor 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W') 
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W') 
           || (!penv->unicode_driver && waMode == 'W')))
     {
       if (waMode != 'W')
@@ -726,8 +726,8 @@ SQLDescribeCol_Internal (
     *pfSqlType = _iodbcdm_map_sql_type (*pfSqlType, genv->odbc_ver);
 
   if (szColName 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W') 
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W') 
           || (!penv->unicode_driver && waMode == 'W')))
     {
       if (waMode != 'W')
@@ -1126,8 +1126,8 @@ SQLColAttributes_Internal (
     }
 
   if (rgbDesc 
-      && (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-      &&  ((penv->unicode_driver && waMode != 'W') 
+      && SQL_SUCCEEDED (retcode)
+      && ((penv->unicode_driver && waMode != 'W') 
           || (!penv->unicode_driver && waMode == 'W')))
     {
       switch(fDescType)

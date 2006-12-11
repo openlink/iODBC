@@ -383,7 +383,7 @@ SQLSetCursorName_Internal (
       return SQL_ERROR;
     }
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     {
       pstmt->cursor_state = en_stmt_cursor_named;
     }
@@ -690,7 +690,7 @@ SQLParamOptions_Internal (
     {
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	  (pstmt->dhstmt, SQL_ATTR_PARAMSET_SIZE, crow, 0));
-      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+      if (SQL_SUCCEEDED (retcode))
 	{
 	  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	      (pstmt->dhstmt, SQL_ATTR_PARAMS_PROCESSED_PTR, pirow, 0));

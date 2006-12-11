@@ -103,7 +103,7 @@ _iodbcdm_do_cursoropen (STMT_t * pstmt)
 
   retcode = _iodbcdm_NumResultCols ((SQLHSTMT) pstmt, &ncol);
 
-  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  if (SQL_SUCCEEDED (retcode))
     {
       if (ncol)
 	{
