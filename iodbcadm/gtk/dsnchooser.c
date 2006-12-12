@@ -1436,8 +1436,6 @@ filedsn_lookin_clicked (GtkWidget *widget, void **array)
     {
       TDSNCHOOSER *choose_t = (TDSNCHOOSER *) array[1];
       /* Update the directory and file list */
-      if (choose_t->curr_dir)
-	free (choose_t->curr_dir);
       strncpy(choose_t->curr_dir, array[0], sizeof(choose_t->curr_dir));
       addlistofdir_to_optionmenu (choose_t->dir_combo,
 	  (LPCSTR) array[0], choose_t);
