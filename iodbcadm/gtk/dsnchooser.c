@@ -295,9 +295,6 @@ addfiles_to_list (HWND hwnd, GtkWidget *widget, LPCSTR path)
       if (GTK_CLIST (widget)->rows > 0)
 	gtk_clist_sort (GTK_CLIST (widget));
     }
-  else
-    create_error (hwnd, NULL, "Error during accessing directory information:",
-	strerror (errno));
 }
 
 
