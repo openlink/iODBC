@@ -941,26 +941,23 @@ static BOOL _CheckDriverLoginDlg (char *drv);
 
 static void
 filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
-	BOOL b_add)
+	BOOL b_add, BOOL verify_conn)
 {
   char *connstr = NULL;
   size_t len;			/* current connstr len    */
   size_t add_len;		/* len of appended string */
   LPSTR attrs = NULL, curr, tmp, attr_lst = NULL;
-  BOOL verify_conn = TRUE;
-  
-  if (_CheckDriverLoginDlg(drv + STRLEN("DRIVER=")))
-    {
-      attrs = in_attrs;
-    }
-  else
+  BOOL b_Save = TRUE;
+
+  attrs = in_attrs;
+
+  if (!b_add && !_CheckDriverLoginDlg(drv + STRLEN("DRIVER=")))
     {
       /*  Get DSN name and additional attributes  */
       attr_lst = create_gensetup (choose_t->mainwnd, dsn, in_attrs, 
          b_add, &verify_conn);
       attrs = attr_lst;
     }
-
 
   if (!attrs)
     {
@@ -970,7 +967,6 @@ filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
     }
   if (attrs == (LPSTR) - 1L)
     return;
-
 
   /* Build the connection string */
   connstr = strdup (drv);
@@ -1007,6 +1003,8 @@ filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
 
   if (verify_conn)
     {
+      BOOL ret;
+
       /* Append SAVEFILE */
       add_len = strlen (";SAVEFILE=") + strlen (dsn);
       tmp = realloc (connstr, len + add_len + 1);		/* +1 for NUL */
@@ -1021,9 +1019,20 @@ filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
       len += add_len;
 
       /* Connect to data source */
-      test_driver_connect (choose_t, connstr);
+      ret = test_driver_connect (choose_t, connstr);
+      if (!ret && b_add)
+        { 
+	  if (create_confirm (choose_t->mainwnd, dsn,
+	      "Can't check the connection. Do you want to store the FileDSN without verification ?"))
+            b_Save = TRUE;
+          else
+            b_Save = FALSE;
+        }
+      else
+        b_Save = FALSE;
     }
-  else
+
+  if (b_Save)
     {
       char key[512];
       char *p;
@@ -1034,7 +1043,7 @@ filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
 	  p = strchr(drv, '=');
           if (!SQLWriteFileDSN (dsn, "ODBC", "DRIVER", p + 1))
             {
-              create_error (choose_t->mainwnd, NULL, "Error adding File DSN:",
+              create_error (choose_t->mainwnd, NULL, "Error writing File DSN:",
 	          strerror (errno));
 	      goto done;
 	    }
@@ -1058,12 +1067,13 @@ filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
 
           if (!SQLWriteFileDSN (dsn, "ODBC", key, p + 1))
             {
-              create_error (choose_t->mainwnd, NULL, "Error adding File DSN:",
+              create_error (choose_t->mainwnd, NULL, "Error writing File DSN:",
 	          strerror (errno));
 	      goto done;
 	    }
         }
     }
+
 
 done:
   if (attr_lst != NULL)
@@ -1122,7 +1132,8 @@ filedsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
           dm_strcpy_W2A(s, drvchoose_t.driver);
           attrs = drvchoose_t.attrs;
 
-          filedsn_configure(choose_t, drv, drvchoose_t.dsn, attrs ? attrs :"\0\0", TRUE);
+          filedsn_configure(choose_t, drv, drvchoose_t.dsn, 
+          	attrs ? attrs :"\0\0", TRUE, drvchoose_t.verify_conn);
           filedsn_update_file_list(choose_t);
 	}
     }
@@ -1258,7 +1269,7 @@ filedsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
     }
 
   /* Configure file DSN */
-  filedsn_configure (choose_t, drv, dsn, attrs, FALSE);
+  filedsn_configure (choose_t, drv, dsn, attrs, FALSE, TRUE);
 
 done:
   if (drv != NULL)

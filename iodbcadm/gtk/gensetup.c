@@ -625,6 +625,7 @@ create_gensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_con
   gensetup_t.value_entry = t_value;
   gensetup_t.mainwnd = gensetup;
   gensetup_t.verify_conn_cb = cb_verify;
+  gensetup_t.verify_conn = *verify_conn;
 
   gtk_toggle_button_set_active(cb_verify, *verify_conn);
 
@@ -633,6 +634,8 @@ create_gensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_con
 
   gtk_widget_show_all (gensetup);
   gtk_main ();
+
+  *verify_conn = gensetup_t.verify_conn;
 
   return gensetup_t.connstr;
 }
@@ -884,6 +887,7 @@ create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
   gensetup_t.value_entry = t_value;
   gensetup_t.mainwnd = gensetup;
   gensetup_t.verify_conn_cb = cb_verify;
+  gensetup_t.verify_conn = *verify_conn;
 
   gtk_toggle_button_set_active(cb_verify, *verify_conn);
 
@@ -892,6 +896,8 @@ create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
 
   gtk_widget_show_all (gensetup);
   gtk_main ();
+  
+  *verify_conn = gensetup_t.verify_conn;
 
   return gensetup_t.connstr;
 }

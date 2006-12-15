@@ -981,8 +981,8 @@ _iodbcdm_cfg_search_init(PCONFIG *ppconf, const char *filename, int doCreate)
       || strstr (filename, "ODBCINST.INI"))
     return _iodbcdm_cfg_init (ppconf, _iodbcadm_getinifile (pathbuf,
 	    sizeof (pathbuf), TRUE, doCreate), doCreate);
-  else if (access(filename, R_OK) == 0)
-     return _iodbcdm_cfg_init (ppconf, filename, doCreate);
+  else if (doCreate || (!doCreate && access(filename, R_OK) == 0))
+    return _iodbcdm_cfg_init (ppconf, filename, doCreate);
   else
     return -1;
 }
