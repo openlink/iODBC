@@ -564,6 +564,31 @@ AC_DEFINE_UNQUOTED(SYS_ODBC_INI, "$inidir/odbc.ini",
 AC_DEFINE_UNQUOTED(SYS_ODBCINST_INI, "$inidir/odbcinst.ini",
 	[Define path to systemwide odbcinst.ini file])
 
+#
+#  Now allow to override default FileDSN directory with a custom setting
+#
+filedsnpath=$inidir/ODBCDataSources
+AC_MSG_CHECKING(for FILEDSN default directory)
+AC_ARG_WITH(iodbc-filedsnpath, [dnl
+AC_HELP_STRING([--with-iodbc-filedsnpath=DIR], [default location for FILEDSN data sources])
+AC_HELP_STRING([ ], [(default is $inidir/ODBCDataSources)])dnl
+],
+[ 
+    case "$withval" in
+    yes|no)
+        filedsnpath=$inidir/ODBCDataSources
+	;;
+    *)
+    	filedsnpath=$withval
+	;;
+    esac 
+])
+AC_MSG_RESULT($filedsnpath)
+
+AC_SUBST(filedsnpath)
+AC_DEFINE_UNQUOTED(DEFAULT_FILEDSNPATH, "$filedsnpath",
+	[Default location for FILEDSN data sources])
+
 
 ##########################################################################
 ##									##
@@ -787,6 +812,7 @@ echo ""
 echo "${B}Configuration files${N}"
 echo "AC_HELP_STRING(odbc.ini , 	[${inidir}/odbc.ini])"
 echo "AC_HELP_STRING(odbcinst.ini , 	[${inidir}/odbcinst.ini])"
+echo "AC_HELP_STRING(default FILEDSN path, 	[${filedsnpath}])"
 echo ""
 echo "${B}Extensions${N}"
 echo "AC_HELP_STRING(ODBC Version, 	[${odbcmode}])"
