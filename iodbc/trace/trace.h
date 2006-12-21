@@ -101,8 +101,8 @@ extern "C" {
 /*
  *  Useful constants and macros
  */
-#define MAX_EMIT_STRING		4000		/* = 100 lines in output */
-#define MAX_EMIT_BINARY		1000		/* = 100 lines in output */
+#define MAX_EMIT_STRING		40000L		/* = 1000 lines in output */
+#define MAX_EMIT_BINARY		10000L		/* = 1000 lines in output */
 
 #define TRACE_ENTER	0
 #define TRACE_LEAVE	1
