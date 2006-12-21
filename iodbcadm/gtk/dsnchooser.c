@@ -954,7 +954,7 @@ filedsn_configure (TDSNCHOOSER *choose_t, char *drv, char *dsn, char *in_attrs,
   if (!b_add && !_CheckDriverLoginDlg(drv + STRLEN("DRIVER=")))
     {
       /*  Get DSN name and additional attributes  */
-      attr_lst = create_gensetup (choose_t->mainwnd, dsn, in_attrs, 
+      attr_lst = create_fgensetup (choose_t->mainwnd, dsn, in_attrs, 
          b_add, &verify_conn);
       attrs = attr_lst;
     }

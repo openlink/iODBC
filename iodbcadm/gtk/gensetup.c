@@ -363,7 +363,7 @@ static gint delete_event( GtkWidget *widget,
 
 
 LPSTR
-create_gensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_conn)
+create_fgensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_conn)
 {
   GtkWidget *gensetup, *dialog_vbox1, *fixed1, *t_dsn, *l_dsn;
   GtkWidget *l_comment, *scrolledwindow1, *clist1;

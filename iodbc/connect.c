@@ -1641,6 +1641,13 @@ _iodbcdm_con_settracing (HDBC hdbc, SQLCHAR *dsn, int dsnlen, UCHAR waMode)
 }
 
 
+#define CATBUF(buf, str, buf_sz)					\
+  do {									\
+    if (_iodbcdm_strlcat (buf, str, buf_sz) >= buf_sz)			\
+      return -1;							\
+  } while (0)
+
+
 /*
  * Merge the contents of .dsn file into config
  */
@@ -1654,6 +1661,8 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
   char *p, *p_next;
   char entries[1024];
   char value[1024];
+  char drv_value[1024];
+  char *tmp = NULL;
 
   /* identify params precedence */
   if (SQLReadFileDSN (filedsn, "ODBC", "DRIVER", value, sizeof (value), &len) &&
@@ -1700,9 +1709,23 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
   /* remove FILEDSN from new config */
   _iodbcdm_cfg_write (pconfig, "ODBC", "FILEDSN", NULL);
 
+  if (_iodbcdm_cfg_find (pconfig, "ODBC", "DRIVER") == 0)
+    strncpy(drv_value, pconfig->value, sizeof(drv_value));
+
+  /* remove DRIVER from new config */
+  _iodbcdm_cfg_write (pconfig, "ODBC", "DRIVER", NULL);
+
   /* construct new connection string */
   if (_iodbcdm_cfg_to_string (pconfig, "ODBC", buf, buf_sz) == -1)
     return -1;
+
+  tmp = strdup(buf);
+  strncpy(buf, "DRIVER=", buf_sz);
+  CATBUF(buf, drv_value, buf_sz);
+  CATBUF(buf, ";", buf_sz);
+  CATBUF(buf, tmp, buf_sz);
+  MEM_FREE(tmp);
+
   if (wide)
     {
       SQLWCHAR *_in = dm_SQL_U8toW (buf, SQL_NTS);
