@@ -113,6 +113,13 @@
 
 
 /*
+ *  Limit the size of the tracefile, to avoid a core dump when the 
+ *  the RLIMIT_FSIZE is reached.
+ */
+#define	MAX_TRACEFILE_LEN	1000000000L	/* about 1GB */
+
+
+/*
  *  Global trace flag
  */
 int ODBCSharedTraceFlag = SQL_OPT_TRACE_OFF;
@@ -662,6 +669,16 @@ _trace_print_function (int func, int trace_leave, int retcode)
 {
   extern char *odbcapi_symtab[];
   char *ptr = "invalid retcode";
+
+  /*
+   * Guard against tracefile getting too big
+   */
+  if (trace_fp && ftell (trace_fp) > MAX_TRACEFILE_LEN)
+    {
+ 	trace_emit ("\n*** TRACEFILE LIMIT REACHED ***\n");
+	trace_stop ();
+ 	return;
+    }
 
   /*
    * Calculate timestamp
