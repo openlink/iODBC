@@ -1141,14 +1141,18 @@ SQLColAttributes_Internal (
           if (waMode != 'W')
             {
             /* ansi<=unicode*/
-              dm_StrCopyOut2_W2A ((SQLWCHAR *) descOut, (SQLCHAR *) rgbDesc, cbDescMax / sizeof(wchar_t), pcbDesc);
+              dm_StrCopyOut2_W2A ((SQLWCHAR *) descOut, (SQLCHAR *) rgbDesc, 
+              	cbDescMax / sizeof(wchar_t), NULL);
+              if (pcbDesc)
+                *pcbDesc /= sizeof(wchar_t);
             }
           else
             {
             /* unicode<=ansi*/
-              dm_StrCopyOut2_A2W ((SQLCHAR *) descOut, (SQLWCHAR *) rgbDesc, cbDescMax, pcbDesc);
+              dm_StrCopyOut2_A2W ((SQLCHAR *) descOut, (SQLWCHAR *) rgbDesc, 
+              	cbDescMax, NULL);
               if (pcbDesc)
-                *pcbDesc = *pcbDesc * sizeof(wchar_t);
+                *pcbDesc *= sizeof(wchar_t);
             }
         }
     }

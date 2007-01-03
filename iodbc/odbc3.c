@@ -1983,24 +1983,19 @@ SQLGetConnectAttr_Internal (
               if (waMode != 'W')
                 {
                 /* ansi<=unicode*/
-		  SQLSMALLINT retlen;
-
                   dm_StrCopyOut2_W2A ((SQLWCHAR *) valueOut,
 			(SQLCHAR *) ValuePtr, 
-			StringLength / sizeof(wchar_t), &retlen);
+			StringLength / sizeof(wchar_t), NULL);
                   if (StringLengthPtr)
-                    *StringLengthPtr = retlen;
+                    *StringLengthPtr /= sizeof(wchar_t);
                 }
               else
                 {
                 /* unicode<=ansi*/
-		  SQLSMALLINT retlen;
-
                   dm_StrCopyOut2_A2W ((SQLCHAR *) valueOut, 
-			(SQLWCHAR *) ValuePtr, 
-			StringLength, &retlen);
+			(SQLWCHAR *) ValuePtr, StringLength, NULL);
                   if (StringLengthPtr)
-                    *StringLengthPtr = retlen * sizeof(wchar_t);
+                    *StringLengthPtr *= sizeof(wchar_t);
                 }
             }
         }
@@ -2206,24 +2201,18 @@ SQLGetDescField_Internal (
           if (waMode != 'W')
             {
             /* ansi<=unicode*/
-	      SQLSMALLINT retlen;
-
               dm_StrCopyOut2_W2A ((SQLWCHAR *) valueOut, 
-		(SQLCHAR *) ValuePtr, 
-		BufferLength / sizeof(wchar_t), &retlen);
+		(SQLCHAR *) ValuePtr, BufferLength / sizeof(wchar_t), NULL);
 	      if (StringLengthPtr)
-                *StringLengthPtr = retlen;
+                *StringLengthPtr /= sizeof(wchar_t);
             }
           else
             {
             /* unicode<=ansi*/
-	      SQLSMALLINT retlen;
-
               dm_StrCopyOut2_A2W ((SQLCHAR *) valueOut, 
-		(SQLWCHAR *) ValuePtr, 
-		BufferLength, &retlen);
+		(SQLWCHAR *) ValuePtr, BufferLength, NULL);
               if (StringLengthPtr)
-                *StringLengthPtr = retlen * sizeof(wchar_t);
+                *StringLengthPtr *= sizeof(wchar_t);
             }
           break;
         }
@@ -2921,16 +2910,18 @@ SQLColAttribute_Internal (
                 /* ansi<=unicode*/
                   dm_StrCopyOut2_W2A ((SQLWCHAR *) charAttrOut, 
 			(SQLCHAR *) CharacterAttributePtr,
-			BufferLength / sizeof(wchar_t), StringLengthPtr);
+			BufferLength / sizeof(wchar_t), NULL);
+		  if (StringLengthPtr)
+		    *StringLengthPtr /= sizeof(wchar_t);
                 }
               else
                 {
                 /* unicode<=ansi*/
                   dm_StrCopyOut2_A2W ((SQLCHAR *) charAttrOut, 
 			(SQLWCHAR *) CharacterAttributePtr,
-			BufferLength, StringLengthPtr);
+			BufferLength, NULL);
                   if (StringLengthPtr)
-                    *StringLengthPtr = *StringLengthPtr * sizeof(wchar_t);
+                    *StringLengthPtr *= sizeof(wchar_t);
                 }
             }
         }
@@ -3130,16 +3121,18 @@ SQLColAttribute_Internal (
                 /* ansi<=unicode*/
                   dm_StrCopyOut2_W2A ((SQLWCHAR *) charAttrOut, 
 			(SQLCHAR *) CharacterAttributePtr,
-			BufferLength / sizeof(wchar_t), StringLengthPtr);
+			BufferLength / sizeof(wchar_t), NULL);
+		  if (StringLengthPtr)
+		    *StringLengthPtr /= sizeof(wchar_t);
                 }
               else
                 {
                 /* unicode<=ansi*/
                   dm_StrCopyOut2_A2W ((SQLCHAR *) charAttrOut,
 			(SQLWCHAR *) CharacterAttributePtr,
-			BufferLength, StringLengthPtr);
+			BufferLength, NULL);
                   if (StringLengthPtr)
-                    *StringLengthPtr = *StringLengthPtr * sizeof(wchar_t);
+                    *StringLengthPtr *= sizeof(wchar_t);
                 }
             }
         }

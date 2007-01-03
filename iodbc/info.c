@@ -1071,16 +1071,17 @@ SQLGetInfo_Internal (
             /* ansi<=unicode*/
               ret = dm_StrCopyOut2_W2A ((SQLWCHAR *) infoValueOut, 
 		(SQLCHAR *) rgbInfoValue, 
-                cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+                cbInfoValueMax / sizeof(wchar_t), NULL);
+              if (pcbInfoValue)
+                *pcbInfoValue/= sizeof(wchar_t);
             }
           else
             {
             /* unicode<=ansi*/
               ret = dm_StrCopyOut2_A2W ((SQLCHAR *) infoValueOut, 
-		(SQLWCHAR *) rgbInfoValue, 
-		cbInfoValueMax, pcbInfoValue);
+		(SQLWCHAR *) rgbInfoValue, cbInfoValueMax, NULL);
               if (pcbInfoValue)
-                *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
+                *pcbInfoValue *= sizeof(wchar_t);
             }
 
           if (ret == -1)
