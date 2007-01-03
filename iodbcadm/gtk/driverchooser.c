@@ -646,6 +646,7 @@ fdriverchooser_switch_page (GtkNotebook * notebook, GtkNotebookPage * page,
 	                  continue;
    	                }
                       gtk_text_insert(GTK_TEXT(choose_t->mess_entry), NULL, NULL, NULL, curr, -1);
+                      gtk_text_insert(GTK_TEXT(choose_t->mess_entry), NULL, NULL, NULL, "\n", -1);
                     }
                 }
             }
