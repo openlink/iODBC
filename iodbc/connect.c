@@ -1661,8 +1661,9 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
   char *p, *p_next;
   char entries[1024];
   char value[1024];
-  char drv_value[1024];
+  char drv_value[1024] = {"\0"};
   char *tmp = NULL;
+  int rc = 0;
 
   /* identify params precedence */
   if (SQLReadFileDSN (filedsn, "ODBC", "DRIVER", value, sizeof (value), &len) &&
@@ -1716,8 +1717,8 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
   _iodbcdm_cfg_write (pconfig, "ODBC", "DRIVER", NULL);
 
   /* construct new connection string */
-  if (_iodbcdm_cfg_to_string (pconfig, "ODBC", buf, buf_sz) == -1)
-    return -1;
+  if ((rc =_iodbcdm_cfg_to_string (pconfig, "ODBC", buf, buf_sz)) == -1)
+    goto done;
 
   tmp = strdup(buf);
   strncpy(buf, "DRIVER=", buf_sz);
@@ -1730,12 +1731,21 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
     {
       SQLWCHAR *_in = dm_SQL_U8toW (buf, SQL_NTS);
       if (_in == NULL)
-        return -1;
+        {
+          rc = -1;
+          goto done;
+        }
       WCSNCPY (buf, _in, buf_sz / sizeof (SQLWCHAR));
       MEM_FREE (_in);
     }
 
-  return 0;
+  rc = 0;
+
+done:
+  if (drv_value[0])
+    _iodbcdm_cfg_write (pconfig, "ODBC", "DRIVER", drv_value);
+    
+  return rc;
 }
 
 
@@ -2480,6 +2490,7 @@ SQLDriverConnect_Internal (
 	  break;
 	}
     }
+
 
   /* get connect parameters from .dsn file if requested */
   if (filedsn != NULL)
