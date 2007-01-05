@@ -1,3 +1,221 @@
+2007-01-05 12:52  source
+
+	* Updated version to 3.53.5 (pvk)
+
+2007-01-05 12:45  source
+
+	* Added support for RedHat FC6 64bit (pvk)
+
+2007-01-05 12:22  source
+
+	* Reverted incomplete patch (pvk)
+
+2007-01-03 14:29  source
+
+	* Fixed buffer size calculation (sm)
+
+2007-01-03 14:27  source
+
+	* Fixed problem connecting with FileDSN (sm)
+
+2007-01-03 14:26  source
+
+	* Fixed missing newline when showing parameters (sm)
+
+2006-12-21 11:28  source
+
+	* Increased limit of tracedump char and hex data to 1000 lines max (pvk)
+
+2006-12-21 11:24  source
+
+	* Limit the size of the tracefile to about 1Gb (pvk)
+
+2006-12-21 11:23  source
+
+	* Fixed problems with FileDSN in GTK build (sm)
+
+2006-12-15 14:05  source
+
+	* Updated version to 3.52.5-rc2
+
+2006-12-15 14:04  source
+
+	* Added configure option to set default FileDSN directory (pvk)
+
+2006-12-15 14:04  source
+
+	* Allow user to bypass connection check when adding a FileDSN (sm)
+
+2006-12-12 16:27  source
+
+	* Removed bogus free (pvk)
+
+2006-12-12 16:18  source
+
+	* Removed duplicate error message box (pvk)
+
+2006-12-11 16:52  source
+
+	* Incorporated diff from debian web site (pvk)
+
+2006-12-11 16:19  source
+
+	* Updated version to 3.52.5-rc1
+
+2006-12-11 15:58  source
+
+	* Fixed problem when driver has not yet been connected (pvk)
+
+2006-12-11 14:21  source
+
+	* Use SQL_SUCCEEDED macro to increase readability (pvk)
+
+2006-12-11 13:42  source
+
+	* Fixed problem always returning SQL_ERROR due to logic bug (pvk)
+
+2006-12-11 13:25  source
+
+	* Call ODBC 2.x functions in driver if application uses ODBC 2.x only
+	  (pvk)
+
+2006-11-03 14:58  source
+
+	* Added check for /Library/ODBC for Mac OS X (pvk)
+
+2006-11-02 09:47  source
+
+	* Fixed typo
+
+2006-09-25 11:36  source
+
+	* Call ODBC 2.x functions in driver if application uses ODBC 2.x only
+	  (sm)
+
+2006-08-03 17:51  source
+
+	* Added missing header to distribution
+
+2006-07-17 14:53  source
+
+	* Removed procid reference from code and simplified call mechanism (pvk)
+
+2006-07-11 12:26  source
+
+	* Simplified CALL_DRIVER and CALL_UDRIVER macros
+
+2006-07-10 13:46  source
+
+	* Merged FileDSN and ConnectionPooling support from iODBC-3_52_4-DEVEL
+
+2006-07-10 13:43  source
+
+	* Merged FileDSN support from iODBC-3_52_4-DEVEL into HEAD
+
+2006-07-10 13:24  source
+
+	* Use highlighting in overview screen (pvk)
+
+2006-07-10 13:23  source
+
+	* Rewrote bootstrap script to be more verbose about programs/versions
+	  needed (pvk)
+
+2006-06-09 13:34  source
+
+	* Fixed bug overwriting driver name (sm)
+
+2006-05-31 14:32  source
+
+	* Additional support for Connection Pooling in GTK dialogs (sm)
+
+2006-05-30 12:24  source
+
+	* Fixed connection pooling support
+
+2006-05-24 13:45  source
+
+	* Added bold titles to summary (pvk)
+
+2006-05-24 13:42  source
+
+	* Rewrote bootstrap script (pvk)
+
+2006-05-24 13:38  source
+
+	* Added  support for FileDSN in GTK based administrator (sm)
+
+2006-05-09 06:15  source
+
+	* Small FileDSN cleanup (sm)
+
+2006-04-27 15:06  source
+
+	* Skip {..}  when parsing connect string (sm)
+
+2006-04-27 13:49  source
+
+	* Fixed version information (pvk)
+
+2006-04-27 13:48  source
+
+	* Removed C++ comments (pvk)
+
+2006-04-27 13:47  source
+
+	* Default FILEDSN on Mac OS X is /Library/ODBC/ODBCDataSources (pvk)
+
+2006-04-27 13:45  source
+
+	* Skip {..}  when parsing connect string (sergei)
+
+2006-04-27 13:45  source
+
+	* Removed FAR keyword
+	* Fixed prototypes
+	  (pvk)
+
+2006-03-21 16:08  source
+
+	* Use localtime_r (pvk)
+
+2006-03-10 10:06  source
+
+	* Merged FileDSN and ConnectionPooling support (sm)
+
+2006-03-06 15:20  source
+
+	* Fixed typo in function prototype (pvk)
+
+2006-03-03 16:34  source
+
+	* Updated Info strings (pvk)
+
+2006-02-24 10:38  source
+
+	* Let the driver manager call the setup dialogs for now and then
+	  call the driver with SQL_DRIVER_NOPROMPT (sm)
+
+2006-02-13 16:03  source
+
+	* Version information is inserted by installer scripts (pvk)
+
+2006-02-13 16:01  source
+
+	* Added sccid to all sections to get string with load type into binary (pvk)
+
+2006-02-08 13:56  source
+
+	* Remove ppc64 from universal builds (pvk)
+
+2006-02-02 23:12  source
+
+	* Fixed include file problem on Mac OS X 10.3 (pvk)
+
+2006-02-02 23:11  source
+
+	* Added realclean rule (pvk)
+
 2006-01-26 15:59  source
 
 	* Finalized iODBC-3.52.4 release (pvk)
