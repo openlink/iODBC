@@ -120,6 +120,7 @@ EXTRA_DIST		= \
 	debian/libiodbc2.install \
 	debian/libiodbc2.lintian-overrides \
 	debian/libiodbc2.undocumented \
+	debian/README.Debian \
 	debian/rules \
 	debian/watch 
 
