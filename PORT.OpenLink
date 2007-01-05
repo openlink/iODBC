@@ -274,6 +274,18 @@ case $OS in
        $BUILD
        ;;
 
+    x86_64-redhat-linux-gnu)
+       CONFLAGS="--enable-gui --enable-maintainer-mode"
+
+       CFLAGS="-O3 -m32"
+       export CFLAGS CONFLAGS
+       $BUILD 32
+
+       CFLAGS="-O3 -m64"
+       export CFLAGS CONFLAGS
+       $BUILD 64
+       ;;
+
     powerpc-apple-darwin8*)
 	PREFIX=/usr/local/iODBC.darwin
 	CONFLAGS="--disable-shared --with-pic"
