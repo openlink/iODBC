@@ -311,13 +311,20 @@ AC_HELP_STRING([--disable-gui], [build GUI applications])dnl
 USE_GTK=false
 if test x$USE_GUI = xtrue
 then
-  AM_PATH_GTK(1.2.3)
+  no_gtk=""
+  # Check for GTK+ 2.x
+  AM_PATH_GTK_2_0(2.0.0)
+  if test x$no_gtk != x
+  then
+      # Try GTK 1.2.x instead
+      no_gtk=""
+      AM_PATH_GTK(1.2.3)
+  fi
   if test x$no_gtk = x
   then
     USE_GTK=true
   fi
 fi
-
 
 ##########################################################################
 ##									##

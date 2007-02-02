@@ -383,6 +383,10 @@ create_gensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add)
   gtk_window_set_modal (GTK_WINDOW (gensetup), TRUE);
   gtk_window_set_policy (GTK_WINDOW (gensetup), FALSE, FALSE, FALSE);
 
+#if GTK_CHECK_VERSION(2,0,0)
+  gtk_widget_show (gensetup);
+#endif
+
   dialog_vbox1 = GTK_DIALOG (gensetup)->vbox;
   gtk_object_set_data (GTK_OBJECT (gensetup), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);

@@ -159,6 +159,10 @@ create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
   gtk_window_set_modal (GTK_WINDOW (login), TRUE);
   gtk_window_set_policy (GTK_WINDOW (login), FALSE, FALSE, FALSE);
 
+#if GTK_CHECK_VERSION(2,0,0)
+  gtk_widget_show (login);
+#endif
+
   dialog_vbox1 = GTK_DIALOG (login)->vbox;
   gtk_object_set_data (GTK_OBJECT (login), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);

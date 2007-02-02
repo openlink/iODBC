@@ -88,6 +88,9 @@ int
 gtk_gui (int *argc, char **argv[])
 {
   GtkWidget *mainwnd;
+#if GTK_CHECK_VERSION(2,0,0)
+  gtk_set_locale();
+#endif
   gtk_init (argc, argv);
   mainwnd = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   return SQLManageDataSources (mainwnd);
