@@ -3087,7 +3087,12 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
         PCONFIG pconfig;
         void *drv = NULL, *dsn = NULL;
 
-        _iodbcdm_cfg_init_str (&pconfig, szConnStrIn, cbConnStrIn, 0);
+        if (_iodbcdm_cfg_init_str (&pconfig, szConnStrIn, cbConnStrIn,
+			     waMode == 'W') == -1)
+          {
+            PUSHSQLERR (pdbc->herr, en_HY001);
+            return SQL_ERROR;
+          }
         if (_iodbcdm_cfg_find (pconfig, "ODBC", "DRIVER") == 0)
           drv = pconfig->value;
         if (_iodbcdm_cfg_find (pconfig, "ODBC", "DSN") == 0)
@@ -3187,7 +3192,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          if ((_ConnStrOut = malloc(cbConnStrOutMax * sizeof(SQLWCHAR) + 1)) == NULL)
+          if ((_ConnStrOut = malloc((cbConnStrOutMax + 1) * sizeof(SQLWCHAR))) == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_HY001);
 	      return SQL_ERROR;
