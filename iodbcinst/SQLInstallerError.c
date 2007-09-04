@@ -89,7 +89,7 @@ LPSTR errortable[] = {
   "Invalid string parameter",
   "Invalid type of request",
   "Component not found",
-  "Invalid name parameter",
+  "Invalid driver or translator name",
   "Invalid keyword-value pairs",
   "Invalid DSN",
   "Invalid .INF file",
@@ -105,6 +105,7 @@ LPSTR errortable[] = {
   "Deletion of the DSN failed",
   "Out of memory",
   "Output string truncated due to a buffer not large enough",
+  "Driver- or translator-specific error",
 };
 
 
