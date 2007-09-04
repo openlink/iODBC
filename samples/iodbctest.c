@@ -967,7 +967,11 @@ ODBC_Test ()
 	  totalRows = 0;
 	  while (1)
 	    {
+#if (ODBCVER < 0x0300)
 	      int sts = SQLFetch (hstmt);
+#else
+	      int sts = SQLFetchScroll (hstmt, SQL_FETCH_NEXT, 1);
+#endif
 
 	      if (sts == SQL_NO_DATA_FOUND)
 		break;
