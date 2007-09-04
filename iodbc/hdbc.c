@@ -761,8 +761,11 @@ _iodbcdm_GetConnectOption (
   HPROC hproc3 = SQL_NULL_HPROC;
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
-  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
-  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
+  SQLUINTEGER odbc_ver;
+  SQLUINTEGER dodbc_ver;
+
+  odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
 
 #if (ODBCVER < 0x0300)
   /* check option */
