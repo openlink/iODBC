@@ -1755,7 +1755,7 @@ SQLSetConnectAttr_Internal (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
 
-  odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  odbc_ver = ((GENV_t *) con->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
 
   if (con->state == en_dbc_needdata)
@@ -1919,7 +1919,7 @@ SQLGetConnectAttr_Internal (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
 
-  odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  odbc_ver = ((GENV_t *) con->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
 
   if (con->state == en_dbc_needdata)
