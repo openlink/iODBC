@@ -136,7 +136,7 @@ WriteDSNToIni (LPCSTR lpszDSN, LPCSTR lpszDriver)
       if (!GetPrivateProfileString ((LPSTR) lpszDriver, "Driver", "",
 	      szBuffer, sizeof (szBuffer) - 1, "odbcinst.ini"))
 	{
-	  PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED);
+	  PUSH_ERROR (ODBC_ERROR_INVALID_NAME);
 	  goto done;
 	}
     }
