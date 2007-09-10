@@ -704,12 +704,12 @@ SQLSetConnectOption (
   SQLUSMALLINT		  fOption,
   SQLULEN		  vParam)
 {
-  ENTER_HDBC (hdbc, 1,
+  ENTER_HDBC (hdbc, 0,
     trace_SQLSetConnectOption (TRACE_ENTER, hdbc, fOption, vParam));
 
   retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam, 'A');
 
-  LEAVE_HDBC (hdbc, 1,
+  LEAVE_HDBC (hdbc, 0,
     trace_SQLSetConnectOption (TRACE_LEAVE, hdbc, fOption, vParam));
 }
 
@@ -721,12 +721,12 @@ SQLSetConnectOptionA (
   SQLUSMALLINT		  fOption,
   SQLULEN		  vParam)
 {
-  ENTER_HDBC (hdbc, 1,
+  ENTER_HDBC (hdbc, 0,
     trace_SQLSetConnectOption (TRACE_ENTER, hdbc, fOption, vParam));
 
   retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam, 'A');
 
-  LEAVE_HDBC (hdbc, 1,
+  LEAVE_HDBC (hdbc, 0,
     trace_SQLSetConnectOption (TRACE_LEAVE, hdbc, fOption, vParam));
 }
 
@@ -737,12 +737,12 @@ SQLSetConnectOptionW (
   SQLUSMALLINT		  fOption,
   SQLULEN		  vParam)
 {
-  ENTER_HDBC (hdbc, 1,
+  ENTER_HDBC (hdbc, 0,
     trace_SQLSetConnectOptionW (TRACE_ENTER, hdbc, fOption, vParam));
 
   retcode = _iodbcdm_SetConnectOption (hdbc, fOption, vParam, 'W');
 
-  LEAVE_HDBC (hdbc, 1,
+  LEAVE_HDBC (hdbc, 0,
     trace_SQLSetConnectOptionW (TRACE_LEAVE, hdbc, fOption, vParam));
 }
 #endif
@@ -1047,12 +1047,12 @@ SQLGetConnectOptionA (
   SQLUSMALLINT		  fOption,
   SQLPOINTER		  pvParam)
 {
-  ENTER_HDBC (hdbc, 1,
+  ENTER_HDBC (hdbc, 0,
     trace_SQLGetConnectOption (TRACE_ENTER, hdbc, fOption, pvParam));
 
   retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam, 'A');
 
-  LEAVE_HDBC (hdbc, 1,
+  LEAVE_HDBC (hdbc, 0,
     trace_SQLGetConnectOption (TRACE_LEAVE, hdbc, fOption, pvParam));
 }
 
@@ -1063,12 +1063,12 @@ SQLGetConnectOptionW (
   SQLUSMALLINT		  fOption,
   SQLPOINTER		  pvParam)
 {
-  ENTER_HDBC (hdbc, 1,
+  ENTER_HDBC (hdbc, 0,
     trace_SQLGetConnectOptionW (TRACE_ENTER, hdbc, fOption, pvParam));
 
   retcode = _iodbcdm_GetConnectOption (hdbc, fOption, pvParam, 'W');
 
-  LEAVE_HDBC (hdbc, 1,
+  LEAVE_HDBC (hdbc, 0,
     trace_SQLGetConnectOptionW (TRACE_LEAVE, hdbc, fOption, pvParam));
 }
 #endif
