@@ -395,7 +395,9 @@ _iodbcdm_finish_disconnect (HDBC hdbc, BOOL driver_disconnect)
           return SQL_ERROR;
         }
 
+      ODBC_UNLOCK ();
       CALL_DRIVER (hdbc, pdbc, retcode, hproc, (pdbc->dhdbc));
+      ODBC_LOCK ();
 
       if (!SQL_SUCCEEDED (retcode))
         {
@@ -2097,6 +2099,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
       szAuthStr = _szAuthStr;
     }
 
+  ODBC_UNLOCK ();
   CALL_UDRIVER(hdbc, pdbc, retcode, hproc, penv->unicode_driver,
     en_Connect, (
        pdbc->dhdbc,
@@ -2106,6 +2109,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
        cbUID,
        szAuthStr,
        cbAuthStr));
+  ODBC_LOCK ();
 
   if (hproc == SQL_NULL_HPROC)
     {
@@ -3214,6 +3218,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
       connStrOut = _ConnStrOut;
     }
 
+  ODBC_UNLOCK ();
   CALL_UDRIVER(hdbc, pdbc, retcode, hproc, penv->unicode_driver,
     en_BrowseConnect, (
        pdbc->dhdbc,
@@ -3222,6 +3227,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
        connStrOut,
        cbConnStrOutMax,
        pcbConnStrOut));
+  ODBC_LOCK ();
 
   MEM_FREE(_ConnStrIn);
 
