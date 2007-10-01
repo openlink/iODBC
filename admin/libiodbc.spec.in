@@ -89,11 +89,11 @@
 Summary: iODBC Driver Manager
 name: libiodbc
 version: @VERSION@
-release: 1
+release: 3
 Group: Libraries
 Vendor: Ke Jin and OpenLink Software
 Packager: OpenLink Software <iodbc@openlinksw.com>
-Copyright: LGPL or BSD license (see "LICENSE" file included in distribution)
+License: LGPL or BSD license (see "LICENSE" file included in distribution)
 URL: http://www.iodbc.org/
 Source: http://www.iodbc.org/downloads/iODBC/libiodbc-%{PACKAGE_VERSION}.tar.gz
 Prefix: /usr
@@ -151,7 +151,7 @@ currently maintained by OpenLink Software under a LGPL or BSD license
 %prep
 %setup
 %build
-./configure --prefix=/usr --mandir=%{_mandir} --enable-odbc3 --with-iodbc-inidir=/etc --enable-pthreads
+./configure --prefix=/usr --mandir=%{_mandir} --enable-odbc3 --with-iodbc-inidir=/etc --enable-pthreads --disable-libodbc
 make
 
 %install
