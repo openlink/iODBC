@@ -682,6 +682,17 @@ then
 		AC_MSG_RESULT([use -lpthread for HP/UX])
 		;;
 
+	*-osf3.*)
+		CPPFLAGS="$CPPFLAGS -DOLD_PTHREADS"
+		LIBS="$LIBS -lpthreads -lmach -lc_r"
+		AC_MSG_RESULT([use -lpthreads for OSF 3.2])
+		;;
+
+	*-osf4.*)
+	        LIBS="$LIBS -lpthread"
+		AC_MSG_RESULT([use -lpthread for OSF 4.x])
+	  	;;
+		
       *)
 		AC_MSG_RESULT([none])
 		;;
@@ -705,13 +716,7 @@ then
     then
 	IODBC_CHECK_PTHREAD_LIB(pthreads, pthread_mutex_lock,
 	[
-	    if test "$host_os" = "osf3.2"
-	    then
-	      CPPFLAGS="$CPPFLAGS -DOLD_PTHREADS"
-	      LIBS="$LIBS -lpthreads -lmach -lc_r"
-	    else
-	      LIBS="$LIBS -lpthreads"
-	    fi
+	    LIBS="$LIBS -lpthreads"
 	    found_lib=true
 	])
     fi
