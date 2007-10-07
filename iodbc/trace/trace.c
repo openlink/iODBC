@@ -669,6 +669,9 @@ _trace_print_function (int func, int trace_leave, int retcode)
 {
   extern char *odbcapi_symtab[];
   char *ptr = "invalid retcode";
+#ifdef HAVE_GETTIMEOFDAY
+  struct timeval tv;
+#endif
 
   /*
    * Guard against tracefile getting too big
@@ -684,8 +687,6 @@ _trace_print_function (int func, int trace_leave, int retcode)
    * Calculate timestamp
    */
 #ifdef HAVE_GETTIMEOFDAY
-  struct timeval tv;
-
   gettimeofday (&tv, NULL);
   tv.tv_sec -= starttime.tv_sec;
   tv.tv_usec -= starttime.tv_usec;
