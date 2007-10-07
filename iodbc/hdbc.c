@@ -1080,12 +1080,16 @@ _iodbcdm_transact (
     UWORD fType)
 {
   CONN (pdbc, hdbc);
+  ENVR (penv, pdbc->henv);
   STMT (pstmt, NULL);
   HPROC hproc2 = SQL_NULL_HPROC;
   HPROC hproc3 = SQL_NULL_HPROC;
   SQLRETURN retcode;
-  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
-  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
+  SQLUINTEGER odbc_ver;
+  SQLUINTEGER dodbc_ver;
+
+  odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
 
   /* check state */
   switch (pdbc->state)
