@@ -673,9 +673,10 @@ SQLDescribeCol_Internal (
     }
 
   /* call driver */
-
-  if ((penv->unicode_driver && waMode != 'W') 
-      || (!penv->unicode_driver && waMode == 'W'))
+    if (szColName != NULL && cbColNameMax > 0 && 
+    	((penv->unicode_driver && waMode != 'W') || 
+	(!penv->unicode_driver && waMode == 'W'))
+	)
     {
       if (waMode != 'W')
         {
@@ -984,8 +985,9 @@ SQLColAttributes_Internal (
     }
 
   /* call driver */
-  if ((penv->unicode_driver && waMode != 'W') 
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (rgbDesc != NULL && cbDescMax > 0 && 
+      ((penv->unicode_driver && waMode != 'W') || 
+       (!penv->unicode_driver && waMode == 'W')))
     {
       switch(fDescType)
         {
