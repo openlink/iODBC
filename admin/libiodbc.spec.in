@@ -89,7 +89,7 @@
 Summary: iODBC Driver Manager
 name: libiodbc
 version: @VERSION@
-release: 4
+release: 1
 Group: Libraries
 Vendor: Ke Jin and OpenLink Software
 Packager: OpenLink Software <iodbc@openlinksw.com>
