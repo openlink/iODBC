@@ -1,3 +1,8 @@
+2007-10-08 12:37  source
+
+	* Fixed problem returning memory allocation error when max length of buffer
+	  was set to 0.
+
 2007-10-07 14:15  source
 
 	* Updated instructions to get CVS tree from sourceforge archive
