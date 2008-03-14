@@ -363,13 +363,13 @@ _iodbcdm_sqlerror (
 
   if (herr == SQL_NULL_HERR)	/* no err on drv mng */
     {
-      if (((DBC_t *)hdbc)->genv)
-        odbc_ver = ((GENV_t *) ((DBC_t *)hdbc)->genv)->odbc_ver;
+      if (thdbc && ((DBC_t *)thdbc)->genv)
+        odbc_ver = ((GENV_t *) ((DBC_t *)thdbc)->genv)->odbc_ver;
 
-      if (((DBC_t *)hdbc)->henv)
+      if (thdbc && ((DBC_t *)thdbc)->henv)
         {
-          unicode_driver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->unicode_driver;
-          dodbc_ver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->dodbc_ver;
+          unicode_driver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->unicode_driver;
+          dodbc_ver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->dodbc_ver;
         }
 
       /* call driver */
@@ -939,13 +939,13 @@ SQLGetDiagRec_Internal (
 	}
       RecNumber -= nRecs;
 
-      if (((DBC_t *)hdbc)->henv)
+      if (hdbc && ((DBC_t *)hdbc)->henv)
         {
           unicode_driver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->unicode_driver;
           dodbc_ver = ((ENV_t *) ((DBC_t *)hdbc)->henv)->dodbc_ver;
         }
 
-      if (((DBC_t *)hdbc)->genv)
+      if (hdbc && ((DBC_t *)hdbc)->genv)
         odbc_ver = ((GENV_t *) ((DBC_t *)hdbc)->genv)->odbc_ver;
 
       if ((unicode_driver && waMode != 'W') 
