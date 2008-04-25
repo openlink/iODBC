@@ -132,8 +132,8 @@ create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
 {
   GtkWidget *connectionpool, *dialog_vbox1, *fixed1, *l_question;
   GtkWidget *t_cptimeout, *dialog_action_area1, *hbuttonbox1;
-  GtkWidget *t_probe, *l_time, *l_probe;
-  GtkWidget *b_finish, *b_cancel;
+  GtkWidget *t_probe, *l_time, *l_probe, *fixed0, *l_question1;
+  GtkWidget *b_finish, *b_cancel, *frame1;
   guint b_finish_key, b_cancel_key;
   GtkAccelGroup *accel_group;
   char msg[1024];
@@ -160,23 +160,42 @@ create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
       dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
+
+  fixed0 = gtk_fixed_new ();
+  gtk_widget_ref (fixed0);
+  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "fixed0", fixed0,
+      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (fixed0);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox1), fixed0, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (fixed0), 6);
+
+  frame1 = gtk_frame_new(choose_t->driver);
+  gtk_widget_ref(frame1);
+  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "frame1", frame1,
+      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame1);
+  gtk_fixed_put (GTK_FIXED (fixed0), frame1, 6, 6);
+  gtk_widget_set_uposition (frame1, 6, 6);
+  gtk_widget_set_usize (frame1, 410, 165);
+
   fixed1 = gtk_fixed_new ();
   gtk_widget_ref (fixed1);
   gtk_object_set_data_full (GTK_OBJECT (connectionpool), "fixed1", fixed1,
       (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (fixed1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), fixed1, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (frame1), fixed1);
   gtk_container_set_border_width (GTK_CONTAINER (fixed1), 6);
+
 
   l_question =
       gtk_label_new
-      ("You have now to specify the connection pooling timeout\nin seconds of the specified driver and probe query");
+      ("Enable connection pooling for this driver by specifying      \na timeout in seconds");
   gtk_widget_ref (l_question);
   gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_question",
       l_question, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (l_question);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_question, 8, 8);
-  gtk_widget_set_uposition (l_question, 8, 8);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_question, 4, 22);
+  gtk_widget_set_uposition (l_question, 4, 22);
 #if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_set_usize (l_question, 376, 36);
 #else
@@ -190,11 +209,11 @@ create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
       l_time, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (l_time);
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 48);
-  gtk_widget_set_uposition (l_time, 8, 48);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 62);
+  gtk_widget_set_uposition (l_time, 8, 62);
 #else
-  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 40);
-  gtk_widget_set_uposition (l_time, 8, 40);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 54);
+  gtk_widget_set_uposition (l_time, 8, 54);
 #endif
   gtk_widget_set_usize (l_time, 60, 24);
   gtk_label_set_justify (GTK_LABEL (l_time), GTK_JUSTIFY_RIGHT);
@@ -205,28 +224,45 @@ create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
       t_cptimeout, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (t_cptimeout);
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 48);
-  gtk_widget_set_uposition (t_cptimeout, 80, 48);
+  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 62);
+  gtk_widget_set_uposition (t_cptimeout, 80, 62);
 #else
-  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 40);
-  gtk_widget_set_uposition (t_cptimeout, 80, 40);
+  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 54);
+  gtk_widget_set_uposition (t_cptimeout, 80, 54);
 #endif
   gtk_widget_set_usize (t_cptimeout, 300, 22);
 
   if (choose_t)
     gtk_entry_set_text (GTK_ENTRY (t_cptimeout), choose_t->timeout);
 
+  l_question1 =
+      gtk_label_new
+      ("Set an optional probe query, used for additional verification\nof the connection state");
+  gtk_widget_ref (l_question1);
+  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_question",
+      l_question, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (l_question1);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_question1, 4, 90);
+  gtk_widget_set_uposition (l_question1, 4, 90);
+#if GTK_CHECK_VERSION(2,0,0)
+  gtk_widget_set_usize (l_question1, 376, 36);
+#else
+  gtk_widget_set_usize (l_question1, 376, 24);
+#endif
+  gtk_label_set_justify (GTK_LABEL (l_question1), GTK_JUSTIFY_LEFT);
+  
+  
   l_probe = gtk_label_new ("Query:");
   gtk_widget_ref (l_probe);
   gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_probe",
       l_probe, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (l_probe);
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 78);
-  gtk_widget_set_uposition (l_probe, 8, 78);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 130);
+  gtk_widget_set_uposition (l_probe, 8, 130);
 #else
-  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 70);
-  gtk_widget_set_uposition (l_probe, 8, 70);
+  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 110);
+  gtk_widget_set_uposition (l_probe, 8, 110);
 #endif
   gtk_widget_set_usize (l_probe, 60, 24);
   gtk_label_set_justify (GTK_LABEL (l_probe), GTK_JUSTIFY_RIGHT);
@@ -237,11 +273,11 @@ create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
       t_probe, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (t_probe);
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 78);
-  gtk_widget_set_uposition (t_probe, 80, 78);
+  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 130);
+  gtk_widget_set_uposition (t_probe, 80, 130);
 #else
-  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 70);
-  gtk_widget_set_uposition (t_probe, 80, 70);
+  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 110);
+  gtk_widget_set_uposition (t_probe, 80, 110);
 #endif
   gtk_widget_set_usize (t_probe, 300, 22);
 

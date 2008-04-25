@@ -131,6 +131,7 @@ typedef struct TCONNECTIONPOOLING
   BOOL changed;
   char timeout[64];
   char probe[512];
+  char driver[1024];
 } TCONNECTIONPOOLING;
 
 typedef struct TTRANSLATORCHOOSER

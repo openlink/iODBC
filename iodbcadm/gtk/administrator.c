@@ -546,6 +546,7 @@ cpdriver_list_select (GtkWidget *widget, gint row, gint column,
 
           strncpy (choose_t.timeout, cptimeout, sizeof(choose_t.timeout)-1);
           strncpy (choose_t.probe, cpprobe, sizeof(choose_t.probe)-1);
+          strncpy (choose_t.driver, szDriver, sizeof(choose_t.driver)-1);
 	}
 
       if (szDriver && event && event->type == GDK_2BUTTON_PRESS
