@@ -82,22 +82,24 @@
 #  Disable generation of debug package
 %define debug_package %{nil}
 
+#  Do we want to build the GTK based administrator?
+%define with_admin 1
+
+# on commandline: --define 'noadmin 1'
+%{?noadmin:%define with_admin 0}
 
 # ----------------------------------------------------------------------
 # BASE PACKAGE
 # ----------------------------------------------------------------------
+Name: libiodbc
+Version: @VERSION@
+Release: 1
 Summary: iODBC Driver Manager
-name: libiodbc
-version: @VERSION@
-release: 1
 Group: Libraries
-Vendor: Ke Jin and OpenLink Software
-Packager: OpenLink Software <iodbc@openlinksw.com>
 License: LGPL or BSD license (see "LICENSE" file included in distribution)
 URL: http://www.iodbc.org/
 Source: http://www.iodbc.org/downloads/iODBC/libiodbc-%{PACKAGE_VERSION}.tar.gz
-Prefix: /usr
-BuildRoot:/var/tmp/build-libiodbc-%{PACKAGE_VERSION}
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 The iODBC Driver Manager is a free implementation of the SAG CLI and
@@ -127,6 +129,7 @@ The iODBC Driver Manager was originally created by Ke Jin and is
 currently maintained by OpenLink Software under a LGPL or BSD license
 (see "LICENSE" file included in the distribution).
 
+%if %{with_admin}
 %package admin
 Summary: GTK based administrator for iODBC development
 Group: Development/Libraries
@@ -144,6 +147,7 @@ DSN information in odbc.ini and odbcinst.ini files.
 The iODBC Driver Manager was originally created by Ke Jin and is
 currently maintained by OpenLink Software under a LGPL or BSD license
 (see "LICENSE" file included in the distribution).
+%endif
 
 %prep
 %setup
@@ -186,10 +190,10 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %postun -p /sbin/ldconfig
 
 %files 
-%attr(0755, root, root) /usr/bin/iodbctest
-%attr(0755, root, root) /usr/bin/iodbctestw
-%attr(0755, root, root) /usr/lib/libiodbc.so.*
-%attr(0755, root, root) /usr/lib/libiodbcinst.so.*
+%attr(0755, root, root) %{_bindir}/iodbctest
+%attr(0755, root, root) %{_bindir}/iodbctestw
+%attr(0755, root, root) %{_libdir}/libiodbc.so.*
+%attr(0755, root, root) %{_libdir}/libiodbcinst.so.*
 %attr(0644, root, root) %{_mandir}/man1/iodbctest.1*
 %attr(0644, root, root) %{_mandir}/man1/iodbctestw.1*
 #%attr(0644, root, root) %config /etc/odbc.ini
@@ -197,6 +201,7 @@ mkdir -p $RPM_BUILD_ROOT/etc
 
 
 %files devel
+%defattr(-,root,root)
 %attr(0644, root, root) %doc AUTHORS 
 %attr(0644, root, root) %doc LICENSE
 %attr(0644, root, root) %doc LICENSE.LGPL
@@ -207,35 +212,37 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) %doc README.CVS
 %attr(0644, root, root) %doc etc/odbc.ini.sample
 %attr(0644, root, root) %doc etc/odbcinst.ini.sample
-%attr(0644, root, root) /usr/include/iodbcext.h
-%attr(0644, root, root) /usr/include/iodbcinst.h
-%attr(0644, root, root) /usr/include/iodbcunix.h
-%attr(0644, root, root) /usr/include/isqlext.h
-%attr(0644, root, root) /usr/include/isql.h
-%attr(0644, root, root) /usr/include/isqltypes.h
-%attr(0644, root, root) /usr/include/sql.h
-%attr(0644, root, root) /usr/include/sqltypes.h
-%attr(0644, root, root) /usr/include/sqlucode.h
-%attr(0644, root, root) /usr/include/sqlext.h
-%attr(0644, root, root) /usr/include/odbcinst.h
-%attr(0755, root, root) /usr/bin/iodbc-config
-%attr(0644, root, root) /usr/lib/libiodbc.a
-%attr(0644, root, root) /usr/lib/libiodbc.la
-%attr(0755, root, root) /usr/lib/libiodbc.so
-%attr(0644, root, root) /usr/lib/libiodbcinst.a
-%attr(0644, root, root) /usr/lib/libiodbcinst.la
-%attr(0755, root, root) /usr/lib/libiodbcinst.so
+%attr(0644, root, root) %{_includedir}/iodbcext.h
+%attr(0644, root, root) %{_includedir}/iodbcinst.h
+%attr(0644, root, root) %{_includedir}/iodbcunix.h
+%attr(0644, root, root) %{_includedir}/isqlext.h
+%attr(0644, root, root) %{_includedir}/isql.h
+%attr(0644, root, root) %{_includedir}/isqltypes.h
+%attr(0644, root, root) %{_includedir}/sql.h
+%attr(0644, root, root) %{_includedir}/sqltypes.h
+%attr(0644, root, root) %{_includedir}/sqlucode.h
+%attr(0644, root, root) %{_includedir}/sqlext.h
+%attr(0644, root, root) %{_includedir}/odbcinst.h
+%attr(0755, root, root) %{_bindir}/iodbc-config
+%attr(0644, root, root) %{_libdir}/libiodbc.a
+%attr(0644, root, root) %{_libdir}/libiodbc.la
+%attr(0755, root, root) %{_libdir}/libiodbc.so
+%attr(0644, root, root) %{_libdir}/libiodbcinst.a
+%attr(0644, root, root) %{_libdir}/libiodbcinst.la
+%attr(0755, root, root) %{_libdir}/libiodbcinst.so
 %attr(0644, root, root) %{_mandir}/man1/iodbc-config.1*
-%attr(0644, root, root) /usr/share/libiodbc/samples/Makefile
-%attr(0644, root, root) /usr/share/libiodbc/samples/iodbctest.c
-%attr(0644, root, root) /usr/lib/pkgconfig/libiodbc.pc
+%attr(0644, root, root) %{_datadir}/libiodbc/samples/Makefile
+%attr(0644, root, root) %{_datadir}/libiodbc/samples/iodbctest.c
+%attr(0644, root, root) %{_libdir}/pkgconfig/libiodbc.pc
 
+%if %{with_admin}
 %files admin
-%attr(0755, root, root) /usr/bin/iodbcadm-gtk
-%attr(0644, root, root) /usr/lib/libdrvproxy.a
-%attr(0644, root, root) /usr/lib/libdrvproxy.la
-%attr(0755, root, root) /usr/lib/libdrvproxy.so*
-%attr(0644, root, root) /usr/lib/libiodbcadm.a
-%attr(0644, root, root) /usr/lib/libiodbcadm.la
-%attr(0755, root, root) /usr/lib/libiodbcadm.so*
+%attr(0755, root, root) %{_bindir}/iodbcadm-gtk
+%attr(0644, root, root) %{_libdir}/libdrvproxy.a
+%attr(0644, root, root) %{_libdir}/libdrvproxy.la
+%attr(0755, root, root) %{_libdir}/libdrvproxy.so*
+%attr(0644, root, root) %{_libdir}/libiodbcadm.a
+%attr(0644, root, root) %{_libdir}/libiodbcadm.la
+%attr(0755, root, root) %{_libdir}/libiodbcadm.so*
 %attr(0644, root, root) %{_mandir}/man1/iodbcadm-gtk.1*
+%endif
