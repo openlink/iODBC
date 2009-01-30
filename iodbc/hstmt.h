@@ -78,15 +78,16 @@
 #ifndef	_HSTMT_H
 #define	_HSTMT_H
 
-typedef struct PARAM
+typedef struct VAR
   {
     void *data;
     int   length;
   }
-PARAM_t;
+VAR_t;
 
-#define STMT_PARAMS_MAX      8
+#define STMT_VARS_MAX      8
 
+#define STMT_MAX_PARAM     1024
 
 /*
  *  Binding parameter from SQLBindCol
@@ -109,6 +110,29 @@ struct SBLST {
   PBLST		 bl_nextBind;	/* Next binding */
   BIND_t	 bl_bind;	/* Binding information */
 };
+
+
+typedef struct SPARM  TPARM, *PPARM;
+
+struct SPARM {
+  SQLUSMALLINT	 pm_par;	  /* Parameter # */
+  SQLSMALLINT	 pm_c_type;	  /* C Type */
+  SQLSMALLINT	 pm_c_type_orig;  /* C Type original */
+  SQLLEN	 pm_size;	  /* size assoc. with pm_c_type or SQL_NTS */
+  SQLSMALLINT	 pm_sql_type;	  /* ODBC SQL Type */
+  SQLULEN	 pm_precision;	  /* Precision */
+  SQLSMALLINT	 pm_scale;	  /* Scale */
+  void 		*pm_data;	  /* Value / user handle */
+  SQLLEN        *pm_pOctetLength; /* Length of char/bin parameter data */
+  SQLLEN	*pm_pInd;	  /* Holds SQL_NULL_DATA | 0. Points to same
+				   * location as pm_pOctetLength for ODBC v2
+				   */
+  SQLLEN	 pm_cbValueMax;   /* cbValueMax */
+  SQLSMALLINT	 pm_usage;	  /* SQL_PARAM_INPUT, SQL_PARAM_OUTPUT etc */
+
+#endif
+};
+
 
 
 typedef struct STMT
@@ -147,10 +171,15 @@ typedef struct STMT
 
     SQLSMALLINT err_rec;
 
-    PARAM_t params[STMT_PARAMS_MAX]; /* for a conversion parameters ansi<=>unicode*/
-    int     params_inserted;
+    VAR_t   vars[STMT_VARS_MAX]; /* for a conversion parameters ansi<=>unicode*/
+    int     vars_inserted;
 
     PBLST   st_pbinding;	/* API user bindings from SQLBindCol */
+
+    /* Binding variables */
+    PPARM	 st_pparam;	/* API user parameters from SQLSetParam */
+    SQLUSMALLINT st_nparam;	/* # params allocated */
+
   }
 STMT_t;
 
@@ -179,8 +208,8 @@ STMT_t;
 	  } \
 	pstmt->stmt_cip = 1; \
 	CLEAR_ERRORS (pstmt); \
-	if (pstmt->asyn_on == en_NullProc && pstmt->params_inserted > 0) \
-	  _iodbcdm_FreeStmtParams(pstmt); \
+	if (pstmt->asyn_on == en_NullProc && pstmt->vars_inserted > 0) \
+	  _iodbcdm_FreeStmtVars(pstmt); \
         ODBC_UNLOCK()
 	
 
@@ -223,9 +252,10 @@ enum
 SQLRETURN _iodbcdm_dropstmt (HSTMT stmt);
 
 void _iodbcdm_FreeStmtParams(STMT_t *pstmt);
-void *_iodbcdm_alloc_param(STMT_t *pstmt, int i, int size);
-wchar_t *_iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength);
-char *_iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength);
+void _iodbcdm_FreeStmtVars(STMT_t *pstmt);
+void *_iodbcdm_alloc_var(STMT_t *pstmt, int i, int size);
+wchar_t *_iodbcdm_conv_var_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength);
+char *_iodbcdm_conv_var_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength);
 void _iodbcdm_ConvBindData (STMT_t *pstmt);
 SQLRETURN _iodbcdm_BindColumn (STMT_t *pstmt, BIND_t *pbind);
 int _iodbcdm_UnBindColumn (STMT_t *pstmt, BIND_t *pbind);

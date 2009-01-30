@@ -368,16 +368,16 @@ SQLSpecialColumns_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *) szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *) szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *) szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *) szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *) szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *) szTableName, cbTableName);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -412,7 +412,7 @@ SQLSpecialColumns_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -619,16 +619,16 @@ SQLStatistics_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -663,7 +663,7 @@ SQLStatistics_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -847,18 +847,18 @@ SQLTables_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-              _TableType = _iodbcdm_conv_param_A2W(pstmt, 3, (SQLCHAR *)szTableType, cbTableType);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
+              _TableType = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szTableType, cbTableType);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-              _TableType = _iodbcdm_conv_param_W2A(pstmt, 3, (SQLWCHAR *)szTableType, cbTableType);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
+              _TableType = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szTableType, cbTableType);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -895,7 +895,7 @@ SQLTables_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -1071,18 +1071,18 @@ SQLColumnPrivileges_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_param_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
+              _ColumnName = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_param_W2A(pstmt, 3, (SQLWCHAR *)szColumnName, cbColumnName);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
+              _ColumnName = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szColumnName, cbColumnName);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -1119,7 +1119,7 @@ SQLColumnPrivileges_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -1291,18 +1291,18 @@ SQLColumns_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_param_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
+              _ColumnName = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *) szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *) szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *) szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_param_W2A(pstmt, 3, (SQLWCHAR *) szColumnName, cbColumnName);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *) szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *) szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *) szTableName, cbTableName);
+              _ColumnName = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *) szColumnName, cbColumnName);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -1339,7 +1339,7 @@ SQLColumns_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -1522,22 +1522,22 @@ SQLForeignKeys_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _PkTableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szPkTableQualifier, cbPkTableQualifier);
-              _PkTableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szPkTableOwner, cbPkTableOwner);
-              _PkTableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szPkTableName, cbPkTableName);
-              _FkTableQualifier = _iodbcdm_conv_param_A2W(pstmt, 3, (SQLCHAR *)szFkTableQualifier, cbFkTableQualifier);
-              _FkTableOwner = _iodbcdm_conv_param_A2W(pstmt, 4, (SQLCHAR *)szFkTableOwner, cbFkTableOwner);
-              _FkTableName = _iodbcdm_conv_param_A2W(pstmt, 5, (SQLCHAR *)szFkTableName, cbFkTableName);
+              _PkTableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szPkTableQualifier, cbPkTableQualifier);
+              _PkTableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szPkTableOwner, cbPkTableOwner);
+              _PkTableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szPkTableName, cbPkTableName);
+              _FkTableQualifier = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szFkTableQualifier, cbFkTableQualifier);
+              _FkTableOwner = _iodbcdm_conv_var_A2W(pstmt, 4, (SQLCHAR *)szFkTableOwner, cbFkTableOwner);
+              _FkTableName = _iodbcdm_conv_var_A2W(pstmt, 5, (SQLCHAR *)szFkTableName, cbFkTableName);
             }
           else
             {
             /* unicode=>ansi*/
-              _PkTableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szPkTableQualifier, cbPkTableQualifier);
-              _PkTableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szPkTableOwner, cbPkTableOwner);
-              _PkTableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szPkTableName, cbPkTableName);
-              _FkTableQualifier = _iodbcdm_conv_param_W2A(pstmt, 3, (SQLWCHAR *)szFkTableQualifier, cbFkTableQualifier);
-              _FkTableOwner = _iodbcdm_conv_param_W2A(pstmt, 4, (SQLWCHAR *)szFkTableOwner, cbFkTableOwner);
-              _FkTableName = _iodbcdm_conv_param_W2A(pstmt, 5, (SQLWCHAR *)szFkTableName, cbFkTableName);
+              _PkTableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szPkTableQualifier, cbPkTableQualifier);
+              _PkTableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szPkTableOwner, cbPkTableOwner);
+              _PkTableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szPkTableName, cbPkTableName);
+              _FkTableQualifier = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szFkTableQualifier, cbFkTableQualifier);
+              _FkTableOwner = _iodbcdm_conv_var_W2A(pstmt, 4, (SQLWCHAR *)szFkTableOwner, cbFkTableOwner);
+              _FkTableName = _iodbcdm_conv_var_W2A(pstmt, 5, (SQLWCHAR *)szFkTableName, cbFkTableName);
             }
           szPkTableQualifier = _PkTableQualifier;
           szPkTableOwner = _PkTableOwner;
@@ -1582,7 +1582,7 @@ SQLForeignKeys_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -1783,16 +1783,16 @@ SQLPrimaryKeys_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -1825,7 +1825,7 @@ SQLPrimaryKeys_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -1985,18 +1985,18 @@ SQLProcedureColumns_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _ProcQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szProcName, cbProcName);
-              _ColumnName = _iodbcdm_conv_param_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
+              _ProcQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szProcQualifier, cbProcQualifier);
+              _ProcOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szProcOwner, cbProcOwner);
+              _ProcName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szProcName, cbProcName);
+              _ColumnName = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
             }
           else
             {
             /* unicode=>ansi*/
-              _ProcQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szProcName, cbProcName);
-              _ColumnName = _iodbcdm_conv_param_W2A(pstmt, 3, (SQLWCHAR *)szColumnName, cbColumnName);
+              _ProcQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szProcQualifier, cbProcQualifier);
+              _ProcOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szProcOwner, cbProcOwner);
+              _ProcName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szProcName, cbProcName);
+              _ColumnName = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szColumnName, cbColumnName);
             }
           szProcQualifier = _ProcQualifier;
           szProcOwner = _ProcOwner;
@@ -2033,7 +2033,7 @@ SQLProcedureColumns_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -2204,16 +2204,16 @@ SQLProcedures_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _ProcQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szProcName, cbProcName);
+              _ProcQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szProcQualifier, cbProcQualifier);
+              _ProcOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szProcOwner, cbProcOwner);
+              _ProcName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szProcName, cbProcName);
             }
           else
             {
             /* unicode=>ansi*/
-              _ProcQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szProcName, cbProcName);
+              _ProcQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szProcQualifier, cbProcQualifier);
+              _ProcOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szProcOwner, cbProcOwner);
+              _ProcName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szProcName, cbProcName);
             }
           szProcQualifier = _ProcQualifier;
           szProcOwner = _ProcOwner;
@@ -2246,7 +2246,7 @@ SQLProcedures_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {
@@ -2402,16 +2402,16 @@ SQLTablePrivileges_Internal (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
             }
           else
             {
             /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_param_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_param_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
+              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
+              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
+              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
             }
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
@@ -2444,7 +2444,7 @@ SQLTablePrivileges_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   if (sqlstat != en_00000)
     {

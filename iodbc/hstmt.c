@@ -171,13 +171,17 @@ SQLAllocStmt_Internal (
   pstmt->stmt_cip = 0;
   pstmt->err_rec = 0;
 
-  memset (pstmt->params, 0, sizeof (PARAM_t) * STMT_PARAMS_MAX);
-  pstmt->params_inserted = 0;
+  memset (pstmt->vars, 0, sizeof (VAR_t) * STMT_VARS_MAX);
+  pstmt->vars_inserted = 0;
 
   /* call driver's function */
   pstmt->rowset_size = 1;
   pstmt->bind_type = SQL_BIND_BY_COLUMN;
   pstmt->st_pbinding = NULL;
+
+  pstmt->st_pparam = NULL;
+  pstmt->st_nparam = 0;
+
 #if (ODBCVER >= 0x0300)
   pstmt->row_array_size = 1;
   pstmt->fetch_bookmark_ptr = NULL;
@@ -484,8 +488,10 @@ _iodbcdm_dropstmt (HSTMT hstmt)
     }
 #endif   
 
-  if (pstmt->params_inserted > 0)
-    _iodbcdm_FreeStmtParams(pstmt);
+  if (pstmt->vars_inserted > 0)
+    _iodbcdm_FreeStmtVars(pstmt);
+
+  _iodbcdm_FreeStmtParams(pstmt);
 
   /*
    *  Invalidate this handle
@@ -573,6 +579,7 @@ SQLFreeStmt_Internal (
     case SQL_DROP:
       /* delete this object (ignore return) */
       _iodbcdm_RemoveBind (pstmt);
+      _iodbcdm_FreeStmtParams(pstmt);
 #if 0
       _iodbcdm_dropstmt (pstmt);	/* Delayed until last moment */
 #endif
@@ -615,6 +622,8 @@ SQLFreeStmt_Internal (
       _iodbcdm_RemoveBind (pstmt);
       break;
     case SQL_RESET_PARAMS:
+      _iodbcdm_FreeStmtParams(pstmt);
+      break;
     default:
       break;
     }
@@ -1137,14 +1146,14 @@ SQLCancel (SQLHSTMT hstmt)
 
 
 void
-_iodbcdm_FreeStmtParams(STMT_t *pstmt)
+_iodbcdm_FreeStmtVars(STMT_t *pstmt)
 {
   int i;
-  PARAM_t *p;
+  VAR_t *p;
 
-  for(i= 0; i < STMT_PARAMS_MAX; i++)
+  for(i= 0; i < STMT_VARS_MAX; i++)
     {
-      p = &pstmt->params[i];
+      p = &pstmt->vars[i];
       if (p->data)
         {
           free(p->data);
@@ -1152,59 +1161,76 @@ _iodbcdm_FreeStmtParams(STMT_t *pstmt)
         }
       p->length = 0;
     }
-  pstmt->params_inserted = 0;
+  pstmt->vars_inserted = 0;
+}
+
+
+void
+_iodbcdm_FreeStmtParams(STMT_t *pstmt)
+{
+  PPARM pparm;
+  int i;
+
+  pparm = pstmt->st_pparam;
+  if (pstmt->st_pparam)
+    {
+      free (pstmt->st_pparam);
+      pstmt->st_pparam = NULL;
+    }
+
+  pstmt->st_nparam = 0;
 }
 
 
 void *
-_iodbcdm_alloc_param(STMT_t *pstmt, int i, int size)
+_iodbcdm_alloc_var(STMT_t *pstmt, int i, int size)
 {
-  PARAM_t *param;
+  VAR_t *var;
 
-  if (i > STMT_PARAMS_MAX - 1)
+  if (i > STMT_VARS_MAX - 1)
     return NULL;
 
-  param = &pstmt->params[i];
-  pstmt->params_inserted = 1;
+  var = &pstmt->vars[i];
+  pstmt->vars_inserted = 1;
 
   if (size == 0)
     {
-      MEM_FREE(param->data);
-      param->data = NULL;
-      param->length = 0;
+      MEM_FREE(var->data);
+      var->data = NULL;
+      var->length = 0;
       return NULL;
     }
 
-  if (param->data == NULL || param->length < size)
+  if (var->data == NULL || var->length < size)
     {
-      MEM_FREE(param->data);
-      param->length = 0;
-      if ((param->data = MEM_ALLOC(size)) != NULL)
-         param->length = size;
+      MEM_FREE(var->data);
+      var->length = 0;
+      if ((var->data = MEM_ALLOC(size)) != NULL)
+         var->length = size;
     }
 
-  return param->data;
+  return var->data;
 }
 
 
 wchar_t *
-_iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength)
+_iodbcdm_conv_var_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength)
 {
-  PARAM_t *param;
+  VAR_t *var;
   size_t size = 0;
   int count_alloc = 0;
 
-  if (i > STMT_PARAMS_MAX - 1)
+  if (i > STMT_VARS_MAX - 1)
     return NULL;
 
-  param = &pstmt->params[i];
-  pstmt->params_inserted = 1;
+  var = &pstmt->vars[i];
+  pstmt->vars_inserted = 1;
 
   if (pData == NULL)
     {
-      MEM_FREE(param->data);
-      param->data = NULL;
-      param->length = 0;
+      MEM_FREE(var->data);
+      var->data = NULL;
+      var->length = 0;
       return NULL;
     }
 
@@ -1215,47 +1241,47 @@ _iodbcdm_conv_param_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength)
 
   count_alloc = (size + 1) * sizeof(wchar_t);
 
-  if (param->data != NULL && param->length >= count_alloc)
+  if (var->data != NULL && var->length >= count_alloc)
     {
       if (size > 0)
-	OPL_A2W(pData, param->data, size);
-      ((wchar_t*)param->data)[size] = L'\0';
+	OPL_A2W(pData, var->data, size);
+      ((wchar_t*)var->data)[size] = L'\0';
     }
   else
     {
-      MEM_FREE(param->data);
-      param->length = 0;
-      if ((param->data = MEM_ALLOC(count_alloc)) != NULL)
+      MEM_FREE(var->data);
+      var->length = 0;
+      if ((var->data = MEM_ALLOC(count_alloc)) != NULL)
         {
-          param->length = count_alloc;
+          var->length = count_alloc;
 	  if (size > 0)
-	    OPL_A2W(pData, param->data, size);
-          ((wchar_t*)param->data)[size] = L'\0';
+	    OPL_A2W(pData, var->data, size);
+          ((wchar_t*)var->data)[size] = L'\0';
         }      
     }
 
-  return (wchar_t *) param->data;
+  return (wchar_t *) var->data;
 }
 
 
 char *
-_iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength)
+_iodbcdm_conv_var_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength)
 {
-  PARAM_t *param;
+  VAR_t *var;
   size_t size = 0;
   int count_alloc = 0;
 
-  if (i > STMT_PARAMS_MAX - 1)
+  if (i > STMT_VARS_MAX - 1)
     return NULL;
 
-  param = &pstmt->params[i];
-  pstmt->params_inserted = 1;
+  var = &pstmt->vars[i];
+  pstmt->vars_inserted = 1;
 
   if (pData == NULL)
     {
-      MEM_FREE(param->data);
-      param->data = NULL;
-      param->length = 0;
+      MEM_FREE(var->data);
+      var->data = NULL;
+      var->length = 0;
       return NULL;
     }
 
@@ -1266,26 +1292,26 @@ _iodbcdm_conv_param_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength)
 
   count_alloc = size + 1;
 
-  if (param->data != NULL && param->length >= count_alloc)
+  if (var->data != NULL && var->length >= count_alloc)
     {
       if (size > 0)
-	OPL_W2A(pData, param->data, size);
-      ((char*)param->data)[size] = '\0';
+	OPL_W2A(pData, var->data, size);
+      ((char*)var->data)[size] = '\0';
     }
   else
     {
-      MEM_FREE(param->data);
-      param->length = 0;
-      if ((param->data = MEM_ALLOC(count_alloc)) != NULL)
+      MEM_FREE(var->data);
+      var->length = 0;
+      if ((var->data = MEM_ALLOC(count_alloc)) != NULL)
         {
-          param->length = count_alloc;
+          var->length = count_alloc;
 	  if (size > 0)
-	    OPL_W2A(pData, param->data, size);
-          ((char*)param->data)[size] = '\0';
+	    OPL_W2A(pData, var->data, size);
+          ((char*)var->data)[size] = '\0';
         }      
     }
 
-  return (char *) param->data;
+  return (char *) var->data;
 }
 
 
@@ -1391,7 +1417,7 @@ _iodbcdm_bindConv_A2W(char *data, SQLLEN *pInd, UDWORD size)
 {
   wchar_t *wdata = (wchar_t *) data;
 
-  size=size; /*UNUSED*/
+  size=size; /*UNUSED TODO*/
 
   if (*pInd != SQL_NULL_DATA)
     {
@@ -1402,7 +1428,7 @@ _iodbcdm_bindConv_A2W(char *data, SQLLEN *pInd, UDWORD size)
 
       MEM_FREE (buf);
 
-      if (pInd)
+      if (pInd && *pInd != SQL_NTS)
 	*pInd *= sizeof (wchar_t);
     }
 }

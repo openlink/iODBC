@@ -162,12 +162,12 @@ SQLPrepare_Internal (
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          _SqlStr = _iodbcdm_conv_param_A2W(pstmt, 0, (SQLCHAR *) szSqlStr, cbSqlStr);
+          _SqlStr = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *) szSqlStr, cbSqlStr);
         }
       else
         {
         /* unicode=>ansi*/
-          _SqlStr = _iodbcdm_conv_param_W2A(pstmt, 0, (SQLWCHAR *) szSqlStr, cbSqlStr);
+          _SqlStr = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *) szSqlStr, cbSqlStr);
         }
       szSqlStr = _SqlStr;
       cbSqlStr = SQL_NTS;
@@ -181,13 +181,13 @@ SQLPrepare_Internal (
 
   if (hproc == SQL_NULL_HPROC)
     {
-      _iodbcdm_FreeStmtParams(pstmt);
+      _iodbcdm_FreeStmtVars(pstmt);
       PUSHSQLERR (pstmt->herr, en_IM001);
       return SQL_ERROR;
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   /* stmt state transition */
   if (pstmt->asyn_on == en_Prepare)
@@ -466,7 +466,9 @@ SQLBindParameter_Internal (
   SQLRETURN retcode = SQL_SUCCESS;
   SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
-
+  PPARM newparam;
+  TPARM parm;
+  int size;
 
 #if (ODBCVER >= 0x0300)
   if (0)
@@ -587,6 +589,53 @@ SQLBindParameter_Internal (
 #if (ODBCVER >=0x0300)
   hproc3 = _iodbcdm_getproc (pstmt->hdbc, en_BindParam);
 #endif
+
+  parm.pm_par = ipar;
+  parm.pm_c_type = nCType;
+  parm.pm_c_type_orig = nCType;
+  parm.pm_sql_type = fSqlType;
+  parm.pm_precision = cbColDef;
+  parm.pm_scale = ibScale;
+  parm.pm_data = rgbValue;
+  parm.pm_pOctetLength = pcbValue;
+  parm.pm_pInd = pcbValue;
+  parm.pm_size = size;
+  parm.pm_usage = fParamType;
+  parm.pm_cbValueMax = cbValueMax;
+
+#if (ODBCVER >=0x0300)
+  if (fCType == SQL_C_WCHAR && !penv->unicode_driver 
+      && pcbValue && *pcbValue != SQL_DATA_AT_EXEC)
+    nCType = SQL_C_CHAR;
+#endif
+
+  if (ipar < 1 || ipar > STMT_MAX_PARAM)
+    {
+      PUSHSQLERR (pstmt->herr, en_S1093);
+      return SQL_ERROR;
+    }
+
+  if (ipar > pstmt->st_nparam)
+    {
+      size_t newsize = ipar + 10;
+      if (newsize > STMT_MAX_PARAM)
+        newsize = STMT_MAX_PARAM;
+      if ((newparam = calloc (newsize, sizeof (TPARM))) == NULL)
+	{
+          PUSHSQLERR (pstmt->herr, en_S1001);
+          return SQL_ERROR;
+	}
+      if (pstmt->st_pparam)
+	{
+	  memcpy (newparam, pstmt->st_pparam, pstmt->st_nparam * sizeof (TPARM));
+	  free (pstmt->st_pparam);
+	}
+      pstmt->st_pparam = newparam;
+      pstmt->st_nparam = (u_short) newsize;
+    }
+
+  pstmt->st_pparam[ipar-1] = parm;
+
 
   if (odbc_ver == SQL_OV_ODBC2 && 
       (  dodbc_ver == SQL_OV_ODBC2
@@ -709,6 +758,7 @@ SQLParamOptions_Internal (
 	  (pstmt->dhstmt, crow, pirow));
     }
 
+  pstmt->paramset_size = crow;
   return retcode;
 }
 

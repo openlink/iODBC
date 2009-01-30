@@ -681,7 +681,7 @@ SQLDescribeCol_Internal (
       if (waMode != 'W')
         {
         /* ansi=>unicode*/
-          if ((_ColName = _iodbcdm_alloc_param(pstmt, 0, 
+          if ((_ColName = _iodbcdm_alloc_var(pstmt, 0, 
           	             cbColNameMax * sizeof(wchar_t))) == NULL)
 	    {
               PUSHSQLERR (pstmt->herr, en_HY001);
@@ -691,7 +691,7 @@ SQLDescribeCol_Internal (
       else
         {
         /* unicode=>ansi*/
-          if ((_ColName = _iodbcdm_alloc_param(pstmt, 0, cbColNameMax)) == NULL)
+          if ((_ColName = _iodbcdm_alloc_var(pstmt, 0, cbColNameMax)) == NULL)
 	    {
               PUSHSQLERR (pstmt->herr, en_HY001);
               return SQL_ERROR;
@@ -715,7 +715,7 @@ SQLDescribeCol_Internal (
 
   if (hproc == SQL_NULL_HPROC)
     {
-      _iodbcdm_FreeStmtParams(pstmt);
+      _iodbcdm_FreeStmtVars(pstmt);
       PUSHSQLERR (pstmt->herr, en_IM001);
       return SQL_ERROR;
     }
@@ -744,7 +744,7 @@ SQLDescribeCol_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   /* state transition */
   if (pstmt->asyn_on == en_DescribeCol)
@@ -1002,7 +1002,7 @@ SQLColAttributes_Internal (
             {
             /* ansi=>unicode*/
               cbDescMax *= sizeof(wchar_t);
-              if ((_Desc = _iodbcdm_alloc_param(pstmt, 0, cbDescMax)) == NULL)
+              if ((_Desc = _iodbcdm_alloc_var(pstmt, 0, cbDescMax)) == NULL)
 	        {
                   PUSHSQLERR (pstmt->herr, en_HY001);
                   return SQL_ERROR;
@@ -1012,7 +1012,7 @@ SQLColAttributes_Internal (
             {
             /* unicode=>ansi*/
               cbDescMax /= sizeof(wchar_t);
-              if ((_Desc = _iodbcdm_alloc_param(pstmt, 0, cbDescMax)) == NULL)
+              if ((_Desc = _iodbcdm_alloc_var(pstmt, 0, cbDescMax)) == NULL)
 	        {
                   PUSHSQLERR (pstmt->herr, en_HY001);
                   return SQL_ERROR;
@@ -1061,7 +1061,7 @@ SQLColAttributes_Internal (
         {
           if (hproc2 == SQL_NULL_HPROC)
             {
-              _iodbcdm_FreeStmtParams(pstmt);
+              _iodbcdm_FreeStmtVars(pstmt);
               PUSHSQLERR (pstmt->herr, en_IM001);
               return SQL_ERROR;
             }
@@ -1111,7 +1111,7 @@ SQLColAttributes_Internal (
         {
           if (hproc2 == SQL_NULL_HPROC)
             {
-              _iodbcdm_FreeStmtParams(pstmt);
+              _iodbcdm_FreeStmtVars(pstmt);
               PUSHSQLERR (pstmt->herr, en_IM001);
               return SQL_ERROR;
             }
@@ -1156,7 +1156,7 @@ SQLColAttributes_Internal (
     }
 
   if (retcode != SQL_STILL_EXECUTING)
-    _iodbcdm_FreeStmtParams(pstmt);
+    _iodbcdm_FreeStmtVars(pstmt);
 
   /* state transition */
   if (pstmt->asyn_on == en_ColAttributes)

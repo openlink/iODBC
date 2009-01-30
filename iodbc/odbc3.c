@@ -1023,6 +1023,8 @@ SQLGetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
+	  if (ValuePtr)
+	    stmt->paramset_size = *((SQLUINTEGER *) ValuePtr);
 	  return retcode;
 	}
       else
@@ -1346,6 +1348,8 @@ SQLSetStmtAttr_Internal (
           PUSHSQLERR (stmt->herr, en_IM001);
           return SQL_ERROR;
         }
+      if (Attribute == SQL_ATTR_PARAM_BIND_TYPE)
+        stmt->bind_type = (SQLUINTEGER) ValuePtr;
       return retcode;
 
     case SQL_ATTR_ROWS_FETCHED_PTR:
@@ -1424,7 +1428,7 @@ SQLSetStmtAttr_Internal (
 	      PUSHSQLERR (stmt->herr, en_IM001);
 	      return SQL_ERROR;
             }
-
+	  stmt->paramset_size = (SQLUINTEGER) (SQLULEN) ValuePtr;
           return retcode;
 	}
       else
@@ -2385,6 +2389,7 @@ SQLSetDescField_Internal (
           break;
         }
     }
+
   CALL_UDRIVER(desc->hdbc, desc, retcode, hproc, penv->unicode_driver, 
     en_SetDescField, (desc->dhdesc, RecNumber, FieldIdentifier, ValuePtr,
     BufferLength));
