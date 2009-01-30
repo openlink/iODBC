@@ -160,8 +160,26 @@ _Conv_W2A(wchar_t *wdata, SQLLEN *pInd, UDWORD size)
 }
 
 
+static void 
+_Conv_A2W(char *data, SQLLEN *pInd, UDWORD size)
+{
+  wchar_t *wdata = (wchar_t *) data;
+
+
+  if (*pInd != SQL_NULL_DATA)
+    {
+      wchar_t *buf = (wchar_t *)dm_SQL_A2W ((SQLCHAR *) data, (ssize_t)*pInd);
+
+      if (buf != NULL)
+	wstrcpy(wdata, buf);
+
+      MEM_FREE (buf);
+    }
+}
+
+
 static SQLLEN
-_ConvParam (STMT_t *pstmt, PPARM pparm, SQLULEN row)
+_ConvParam (STMT_t *pstmt, PPARM pparm, SQLULEN row, BOOL bOutput)
 {
   SQLLEN octetLen;
   void *value;
@@ -212,13 +230,17 @@ _ConvParam (STMT_t *pstmt, PPARM pparm, SQLULEN row)
   else
     value = pparm->pm_data + row * elementSize;
 
-  _Conv_W2A(value, pInd, elementSize);
+  if (bOutput)
+    _Conv_A2W(value, pInd, elementSize);
+  else
+    _Conv_W2A(value, pInd, elementSize);
   return octetLen;
 
 }
 
+
 static SQLRETURN
-_SQLExecute_ConvParams (SQLHSTMT hstmt)
+_SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
 {
   STMT (pstmt, hstmt);
   CONN (pdbc, pstmt->hdbc);
@@ -240,16 +262,27 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt)
   pparm = pstmt->st_pparam;
   for (i = 0; i < maxpar; i++, pparm++)
     {
-      if (pparm->pm_usage == SQL_PARAM_OUTPUT)
+      if (pparm->pm_data == NULL)
         continue;
 
-      if (pparm->pm_c_type != SQL_C_WCHAR || pparm->pm_data == NULL)
-        continue;
+      if (bOutput && (pparm->pm_usage == SQL_PARAM_OUTPUT || pparm->pm_usage == SQL_PARAM_INPUT_OUTPUT))
+        {
+          if (pparm->pm_c_type_orig != SQL_C_WCHAR)
+            continue;
 
-      for (j = 0; j < cRows; j++)
-        _ConvParam(pstmt, pparm, j);
+          for (j = 0; j < cRows; j++)
+            _ConvParam(pstmt, pparm, j, bOutput);
+        }
+      else if (!bOutput && (pparm->pm_usage == SQL_PARAM_INPUT || pparm->pm_usage == SQL_PARAM_INPUT_OUTPUT))
+        {
+          if (pparm->pm_c_type != SQL_C_WCHAR)
+            continue;
 
-      pparm->pm_c_type = SQL_C_CHAR;
+          for (j = 0; j < cRows; j++)
+            _ConvParam(pstmt, pparm, j, bOutput);
+
+          pparm->pm_c_type = SQL_C_CHAR;
+        }
     } /* next column */
 
   return SQL_SUCCESS;
@@ -334,7 +367,7 @@ SQLExecute_Internal (SQLHSTMT hstmt)
       return SQL_ERROR;
     }
 
-  if ((retcode = _SQLExecute_ConvParams(hstmt)) != SQL_SUCCESS)
+  if ((retcode = _SQLExecute_ConvParams(hstmt, FALSE)) != SQL_SUCCESS)
     return retcode;
   
   CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc, (pstmt->dhstmt));
@@ -356,6 +389,9 @@ SQLExecute_Internal (SQLHSTMT hstmt)
 	  return retcode;
 	}
     }
+
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    retcode = _SQLExecute_ConvParams(hstmt, TRUE);
 
   switch (pstmt->state)
     {
@@ -507,7 +543,7 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
       cbSqlStr = SQL_NTS;
     }
 
-  if ((retcode = _SQLExecute_ConvParams(hstmt)) != SQL_SUCCESS)
+  if ((retcode = _SQLExecute_ConvParams(hstmt, FALSE)) != SQL_SUCCESS)
     return retcode;
   
   CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -543,6 +579,10 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
 	  return retcode;
 	}
     }
+
+
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    retcode = _SQLExecute_ConvParams(hstmt, TRUE);
 
   if (pstmt->state <= en_stmt_executed)
     {
