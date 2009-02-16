@@ -130,7 +130,6 @@ struct SPARM {
   SQLLEN	 pm_cbValueMax;   /* cbValueMax */
   SQLSMALLINT	 pm_usage;	  /* SQL_PARAM_INPUT, SQL_PARAM_OUTPUT etc */
 
-#endif
 };
 
 
