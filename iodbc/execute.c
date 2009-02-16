@@ -171,7 +171,7 @@ _Conv_A2W(char *data, SQLLEN *pInd, UDWORD size)
       wchar_t *buf = (wchar_t *)dm_SQL_A2W ((SQLCHAR *) data, (ssize_t)*pInd);
 
       if (buf != NULL)
-	wstrcpy(wdata, buf);
+	WCSCPY (wdata, buf);
 
       MEM_FREE (buf);
     }
