@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2006 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2009 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -124,6 +124,9 @@ all: include
 	cd iODBC;	$(PROJBUILD) build
 	cd iODBCtest;	$(PROJBUILD) build
 	cd iODBCtestw;	$(PROJBUILD) build
+	cd iODBCdrvproxy;	$(PROJBUILD) build
+	cd iODBCadm;		$(PROJBUILD) build
+	cd iODBCadministrator;	$(PROJBUILD) build
 
 
 #
@@ -146,6 +149,16 @@ install:
 	cd iODBCtestw;	sudo $(PROJBUILD) install DSTROOT=/
 	sudo sh link-inclibs.sh
 
+install-gui:
+	cd iODBCadministrator;	sudo $(PROJBUILD) install DSTROOT=/
+	#
+	#  Next ones are a bit special as they need to be installed twice
+	#
+	cd iODBCadm;			sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBC.framework/Resources/
+	cd iODBCadm;			sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBCinst.framework/Resources/
+	cd iODBCdrvproxy;		sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBC.framework/Resources/
+	cd iODBCdrvproxy;		sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBCinst.framework/Resources/
+
 
 #
 #  Clean out the targets
@@ -156,6 +169,9 @@ clean:
 	cd iODBCinst;	$(PROJBUILD) clean
 	cd iODBCtest;	$(PROJBUILD) clean
 	cd iODBCtestw;	$(PROJBUILD) clean
+	cd iODBCdrvproxy;	$(PROJBUILD) clean
+	cd iODBCadm;	$(PROJBUILD) clean
+	cd iODBCadministrator;	$(PROJBUILD) clean
 
 realclean: clean
 	rm -rf iODBC/build iODBCinst/build iODBCtest/build iODBCtestw/build
