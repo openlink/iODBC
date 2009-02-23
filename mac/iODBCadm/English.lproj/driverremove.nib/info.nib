@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+	<key>IBDocumentLocation</key>
+	<string>52 81 356 240 0 48 1024 698 </string>
+	<key>IBFramework Version</key>
+	<string>219.0</string>
+	<key>IBSystem Version</key>
+	<string>5P48</string>
+	<key>IBUserGuides</key>
+	<dict>
+		<key>Dialog</key>
+		<dict>
+			<key>guideLocations</key>
+			<array/>
+			<key>guidesLocked</key>
+			<string>NO</string>
+		</dict>
+	</dict>
+	<key>targetFramework</key>
+	<string>IBCarbonFramework</string>
+</dict>
+</plist>

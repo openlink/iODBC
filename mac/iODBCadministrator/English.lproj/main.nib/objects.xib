@@ -1,0 +1,97 @@
+<?xml version="1.0" standalone="yes"?>
+<object class="NSIBObjectData">
+  <string name="targetFramework">IBCarbonFramework</string>
+  <object name="rootObject" class="NSCustomObject" id="1">
+    <string name="customClass">NSApplication</string>
+  </object>
+  <array count="12" name="allObjects">
+    <object class="IBCarbonMenu" id="29">
+      <string name="title">main</string>
+      <array count="2" name="items">
+        <object class="IBCarbonMenuItem" id="182">
+          <string name="title">OpenLink ODBC Administrator</string>
+          <object name="submenu" class="IBCarbonMenu" id="181">
+            <string name="title">OpenLink ODBC Administrator</string>
+            <int name="menuID">128</int>
+            <array count="2" name="items">
+              <object class="IBCarbonMenuItem" id="183">
+                <string name="title">About iODBC Administrator</string>
+                <int name="keyEquivalentModifier">0</int>
+                <ostype name="command">abou</ostype>
+              </object>
+              <object class="IBCarbonMenuItem" id="180">
+                <boolean name="separator">TRUE</boolean>
+              </object>
+            </array>
+            <string name="name">_NSAppleMenu</string>
+          </object>
+        </object>
+        <object class="IBCarbonMenuItem" id="152">
+          <string name="title">Edit</string>
+          <object name="submenu" class="IBCarbonMenu" id="147">
+            <string name="title">Edit</string>
+            <array count="5" name="items">
+              <object class="IBCarbonMenuItem" id="143">
+                <string name="title">Cut</string>
+                <string name="keyEquivalent">x</string>
+                <ostype name="command">cut </ostype>
+              </object>
+              <object class="IBCarbonMenuItem" id="149">
+                <string name="title">Copy</string>
+                <string name="keyEquivalent">c</string>
+                <ostype name="command">copy</ostype>
+              </object>
+              <object class="IBCarbonMenuItem" id="144">
+                <string name="title">Paste</string>
+                <string name="keyEquivalent">v</string>
+                <ostype name="command">past</ostype>
+              </object>
+              <object class="IBCarbonMenuItem" id="151">
+                <string name="title">Clear</string>
+                <ostype name="command">clea</ostype>
+              </object>
+              <object class="IBCarbonMenuItem" id="148">
+                <string name="title">Select All</string>
+                <string name="keyEquivalent">a</string>
+                <ostype name="command">sall</ostype>
+              </object>
+            </array>
+          </object>
+        </object>
+      </array>
+      <string name="name">_NSMainMenu</string>
+    </object>
+    <reference idRef="143"/>
+    <reference idRef="144"/>
+    <reference idRef="147"/>
+    <reference idRef="148"/>
+    <reference idRef="149"/>
+    <reference idRef="151"/>
+    <reference idRef="152"/>
+    <reference idRef="180"/>
+    <reference idRef="181"/>
+    <reference idRef="182"/>
+    <reference idRef="183"/>
+  </array>
+  <array count="12" name="allParents">
+    <reference idRef="1"/>
+    <reference idRef="147"/>
+    <reference idRef="147"/>
+    <reference idRef="152"/>
+    <reference idRef="147"/>
+    <reference idRef="147"/>
+    <reference idRef="147"/>
+    <reference idRef="29"/>
+    <reference idRef="181"/>
+    <reference idRef="182"/>
+    <reference idRef="29"/>
+    <reference idRef="181"/>
+  </array>
+  <dictionary count="2" name="nameTable">
+    <string>Files Owner</string>
+    <reference idRef="1"/>
+    <string>MainMenu</string>
+    <reference idRef="29"/>
+  </dictionary>
+  <unsigned_int name="nextObjectID">184</unsigned_int>
+</object>

@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleName = "iODBCadm";
+CFBundleShortVersionString = "iODBCadm version 3.52.6";
+CFBundleGetInfoString = "iODBCadm version 3.52.6, Copyright 1995-2007, OpenLink Software";
+NSHumanReadableCopyright = "Copyright 1995-2007, OpenLink Software";

@@ -1,0 +1,65 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IBCarbonButton; LANGUAGE = ObjC; SUPERCLASS = IBCarbonControl; }, 
+        {
+            CLASS = IBCarbonControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                carbonBounds = id; 
+                command = id; 
+                controlHandle = id; 
+                controlID = id; 
+                controlMaximum = id; 
+                controlMinimum = id; 
+                controlName = id; 
+                controlSignature = id; 
+                controlSize = id; 
+                controlTitle = id; 
+                controlValue = id; 
+                enabled = id; 
+                hidden = id; 
+                isEnabled = id; 
+                isHidden = id; 
+                objectNameForInspectorTitle = id; 
+                targetFrameworkName = id; 
+                targetFrameworkSupportsConnections = id; 
+                titleRect = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = IBCarbonIcon; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                carbonBounds = id; 
+                command = id; 
+                contentResID = id; 
+                contentType = id; 
+                controlHandle = id; 
+                controlID = id; 
+                controlMaximum = id; 
+                controlMinimum = id; 
+                controlName = id; 
+                controlSignature = id; 
+                controlSize = id; 
+                controlTitle = id; 
+                controlValue = id; 
+                dontTrack = id; 
+                enabled = id; 
+                hidden = id; 
+                isEnabled = id; 
+                isHidden = id; 
+                objectNameForInspectorTitle = id; 
+                targetFrameworkName = id; 
+                targetFrameworkSupportsConnections = id; 
+                titleRect = id; 
+            }; 
+            SUPERCLASS = IBCarbonControl; 
+        }, 
+        {CLASS = IBCarbonMenuItem; LANGUAGE = ObjC; SUPERCLASS = NSMenuItem; }, 
+        {CLASS = IBCarbonRootControl; LANGUAGE = ObjC; SUPERCLASS = IBCarbonControl; }, 
+        {CLASS = IBCarbonStaticText; LANGUAGE = ObjC; SUPERCLASS = IBCarbonControl; }
+    ); 
+    IBVersion = 1; 
+}
