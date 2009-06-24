@@ -93,7 +93,7 @@
 # ----------------------------------------------------------------------
 Name: libiodbc
 Version: @VERSION@
-Release: 1
+Release: 2
 Summary: iODBC Driver Manager
 Group: Libraries
 License: LGPL or BSD license (see "LICENSE" file included in distribution)
