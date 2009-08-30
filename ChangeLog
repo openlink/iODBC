@@ -1,3 +1,83 @@
+2009-08-30 11:58  source
+
+	* Fixed unload bug  deref wrong pointer
+
+2009-08-30 11:56  source
+
+	* Added support for $S (sequence number) in TraceFile
+
+2009-08-30 11:54  source
+
+	* When tracefile length has reached its limit, try to open a new tracefile
+
+2009-08-30 11:31  source
+
+	* Fixed default window sizes
+
+2009-08-30 11:00  source
+
+	* Fixed typos
+
+2009-08-30 10:48  source
+
+	* Updated copyright year to 2009
+
+2009-08-30 10:48  source
+
+	* Fixed licensing information
+
+2009-08-30 10:18  source
+
+	* Fixed GTK based administrative code to use resizable windows
+
+2009-06-24 08:08  source
+
+	* Updated release number
+
+2009-02-23 16:41  source
+
+	* Moved Mac OS X gui components
+
+2009-02-23 14:28  source
+
+	* Moved Mac OS X gui components
+
+2009-02-16 14:55  source
+
+	* Added support for Mac OS X 10.5
+
+2009-02-16 14:47  source
+
+	* Fixed missing function
+
+2009-02-16 12:34  source
+
+	* Removed old endif
+
+2009-01-30 14:30  source
+
+	* Added additional translations between unicode and ansi components (sm)
+
+2009-01-30 12:17  source
+
+	* Added additional translations between unicode and ansi components (sm)
+
+2008-10-30 09:15  source
+
+	* Updated spec file to latest standards
+
+2008-04-25 14:49  source
+
+	* Fixed Connection Pooling UI
+
+2008-03-14 00:21  source
+
+	* Fixed bug checking for odbc_ver on connect handle
+
+2007-10-08 14:17  source
+
+	* Updated version to 3.52.6 for final release (pvk)
+
 2007-10-08 13:04  source
 
 	* Updated version to 3.52.6 for final release (pvk)
