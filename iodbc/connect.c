@@ -1446,7 +1446,7 @@ _iodbcdm_driverunload (HDBC hdbc, int ver)
       penv->hdll = SQL_NULL_HDLL;
 
       for (tpenv = (ENV_t *) genv->henv;
-	  tpenv != NULL; tpenv = (ENV_t *) penv->next)
+	  tpenv != NULL; tpenv = (ENV_t *) tpenv->next)
 	{
 	  if (tpenv == penv)
 	    {
