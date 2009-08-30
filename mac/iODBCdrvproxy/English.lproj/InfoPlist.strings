@@ -2,5 +2,5 @@
 
 CFBundleName = "iODBCdrvproxy";
 CFBundleShortVersionString = "iODBCdrvproxy version 3.52.6";
-CFBundleGetInfoString = "iODBCdrvproxy version 3.52.6, Copyright 1995-2007, OpenLink Software";
-NSHumanReadableCopyright = "Copyright 1995-2007, OpenLink Software";
+CFBundleGetInfoString = "iODBCdrvproxy version 3.52.6, Copyright 1995-2009, OpenLink Software";
+NSHumanReadableCopyright = "Copyright 1995-2009, OpenLink Software";
