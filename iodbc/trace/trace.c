@@ -290,6 +290,19 @@ trace_set_filename (char *template)
 		break;
 	      }
 
+	    case 's':
+	    case 'S':
+	      {
+		static unsigned int counter = 0;
+#if defined (HAVE_SNPRINTF)
+		snprintf (tmp, sizeof (tmp), "%d", ++counter);
+#else
+		sprintf (tmp, "%d", ++counter);
+#endif
+		strcpy (&buf[buf_pos], tmp);
+		buf_pos += strlen (tmp);
+	      }
+
 	    default:
 	      /* Skip unknown escapes */
 	      break;
