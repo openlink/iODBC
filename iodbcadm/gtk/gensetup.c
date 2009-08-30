@@ -75,7 +75,6 @@
 
 #include "gui.h"
 
-
 static char* STRCONN = "DSN=%s\0Description=%s\0\0";
 static int STRCONN_NB_TOKENS = 2;
 
@@ -365,237 +364,293 @@ static gint delete_event( GtkWidget *widget,
 LPSTR
 create_fgensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_conn)
 {
-  GtkWidget *gensetup, *dialog_vbox1, *fixed1, *t_dsn, *l_dsn;
-  GtkWidget *l_comment, *scrolledwindow1, *clist1;
-  GtkWidget *l_key, *l_value, *t_keyword, *t_value, *l_copyright;
-  GtkWidget *vbuttonbox1, *b_add, *b_update, *l_keyword, *l_valeur;
-  GtkWidget *dialog_action_area1, *hbuttonbox1, *b_ok, *b_cancel;
+  GdkPixmap *pixmap;
+  GdkBitmap *mask;
+  GtkStyle *style;
+
+  GtkWidget *gensetup;
+  GtkWidget *dialog_vbox5;
+  GtkWidget *vbox25;
+  GtkWidget *frame56;
+  GtkWidget *alignment48;
+  GtkWidget *hbox35;
+  GtkWidget *label93;
+  GtkWidget *t_dsn;
+  GtkWidget *frame55;
+  GtkWidget *alignment47;
+  GtkWidget *label92;
+  GtkWidget *frame54;
+  GtkWidget *alignment46;
+  GtkWidget *scrolledwindow15;
+  GtkWidget *clist1;
+  GtkWidget *l_key;
+  GtkWidget *l_value;
+  GtkWidget *frame53;
+  GtkWidget *alignment45;
+  GtkWidget *hbox34;
+  GtkWidget *table4;
+  GtkWidget *label88;
+  GtkWidget *t_value;
+  GtkWidget *b_update;
+  GtkWidget *b_add;
+  GtkWidget *t_keyword;
+  GtkWidget *label89;
+  GtkWidget *frame52;
+  GtkWidget *alignment44;
+  GtkWidget *hbox33;
   GtkWidget *cb_verify;
-  guint button_key;
-  GtkAccelGroup *accel_group;
+  GtkWidget *dialog_action_area5;
+  GtkWidget *b_cancel;
+  GtkWidget *b_ok;
   TGENSETUP gensetup_t;
   char buff[1024];
 
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return (LPSTR) attrs;
 
-  accel_group = gtk_accel_group_new ();
-
   gensetup = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (gensetup), "gensetup", gensetup);
-  gtk_window_set_title (GTK_WINDOW (gensetup), "File DSN Generic Setup");
+  gtk_widget_set_name (gensetup, "gensetup");
+  gtk_widget_set_size_request (gensetup, 354, 471);
+  gtk_window_set_title (GTK_WINDOW (gensetup), _("File DSN Generic Setup"));
   gtk_window_set_position (GTK_WINDOW (gensetup), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (gensetup), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (gensetup), FALSE, FALSE, FALSE);
+  gtk_window_set_type_hint (GTK_WINDOW (gensetup), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_show (gensetup);
 #endif
+  
+  dialog_vbox5 = GTK_DIALOG (gensetup)->vbox;
+  gtk_widget_set_name (dialog_vbox5, "dialog_vbox5");
+  gtk_widget_show (dialog_vbox5);
 
-  dialog_vbox1 = GTK_DIALOG (gensetup)->vbox;
-  gtk_object_set_data (GTK_OBJECT (gensetup), "dialog_vbox1", dialog_vbox1);
-  gtk_widget_show (dialog_vbox1);
+  vbox25 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox25, "vbox25");
+  gtk_widget_show (vbox25);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox5), vbox25, TRUE, TRUE, 0);
 
-  fixed1 = gtk_fixed_new ();
-  gtk_widget_ref (fixed1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "fixed1", fixed1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (fixed1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), fixed1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (fixed1), 6);
+  frame56 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame56, "frame56");
+  gtk_widget_show (frame56);
+  gtk_box_pack_start (GTK_BOX (vbox25), frame56, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame56), GTK_SHADOW_NONE);
+
+  alignment48 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment48, "alignment48");
+  gtk_widget_show (alignment48);
+  gtk_container_add (GTK_CONTAINER (frame56), alignment48);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment48), 4, 0, 0, 0);
+
+  hbox35 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox35, "hbox35");
+  gtk_widget_show (hbox35);
+  gtk_container_add (GTK_CONTAINER (alignment48), hbox35);
+
+  label93 = gtk_label_new (_("File Data Source Name :    "));
+  gtk_widget_set_name (label93, "label93");
+  gtk_widget_show (label93);
+  gtk_box_pack_start (GTK_BOX (hbox35), label93, FALSE, FALSE, 0);
 
   t_dsn = gtk_entry_new ();
-  gtk_widget_ref (t_dsn);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "t_dsn", t_dsn,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_dsn, "t_dsn");
   gtk_widget_show (t_dsn);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_dsn, 168, 16); 
-  gtk_widget_set_uposition (t_dsn, 168, 16);
-  gtk_widget_set_usize (t_dsn, 0, 0);
+  gtk_box_pack_start (GTK_BOX (hbox35), t_dsn, TRUE, TRUE, 0);
 
-  l_dsn = gtk_label_new ("File Data Source Name : ");
-  gtk_widget_ref (l_dsn);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_dsn", l_dsn,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_dsn);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_dsn, 8, 19); 
-  gtk_widget_set_uposition (l_dsn, 8, 19);
-  gtk_widget_set_usize (l_dsn, 0, 0);
-  gtk_label_set_justify (GTK_LABEL (l_dsn), GTK_JUSTIFY_LEFT);
+  frame55 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame55, "frame55");
+  gtk_widget_show (frame55);
+  gtk_box_pack_start (GTK_BOX (vbox25), frame55, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame55), GTK_SHADOW_NONE);
 
-  l_comment = gtk_label_new ("If you know the driver-specific keywords for this data source, you can type them and their values here. For more information on driver-specific keywords, please consult your ODBC driver documentation.");
-  gtk_widget_ref (l_comment);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_comment", l_comment,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_comment);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_comment, 8, 47); 
-  gtk_widget_set_uposition (l_comment, 8, 47);
-  gtk_widget_set_usize (l_comment, 330, 70);
-  gtk_label_set_justify (GTK_LABEL (l_comment), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (l_comment), TRUE);
+  alignment47 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment47, "alignment47");
+  gtk_widget_show (alignment47);
+  gtk_container_add (GTK_CONTAINER (frame55), alignment47);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment47), 4, 4, 0, 0);
 
-  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "scrolledwindow1",
-      scrolledwindow1, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow1);
-  gtk_fixed_put (GTK_FIXED (fixed1), scrolledwindow1, 8, 128); 
-  gtk_widget_set_uposition (scrolledwindow1, 8, 128);
-  gtk_widget_set_usize (scrolledwindow1, 320, 184);
+  label92 = gtk_label_new (_("If you know the driver-specific keywords for this data\nsource, you can type them and their values here. For\nmore information on driver-specific keywords, please\nconsult your ODBC driver documentation."));
+  gtk_widget_set_name (label92, "label92");
+  gtk_widget_show (label92);
+  gtk_container_add (GTK_CONTAINER (alignment47), label92);
+
+  frame54 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame54, "frame54");
+  gtk_widget_show (frame54);
+  gtk_box_pack_start (GTK_BOX (vbox25), frame54, TRUE, TRUE, 0);
+  gtk_widget_set_size_request (frame54, -1, 180);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame54), GTK_SHADOW_NONE);
+
+  alignment46 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment46, "alignment46");
+  gtk_widget_show (alignment46);
+  gtk_container_add (GTK_CONTAINER (frame54), alignment46);
+
+  scrolledwindow15 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (scrolledwindow15, "scrolledwindow15");
+  gtk_widget_show (scrolledwindow15);
+  gtk_container_add (GTK_CONTAINER (alignment46), scrolledwindow15);
 
   clist1 = gtk_clist_new (2);
-  gtk_widget_ref (clist1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "clist1", clist1,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (clist1, "clist1");
   gtk_widget_show (clist1);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
-  gtk_clist_set_column_width (GTK_CLIST (clist1), 0, 137);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow15), clist1);
+  gtk_clist_set_column_width (GTK_CLIST (clist1), 0, 80);
   gtk_clist_set_column_width (GTK_CLIST (clist1), 1, 80);
   gtk_clist_column_titles_show (GTK_CLIST (clist1));
 
-  l_key = gtk_label_new (szKeysColumnNames[0]);
-  gtk_widget_ref (l_key);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_key", l_key,
-      (GtkDestroyNotify) gtk_widget_unref);
+  l_key = gtk_label_new (_("Keyword"));
+  gtk_widget_set_name (l_key, "l_key");
   gtk_widget_show (l_key);
   gtk_clist_set_column_widget (GTK_CLIST (clist1), 0, l_key);
+  gtk_widget_set_size_request (l_key, 137, -1);
 
-  l_value = gtk_label_new (szKeysColumnNames[1]);
-  gtk_widget_ref (l_value);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_value", l_value,
-      (GtkDestroyNotify) gtk_widget_unref);
+  l_value = gtk_label_new (_("Value"));
+  gtk_widget_set_name (l_value, "l_value");
   gtk_widget_show (l_value);
   gtk_clist_set_column_widget (GTK_CLIST (clist1), 1, l_value);
 
-  t_keyword = gtk_entry_new ();
-  gtk_widget_ref (t_keyword);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "t_keyword", t_keyword,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (t_keyword);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_keyword, 80, 328); 
-  gtk_widget_set_uposition (t_keyword, 80, 328);
-  gtk_widget_set_usize (t_keyword, 158, 22);
+  frame53 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame53, "frame53");
+  gtk_widget_show (frame53);
+  gtk_box_pack_start (GTK_BOX (vbox25), frame53, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame53), GTK_SHADOW_NONE);
+
+  alignment45 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment45, "alignment45");
+  gtk_widget_show (alignment45);
+  gtk_container_add (GTK_CONTAINER (frame53), alignment45);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment45), 3, 0, 0, 0);
+
+  hbox34 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox34, "hbox34");
+  gtk_widget_show (hbox34);
+  gtk_container_add (GTK_CONTAINER (alignment45), hbox34);
+
+  table4 = gtk_table_new (2, 3, FALSE);
+  gtk_widget_set_name (table4, "table4");
+  gtk_widget_show (table4);
+  gtk_box_pack_start (GTK_BOX (hbox34), table4, TRUE, TRUE, 0);
+
+  label88 = gtk_label_new (_("Value : "));
+  gtk_widget_set_name (label88, "label88");
+  gtk_widget_show (label88);
+  gtk_table_attach (GTK_TABLE (table4), label88, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   t_value = gtk_entry_new ();
-  gtk_widget_ref (t_value);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "t_value", t_value,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_value, "t_value");
   gtk_widget_show (t_value);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_value, 80, 360); 
-  gtk_widget_set_uposition (t_value, 80, 360);
-  gtk_widget_set_usize (t_value, 158, 22);
+  gtk_table_attach (GTK_TABLE (table4), t_value, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-
-  vbuttonbox1 = gtk_vbutton_box_new ();
-  gtk_widget_ref (vbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "vbuttonbox1", vbuttonbox1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbuttonbox1);
-  gtk_fixed_put (GTK_FIXED (fixed1), vbuttonbox1, 248, 320); 
-  gtk_widget_set_uposition (vbuttonbox1, 248, 320);
-  gtk_widget_set_usize (vbuttonbox1, 85, 69);
-
-  b_add = gtk_button_new_with_label ("");
-  button_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
-      szKeysButtons[0]);
-  gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      button_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_add);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_add", b_add,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_add);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), b_add);
-  GTK_WIDGET_SET_FLAGS (b_add, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-  b_update = gtk_button_new_with_label ("");
-  button_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_update)->child),
-      szKeysButtons[1]);
-  gtk_widget_add_accelerator (b_update, "clicked", accel_group,
-      button_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_update);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_update", b_update,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_update = gtk_button_new_with_mnemonic (_("    _Update    "));
+  gtk_widget_set_name (b_update, "b_update");
   gtk_widget_show (b_update);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), b_update);
-  GTK_WIDGET_SET_FLAGS (b_update, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_update, "clicked", accel_group,
-      'U', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-  gtk_widget_set_sensitive (b_update, FALSE);
+  gtk_table_attach (GTK_TABLE (table4), b_update, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (b_update), 6);
+  gtk_widget_set_sensitive(b_update, FALSE);
 
-  l_keyword = gtk_label_new ("Keyword : ");
-  gtk_widget_ref (l_keyword);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_keyword", l_keyword,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_keyword);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_keyword, 8, 330);  
-  gtk_widget_set_uposition (l_keyword, 8, 330);
-  gtk_widget_set_usize (l_keyword, 69, 16);
-  gtk_label_set_justify (GTK_LABEL (l_keyword), GTK_JUSTIFY_LEFT);
+  b_add = gtk_button_new_from_stock ("gtk-add");
+  gtk_widget_set_name (b_add, "b_add");
+  gtk_widget_show (b_add);
+  gtk_table_attach (GTK_TABLE (table4), b_add, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (b_add), 6);
 
-  l_valeur = gtk_label_new ("Value : ");
-  gtk_widget_ref (l_valeur);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_valeur", l_valeur,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_valeur);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_valeur, 8, 363);  
-  gtk_widget_set_uposition (l_valeur, 8, 363);
-  gtk_widget_set_usize (l_valeur, 51, 16);
-  gtk_label_set_justify (GTK_LABEL (l_valeur), GTK_JUSTIFY_LEFT);
+  t_keyword = gtk_entry_new ();
+  gtk_widget_set_name (t_keyword, "t_keyword");
+  gtk_widget_show (t_keyword);
+  gtk_table_attach (GTK_TABLE (table4), t_keyword, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  cb_verify = gtk_check_button_new_with_label ("Verify this connection(recommended)");
-  gtk_widget_ref (cb_verify);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "cb_verify",
-      cb_verify, (GtkDestroyNotify) gtk_widget_unref);
+  label89 = gtk_label_new (_("Keyword : "));
+  gtk_widget_set_name (label89, "label89");
+  gtk_widget_show (label89);
+  gtk_table_attach (GTK_TABLE (table4), label89, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  frame52 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame52, "frame52");
+  gtk_widget_show (frame52);
+  gtk_box_pack_start (GTK_BOX (vbox25), frame52, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame52), GTK_SHADOW_NONE);
+
+  alignment44 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment44, "alignment44");
+  gtk_widget_show (alignment44);
+  gtk_container_add (GTK_CONTAINER (frame52), alignment44);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment44), 0, 3, 12, 0);
+
+  hbox33 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox33, "hbox33");
+  gtk_widget_show (hbox33);
+  gtk_container_add (GTK_CONTAINER (alignment44), hbox33);
+
+  cb_verify = gtk_check_button_new_with_mnemonic (_("Verify this connection (recommended)"));
+  gtk_widget_set_name (cb_verify, "cb_verify");
   gtk_widget_show (cb_verify);
-  gtk_fixed_put (GTK_FIXED (fixed1), cb_verify, 8, 390);
-  gtk_widget_set_uposition (cb_verify, 8, 390);
-  gtk_widget_set_usize (cb_verify, 240, 24);
+  gtk_box_pack_start (GTK_BOX (hbox33), cb_verify, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb_verify), TRUE);
 
-  dialog_action_area1 = GTK_DIALOG (gensetup)->action_area;
-  gtk_object_set_data (GTK_OBJECT (gensetup), "dialog_action_area1",
-      dialog_action_area1);
-  gtk_widget_show (dialog_action_area1);
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 5);
+  dialog_action_area5 = GTK_DIALOG (gensetup)->action_area;
+  gtk_widget_set_name (dialog_action_area5, "dialog_action_area5");
+  gtk_widget_show (dialog_action_area5);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area5), GTK_BUTTONBOX_END);
 
-  hbuttonbox1 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "hbuttonbox1", hbuttonbox1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE,
-      0);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
-
-  b_ok = gtk_button_new_with_label ("");
-  button_key =
-      gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group, button_key,
-      GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_ok);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_ok", b_ok,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_ok);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_ok);
-  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      'O', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-  b_cancel = gtk_button_new_with_label ("");
-  button_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
-      "_Cancel");
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      button_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_cancel);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_cancel", b_cancel,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_cancel = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_set_name (b_cancel, "b_cancel");
   gtk_widget_show (b_cancel);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_cancel);
+  gtk_dialog_add_action_widget (GTK_DIALOG (gensetup), b_cancel, GTK_RESPONSE_CANCEL);
   GTK_WIDGET_SET_FLAGS (b_cancel, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      'C', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+
+  b_ok = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_set_name (b_ok, "b_ok");
+  gtk_widget_show (b_ok);
+  gtk_dialog_add_action_widget (GTK_DIALOG (gensetup), b_ok, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (gensetup, gensetup, "gensetup");
+  GLADE_HOOKUP_OBJECT_NO_REF (gensetup, dialog_vbox5, "dialog_vbox5");
+  GLADE_HOOKUP_OBJECT (gensetup, vbox25, "vbox25");
+  GLADE_HOOKUP_OBJECT (gensetup, frame56, "frame56");
+  GLADE_HOOKUP_OBJECT (gensetup, alignment48, "alignment48");
+  GLADE_HOOKUP_OBJECT (gensetup, hbox35, "hbox35");
+  GLADE_HOOKUP_OBJECT (gensetup, label93, "label93");
+  GLADE_HOOKUP_OBJECT (gensetup, t_dsn, "t_dsn");
+  GLADE_HOOKUP_OBJECT (gensetup, frame55, "frame55");
+  GLADE_HOOKUP_OBJECT (gensetup, alignment47, "alignment47");
+  GLADE_HOOKUP_OBJECT (gensetup, label92, "label92");
+  GLADE_HOOKUP_OBJECT (gensetup, frame54, "frame54");
+  GLADE_HOOKUP_OBJECT (gensetup, alignment46, "alignment46");
+  GLADE_HOOKUP_OBJECT (gensetup, scrolledwindow15, "scrolledwindow15");
+  GLADE_HOOKUP_OBJECT (gensetup, clist1, "clist1");
+  GLADE_HOOKUP_OBJECT (gensetup, l_key, "l_key");
+  GLADE_HOOKUP_OBJECT (gensetup, l_value, "l_value");
+  GLADE_HOOKUP_OBJECT (gensetup, frame53, "frame53");
+  GLADE_HOOKUP_OBJECT (gensetup, alignment45, "alignment45");
+  GLADE_HOOKUP_OBJECT (gensetup, hbox34, "hbox34");
+  GLADE_HOOKUP_OBJECT (gensetup, table4, "table4");
+  GLADE_HOOKUP_OBJECT (gensetup, label88, "label88");
+  GLADE_HOOKUP_OBJECT (gensetup, t_value, "t_value");
+  GLADE_HOOKUP_OBJECT (gensetup, b_update, "b_update");
+  GLADE_HOOKUP_OBJECT (gensetup, b_add, "b_add");
+  GLADE_HOOKUP_OBJECT (gensetup, t_keyword, "t_keyword");
+  GLADE_HOOKUP_OBJECT (gensetup, label89, "label89");
+  GLADE_HOOKUP_OBJECT (gensetup, frame52, "frame52");
+  GLADE_HOOKUP_OBJECT (gensetup, alignment44, "alignment44");
+  GLADE_HOOKUP_OBJECT (gensetup, hbox33, "hbox33");
+  GLADE_HOOKUP_OBJECT (gensetup, cb_verify, "cb_verify");
+  GLADE_HOOKUP_OBJECT_NO_REF (gensetup, dialog_action_area5, "dialog_action_area5");
+  GLADE_HOOKUP_OBJECT (gensetup, b_cancel, "b_cancel");
+  GLADE_HOOKUP_OBJECT (gensetup, b_ok, "b_ok");
 
   /* Ok button events */
   gtk_signal_connect (GTK_OBJECT (b_ok), "clicked",
@@ -619,8 +674,6 @@ create_fgensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_co
       GTK_SIGNAL_FUNC (gensetup_list_select), &gensetup_t);
   gtk_signal_connect (GTK_OBJECT (clist1), "unselect_row",
       GTK_SIGNAL_FUNC (gensetup_list_unselect), &gensetup_t);
-
-  gtk_window_add_accel_group (GTK_WINDOW (gensetup), accel_group);
 
   gensetup_t.dsn_entry = t_dsn;
   gensetup_t.key_list = clist1;
@@ -649,225 +702,263 @@ create_fgensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_co
 LPSTR
 create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
 {
-  GtkWidget *gensetup, *dialog_vbox1, *fixed1;
-  GtkWidget *l_comment, *scrolledwindow1, *clist1;
-  GtkWidget *l_key, *l_value, *t_keyword, *t_value, *l_copyright;
-  GtkWidget *vbuttonbox1, *b_add, *b_update, *l_keyword, *l_valeur;
-  GtkWidget *dialog_action_area1, *hbuttonbox1, *b_ok, *b_cancel;
+  GdkPixmap *pixmap;
+  GdkBitmap *mask;
+  GtkStyle *style;
+
+  GtkWidget *genkeyval;
+  GtkWidget *dialog_vbox4;
+  GtkWidget *vbox24;
+  GtkWidget *frame48;
+  GtkWidget *alignment40;
+  GtkWidget *label81;
+  GtkWidget *frame49;
+  GtkWidget *alignment41;
+  GtkWidget *scrolledwindow14;
+  GtkWidget *clist1;
+  GtkWidget *l_key;
+  GtkWidget *l_value;
+  GtkWidget *frame50;
+  GtkWidget *alignment42;
+  GtkWidget *hbox31;
+  GtkWidget *table3;
+  GtkWidget *label86;
+  GtkWidget *t_value;
+  GtkWidget *b_update;
+  GtkWidget *b_add;
+  GtkWidget *t_keyword;
+  GtkWidget *label87;
+  GtkWidget *frame51;
+  GtkWidget *alignment43;
+  GtkWidget *hbox32;
   GtkWidget *cb_verify;
-  guint button_key;
-  GtkAccelGroup *accel_group;
+  GtkWidget *dialog_action_area4;
+  GtkWidget *cancelbutton2;
+  GtkWidget *okbutton2;
+
   TGENSETUP gensetup_t;
   char buff[1024];
 
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return (LPSTR) attrs;
 
-  accel_group = gtk_accel_group_new ();
-
-  gensetup = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (gensetup), "gensetup", gensetup);
-  gtk_window_set_title (GTK_WINDOW (gensetup), "Advanced File DSN Creation Settings");
-  gtk_window_set_position (GTK_WINDOW (gensetup), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (gensetup), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (gensetup), FALSE, FALSE, FALSE);
+  genkeyval = gtk_dialog_new ();
+  gtk_widget_set_name (genkeyval, "genkeyval");
+  gtk_widget_set_size_request (genkeyval, 355, 430);
+  gtk_window_set_title (GTK_WINDOW (genkeyval), _("Advanced File DSN Creation Settings"));
+  gtk_window_set_position (GTK_WINDOW (genkeyval), GTK_WIN_POS_CENTER);
+  gtk_window_set_modal (GTK_WINDOW (genkeyval), TRUE);
+  gtk_window_set_default_size (GTK_WINDOW (genkeyval), 355, 430);
+  gtk_window_set_type_hint (GTK_WINDOW (genkeyval), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_widget_show (gensetup);
+  gtk_widget_show (genkeyval);
 #endif
 
-  dialog_vbox1 = GTK_DIALOG (gensetup)->vbox;
-  gtk_object_set_data (GTK_OBJECT (gensetup), "dialog_vbox1", dialog_vbox1);
-  gtk_widget_show (dialog_vbox1);
+  dialog_vbox4 = GTK_DIALOG (genkeyval)->vbox;
+  gtk_widget_set_name (dialog_vbox4, "dialog_vbox4");
+  gtk_widget_show (dialog_vbox4);
 
-  fixed1 = gtk_fixed_new ();
-  gtk_widget_ref (fixed1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "fixed1", fixed1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (fixed1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), fixed1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (fixed1), 6);
+  vbox24 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox24, "vbox24");
+  gtk_widget_show (vbox24);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox4), vbox24, TRUE, TRUE, 0);
 
+  frame48 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame48, "frame48");
+  gtk_widget_show (frame48);
+  gtk_box_pack_start (GTK_BOX (vbox24), frame48, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame48), GTK_SHADOW_NONE);
 
-  l_comment = gtk_label_new ("If you know the driver-specific keywords for this data source, you can type them and their values here. For more information on driver-specific keywords, please consult your ODBC driver documentation.");
-  gtk_widget_ref (l_comment);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_comment", l_comment,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_comment);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_comment, 8, 7); 
-  gtk_widget_set_uposition (l_comment, 8, 7);
-  gtk_widget_set_usize (l_comment, 330, 70);
-  gtk_label_set_justify (GTK_LABEL (l_comment), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (l_comment), TRUE);
+  alignment40 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment40, "alignment40");
+  gtk_widget_show (alignment40);
+  gtk_container_add (GTK_CONTAINER (frame48), alignment40);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment40), 4, 4, 0, 0);
 
-  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "scrolledwindow1",
-      scrolledwindow1, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow1);
-  gtk_fixed_put (GTK_FIXED (fixed1), scrolledwindow1, 8, 88); 
-  gtk_widget_set_uposition (scrolledwindow1, 8, 88);
-  gtk_widget_set_usize (scrolledwindow1, 320, 184);
+  label81 = gtk_label_new (_("If you know the driver-specific keywords for this data\nsource, you can type them and their values here. For\nmore information on driver-specific keywords, please\nconsult your ODBC driver documentation."));
+  gtk_widget_set_name (label81, "label81");
+  gtk_widget_show (label81);
+  gtk_container_add (GTK_CONTAINER (alignment40), label81);
+
+  frame49 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame49, "frame49");
+  gtk_widget_show (frame49);
+  gtk_box_pack_start (GTK_BOX (vbox24), frame49, TRUE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame49), GTK_SHADOW_NONE);
+
+  alignment41 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment41, "alignment41");
+  gtk_widget_show (alignment41);
+  gtk_container_add (GTK_CONTAINER (frame49), alignment41);
+
+  scrolledwindow14 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (scrolledwindow14, "scrolledwindow14");
+  gtk_widget_show (scrolledwindow14);
+  gtk_container_add (GTK_CONTAINER (alignment41), scrolledwindow14);
 
   clist1 = gtk_clist_new (2);
-  gtk_widget_ref (clist1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "clist1", clist1,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (clist1, "clist1");
   gtk_widget_show (clist1);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
-  gtk_clist_set_column_width (GTK_CLIST (clist1), 0, 137);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow14), clist1);
+  gtk_clist_set_column_width (GTK_CLIST (clist1), 0, 80);
   gtk_clist_set_column_width (GTK_CLIST (clist1), 1, 80);
   gtk_clist_column_titles_show (GTK_CLIST (clist1));
 
-  l_key = gtk_label_new (szKeysColumnNames[0]);
-  gtk_widget_ref (l_key);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_key", l_key,
-      (GtkDestroyNotify) gtk_widget_unref);
+  l_key = gtk_label_new (_("Keyword"));
+  gtk_widget_set_name (l_key, "l_key");
   gtk_widget_show (l_key);
   gtk_clist_set_column_widget (GTK_CLIST (clist1), 0, l_key);
+  gtk_widget_set_size_request (l_key, 137, -1);
 
-  l_value = gtk_label_new (szKeysColumnNames[1]);
-  gtk_widget_ref (l_value);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_value", l_value,
-      (GtkDestroyNotify) gtk_widget_unref);
+  l_value = gtk_label_new (_("Value"));
+  gtk_widget_set_name (l_value, "l_value");
   gtk_widget_show (l_value);
   gtk_clist_set_column_widget (GTK_CLIST (clist1), 1, l_value);
 
-  t_keyword = gtk_entry_new ();
-  gtk_widget_ref (t_keyword);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "t_keyword", t_keyword,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (t_keyword);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_keyword, 80, 288); 
-  gtk_widget_set_uposition (t_keyword, 80, 288);
-  gtk_widget_set_usize (t_keyword, 158, 22);
+  frame50 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame50, "frame50");
+  gtk_widget_show (frame50);
+  gtk_box_pack_start (GTK_BOX (vbox24), frame50, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame50), GTK_SHADOW_NONE);
+
+  alignment42 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment42, "alignment42");
+  gtk_widget_show (alignment42);
+  gtk_container_add (GTK_CONTAINER (frame50), alignment42);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment42), 3, 0, 0, 0);
+
+  hbox31 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox31, "hbox31");
+  gtk_widget_show (hbox31);
+  gtk_container_add (GTK_CONTAINER (alignment42), hbox31);
+
+  table3 = gtk_table_new (2, 3, FALSE);
+  gtk_widget_set_name (table3, "table3");
+  gtk_widget_show (table3);
+  gtk_box_pack_start (GTK_BOX (hbox31), table3, TRUE, TRUE, 0);
+
+  label86 = gtk_label_new (_("Value : "));
+  gtk_widget_set_name (label86, "label86");
+  gtk_widget_show (label86);
+  gtk_table_attach (GTK_TABLE (table3), label86, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   t_value = gtk_entry_new ();
-  gtk_widget_ref (t_value);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "t_value", t_value,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_value, "t_value");
   gtk_widget_show (t_value);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_value, 80, 320); 
-  gtk_widget_set_uposition (t_value, 80, 320);
-  gtk_widget_set_usize (t_value, 158, 22);
+  gtk_table_attach (GTK_TABLE (table3), t_value, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-
-  vbuttonbox1 = gtk_vbutton_box_new ();
-  gtk_widget_ref (vbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "vbuttonbox1", vbuttonbox1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbuttonbox1);
-  gtk_fixed_put (GTK_FIXED (fixed1), vbuttonbox1, 248, 280); 
-  gtk_widget_set_uposition (vbuttonbox1, 248, 280);
-  gtk_widget_set_usize (vbuttonbox1, 85, 69);
-
-  b_add = gtk_button_new_with_label ("");
-  button_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
-      szKeysButtons[0]);
-  gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      button_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_add);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_add", b_add,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_add);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), b_add);
-  GTK_WIDGET_SET_FLAGS (b_add, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-  b_update = gtk_button_new_with_label ("");
-  button_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_update)->child),
-      szKeysButtons[1]);
-  gtk_widget_add_accelerator (b_update, "clicked", accel_group,
-      button_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_update);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_update", b_update,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_update = gtk_button_new_with_mnemonic (_("    _Update    "));
+  gtk_widget_set_name (b_update, "b_update");
   gtk_widget_show (b_update);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), b_update);
-  GTK_WIDGET_SET_FLAGS (b_update, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_update, "clicked", accel_group,
-      'U', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-  gtk_widget_set_sensitive (b_update, FALSE);
+  gtk_table_attach (GTK_TABLE (table3), b_update, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (b_update), 6);
+  gtk_widget_set_sensitive(b_update, FALSE);
 
-  l_keyword = gtk_label_new ("Keyword : ");
-  gtk_widget_ref (l_keyword);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_keyword", l_keyword,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_keyword);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_keyword, 8, 290);  
-  gtk_widget_set_uposition (l_keyword, 8, 290);
-  gtk_widget_set_usize (l_keyword, 69, 16);
-  gtk_label_set_justify (GTK_LABEL (l_keyword), GTK_JUSTIFY_LEFT);
+  b_add = gtk_button_new_from_stock ("gtk-add");
+  gtk_widget_set_name (b_add, "b_add");
+  gtk_widget_show (b_add);
+  gtk_table_attach (GTK_TABLE (table3), b_add, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (b_add), 6);
 
-  l_valeur = gtk_label_new ("Value : ");
-  gtk_widget_ref (l_valeur);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "l_valeur", l_valeur,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_valeur);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_valeur, 8, 323);  
-  gtk_widget_set_uposition (l_valeur, 8, 323);
-  gtk_widget_set_usize (l_valeur, 51, 16);
-  gtk_label_set_justify (GTK_LABEL (l_valeur), GTK_JUSTIFY_LEFT);
+  t_keyword = gtk_entry_new ();
+  gtk_widget_set_name (t_keyword, "t_keyword");
+  gtk_widget_show (t_keyword);
+  gtk_table_attach (GTK_TABLE (table3), t_keyword, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  cb_verify = gtk_check_button_new_with_label ("Verify this connection(recommended)");
-  gtk_widget_ref (cb_verify);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "cb_verify",
-      cb_verify, (GtkDestroyNotify) gtk_widget_unref);
+  label87 = gtk_label_new (_("Keyword : "));
+  gtk_widget_set_name (label87, "label87");
+  gtk_widget_show (label87);
+  gtk_table_attach (GTK_TABLE (table3), label87, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  frame51 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame51, "frame51");
+  gtk_widget_show (frame51);
+  gtk_box_pack_start (GTK_BOX (vbox24), frame51, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame51), GTK_SHADOW_NONE);
+
+  alignment43 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment43, "alignment43");
+  gtk_widget_show (alignment43);
+  gtk_container_add (GTK_CONTAINER (frame51), alignment43);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment43), 0, 3, 12, 0);
+
+  hbox32 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox32, "hbox32");
+  gtk_widget_show (hbox32);
+  gtk_container_add (GTK_CONTAINER (alignment43), hbox32);
+
+  cb_verify = gtk_check_button_new_with_mnemonic (_("Verify this connection (recommended)"));
+  gtk_widget_set_name (cb_verify, "cb_verify");
   gtk_widget_show (cb_verify);
-  gtk_fixed_put (GTK_FIXED (fixed1), cb_verify, 8, 350);
-  gtk_widget_set_uposition (cb_verify, 8, 350);
-  gtk_widget_set_usize (cb_verify, 230, 24);
+  gtk_box_pack_start (GTK_BOX (hbox32), cb_verify, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb_verify), TRUE);
 
-  dialog_action_area1 = GTK_DIALOG (gensetup)->action_area;
-  gtk_object_set_data (GTK_OBJECT (gensetup), "dialog_action_area1",
-      dialog_action_area1);
-  gtk_widget_show (dialog_action_area1);
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 5);
+  dialog_action_area4 = GTK_DIALOG (genkeyval)->action_area;
+  gtk_widget_set_name (dialog_action_area4, "dialog_action_area4");
+  gtk_widget_show (dialog_action_area4);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area4), GTK_BUTTONBOX_END);
 
-  hbuttonbox1 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "hbuttonbox1", hbuttonbox1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE,
-      0);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
+  cancelbutton2 = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_set_name (cancelbutton2, "cancelbutton2");
+  gtk_widget_show (cancelbutton2);
+  gtk_dialog_add_action_widget (GTK_DIALOG (genkeyval), cancelbutton2, GTK_RESPONSE_CANCEL);
+  GTK_WIDGET_SET_FLAGS (cancelbutton2, GTK_CAN_DEFAULT);
 
-  b_ok = gtk_button_new_with_label ("");
-  button_key =
-      gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group, button_key,
-      GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_ok);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_ok", b_ok,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_ok);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_ok);
-  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      'O', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+  okbutton2 = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_set_name (okbutton2, "okbutton2");
+  gtk_widget_show (okbutton2);
+  gtk_dialog_add_action_widget (GTK_DIALOG (genkeyval), okbutton2, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (okbutton2, GTK_CAN_DEFAULT);
 
-  b_cancel = gtk_button_new_with_label ("");
-  button_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
-      "_Cancel");
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      button_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_cancel);
-  gtk_object_set_data_full (GTK_OBJECT (gensetup), "b_cancel", b_cancel,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_cancel);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_cancel);
-  GTK_WIDGET_SET_FLAGS (b_cancel, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      'C', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (genkeyval, genkeyval, "genkeyval");
+  GLADE_HOOKUP_OBJECT_NO_REF (genkeyval, dialog_vbox4, "dialog_vbox4");
+  GLADE_HOOKUP_OBJECT (genkeyval, vbox24, "vbox24");
+  GLADE_HOOKUP_OBJECT (genkeyval, frame48, "frame48");
+  GLADE_HOOKUP_OBJECT (genkeyval, alignment40, "alignment40");
+  GLADE_HOOKUP_OBJECT (genkeyval, label81, "label81");
+  GLADE_HOOKUP_OBJECT (genkeyval, frame49, "frame49");
+  GLADE_HOOKUP_OBJECT (genkeyval, alignment41, "alignment41");
+  GLADE_HOOKUP_OBJECT (genkeyval, scrolledwindow14, "scrolledwindow14");
+  GLADE_HOOKUP_OBJECT (genkeyval, clist1, "clist1");
+  GLADE_HOOKUP_OBJECT (genkeyval, l_key, "l_key");
+  GLADE_HOOKUP_OBJECT (genkeyval, l_value, "l_value");
+  GLADE_HOOKUP_OBJECT (genkeyval, frame50, "frame50");
+  GLADE_HOOKUP_OBJECT (genkeyval, alignment42, "alignment42");
+  GLADE_HOOKUP_OBJECT (genkeyval, hbox31, "hbox31");
+  GLADE_HOOKUP_OBJECT (genkeyval, table3, "table3");
+  GLADE_HOOKUP_OBJECT (genkeyval, label86, "label86");
+  GLADE_HOOKUP_OBJECT (genkeyval, t_value, "t_value");
+  GLADE_HOOKUP_OBJECT (genkeyval, b_update, "b_update");
+  GLADE_HOOKUP_OBJECT (genkeyval, b_add, "b_add");
+  GLADE_HOOKUP_OBJECT (genkeyval, t_keyword, "t_keyword");
+  GLADE_HOOKUP_OBJECT (genkeyval, label87, "label87");
+  GLADE_HOOKUP_OBJECT (genkeyval, frame51, "frame51");
+  GLADE_HOOKUP_OBJECT (genkeyval, alignment43, "alignment43");
+  GLADE_HOOKUP_OBJECT (genkeyval, hbox32, "hbox32");
+  GLADE_HOOKUP_OBJECT (genkeyval, cb_verify, "cb_verify");
+  GLADE_HOOKUP_OBJECT_NO_REF (genkeyval, dialog_action_area4, "dialog_action_area4");
+  GLADE_HOOKUP_OBJECT (genkeyval, cancelbutton2, "cancelbutton2");
+  GLADE_HOOKUP_OBJECT (genkeyval, okbutton2, "okbutton2");
 
   /* Ok button events */
-  gtk_signal_connect (GTK_OBJECT (b_ok), "clicked",
+  gtk_signal_connect (GTK_OBJECT (okbutton2), "clicked",
       GTK_SIGNAL_FUNC (gensetup_ok_clicked), &gensetup_t);
   /* Cancel button events */
-  gtk_signal_connect (GTK_OBJECT (b_cancel), "clicked",
+  gtk_signal_connect (GTK_OBJECT (cancelbutton2), "clicked",
       GTK_SIGNAL_FUNC (gensetup_cancel_clicked), &gensetup_t);
   /* Add button events */
   gtk_signal_connect (GTK_OBJECT (b_add), "clicked",
@@ -876,9 +967,9 @@ create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
   gtk_signal_connect (GTK_OBJECT (b_update), "clicked",
       GTK_SIGNAL_FUNC (gensetup_update_clicked), &gensetup_t);
   /* Close window button events */
-  gtk_signal_connect (GTK_OBJECT (gensetup), "delete_event",
+  gtk_signal_connect (GTK_OBJECT (genkeyval), "delete_event",
       GTK_SIGNAL_FUNC (delete_event), &gensetup_t);
-  gtk_signal_connect (GTK_OBJECT (gensetup), "destroy",
+  gtk_signal_connect (GTK_OBJECT (genkeyval), "destroy",
       GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
   /* List events */
   gtk_signal_connect (GTK_OBJECT (clist1), "select_row",
@@ -886,14 +977,14 @@ create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
   gtk_signal_connect (GTK_OBJECT (clist1), "unselect_row",
       GTK_SIGNAL_FUNC (gensetup_list_unselect), &gensetup_t);
 
-  gtk_window_add_accel_group (GTK_WINDOW (gensetup), accel_group);
+//  gtk_window_add_accel_group (GTK_WINDOW (gensetup), accel_group);
 
   gensetup_t.dsn_entry = NULL;
   gensetup_t.key_list = clist1;
   gensetup_t.bupdate = b_update;
   gensetup_t.key_entry = t_keyword;
   gensetup_t.value_entry = t_value;
-  gensetup_t.mainwnd = gensetup;
+  gensetup_t.mainwnd = genkeyval;
   gensetup_t.verify_conn_cb = cb_verify;
   gensetup_t.verify_conn = *verify_conn;
 
@@ -902,9 +993,9 @@ create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
   /* Parse the attributes line */
   parse_attribute_line (&gensetup_t, NULL, attrs, TRUE);
 
-  gtk_widget_show_all (gensetup);
+  gtk_widget_show_all (genkeyval);
   gtk_main ();
-  
+
   *verify_conn = gensetup_t.verify_conn;
 
   return gensetup_t.connstr;

@@ -133,11 +133,18 @@ void
 create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
     TLOGIN *log_t)
 {
-  GtkWidget *login, *dialog_vbox1, *table1, *l_user, *l_password;
-  GtkWidget *t_user, *t_password, *dialog_action_area1, *hbuttonbox1;
-  GtkWidget *b_ok, *b_cancel;
-  GtkAccelGroup *accel_group;
-  guint b_ok_key, b_cancel_key;
+  GtkWidget *login;
+  GtkWidget *dialog_vbox8;
+  GtkWidget *frame99;
+  GtkWidget *alignment83;
+  GtkWidget *table9;
+  GtkWidget *label165;
+  GtkWidget *t_user;
+  GtkWidget *t_password;
+  GtkWidget *label164;
+  GtkWidget *dialog_action_area8;
+  GtkWidget *b_ok;
+  GtkWidget *b_cancel;
   char buff[1024];
 
   if (hwnd == (HWND) - 1L)
@@ -149,118 +156,109 @@ create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return;
 
-  accel_group = gtk_accel_group_new ();
-
   login = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (login), "login", login);
+  gtk_widget_set_name (login, "login");
+  gtk_widget_set_size_request (login, 400, 125);
   sprintf (buff, "Login for DSN %s ...", (dsn) ? dsn : "Unknown");
   gtk_window_set_title (GTK_WINDOW (login), buff);
   gtk_window_set_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (login), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (login), FALSE, FALSE, FALSE);
+  gtk_window_set_default_size (GTK_WINDOW (login), 400, 125);
+  gtk_window_set_type_hint (GTK_WINDOW (login), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_show (login);
 #endif
 
-  dialog_vbox1 = GTK_DIALOG (login)->vbox;
-  gtk_object_set_data (GTK_OBJECT (login), "dialog_vbox1", dialog_vbox1);
-  gtk_widget_show (dialog_vbox1);
+  dialog_vbox8 = GTK_DIALOG (login)->vbox;
+  gtk_widget_set_name (dialog_vbox8, "dialog_vbox8");
+  gtk_widget_show (dialog_vbox8);
 
-  table1 = gtk_table_new (2, 2, TRUE);
-  gtk_widget_ref (table1);
-  gtk_object_set_data_full (GTK_OBJECT (login), "table1", table1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), table1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (table1), 6);
-  gtk_table_set_row_spacings (GTK_TABLE (table1), 6);
-  gtk_table_set_col_spacings (GTK_TABLE (table1), 6);
+  frame99 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame99, "frame99");
+  gtk_widget_show (frame99);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox8), frame99, TRUE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame99), GTK_SHADOW_NONE);
 
-  l_user = gtk_label_new ("Username : ");
-  gtk_widget_ref (l_user);
-  gtk_object_set_data_full (GTK_OBJECT (login), "l_user", l_user,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_user);
-  gtk_table_attach (GTK_TABLE (table1), l_user, 0, 1, 0, 1,
-      (GtkAttachOptions) (0), (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (l_user), GTK_JUSTIFY_LEFT);
+  alignment83 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment83, "alignment83");
+  gtk_widget_show (alignment83);
+  gtk_container_add (GTK_CONTAINER (frame99), alignment83);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment83), 4, 0, 6, 7);
 
-  l_password = gtk_label_new ("Password : ");
-  gtk_widget_ref (l_password);
-  gtk_object_set_data_full (GTK_OBJECT (login), "l_password", l_password,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_password);
-  gtk_table_attach (GTK_TABLE (table1), l_password, 0, 1, 1, 2,
-      (GtkAttachOptions) (0), (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (l_password), GTK_JUSTIFY_LEFT);
+  table9 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_set_name (table9, "table9");
+  gtk_widget_show (table9);
+  gtk_container_add (GTK_CONTAINER (alignment83), table9);
+  gtk_table_set_row_spacings (GTK_TABLE (table9), 10);
+  gtk_table_set_col_spacings (GTK_TABLE (table9), 6);
+
+  label165 = gtk_label_new (_("Password :"));
+  gtk_widget_set_name (label165, "label165");
+  gtk_widget_show (label165);
+  gtk_table_attach (GTK_TABLE (table9), label165, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label165), 0, 0.5);
 
   t_user = gtk_entry_new ();
-  gtk_widget_ref (t_user);
-  gtk_object_set_data_full (GTK_OBJECT (login), "t_user", t_user,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_user, "t_user");
   gtk_widget_show (t_user);
-  gtk_table_attach (GTK_TABLE (table1), t_user, 1, 2, 0, 1,
-      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-      (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (GTK_TABLE (table9), t_user, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   if (username && STRLEN (username))
     gtk_entry_set_text (GTK_ENTRY (t_user), username);
 
   t_password = gtk_entry_new ();
-  gtk_widget_ref (t_password);
-  gtk_object_set_data_full (GTK_OBJECT (login), "t_password", t_password,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_password, "t_password");
   gtk_widget_show (t_password);
-  gtk_table_attach (GTK_TABLE (table1), t_password, 1, 2, 1, 2,
-      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-      (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (GTK_TABLE (table9), t_password, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_entry_set_visibility (GTK_ENTRY (t_password), FALSE);
   if (password && STRLEN (password))
     gtk_entry_set_text (GTK_ENTRY (t_password), password);
 
-  dialog_action_area1 = GTK_DIALOG (login)->action_area;
-  gtk_object_set_data (GTK_OBJECT (login), "dialog_action_area1",
-      dialog_action_area1);
-  gtk_widget_show (dialog_action_area1);
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 5);
+  label164 = gtk_label_new (_("Username :"));
+  gtk_widget_set_name (label164, "label164");
+  gtk_widget_show (label164);
+  gtk_table_attach (GTK_TABLE (table9), label164, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label164), 0, 0.5);
 
-  hbuttonbox1 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (login), "hbuttonbox1", hbuttonbox1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE,
-      0);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
-  gtk_button_box_set_child_ipadding (GTK_BUTTON_BOX (hbuttonbox1), 0, 0);
+  dialog_action_area8 = GTK_DIALOG (login)->action_area;
+  gtk_widget_set_name (dialog_action_area8, "dialog_action_area8");
+  gtk_widget_show (dialog_action_area8);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area8), GTK_BUTTONBOX_END);
 
-  b_ok = gtk_button_new_with_label ("");
-  b_ok_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      b_ok_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_ok);
-  gtk_object_set_data_full (GTK_OBJECT (login), "b_ok", b_ok,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_ok);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_ok);
-  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      'O', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-  b_cancel = gtk_button_new_with_label ("");
-  b_cancel_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
-      "_Cancel");
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      b_cancel_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_cancel);
-  gtk_object_set_data_full (GTK_OBJECT (login), "b_cancel", b_cancel,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_cancel = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_set_name (b_cancel, "b_cancel");
   gtk_widget_show (b_cancel);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_cancel);
+  gtk_dialog_add_action_widget (GTK_DIALOG (login), b_cancel, GTK_RESPONSE_CANCEL);
   GTK_WIDGET_SET_FLAGS (b_cancel, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      'C', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+
+  b_ok = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_set_name (b_ok, "b_ok");
+  gtk_widget_show (b_ok);
+  gtk_dialog_add_action_widget (GTK_DIALOG (login), b_ok, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (login, login, "login");
+  GLADE_HOOKUP_OBJECT_NO_REF (login, dialog_vbox8, "dialog_vbox8");
+  GLADE_HOOKUP_OBJECT (login, frame99, "frame99");
+  GLADE_HOOKUP_OBJECT (login, alignment83, "alignment83");
+  GLADE_HOOKUP_OBJECT (login, table9, "table9");
+  GLADE_HOOKUP_OBJECT (login, label165, "label165");
+  GLADE_HOOKUP_OBJECT (login, t_user, "t_user");
+  GLADE_HOOKUP_OBJECT (login, t_password, "t_password");
+  GLADE_HOOKUP_OBJECT (login, label164, "label164");
+  GLADE_HOOKUP_OBJECT_NO_REF (login, dialog_action_area8, "dialog_action_area8");
+  GLADE_HOOKUP_OBJECT (login, b_ok, "b_ok");
+  GLADE_HOOKUP_OBJECT (login, b_cancel, "b_cancel");
 
   /* Ok button events */
   gtk_signal_connect (GTK_OBJECT (b_ok), "clicked",
@@ -273,8 +271,6 @@ create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
       GTK_SIGNAL_FUNC (delete_event), log_t);
   gtk_signal_connect (GTK_OBJECT (login), "destroy",
       GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
-
-  gtk_window_add_accel_group (GTK_WINDOW (login), accel_group);
 
   log_t->username = t_user;
   log_t->password = t_password;

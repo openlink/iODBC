@@ -130,203 +130,208 @@ delete_event (GtkWidget *widget,
 BOOL
 create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
 {
-  GtkWidget *connectionpool, *dialog_vbox1, *fixed1, *l_question;
-  GtkWidget *t_cptimeout, *dialog_action_area1, *hbuttonbox1;
-  GtkWidget *t_probe, *l_time, *l_probe, *fixed0, *l_question1;
-  GtkWidget *b_finish, *b_cancel, *frame1;
-  guint b_finish_key, b_cancel_key;
-  GtkAccelGroup *accel_group;
+  GdkPixmap *pixmap;
+  GdkBitmap *mask;
+  GtkStyle *style;
+
+  GtkWidget *connectionpool;
+  GtkWidget *dialog_vbox7;
+  GtkWidget *frame1;
+  GtkWidget *alignment76;
+  GtkWidget *vbox40;
+  GtkWidget *frame93;
+  GtkWidget *alignment77;
+  GtkWidget *label154;
+  GtkWidget *frame94;
+  GtkWidget *alignment78;
+  GtkWidget *hbox55;
+  GtkWidget *label156;
+  GtkWidget *t_cptimeout;
+  GtkWidget *frame95;
+  GtkWidget *alignment79;
+  GtkWidget *label155;
+  GtkWidget *frame96;
+  GtkWidget *alignment80;
+  GtkWidget *hbox56;
+  GtkWidget *label157;
+  GtkWidget *t_probe;
+  GtkWidget *flabel1;
+  GtkWidget *dialog_action_area7;
+  GtkWidget *b_cancel;
+  GtkWidget *b_finish;
   char msg[1024];
 
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd) || !choose_t)
     return FALSE;
 
-  accel_group = gtk_accel_group_new ();
-
   connectionpool = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (connectionpool), "connectionpool",
-      connectionpool);
-  gtk_window_set_title (GTK_WINDOW (connectionpool), "Connection pooling attributes");
+  gtk_widget_set_name (connectionpool, "connectionpool");
+  gtk_widget_set_size_request (connectionpool, 433, 227);
+  gtk_window_set_title (GTK_WINDOW (connectionpool), _("Connection pooling attributes"));
   gtk_window_set_position (GTK_WINDOW (connectionpool), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (connectionpool), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (connectionpool), FALSE, FALSE, FALSE);
+  gtk_window_set_default_size (GTK_WINDOW (connectionpool), 433, 227);
+  gtk_window_set_type_hint (GTK_WINDOW (connectionpool), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_show (connectionpool);
 #endif
 
-  dialog_vbox1 = GTK_DIALOG (connectionpool)->vbox;
-  gtk_object_set_data (GTK_OBJECT (connectionpool), "dialog_vbox1",
-      dialog_vbox1);
-  gtk_widget_show (dialog_vbox1);
+  dialog_vbox7 = GTK_DIALOG (connectionpool)->vbox;
+  gtk_widget_set_name (dialog_vbox7, "dialog_vbox7");
+  gtk_widget_show (dialog_vbox7);
 
-
-  fixed0 = gtk_fixed_new ();
-  gtk_widget_ref (fixed0);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "fixed0", fixed0,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (fixed0);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), fixed0, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (fixed0), 6);
-
-  frame1 = gtk_frame_new(choose_t->driver);
-  gtk_widget_ref(frame1);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "frame1", frame1,
-      (GtkDestroyNotify) gtk_widget_unref);
+  frame1 = gtk_frame_new (choose_t->driver);
+  gtk_widget_set_name (frame1, "frame1");
   gtk_widget_show (frame1);
-  gtk_fixed_put (GTK_FIXED (fixed0), frame1, 6, 6);
-  gtk_widget_set_uposition (frame1, 6, 6);
-  gtk_widget_set_usize (frame1, 410, 165);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox7), frame1, TRUE, TRUE, 0);
 
-  fixed1 = gtk_fixed_new ();
-  gtk_widget_ref (fixed1);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "fixed1", fixed1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (fixed1);
-  gtk_container_add (GTK_CONTAINER (frame1), fixed1);
-  gtk_container_set_border_width (GTK_CONTAINER (fixed1), 6);
+  alignment76 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment76, "alignment76");
+  gtk_widget_show (alignment76);
+  gtk_container_add (GTK_CONTAINER (frame1), alignment76);
 
+  vbox40 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox40, "vbox40");
+  gtk_widget_show (vbox40);
+  gtk_container_add (GTK_CONTAINER (alignment76), vbox40);
 
-  l_question =
-      gtk_label_new
-      ("Enable connection pooling for this driver by specifying      \na timeout in seconds");
-  gtk_widget_ref (l_question);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_question",
-      l_question, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_question);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_question, 4, 22);
-  gtk_widget_set_uposition (l_question, 4, 22);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_widget_set_usize (l_question, 376, 36);
-#else
-  gtk_widget_set_usize (l_question, 376, 24);
-#endif
-  gtk_label_set_justify (GTK_LABEL (l_question), GTK_JUSTIFY_LEFT);
+  frame93 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame93, "frame93");
+  gtk_widget_show (frame93);
+  gtk_box_pack_start (GTK_BOX (vbox40), frame93, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame93), GTK_SHADOW_NONE);
 
-  l_time = gtk_label_new ("Timeout:");
-  gtk_widget_ref (l_time);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_time",
-      l_time, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_time);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 62);
-  gtk_widget_set_uposition (l_time, 8, 62);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), l_time, 8, 54);
-  gtk_widget_set_uposition (l_time, 8, 54);
-#endif
-  gtk_widget_set_usize (l_time, 60, 24);
-  gtk_label_set_justify (GTK_LABEL (l_time), GTK_JUSTIFY_RIGHT);
+  alignment77 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment77, "alignment77");
+  gtk_widget_show (alignment77);
+  gtk_container_add (GTK_CONTAINER (frame93), alignment77);
+
+  label154 = gtk_label_new (_("Enable connection pooling for this driver by specifying\na timeout in seconds"));
+  gtk_widget_set_name (label154, "label154");
+  gtk_widget_show (label154);
+  gtk_container_add (GTK_CONTAINER (alignment77), label154);
+
+  frame94 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame94, "frame94");
+  gtk_widget_show (frame94);
+  gtk_box_pack_start (GTK_BOX (vbox40), frame94, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame94), GTK_SHADOW_NONE);
+
+  alignment78 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment78, "alignment78");
+  gtk_widget_show (alignment78);
+  gtk_container_add (GTK_CONTAINER (frame94), alignment78);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment78), 0, 0, 4, 10);
+
+  hbox55 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox55, "hbox55");
+  gtk_widget_show (hbox55);
+  gtk_container_add (GTK_CONTAINER (alignment78), hbox55);
+
+  label156 = gtk_label_new (_("Timeout :  "));
+  gtk_widget_set_name (label156, "label156");
+  gtk_widget_show (label156);
+  gtk_box_pack_start (GTK_BOX (hbox55), label156, FALSE, FALSE, 0);
 
   t_cptimeout = gtk_entry_new ();
-  gtk_widget_ref (t_cptimeout);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "t_cptimeout",
-      t_cptimeout, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_cptimeout, "t_cptimeout");
   gtk_widget_show (t_cptimeout);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 62);
-  gtk_widget_set_uposition (t_cptimeout, 80, 62);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), t_cptimeout, 80, 54);
-  gtk_widget_set_uposition (t_cptimeout, 80, 54);
-#endif
-  gtk_widget_set_usize (t_cptimeout, 300, 22);
+  gtk_box_pack_start (GTK_BOX (hbox55), t_cptimeout, TRUE, TRUE, 0);
 
   if (choose_t)
     gtk_entry_set_text (GTK_ENTRY (t_cptimeout), choose_t->timeout);
 
-  l_question1 =
-      gtk_label_new
-      ("Set an optional probe query, used for additional verification\nof the connection state");
-  gtk_widget_ref (l_question1);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_question",
-      l_question, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_question1);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_question1, 4, 90);
-  gtk_widget_set_uposition (l_question1, 4, 90);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_widget_set_usize (l_question1, 376, 36);
-#else
-  gtk_widget_set_usize (l_question1, 376, 24);
-#endif
-  gtk_label_set_justify (GTK_LABEL (l_question1), GTK_JUSTIFY_LEFT);
-  
-  
-  l_probe = gtk_label_new ("Query:");
-  gtk_widget_ref (l_probe);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "l_probe",
-      l_probe, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_probe);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 130);
-  gtk_widget_set_uposition (l_probe, 8, 130);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), l_probe, 8, 110);
-  gtk_widget_set_uposition (l_probe, 8, 110);
-#endif
-  gtk_widget_set_usize (l_probe, 60, 24);
-  gtk_label_set_justify (GTK_LABEL (l_probe), GTK_JUSTIFY_RIGHT);
+  frame95 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame95, "frame95");
+  gtk_widget_show (frame95);
+  gtk_box_pack_start (GTK_BOX (vbox40), frame95, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame95), GTK_SHADOW_NONE);
+
+  alignment79 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment79, "alignment79");
+  gtk_widget_show (alignment79);
+  gtk_container_add (GTK_CONTAINER (frame95), alignment79);
+
+  label155 = gtk_label_new (_("Set an optional probe query, used for additional verification\nof the connection state"));
+  gtk_widget_set_name (label155, "label155");
+  gtk_widget_show (label155);
+  gtk_container_add (GTK_CONTAINER (alignment79), label155);
+
+  frame96 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame96, "frame96");
+  gtk_widget_show (frame96);
+  gtk_box_pack_start (GTK_BOX (vbox40), frame96, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame96), GTK_SHADOW_NONE);
+
+  alignment80 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment80, "alignment80");
+  gtk_widget_show (alignment80);
+  gtk_container_add (GTK_CONTAINER (frame96), alignment80);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment80), 0, 10, 4, 10);
+
+  hbox56 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox56, "hbox56");
+  gtk_widget_show (hbox56);
+  gtk_container_add (GTK_CONTAINER (alignment80), hbox56);
+
+  label157 = gtk_label_new (_("   Query :  "));
+  gtk_widget_set_name (label157, "label157");
+  gtk_widget_show (label157);
+  gtk_box_pack_start (GTK_BOX (hbox56), label157, FALSE, FALSE, 0);
 
   t_probe = gtk_entry_new ();
-  gtk_widget_ref (t_probe);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "t_probe",
-      t_probe, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_probe, "t_probe");
   gtk_widget_show (t_probe);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 130);
-  gtk_widget_set_uposition (t_probe, 80, 130);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), t_probe, 80, 110);
-  gtk_widget_set_uposition (t_probe, 80, 110);
-#endif
-  gtk_widget_set_usize (t_probe, 300, 22);
+  gtk_box_pack_start (GTK_BOX (hbox56), t_probe, TRUE, TRUE, 0);
 
   if (choose_t)
     gtk_entry_set_text (GTK_ENTRY (t_probe), choose_t->probe);
 
-  dialog_action_area1 = GTK_DIALOG (connectionpool)->action_area;
-  gtk_object_set_data (GTK_OBJECT (connectionpool), "dialog_action_area1",
-      dialog_action_area1);
-  gtk_widget_show (dialog_action_area1);
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 5);
+  dialog_action_area7 = GTK_DIALOG (connectionpool)->action_area;
+  gtk_widget_set_name (dialog_action_area7, "dialog_action_area7");
+  gtk_widget_show (dialog_action_area7);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area7), GTK_BUTTONBOX_END);
 
-  hbuttonbox1 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "hbuttonbox1",
-      hbuttonbox1, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE,
-      0);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
-
-  b_finish = gtk_button_new_with_label ("");
-  b_finish_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_finish)->child),
-      "_Finish");
-  gtk_widget_add_accelerator (b_finish, "clicked", accel_group,
-      b_finish_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_finish);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "b_finish", b_finish,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_finish);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_finish);
-  GTK_WIDGET_SET_FLAGS (b_finish, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_finish, "clicked", accel_group,
-      'F', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-  b_cancel = gtk_button_new_with_label ("");
-  b_cancel_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
-      "_Cancel");
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      b_cancel_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_cancel);
-  gtk_object_set_data_full (GTK_OBJECT (connectionpool), "b_cancel", b_cancel,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_cancel = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_set_name (b_cancel, "b_cancel");
   gtk_widget_show (b_cancel);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_cancel);
+  gtk_dialog_add_action_widget (GTK_DIALOG (connectionpool), b_cancel, GTK_RESPONSE_CANCEL);
   GTK_WIDGET_SET_FLAGS (b_cancel, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      'C', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+
+  b_finish = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_set_name (b_finish, "b_finish");
+  gtk_widget_show (b_finish);
+  gtk_dialog_add_action_widget (GTK_DIALOG (connectionpool), b_finish, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (b_finish, GTK_CAN_DEFAULT);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (connectionpool, connectionpool, "connectionpool");
+  GLADE_HOOKUP_OBJECT_NO_REF (connectionpool, dialog_vbox7, "dialog_vbox7");
+  GLADE_HOOKUP_OBJECT (connectionpool, frame1, "frame1");
+  GLADE_HOOKUP_OBJECT (connectionpool, alignment76, "alignment76");
+  GLADE_HOOKUP_OBJECT (connectionpool, vbox40, "vbox40");
+  GLADE_HOOKUP_OBJECT (connectionpool, frame93, "frame93");
+  GLADE_HOOKUP_OBJECT (connectionpool, alignment77, "alignment77");
+  GLADE_HOOKUP_OBJECT (connectionpool, label154, "label154");
+  GLADE_HOOKUP_OBJECT (connectionpool, frame94, "frame94");
+  GLADE_HOOKUP_OBJECT (connectionpool, alignment78, "alignment78");
+  GLADE_HOOKUP_OBJECT (connectionpool, hbox55, "hbox55");
+  GLADE_HOOKUP_OBJECT (connectionpool, label156, "label156");
+  GLADE_HOOKUP_OBJECT (connectionpool, t_cptimeout, "t_cptimeout");
+  GLADE_HOOKUP_OBJECT (connectionpool, frame95, "frame95");
+  GLADE_HOOKUP_OBJECT (connectionpool, alignment79, "alignment79");
+  GLADE_HOOKUP_OBJECT (connectionpool, label155, "label155");
+  GLADE_HOOKUP_OBJECT (connectionpool, frame96, "frame96");
+  GLADE_HOOKUP_OBJECT (connectionpool, alignment80, "alignment80");
+  GLADE_HOOKUP_OBJECT (connectionpool, hbox56, "hbox56");
+  GLADE_HOOKUP_OBJECT (connectionpool, label157, "label157");
+  GLADE_HOOKUP_OBJECT (connectionpool, t_probe, "t_probe");
+  GLADE_HOOKUP_OBJECT (connectionpool, flabel1, "flabel1");
+  GLADE_HOOKUP_OBJECT_NO_REF (connectionpool, dialog_action_area7, "dialog_action_area7");
+  GLADE_HOOKUP_OBJECT (connectionpool, b_cancel, "b_cancel");
+  GLADE_HOOKUP_OBJECT (connectionpool, b_finish, "b_finish");
+
 
   /* Finish button events */
   gtk_signal_connect (GTK_OBJECT (b_finish), "clicked",
@@ -339,8 +344,6 @@ create_connectionpool (HWND hwnd, TCONNECTIONPOOLING *choose_t)
       GTK_SIGNAL_FUNC (delete_event), choose_t);
   gtk_signal_connect (GTK_OBJECT (connectionpool), "destroy",
       GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
-
-  gtk_window_add_accel_group (GTK_WINDOW (connectionpool), accel_group);
 
   choose_t->timeout_entry = t_cptimeout;
   choose_t->probe_entry = t_probe;

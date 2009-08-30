@@ -142,10 +142,12 @@ create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text)
   else
     sprintf (msg, "Confirm action/operation ...");
   gtk_object_set_data (GTK_OBJECT (confirm), "confirm", confirm);
+  gtk_widget_set_size_request (confirm, 400, 100);
   gtk_window_set_title (GTK_WINDOW (confirm), msg);
   gtk_window_set_position (GTK_WINDOW (confirm), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (confirm), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (confirm), FALSE, FALSE, FALSE);
+  gtk_window_set_default_size (GTK_WINDOW (confirm), 400, 100);
+  gtk_window_set_type_hint (GTK_WINDOW (confirm), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_show (confirm);
@@ -208,27 +210,22 @@ create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text)
   gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
 
-  b_yes = gtk_button_new_with_label ("");
-  b_yes_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_yes)->child),
-      "_Yes");
-  gtk_widget_add_accelerator (b_yes, "clicked", accel_group,
-      b_yes_key, GDK_MOD1_MASK, 0);
+  b_yes = gtk_button_new_from_stock ("gtk-yes");
   gtk_widget_ref (b_yes);
   gtk_object_set_data_full (GTK_OBJECT (confirm), "b_yes", b_yes,
       (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (b_yes);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_yes);
+  gtk_dialog_add_action_widget (GTK_DIALOG (confirm), b_yes, GTK_RESPONSE_YES);
   GTK_WIDGET_SET_FLAGS (b_yes, GTK_CAN_DEFAULT);
 
-  b_no = gtk_button_new_with_label ("");
-  b_no_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_no)->child), "_No");
-  gtk_widget_add_accelerator (b_no, "clicked", accel_group,
-      b_no_key, GDK_MOD1_MASK, 0);
+  b_no = gtk_button_new_from_stock ("gtk-no");
   gtk_widget_ref (b_no);
   gtk_object_set_data_full (GTK_OBJECT (confirm), "b_no", b_no,
       (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (b_no);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_no);
+  gtk_dialog_add_action_widget (GTK_DIALOG (confirm), b_no, GTK_RESPONSE_NO);
   GTK_WIDGET_SET_FLAGS (b_no, GTK_CAN_DEFAULT);
 
   /* Yes button events */

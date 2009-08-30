@@ -82,6 +82,7 @@
 #elif defined(_MAC)
 #  include "mac/gui.h"
 #elif defined(__GTK__)
+#  include <gdk/gdkkeysyms.h>
 #  include "gtk/gui.h"
 #elif defined(_MACX)
 #  include "macosx/gui.h"

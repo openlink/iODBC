@@ -295,20 +295,29 @@ static void
 driversetup_update_clicked (GtkWidget *widget, TDRIVERSETUP *driversetup_t)
 {
   char *data[2];
+  int i;
 
-  if (driversetup_t && GTK_CLIST (driversetup_t->key_list)->selection != NULL)
+  if (driversetup_t)
     {
       data[0] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->key_entry));
-      data[1] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->value_entry));
-      gtk_clist_remove (GTK_CLIST (driversetup_t->key_list),
-	  GPOINTER_TO_INT (GTK_CLIST (driversetup_t->key_list)->selection->
-	      data));
-
       if (STRLEN (data[0]))
 	{
-	  gtk_clist_append (GTK_CLIST (driversetup_t->key_list), data);
-	  if (GTK_CLIST (driversetup_t->key_list)->rows > 0)
-	    gtk_clist_sort (GTK_CLIST (driversetup_t->key_list));
+	  data[1] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->value_entry));
+
+	  if (GTK_CLIST (driversetup_t->key_list)->selection != NULL)
+	    i = GPOINTER_TO_INT (GTK_CLIST (driversetup_t->key_list)->selection->
+		data);
+	  else
+	    i = 0;
+
+	  /* An update operation */
+	  if (i < GTK_CLIST (driversetup_t->key_list)->rows)
+	    {
+	      gtk_clist_set_text (GTK_CLIST (driversetup_t->key_list), i, 0,
+		  data[0]);
+	      gtk_clist_set_text (GTK_CLIST (driversetup_t->key_list), i, 1,
+		  data[1]);
+	    }
 	}
 
       gtk_entry_set_text (GTK_ENTRY (driversetup_t->key_entry), "");
@@ -483,304 +492,303 @@ delete_event (GtkWidget *widget, GdkEvent *event,
 LPSTR
 create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add, BOOL user)
 {
-  GtkWidget *driversetup, *dialog_vbox1, *fixed1, *t_name, *t_driver,
-      *t_keyword;
-  GtkWidget *t_value, *l_name, *b_browse, *t_setup, *l_driver, *b_browse1;
-  GtkWidget *l_setup, *scrolledwindow1, *clist1, *l_key, *l_value, *l_keyword;
-  GtkWidget *l_valeur, *vbuttonbox1, *b_add, *b_update, *l_copyright;
-  GtkWidget *dialog_action_area1, *hbuttonbox1, *b_ok, *b_cancel;
-  guint b_add_key, b_update_key, b_ok_key, b_cancel_key;
-  GtkAccelGroup *accel_group;
+  GdkPixmap *pixmap;
+  GdkBitmap *mask;
+  GtkStyle *style;
+
+
+  GtkWidget *driversetup;
+  GtkWidget *dialog_vbox6;
+  GtkWidget *vbox26;
+  GtkWidget *frame57;
+  GtkWidget *alignment49;
+  GtkWidget *table6;
+  GtkWidget *label99;
+  GtkWidget *label100;
+  GtkWidget *label101;
+  GtkWidget *t_name;
+  GtkWidget *t_driver;
+  GtkWidget *t_setup;
+  GtkWidget *b_browse;
+  GtkWidget *b_browse1;
+  GtkWidget *frame58;
+  GtkWidget *alignment50;
+  GtkWidget *scrolledwindow16;
+  GtkWidget *clist1;
+  GtkWidget *label97;
+  GtkWidget *label98;
+  GtkWidget *frame59;
+  GtkWidget *alignment51;
+  GtkWidget *table7;
+  GtkWidget *label102;
+  GtkWidget *label103;
+  GtkWidget *t_keyword;
+  GtkWidget *t_value;
+  GtkWidget *b_add;
+  GtkWidget *b_update;
+  GtkWidget *dialog_action_area6;
+  GtkWidget *b_cancel;
+  GtkWidget *b_ok;
   TDRIVERSETUP driversetup_t;
+
 
   if (hwnd == NULL || !GTK_IS_WIDGET (hwnd))
     return (LPSTR) attrs;
 
-  accel_group = gtk_accel_group_new ();
-
   driversetup = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (driversetup), "driversetup", driversetup);
-  gtk_window_set_title (GTK_WINDOW (driversetup), "ODBC Driver Add/Setup");
+  gtk_widget_set_name (driversetup, "driversetup");
+  gtk_widget_set_size_request (driversetup, 505, 480);
+  gtk_window_set_title (GTK_WINDOW (driversetup), _("ODBC Driver Add/Setup"));
   gtk_window_set_position (GTK_WINDOW (driversetup), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (driversetup), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (driversetup), FALSE, FALSE, FALSE);
+  gtk_window_set_default_size (GTK_WINDOW (driversetup), 505, 480);
+  gtk_window_set_type_hint (GTK_WINDOW (driversetup), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_show (driversetup);
 #endif
 
-  dialog_vbox1 = GTK_DIALOG (driversetup)->vbox;
-  gtk_object_set_data (GTK_OBJECT (driversetup), "dialog_vbox1",
-      dialog_vbox1);
-  gtk_widget_show (dialog_vbox1);
+  dialog_vbox6 = GTK_DIALOG (driversetup)->vbox;
+  gtk_widget_set_name (dialog_vbox6, "dialog_vbox6");
+  gtk_widget_show (dialog_vbox6);
 
-  fixed1 = gtk_fixed_new ();
-  gtk_widget_ref (fixed1);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "fixed1", fixed1,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (fixed1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), fixed1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (fixed1), 6);
+  vbox26 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox26, "vbox26");
+  gtk_widget_show (vbox26);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox6), vbox26, TRUE, TRUE, 0);
+
+  frame57 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame57, "frame57");
+  gtk_widget_show (frame57);
+  gtk_box_pack_start (GTK_BOX (vbox26), frame57, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame57), GTK_SHADOW_NONE);
+
+  alignment49 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment49, "alignment49");
+  gtk_widget_show (alignment49);
+  gtk_container_add (GTK_CONTAINER (frame57), alignment49);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment49), 16, 0, 4, 4);
+
+  table6 = gtk_table_new (3, 3, FALSE);
+  gtk_widget_set_name (table6, "table6");
+  gtk_widget_show (table6);
+  gtk_container_add (GTK_CONTAINER (alignment49), table6);
+  gtk_table_set_row_spacings (GTK_TABLE (table6), 6);
+  gtk_table_set_col_spacings (GTK_TABLE (table6), 10);
+
+  label99 = gtk_label_new (_("Description of the driver :"));
+  gtk_widget_set_name (label99, "label99");
+  gtk_widget_show (label99);
+  gtk_table_attach (GTK_TABLE (table6), label99, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label99), 0, 0.5);
+
+  label100 = gtk_label_new (_("            Driver file name :"));
+  gtk_widget_set_name (label100, "label100");
+  gtk_widget_show (label100);
+  gtk_table_attach (GTK_TABLE (table6), label100, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label100), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label100), 0, 0.5);
+
+  label101 = gtk_label_new (_("            Setup file name :"));
+  gtk_widget_set_name (label101, "label101");
+  gtk_widget_show (label101);
+  gtk_table_attach (GTK_TABLE (table6), label101, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label101), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label101), 0, 0.5);
 
   t_name = gtk_entry_new ();
-  gtk_widget_ref (t_name);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "t_name", t_name,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_name, "t_name");
   gtk_widget_show (t_name);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_name, 160, 56);
-  gtk_widget_set_uposition (t_name, 160, 56);
-  gtk_widget_set_usize (t_name, 250, 0);
+  gtk_table_attach (GTK_TABLE (table6), t_name, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   t_driver = gtk_entry_new ();
-  gtk_widget_ref (t_driver);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "t_driver", t_driver,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_driver, "t_driver");
   gtk_widget_show (t_driver);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_driver, 160, 88);
-  gtk_widget_set_uposition (t_driver, 160, 88);
-  gtk_widget_set_usize (t_driver, 250, 0);
-
-  t_keyword = gtk_entry_new ();
-  gtk_widget_ref (t_keyword);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "t_keyword", t_keyword,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (t_keyword);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), t_keyword, 88, 360);
-  gtk_widget_set_uposition (t_keyword, 88, 360);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), t_keyword, 88, 352);
-  gtk_widget_set_uposition (t_keyword, 88, 352);
-#endif
-  gtk_widget_set_usize (t_keyword, 301, 22);
-
-  t_value = gtk_entry_new ();
-  gtk_widget_ref (t_value);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "t_value", t_value,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (t_value);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), t_value, 88, 392);
-  gtk_widget_set_uposition (t_value, 88, 392);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), t_value, 88, 384);
-  gtk_widget_set_uposition (t_value, 88, 384);
-#endif
-  gtk_widget_set_usize (t_value, 301, 22);
-
-  l_name = gtk_label_new ("Description of the driver : ");
-  gtk_widget_ref (l_name);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_name", l_name,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_name);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_name, 8, 59);
-  gtk_widget_set_uposition (l_name, 8, 59);
-  gtk_widget_set_usize (l_name, 0, 0);
-  gtk_label_set_justify (GTK_LABEL (l_name), GTK_JUSTIFY_LEFT);
-
-  b_browse = gtk_button_new_with_label ("Browse ...");
-  gtk_widget_ref (b_browse);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "b_browse", b_browse,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_browse);
-  gtk_fixed_put (GTK_FIXED (fixed1), b_browse, 424, 88);
-  gtk_widget_set_uposition (b_browse, 424, 88);
-  gtk_widget_set_usize (b_browse, 65, 22);
+  gtk_table_attach (GTK_TABLE (table6), t_driver, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   t_setup = gtk_entry_new ();
-  gtk_widget_ref (t_setup);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "t_setup", t_setup,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (t_setup, "t_setup");
   gtk_widget_show (t_setup);
-  gtk_fixed_put (GTK_FIXED (fixed1), t_setup, 160, 120);
-  gtk_widget_set_uposition (t_setup, 160, 120);
-  gtk_widget_set_usize (t_setup, 250, 0);
+  gtk_table_attach (GTK_TABLE (table6), t_setup, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  l_driver = gtk_label_new ("Driver file name : ");
-  gtk_widget_ref (l_driver);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_driver", l_driver,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_driver);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_driver, 55, 92);
-  gtk_widget_set_uposition (l_driver, 55, 92);
-  gtk_widget_set_usize (l_driver, 0, 0);
-  gtk_label_set_justify (GTK_LABEL (l_driver), GTK_JUSTIFY_LEFT);
+  b_browse = gtk_button_new_with_mnemonic (_("Browse . . ."));
+  gtk_widget_set_name (b_browse, "b_browse");
+  gtk_widget_show (b_browse);
+  gtk_table_attach (GTK_TABLE (table6), b_browse, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  b_browse1 = gtk_button_new_with_label ("Browse ...");
-  gtk_widget_ref (b_browse1);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "b_browse1", b_browse1,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_browse1 = gtk_button_new_with_mnemonic (_("  Browse . . . "));
+  gtk_widget_set_name (b_browse1, "b_browse1");
   gtk_widget_show (b_browse1);
-  gtk_fixed_put (GTK_FIXED (fixed1), b_browse1, 424, 120);
-  gtk_widget_set_uposition (b_browse1, 424, 120);
-  gtk_widget_set_usize (b_browse1, 65, 22);
+  gtk_table_attach (GTK_TABLE (table6), b_browse1, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  l_setup = gtk_label_new ("Setup file name : ");
-  gtk_widget_ref (l_setup);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_setup", l_setup,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_setup);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_setup, 56, 123);
-  gtk_widget_set_uposition (l_setup, 56, 123);
-  gtk_widget_set_usize (l_setup, 0, 0);
-  gtk_label_set_justify (GTK_LABEL (l_setup), GTK_JUSTIFY_LEFT);
+  frame58 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame58, "frame58");
+  gtk_widget_show (frame58);
+  gtk_box_pack_start (GTK_BOX (vbox26), frame58, TRUE, TRUE, 0);
+  gtk_widget_set_size_request (frame58, -1, 220);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame58), GTK_SHADOW_NONE);
 
-  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "scrolledwindow1",
-      scrolledwindow1, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow1);
-  gtk_fixed_put (GTK_FIXED (fixed1), scrolledwindow1, 8, 152);
-  gtk_widget_set_uposition (scrolledwindow1, 8, 152);
-  gtk_widget_set_usize (scrolledwindow1, 480, 192);
+  alignment50 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment50, "alignment50");
+  gtk_widget_show (alignment50);
+  gtk_container_add (GTK_CONTAINER (frame58), alignment50);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment50), 0, 0, 4, 4);
+
+  scrolledwindow16 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (scrolledwindow16, "scrolledwindow16");
+  gtk_widget_show (scrolledwindow16);
+  gtk_container_add (GTK_CONTAINER (alignment50), scrolledwindow16);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow16), GTK_SHADOW_IN);
 
   clist1 = gtk_clist_new (2);
-  gtk_widget_ref (clist1);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "clist1", clist1,
-      (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_name (clist1, "clist1");
   gtk_widget_show (clist1);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow16), clist1);
   gtk_clist_set_column_width (GTK_CLIST (clist1), 0, 134);
   gtk_clist_set_column_width (GTK_CLIST (clist1), 1, 80);
   gtk_clist_column_titles_show (GTK_CLIST (clist1));
 
-  l_key = gtk_label_new (szKeysColumnNames[0]);
-  gtk_widget_ref (l_key);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_key", l_key,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_key);
-  gtk_clist_set_column_widget (GTK_CLIST (clist1), 0, l_key);
+  label97 = gtk_label_new (_("Keyword"));
+  gtk_widget_set_name (label97, "label97");
+  gtk_widget_show (label97);
+  gtk_clist_set_column_widget (GTK_CLIST (clist1), 0, label97);
+  gtk_widget_set_size_request (label97, 134, -1);
 
-  l_value = gtk_label_new (szKeysColumnNames[1]);
-  gtk_widget_ref (l_value);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_value", l_value,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_value);
-  gtk_clist_set_column_widget (GTK_CLIST (clist1), 1, l_value);
+  label98 = gtk_label_new (_("Value"));
+  gtk_widget_set_name (label98, "label98");
+  gtk_widget_show (label98);
+  gtk_clist_set_column_widget (GTK_CLIST (clist1), 1, label98);
+  gtk_widget_set_size_request (label98, 80, -1);
 
-  l_keyword = gtk_label_new ("Keyword : ");
-  gtk_widget_ref (l_keyword);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_keyword", l_keyword,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_keyword);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), l_keyword, 16, 363);
-  gtk_widget_set_uposition (l_keyword, 16, 363);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), l_keyword, 16, 355);
-  gtk_widget_set_uposition (l_keyword, 16, 355);
-#endif
-  gtk_widget_set_usize (l_keyword, 69, 16);
-  gtk_label_set_justify (GTK_LABEL (l_keyword), GTK_JUSTIFY_LEFT);
+  frame59 = gtk_frame_new (NULL);
+  gtk_widget_set_name (frame59, "frame59");
+  gtk_widget_show (frame59);
+  gtk_box_pack_start (GTK_BOX (vbox26), frame59, FALSE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame59), GTK_SHADOW_NONE);
 
-  l_valeur = gtk_label_new ("Value : ");
-  gtk_widget_ref (l_valeur);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_valeur", l_valeur,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_valeur);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), l_valeur, 32, 396);
-  gtk_widget_set_uposition (l_valeur, 32, 396);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), l_valeur, 32, 388);
-  gtk_widget_set_uposition (l_valeur, 32, 388);
-#endif
-  gtk_widget_set_usize (l_valeur, 51, 16);
-  gtk_label_set_justify (GTK_LABEL (l_valeur), GTK_JUSTIFY_LEFT);
+  alignment51 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_set_name (alignment51, "alignment51");
+  gtk_widget_show (alignment51);
+  gtk_container_add (GTK_CONTAINER (frame59), alignment51);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment51), 10, 10, 4, 4);
 
-  vbuttonbox1 = gtk_vbutton_box_new ();
-  gtk_widget_ref (vbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "vbuttonbox1",
-      vbuttonbox1, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbuttonbox1);
-#if GTK_CHECK_VERSION(2,0,0)
-  gtk_fixed_put (GTK_FIXED (fixed1), vbuttonbox1, 400, 357);
-  gtk_widget_set_uposition (vbuttonbox1, 400, 357);
-#else
-  gtk_fixed_put (GTK_FIXED (fixed1), vbuttonbox1, 400, 344);
-  gtk_widget_set_uposition (vbuttonbox1, 400, 344);
-#endif
-  gtk_widget_set_usize (vbuttonbox1, 85, 67);
+  table7 = gtk_table_new (2, 3, FALSE);
+  gtk_widget_set_name (table7, "table7");
+  gtk_widget_show (table7);
+  gtk_container_add (GTK_CONTAINER (alignment51), table7);
+  gtk_table_set_row_spacings (GTK_TABLE (table7), 6);
+  gtk_table_set_col_spacings (GTK_TABLE (table7), 10);
 
-  b_add = gtk_button_new_with_label ("");
-  b_add_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_add)->child),
-      szKeysButtons[0]);
-  gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      b_add_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_add);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "b_add", b_add,
-      (GtkDestroyNotify) gtk_widget_unref);
+  label102 = gtk_label_new (_("Keyword :"));
+  gtk_widget_set_name (label102, "label102");
+  gtk_widget_show (label102);
+  gtk_table_attach (GTK_TABLE (table7), label102, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label102), 0, 0.5);
+
+  label103 = gtk_label_new (_("    Value :"));
+  gtk_widget_set_name (label103, "label103");
+  gtk_widget_show (label103);
+  gtk_table_attach (GTK_TABLE (table7), label103, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label103), 0, 0.5);
+
+  t_keyword = gtk_entry_new ();
+  gtk_widget_set_name (t_keyword, "t_keyword");
+  gtk_widget_show (t_keyword);
+  gtk_table_attach (GTK_TABLE (table7), t_keyword, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  t_value = gtk_entry_new ();
+  gtk_widget_set_name (t_value, "t_value");
+  gtk_widget_show (t_value);
+  gtk_table_attach (GTK_TABLE (table7), t_value, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  b_add = gtk_button_new_from_stock ("gtk-add");
+  gtk_widget_set_name (b_add, "b_add");
   gtk_widget_show (b_add);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), b_add);
-  GTK_WIDGET_SET_FLAGS (b_add, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_add, "clicked", accel_group,
-      'A', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+  gtk_table_attach (GTK_TABLE (table7), b_add, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  b_update = gtk_button_new_with_label ("");
-  b_update_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_update)->child),
-      szKeysButtons[1]);
-  gtk_widget_add_accelerator (b_update, "clicked", accel_group,
-      b_update_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_update);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "b_update", b_update,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_update = gtk_button_new_with_mnemonic (_("_Update"));
+  gtk_widget_set_name (b_update, "b_update");
   gtk_widget_show (b_update);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), b_update);
-  GTK_WIDGET_SET_FLAGS (b_update, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_update, "clicked", accel_group,
-      'U', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+  gtk_table_attach (GTK_TABLE (table7), b_update, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
-  l_copyright = gtk_label_new ("ODBC Driver Add/Setup");
-  gtk_widget_ref (l_copyright);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "l_copyright",
-      l_copyright, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (l_copyright);
-  gtk_fixed_put (GTK_FIXED (fixed1), l_copyright, 6, 6);
-  gtk_widget_set_uposition (l_copyright, 0, 0);
-  gtk_widget_set_usize (l_copyright, 482, 42);
+  dialog_action_area6 = GTK_DIALOG (driversetup)->action_area;
+  gtk_widget_set_name (dialog_action_area6, "dialog_action_area6");
+  gtk_widget_show (dialog_action_area6);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area6), GTK_BUTTONBOX_END);
 
-  dialog_action_area1 = GTK_DIALOG (driversetup)->action_area;
-  gtk_object_set_data (GTK_OBJECT (driversetup), "dialog_action_area1",
-      dialog_action_area1);
-  gtk_widget_show (dialog_action_area1);
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 5);
-
-  hbuttonbox1 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "hbuttonbox1",
-      hbuttonbox1, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE,
-      0);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 10);
-
-  b_ok = gtk_button_new_with_label ("");
-  b_ok_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_ok)->child), "_Ok");
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      b_ok_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_ok);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "b_ok", b_ok,
-      (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (b_ok);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_ok);
-  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_ok, "clicked", accel_group,
-      'O', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-  b_cancel = gtk_button_new_with_label ("");
-  b_cancel_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (b_cancel)->child),
-      "_Cancel");
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      b_cancel_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (b_cancel);
-  gtk_object_set_data_full (GTK_OBJECT (driversetup), "b_cancel", b_cancel,
-      (GtkDestroyNotify) gtk_widget_unref);
+  b_cancel = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_set_name (b_cancel, "b_cancel");
   gtk_widget_show (b_cancel);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), b_cancel);
+  gtk_dialog_add_action_widget (GTK_DIALOG (driversetup), b_cancel, GTK_RESPONSE_CANCEL);
   GTK_WIDGET_SET_FLAGS (b_cancel, GTK_CAN_DEFAULT);
-  gtk_widget_add_accelerator (b_cancel, "clicked", accel_group,
-      'C', GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+
+  b_ok = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_set_name (b_ok, "b_ok");
+  gtk_widget_show (b_ok);
+  gtk_dialog_add_action_widget (GTK_DIALOG (driversetup), b_ok, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (b_ok, GTK_CAN_DEFAULT);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (driversetup, driversetup, "driversetup");
+  GLADE_HOOKUP_OBJECT_NO_REF (driversetup, dialog_vbox6, "dialog_vbox6");
+  GLADE_HOOKUP_OBJECT (driversetup, vbox26, "vbox26");
+  GLADE_HOOKUP_OBJECT (driversetup, frame57, "frame57");
+  GLADE_HOOKUP_OBJECT (driversetup, alignment49, "alignment49");
+  GLADE_HOOKUP_OBJECT (driversetup, table6, "table6");
+  GLADE_HOOKUP_OBJECT (driversetup, label99, "label99");
+  GLADE_HOOKUP_OBJECT (driversetup, label100, "label100");
+  GLADE_HOOKUP_OBJECT (driversetup, label101, "label101");
+  GLADE_HOOKUP_OBJECT (driversetup, t_name, "t_name");
+  GLADE_HOOKUP_OBJECT (driversetup, t_driver, "t_driver");
+  GLADE_HOOKUP_OBJECT (driversetup, t_setup, "t_setup");
+  GLADE_HOOKUP_OBJECT (driversetup, b_browse, "b_browse");
+  GLADE_HOOKUP_OBJECT (driversetup, b_browse1, "b_browse1");
+  GLADE_HOOKUP_OBJECT (driversetup, frame58, "frame58");
+  GLADE_HOOKUP_OBJECT (driversetup, alignment50, "alignment50");
+  GLADE_HOOKUP_OBJECT (driversetup, scrolledwindow16, "scrolledwindow16");
+  GLADE_HOOKUP_OBJECT (driversetup, clist1, "clist1");
+  GLADE_HOOKUP_OBJECT (driversetup, label97, "label97");
+  GLADE_HOOKUP_OBJECT (driversetup, label98, "label98");
+  GLADE_HOOKUP_OBJECT (driversetup, frame59, "frame59");
+  GLADE_HOOKUP_OBJECT (driversetup, alignment51, "alignment51");
+  GLADE_HOOKUP_OBJECT (driversetup, table7, "table7");
+  GLADE_HOOKUP_OBJECT (driversetup, label102, "label102");
+  GLADE_HOOKUP_OBJECT (driversetup, label103, "label103");
+  GLADE_HOOKUP_OBJECT (driversetup, t_keyword, "t_keyword");
+  GLADE_HOOKUP_OBJECT (driversetup, t_value, "t_value");
+  GLADE_HOOKUP_OBJECT (driversetup, b_add, "b_add");
+  GLADE_HOOKUP_OBJECT (driversetup, b_update, "b_update");
+  GLADE_HOOKUP_OBJECT_NO_REF (driversetup, dialog_action_area6, "dialog_action_area6");
+  GLADE_HOOKUP_OBJECT (driversetup, b_cancel, "b_cancel");
+  GLADE_HOOKUP_OBJECT (driversetup, b_ok, "b_ok");
 
   /* Ok button events */
   gtk_signal_connect (GTK_OBJECT (b_ok), "clicked",
@@ -809,8 +817,6 @@ create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add, BOOL user)
       GTK_SIGNAL_FUNC (driversetup_browsedriver_clicked), &driversetup_t);
   gtk_signal_connect (GTK_OBJECT (b_browse1), "clicked",
       GTK_SIGNAL_FUNC (driversetup_browsesetup_clicked), &driversetup_t);
-
-  gtk_window_add_accel_group (GTK_WINDOW (driversetup), accel_group);
 
   driversetup_t.name_entry = t_name;
   driversetup_t.driver_entry = t_driver;

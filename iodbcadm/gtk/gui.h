@@ -80,6 +80,16 @@
 #ifndef	_GTKGUI_H
 #define	_GTKGUI_H
 
+#define GLADE_HOOKUP_OBJECT(component,widget,name) \
+  gtk_widget_ref(widget); \
+  gtk_object_set_data_full (GTK_OBJECT (component), name, \
+      widget, (GtkDestroyNotify) gtk_widget_unref)
+
+#define GLADE_HOOKUP_OBJECT_NO_REF(component,widget,name) \
+  gtk_object_set_data (GTK_OBJECT (component), name, widget)
+
+#define _(X)  X
+
 extern char* szDSNColumnNames[];
 extern char* szTabNames[];
 extern char* szDSNButtons[];
