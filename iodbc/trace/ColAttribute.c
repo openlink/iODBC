@@ -301,7 +301,7 @@ _trace_colattr3_data (
 	}
       else if (type == 7)	/* updatable */
 	{
-	  char *ptr = "unknown ubdatable type";
+	  char *ptr = "unknown updatable type";
 
 	  switch (*NumericAttributePtr)
 	    {

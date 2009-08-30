@@ -87,7 +87,7 @@ extern int ODBCSharedTraceFlag;
 
 
 /*
- *  Usefull macros
+ *  Useful macros
  */
 #ifdef NO_TRACING
 #define TRACE(X)

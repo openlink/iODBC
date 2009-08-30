@@ -137,7 +137,7 @@ typedef struct DBC
     wchar_t * current_qualifier;
     char current_qualifier_WA;
 
-    SWORD dbc_cip;			/* Call in Progess flag */
+    SWORD dbc_cip;			/* Call in Progress flag */
 
     DRVOPT *drvopt;			/* Driver specific connect options */
     SQLSMALLINT err_rec;

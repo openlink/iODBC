@@ -921,7 +921,7 @@ _iodbcdm_pool_get_conn (
 
 
 /*
- * Put the conneciton back to the pool
+ * Put the connection back to the pool
  *
  * Return 0 if the connection was put successfully
  * Return -1 otherwise
@@ -966,7 +966,7 @@ _iodbcdm_pool_put_conn (HDBC hdbc)
   if (cp_pdbc->cp_retry_wait == 0)
     {
       /* set new expiry time only if we are not returning the connection
-	 to the pool after unsuccessfull reconnect attempt */
+	 to the pool after unsuccessful reconnect attempt */
       cp_pdbc->cp_expiry_time = time(NULL) + cp_pdbc->cp_timeout;
     }
   cp_pdbc->cp_in_use = FALSE;

@@ -3,7 +3,7 @@
  *
  *  $Id$
  *
- *  Macros for locking & multihreading
+ *  Macros for locking & multithreading
  *
  *  The iODBC driver manager.
  *

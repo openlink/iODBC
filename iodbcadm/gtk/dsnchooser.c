@@ -516,7 +516,7 @@ userdsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	      if (SQLInstallerError (1, &error, connstr, 
 	         sizeof (connstr), NULL) != SQL_NO_DATA)
 		_iodbcdm_errorbox (choose_t->mainwnd, NULL,
-		    "An error occured when trying to add the DSN : ");
+		    "An error occurred when trying to add the DSN : ");
 	      goto done;
 	    }
 
@@ -567,7 +567,7 @@ userdsn_remove_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (!SQLConfigDataSource (choose_t->mainwnd, ODBC_REMOVE_DSN,
 		  szDriver, dsn))
 	    _iodbcdm_errorbox (choose_t->mainwnd, szDSN,
-		"An error occured when trying to remove the DSN : ");
+		"An error occurred when trying to remove the DSN : ");
 	  adddsns_to_list (choose_t->udsnlist, FALSE);
 	}
 
@@ -617,7 +617,7 @@ userdsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 		  sizeof (tokenstr), NULL))
 	    {
 	      _iodbcdm_errorbox (choose_t->mainwnd, szDSN,
-		  "An error occured when trying to configure the DSN : ");
+		  "An error occurred when trying to configure the DSN : ");
 	      goto done;
 	    }
 
@@ -642,7 +642,7 @@ userdsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 		      NULL) != SQL_NO_DATA
 		  && error != ODBC_ERROR_REQUEST_FAILED)
 		_iodbcdm_errorbox (choose_t->mainwnd, szDSN,
-		    "An error occured when trying to configure the DSN : ");
+		    "An error occurred when trying to configure the DSN : ");
 	      goto done;
 	    }
 
@@ -727,7 +727,7 @@ systemdsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	      if (SQLInstallerError (1, &error, connstr, sizeof (connstr),
 		      NULL) != SQL_NO_DATA)
 		_iodbcdm_errorbox (choose_t->mainwnd, NULL,
-		    "An error occured when trying to add the DSN : ");
+		    "An error occurred when trying to add the DSN : ");
 	      goto done;
 	    }
 
@@ -778,7 +778,7 @@ systemdsn_remove_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 	  if (!SQLConfigDataSource (choose_t->mainwnd, ODBC_REMOVE_SYS_DSN,
 		  szDriver, dsn))
 	    _iodbcdm_errorbox (choose_t->mainwnd, szDSN,
-		"An error occured when trying to remove the DSN : ");
+		"An error occurred when trying to remove the DSN : ");
 	  adddsns_to_list (choose_t->sdsnlist, TRUE);
 	}
 
@@ -828,7 +828,7 @@ systemdsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 		  sizeof (tokenstr), NULL))
 	    {
 	      _iodbcdm_errorbox (choose_t->mainwnd, szDSN,
-		  "An error occured when trying to configure the DSN : ");
+		  "An error occurred when trying to configure the DSN : ");
 	      goto done;
 	    }
 
@@ -852,7 +852,7 @@ systemdsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 		      NULL) != SQL_NO_DATA
 		  && error != ODBC_ERROR_REQUEST_FAILED)
 		_iodbcdm_errorbox (choose_t->mainwnd, szDSN,
-		    "An error occured when trying to configure the DSN : ");
+		    "An error occurred when trying to configure the DSN : ");
 	      goto done;
 	    }
 

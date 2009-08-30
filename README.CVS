@@ -21,7 +21,7 @@ please email us at <iodbc@openlinksw.com>.
 
 CVS Archive Server Access
 =========================
-OpenLink currently provides read-only CVS Archive access throught the
+OpenLink currently provides read-only CVS Archive access through the
 SourceForge.net servers:
 
 $ cvs -d:pserver:anonymous@iodbc.cvs.sourceforge.net:/cvsroot/iodbc login 

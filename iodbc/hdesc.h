@@ -96,7 +96,7 @@ typedef struct DESC_s {
   SQLHDESC dhdesc; 	/* the driver's desc handle */
   HSTMT hstmt;   	/* if not null - the descriptor is implicit to that statement */
 
-  SWORD desc_cip;        /* Call in Progess flag */
+  SWORD desc_cip;        /* Call in Progress flag */
 
   SQLSMALLINT err_rec;
 } DESC_t;

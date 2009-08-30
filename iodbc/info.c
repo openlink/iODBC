@@ -864,7 +864,7 @@ SQLGetInfo_Internal (
       break;
 
     default:
-      /* NOTE : this was before the switch, just move here to let some informations going through */
+      /* NOTE : this was before the switch, just move here to let some information going through */
       if (pdbc->state == en_dbc_allocated || pdbc->state == en_dbc_needdata)
 	{
 	  PUSHSQLERR (pdbc->herr, en_08003);

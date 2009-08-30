@@ -43,7 +43,7 @@ program, the string should be quoted as most shells use the semicolon
 as their command separator. If the connect string is entered on the
 interactive prompt, no quotes should be used.
 
-After a successfull connection has been established, the user is prompted
+After a successful connection has been established, the user is prompted
 for a SQL command to be send to the database. A SQL command cannot span
 multiple lines.
 

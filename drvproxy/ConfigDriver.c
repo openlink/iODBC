@@ -150,7 +150,7 @@ ConfigDriver (
 	      sizeof (driverread), NULL, ODBC_INSTALL_COMPLETE, NULL))
 	{
 	  SQLPostInstallerError (ODBC_ERROR_DRIVER_SPECIFIC,
-	      "Could not add the driver informations.");
+	      "Could not add the driver information.");
 	  goto done;
 	}
 
@@ -185,7 +185,7 @@ ConfigDriver (
       if (!SQLRemoveDriver (lpszDriver, TRUE, NULL))
 	{
 	  SQLPostInstallerError (ODBC_ERROR_DRIVER_SPECIFIC,
-	      "Could not remove driver informations.");
+	      "Could not remove driver information.");
 	  goto done;
 	}
       break;

@@ -202,7 +202,7 @@ adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
 	  if ((funcHdl =
 		  (pSQLGetInfoFunc) DLL_PROC (handle, "SQLGetInfo")) != NULL)
 	    {
-	      /* Retrieve some informations */
+	      /* Retrieve some information */
 	      ret =
 		  funcHdl (drv_hdbc, SQL_DRIVER_VER, drvattrs,
 		  sizeof (drvattrs), &len);
