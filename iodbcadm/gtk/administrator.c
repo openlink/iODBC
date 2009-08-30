@@ -2476,7 +2476,7 @@ create_administrator (HWND hwnd)
   gtk_widget_show (pixmap7);
   gtk_box_pack_start (GTK_BOX (hbox19), pixmap7, FALSE, TRUE, 10);
 
-  label48 = gtk_label_new (_("ODBC is a programming interface that enables applications to access\ndata in database management systems that use Structured Query\nLanguage (SQL) as a data access standart."));
+  label48 = gtk_label_new (_("ODBC is a programming interface that enables applications to access\ndata in database management systems that use Structured Query\nLanguage (SQL) as a data access standard."));
   gtk_widget_set_name (label48, "label48");
   gtk_widget_show (label48);
   gtk_box_pack_start (GTK_BOX (hbox19), label48, FALSE, TRUE, 0);
