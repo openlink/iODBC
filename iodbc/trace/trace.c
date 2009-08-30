@@ -126,6 +126,7 @@ int ODBCSharedTraceFlag = SQL_OPT_TRACE_OFF;
 
 static char *trace_appname = NULL;
 static char *trace_fname = NULL;
+static char *trace_fname_template = NULL;
 static FILE *trace_fp = NULL;
 static int   trace_fp_close = 0;
 
@@ -179,7 +180,7 @@ trace_strftime_now (char *buf, size_t buflen, char *format)
 
 
 void
-trace_set_filename (char *fname)
+trace_set_filename (char *template)
 {
   char *s, *p;
   struct passwd *pwd;
@@ -187,16 +188,23 @@ trace_set_filename (char *fname)
   size_t buf_len, buf_pos;
   char tmp[255];
 
+  /* Make copy of template */
+  if (template)
+    {
+      MEM_FREE (trace_fname_template)
+      trace_fname_template = STRDUP (template);
+    }
+
   /*  Initialize */
   MEM_FREE (trace_fname);
   trace_fname = NULL;
-  buf = (char *) malloc (buf_len = strlen (fname) + sizeof (tmp) + 1);
+  buf = (char *) malloc (buf_len = strlen (trace_fname_template) + sizeof (tmp) + 1);
   if (!buf)
     return;			/* No more memory */
   buf_pos = 0;
   buf[0] = '\0';
 
-  for (s = fname; *s;)
+  for (s = trace_fname_template; *s;)
     {
       /*
        *  Make sure we can fit at least 1 more tmp buffer inside
@@ -680,6 +688,9 @@ _trace_print_function (int func, int trace_leave, int retcode)
     {
  	trace_emit ("\n*** TRACEFILE LIMIT REACHED ***\n");
 	trace_stop ();
+	trace_set_filename (NULL);
+	trace_start ();	
+ 	trace_emit ("\n*** TRACEFILE CONTINUED ***\n\n");
  	return;
     }
 
