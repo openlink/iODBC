@@ -1730,7 +1730,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * choose_t)
   gtk_window_set_title (GTK_WINDOW (dsnchooser), _("Select Data Source"));
   gtk_window_set_position (GTK_WINDOW (dsnchooser), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (dsnchooser), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (dsnchooser), 570, 423);
+  gtk_window_set_default_size (GTK_WINDOW (dsnchooser), 600, 450);
   gtk_window_set_type_hint (GTK_WINDOW (dsnchooser), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)

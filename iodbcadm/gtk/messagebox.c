@@ -115,10 +115,10 @@ create_message (HWND hwnd, LPCSTR dsn, LPCSTR text)
 
   gtk_object_set_data (GTK_OBJECT (message), "message", message);
   gtk_window_set_title (GTK_WINDOW (message), msg);
-  gtk_widget_set_size_request (message, 400, 100);
+  gtk_widget_set_size_request (message, 400, 150);
   gtk_window_set_position (GTK_WINDOW (message), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (message), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (message), 400, 100);
+  gtk_window_set_default_size (GTK_WINDOW (message), 400, 150);
   gtk_window_set_type_hint (GTK_WINDOW (message), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)

@@ -541,7 +541,7 @@ create_driversetup (HWND hwnd, LPCSTR driver, LPCSTR attrs, BOOL add, BOOL user)
   gtk_window_set_title (GTK_WINDOW (driversetup), _("ODBC Driver Add/Setup"));
   gtk_window_set_position (GTK_WINDOW (driversetup), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (driversetup), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (driversetup), 505, 480);
+  gtk_window_set_default_size (GTK_WINDOW (driversetup), 600, 450);
   gtk_window_set_type_hint (GTK_WINDOW (driversetup), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)

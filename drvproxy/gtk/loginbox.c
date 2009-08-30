@@ -158,12 +158,12 @@ create_login (HWND hwnd, LPCSTR username, LPCSTR password, LPCSTR dsn,
 
   login = gtk_dialog_new ();
   gtk_widget_set_name (login, "login");
-  gtk_widget_set_size_request (login, 400, 125);
+  gtk_widget_set_size_request (login, 400, 150);
   sprintf (buff, "Login for DSN %s ...", (dsn) ? dsn : "Unknown");
   gtk_window_set_title (GTK_WINDOW (login), buff);
   gtk_window_set_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (login), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (login), 400, 125);
+  gtk_window_set_default_size (GTK_WINDOW (login), 400, 150);
   gtk_window_set_type_hint (GTK_WINDOW (login), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)

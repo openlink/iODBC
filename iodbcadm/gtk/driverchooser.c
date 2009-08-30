@@ -402,7 +402,7 @@ create_driverchooser (HWND hwnd, TDRIVERCHOOSER *choose_t)
   gtk_window_set_title (GTK_WINDOW (driverchooser), _("Choose an ODBC Driver"));
   gtk_window_set_position (GTK_WINDOW (driverchooser), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (driverchooser), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (driverchooser), 515, 335);
+  gtk_window_set_default_size (GTK_WINDOW (driverchooser), 600, 450);
   gtk_window_set_type_hint (GTK_WINDOW (driverchooser), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
@@ -969,7 +969,7 @@ create_fdriverchooser (HWND hwnd, TFDRIVERCHOOSER *choose_t)
   gtk_widget_set_size_request (fdriverchooser, 512, 384);
   gtk_window_set_title (GTK_WINDOW (fdriverchooser), _("Create New File Data Source"));
   gtk_window_set_modal (GTK_WINDOW (fdriverchooser), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (fdriverchooser), 512, 384);
+  gtk_window_set_default_size (GTK_WINDOW (fdriverchooser), 600, 450);
   gtk_window_set_position (GTK_WINDOW (fdriverchooser), GTK_WIN_POS_CENTER);
   gtk_window_set_type_hint (GTK_WINDOW (fdriverchooser), GDK_WINDOW_TYPE_HINT_DIALOG);
 

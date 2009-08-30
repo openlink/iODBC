@@ -298,7 +298,7 @@ create_translatorchooser (HWND hwnd, TTRANSLATORCHOOSER *choose_t)
   gtk_window_set_title (GTK_WINDOW (translatorchooser), _("Choose a Translator"));
   gtk_window_set_position (GTK_WINDOW (translatorchooser), GTK_WIN_POS_CENTER_ON_PARENT);
   gtk_window_set_modal (GTK_WINDOW (translatorchooser), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (translatorchooser), 515, 335);
+  gtk_window_set_default_size (GTK_WINDOW (translatorchooser), 600, 450);
   gtk_window_set_type_hint (GTK_WINDOW (translatorchooser), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)

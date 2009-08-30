@@ -142,11 +142,11 @@ create_confirm (HWND hwnd, LPCSTR dsn, LPCSTR text)
   else
     sprintf (msg, "Confirm action/operation ...");
   gtk_object_set_data (GTK_OBJECT (confirm), "confirm", confirm);
-  gtk_widget_set_size_request (confirm, 400, 100);
+  gtk_widget_set_size_request (confirm, 400, 150);
   gtk_window_set_title (GTK_WINDOW (confirm), msg);
   gtk_window_set_position (GTK_WINDOW (confirm), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (confirm), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (confirm), 400, 100);
+  gtk_window_set_default_size (GTK_WINDOW (confirm), 400, 150);
   gtk_window_set_type_hint (GTK_WINDOW (confirm), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)

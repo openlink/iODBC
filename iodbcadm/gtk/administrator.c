@@ -1129,11 +1129,11 @@ create_administrator (HWND hwnd)
 
   admin = gtk_dialog_new ();
   gtk_widget_set_name (admin, "admin");
-  gtk_widget_set_size_request (admin, 570, 420);
+  gtk_widget_set_size_request (admin, 600, 450);
   gtk_window_set_title (GTK_WINDOW (admin), _("iODBC Data Source Administrator"));
   gtk_window_set_position (GTK_WINDOW (admin), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (admin), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (admin), 570, 420);
+  gtk_window_set_default_size (GTK_WINDOW (admin), 600, 450);
   gtk_window_set_type_hint (GTK_WINDOW (admin), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 #if GTK_CHECK_VERSION(2,0,0)
