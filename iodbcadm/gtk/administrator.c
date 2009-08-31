@@ -1898,7 +1898,7 @@ create_administrator (HWND hwnd)
   gtk_widget_show (pixmap4);
   gtk_box_pack_start (GTK_BOX (hbox20), pixmap4, FALSE, TRUE, 10);
 
-  label54 = gtk_label_new (_("An ODBC System data source stores information about to connect to\nthe indicated data provider. A System data source is visible to all\nusers on this machine, including daemons."));
+  label54 = gtk_label_new (_("An ODBC driver allows ODBC-enabled programs to get information from\nODBC data sources. To install new drivers, use the driver's setup\nprogram if available, or add it with the 'Add' button."));
   gtk_widget_set_name (label54, "label54");
   gtk_widget_show (label54);
   gtk_box_pack_start (GTK_BOX (hbox20), label54, FALSE, TRUE, 0);
