@@ -1,4 +1,4 @@
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 AC_REVISION($Id$)
 #
 #  configure.in
@@ -86,6 +86,7 @@ AC_INIT([iODBC Driver Manager],
 	[libiodbc])
 AC_CONFIG_SRCDIR([include/isql.h])
 AC_CONFIG_AUX_DIR(admin)
+AC_CONFIG_MACRO_DIR(admin)
 AM_CONFIG_HEADER(include/config.h)
 AM_INIT_AUTOMAKE(AC_PACKAGE_TARNAME, AC_PACKAGE_VERSION)
 AC_CANONICAL_HOST

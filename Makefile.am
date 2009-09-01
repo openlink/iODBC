@@ -71,9 +71,11 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-AUTOMAKE_OPTIONS	= gnu dist-zip 1.4-p5
+AUTOMAKE_OPTIONS	= gnu dist-zip 1.9.2
 
 SUBDIRS 		= admin bin etc man include iodbcinst iodbc iodbcadm drvproxy samples
+
+ACLOCAL_AMFLAGS		= -I admin
 
 EXTRA_DIST		= \
 	IAFA-PACKAGE \

@@ -39,9 +39,9 @@ installed on your system.
 
         Package	  Version  From
 	========  =======  ==================================
-	autoconf  2.57	   ftp://ftp.gnu.org/pub/gnu/autoconf
-	automake  1.6.3	   ftp://ftp.gnu.org/pub/gnu/automake
-	libtool   1.4.3	   ftp://ftp.gnu.org/pub/gnu/libtool
+	autoconf  2.59	   ftp://ftp.gnu.org/pub/gnu/autoconf
+	automake  1.9.2	   ftp://ftp.gnu.org/pub/gnu/automake
+	libtool   1.5.6	   ftp://ftp.gnu.org/pub/gnu/libtool
 	gtk+	  1.2.10   ftp://ftp.gtk.org/pub/gtk/v1.2
 
 The above version are used for generating the source distributions with
