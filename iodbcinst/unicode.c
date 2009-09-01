@@ -230,7 +230,7 @@ towlower (wchar_t wc)
 
 
 #if !defined(HAVE_WCSNCASECMP)
-int wcsncasecmp (wchar_t* s1, wchar_t* s2, size_t n)
+int wcsncasecmp (const wchar_t* s1, const wchar_t* s2, size_t n)
 {
   wchar_t c1, c2;
   
