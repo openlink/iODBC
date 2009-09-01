@@ -2137,7 +2137,6 @@ create_administrator (HWND hwnd)
   gtk_table_attach (GTK_TABLE (table1), frame25, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_widget_set_size_request (frame25, 295, 120);
   gtk_container_set_border_width (GTK_CONTAINER (frame25), 3);
 
   alignment25 = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -2150,7 +2149,6 @@ create_administrator (HWND hwnd)
   gtk_widget_set_name (table2, "table2");
   gtk_widget_show (table2);
   gtk_container_add (GTK_CONTAINER (alignment25), table2);
-  gtk_widget_set_size_request (table2, -1, 80);
   gtk_container_set_border_width (GTK_CONTAINER (table2), 4);
   gtk_table_set_col_spacings (GTK_TABLE (table2), 13);
 
