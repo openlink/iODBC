@@ -1021,12 +1021,13 @@ _iodbcdm_list_entries (PCONFIG pCfg, LPCSTR lpszSection, LPSTR lpszRetBuffer, in
   int curr = 0, sect_len = 0;
   lpszRetBuffer[0] = 0;
 
-  if (0 == _iodbcdm_cfg_rewind (pCfg))
+  if (!_iodbcdm_cfg_find (pCfg, lpszSection, NULL))
     {
       while (curr < cbRetBuffer && 0 == _iodbcdm_cfg_nextentry (pCfg))
 	{
-	  if (_iodbcdm_cfg_define (pCfg)
-	      && !strcmp (pCfg->section, lpszSection) && pCfg->id)
+	  if (_iodbcdm_cfg_section (pCfg))
+	    break;
+	  if (_iodbcdm_cfg_define (pCfg) && pCfg->id)
 	    {
 	      sect_len = strlen (pCfg->id) + 1;
 	      sect_len =
