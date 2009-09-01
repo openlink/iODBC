@@ -151,7 +151,7 @@ wchar_t* wcscat(wchar_t *dest, const wchar_t *src);
 int wcscmp (const wchar_t* s1, const wchar_t* s2);
 #endif
 #if !defined(HAVE_WCSNCASECMP)
-int wcsncasecmp (wchar_t* s1, wchar_t* s2, size_t n);
+int wcsncasecmp (const wchar_t* s1, const wchar_t* s2, size_t n);
 #endif
 
 #endif /* _UNICODE_H */
