@@ -1,3 +1,21 @@
+2009-09-01 14:15  source
+
+	* Ignore files from libtool 2.x
+
+2009-09-01 14:14  source
+
+	* Set minimum requirement for auto* tools to match RedHat Enterprise 4
+
+2009-09-01 14:01  source
+
+	* Use newer RPM macros for building to fix building on x86_64
+	* Fixed configure to completely disable building UI extensions when
+	  using rpmbuild --define 'noadmin 1' .....
+
+2009-09-01 13:43  source
+
+	* Fixed prototype
+
 2009-09-01 13:10  source
 
 	* Fixed group box size
