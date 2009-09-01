@@ -1,3 +1,11 @@
+2009-09-01 13:10  source
+
+	* Fixed group box size
+
+2009-08-31 14:08  source
+
+	* Fixed wrong text on tab
+
 2009-08-30 11:58  source
 
 	* Fixed unload bug  deref wrong pointer
