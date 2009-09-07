@@ -75,7 +75,7 @@
 #
 #  Installation PATHS
 #
-PREFIX="/usr/local/iODBC"
+PREFIX="$DESTDIR/usr/local/iODBC"
 ODBC_FW="/Library/Frameworks/iODBC.framework"
 INST_FW="/Library/Frameworks/iODBCinst.framework"
 
