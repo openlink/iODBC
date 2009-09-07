@@ -274,7 +274,7 @@ case $OS in
        $BUILD
        ;;
 
-    x86_64-redhat-linux-gnu)
+    x86_64-*-linux-gnu)
        CONFLAGS="--enable-gui --enable-maintainer-mode"
 
        CFLAGS="-O3 -m32"
@@ -285,7 +285,6 @@ case $OS in
        export CFLAGS CONFLAGS
        $BUILD 64
        ;;
-
 
     i[3456]86-apple-darwin10*)
 	PREFIX=/usr/local/iODBC.darwin
@@ -304,7 +303,6 @@ case $OS in
 	export PREFIX CONFLAGS CFLAGS
 	$BUILD universal
 	;;
-
 
     i[3456]86-apple-darwin9*)
 	PREFIX=/usr/local/iODBC.darwin
