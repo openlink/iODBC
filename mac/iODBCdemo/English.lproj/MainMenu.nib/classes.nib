@@ -1,0 +1,25 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {aCancel = id; aOK = id; }; 
+            CLASS = ExecController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {fSQLText = NSTextField; mMainController = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                aCloseConnection = id; 
+                aExecSQL = id; 
+                aFetchNextRowset = id; 
+                aOpenConnection = id; 
+            }; 
+            CLASS = TestController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {RSTable = NSTableView; mMenu = id; mWindow = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
