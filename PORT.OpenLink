@@ -286,6 +286,25 @@ case $OS in
        $BUILD 64
        ;;
 
+
+    i[3456]86-apple-darwin9*)
+	PREFIX=/usr/local/iODBC.darwin
+	CONFLAGS="--disable-shared --with-pic"
+	CFLAGS="-O -m32"
+	export CFLAGS CONFLAGS PREFIX
+	$BUILD 32
+
+	CFLAGS="-O -m64"
+	export CFLAGS
+	$BUILD 64
+
+	PREFIX=/usr/local/iODBC.universal
+	CONFLAGS="--disable-shared --with-pic --disable-dependency-tracking"
+	CFLAGS="-O -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch ppc -arch ppc64 -arch i386 -arch x86_64"
+	export PREFIX CONFLAGS CFLAGS
+	$BUILD universal
+	;;
+
     powerpc-apple-darwin8*)
 	PREFIX=/usr/local/iODBC.darwin
 	CONFLAGS="--disable-shared --with-pic"
@@ -300,10 +319,11 @@ case $OS in
 
 	PREFIX=/usr/local/iODBC.universal
 	CONFLAGS="--disable-shared --with-pic --disable-dependency-tracking"
-	CFLAGS="-O -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch ppc64 -arch i386"
+	CFLAGS="-O -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch ppc -arch ppc64 -arch i386"
 	export PREFIX CONFLAGS CFLAGS
 	$BUILD universal
 	;;
+
 
     powerpc-apple-darwin7*)
 	PREFIX=/usr/local/iODBC.darwin
