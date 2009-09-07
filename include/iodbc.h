@@ -214,6 +214,21 @@
 #define DLDAPI_VMS_IODBC	/* Use enhanced dlopen() */
 #endif
 
+
+/*
+ *  Mac OS X Section
+ */
+#if defined (__APPLE__)
+#  include <AvailabilityMacros.h>
+
+#  if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
+#    undef DLDAPI_DYLD
+#    undef DLDAPI_MACX
+#    define HAVE_LIBDL 1
+#  endif
+#endif
+
+
 #define SYSERR		(-1)
 
 #ifndef	NULL

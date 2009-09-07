@@ -91,12 +91,17 @@
 #include <dlfcn.h>
 #elif defined(DLDAPI_AIX_LOAD)
 #include <dlfcn.h>
-#elif defined(DLDAPI_VMS_IODBC) || defined(DLDAPI_MACX)
-extern void *iodbc_dlopen (char * path, int mode);
-extern void *iodbc_dlsym (void * hdll, char * sym);
-extern char *iodbc_dlerror ();
-extern int iodbc_dlclose (void * hdll);
-#else
+#endif
+
+#if !defined(DLDAPI_SVR4_DLFCN)
+/*
+ *  Create internal namespace for dlopen functions
+ */
+#define	dlopen		iodbc_dlopen
+#define	dlsym		iodbc_dlsym
+#define	dlerror		iodbc_dlerror
+#define	dlclose		iodbc_dlclose
+
 extern void *dlopen (char * path, int mode);
 extern void *dlsym (void * hdll, char * sym);
 extern char *dlerror ();
@@ -240,16 +245,9 @@ struct dlopen_handle
 #define OPL_DL_MODE	(RTLD_LAZY | RTLD_LOCAL)
 #endif
 
-#if defined(DLDAPI_VMS_IODBC) || defined(DLDAPI_MACX)
-#define	DLL_OPEN(dll)		(void*)iodbc_dlopen((char*)(dll), OPL_DL_MODE)
-#define	DLL_PROC(hdll, sym)	(void*)iodbc_dlsym((void*)(hdll), (char*)sym)
-#define	DLL_ERROR()		(char*)iodbc_dlerror()
-#define	DLL_CLOSE(hdll)		iodbc_dlclose((void*)(hdll))
-#else
 #define	DLL_OPEN(dll)		(void*)dlopen((char*)(dll), OPL_DL_MODE)
 #define	DLL_PROC(hdll, sym)	(void*)dlsym((void*)(hdll), (char*)sym)
 #define	DLL_ERROR()		(char*)dlerror()
 #define	DLL_CLOSE(hdll)		dlclose((void*)(hdll))
-#endif
 
 #endif /* _DLF_H */
