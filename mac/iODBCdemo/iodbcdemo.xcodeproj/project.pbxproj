@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		85349760105541030084FC17 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534975F105541030084FC17 /* NSResWindow.m */; };
+		85349761105541030084FC17 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534975F105541030084FC17 /* NSResWindow.m */; };
 		85F0775709F871F60007FC8F /* TestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0775609F871F60007FC8F /* TestController.m */; };
 		85F0784609F88DFC0007FC8F /* iODBC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85F0784509F88DFC0007FC8F /* iODBC.framework */; };
 		85F0799D09FDC35E0007FC8F /* ExecController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0799C09FDC35E0007FC8F /* ExecController.m */; };
@@ -55,6 +57,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* iodbcdemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iodbcdemo_Prefix.pch; sourceTree = "<group>"; };
+		8534975E105541030084FC17 /* NSResWindow.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = NSResWindow.h; sourceTree = "<group>"; };
+		8534975F105541030084FC17 /* NSResWindow.m */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.objc; path = NSResWindow.m; sourceTree = "<group>"; };
 		85F0775509F871F60007FC8F /* TestController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TestController.h; sourceTree = "<group>"; };
 		85F0775609F871F60007FC8F /* TestController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TestController.m; sourceTree = "<group>"; };
 		85F0784509F88DFC0007FC8F /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = /Library/Frameworks/iODBC.framework; sourceTree = "<absolute>"; };
@@ -151,6 +155,8 @@
 				85F0775609F871F60007FC8F /* TestController.m */,
 				85F0799B09FDC35E0007FC8F /* ExecController.h */,
 				85F0799C09FDC35E0007FC8F /* ExecController.m */,
+				8534975E105541030084FC17 /* NSResWindow.h */,
+				8534975F105541030084FC17 /* NSResWindow.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -278,6 +284,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				85F0775709F871F60007FC8F /* TestController.m in Sources */,
 				85F0799D09FDC35E0007FC8F /* ExecController.m in Sources */,
+				85349760105541030084FC17 /* NSResWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +295,7 @@
 				CD7C37AD0A063F40001A43B7 /* main.m in Sources */,
 				CD7C37AE0A063F40001A43B7 /* TestController.m in Sources */,
 				CD7C37AF0A063F40001A43B7 /* ExecController.m in Sources */,
+				85349761105541030084FC17 /* NSResWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
