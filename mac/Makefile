@@ -136,34 +136,31 @@ all: include
 #
 include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/odbcinst.h
 	sh framework-include.sh
-	touch include
 
 
 #
 #  Install libraries in /Library/Frameworks
 #
 install:
-	-sudo rm /Library/Frameworks/iODBC.framework/Versions/Current
-	-sudo rm /Library/Frameworks/iODBCinst.framework/Versions/Current
-	cd iODBCinst;		sudo $(PROJBUILD) install DSTROOT=/
-	cd iODBC;		sudo $(PROJBUILD) install DSTROOT=/
-	cd iODBCtest;		sudo $(PROJBUILD) install DSTROOT=/
-	cd iODBCtestw;		sudo $(PROJBUILD) install DSTROOT=/
+	-sudo rm $(DESTDIR)/Library/Frameworks/iODBC.framework/Versions/Current
+	-sudo rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
+	cd iODBCinst;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBC;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBCtest;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBCtestw;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	#
 	sudo sh link-inclibs.sh
-
-install-gui:
-	cd iODBCadministrator;	sudo $(PROJBUILD) install DSTROOT=/
+	#
+	cd iODBCadministrator;	sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	#
 	#  Next ones are a bit special as they need to be installed twice
 	#
-	cd iODBCadm;		sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBC.framework/Resources/
-	cd iODBCadm;		sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBCinst.framework/Resources/
-	cd iODBCdrvproxy;	sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBC.framework/Resources/
-	cd iODBCdrvproxy;	sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBCinst.framework/Resources/
-
-
-install-samples:
-	cd iODBCdemo;		sudo $(PROJBUILD) install DSTROOT=/Library/Frameworks/iODBCinst.framework/Resources/
+	cd iODBCadm;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
+	cd iODBCadm;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
+	cd iODBCdrvproxy;	sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
+	cd iODBCdrvproxy;	sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
+	#
+	cd iODBCdemo;		sudo $(PROJBUILD) install DSTROOT=$(DESTDIR)/
 
 
 #
@@ -180,5 +177,13 @@ clean:
 	cd iODBCadministrator;	$(PROJBUILD) clean
 	cd iODBCdemo;		$(PROJBUILD) clean
 
+
 realclean: clean
-	rm -rf iODBC/build iODBCinst/build iODBCtest/build iODBCtestw/build
+	rm -rf iODBC/build
+	rm -rf iODBCadm/build
+	rm -rf iODBCadministrator/build
+	rm -rf iODBCdemo/build
+	rm -rf iODBCdrvproxy/build
+	rm -rf iODBCinst/build
+	rm -rf iODBCtest/build
+	rm -rf iODBCtestw/build
