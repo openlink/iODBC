@@ -1349,7 +1349,7 @@ SQLSetStmtAttr_Internal (
           return SQL_ERROR;
         }
       if (Attribute == SQL_ATTR_PARAM_BIND_TYPE)
-        stmt->bind_type = (SQLUINTEGER) ValuePtr;
+        stmt->bind_type = (SQLUINTEGER) (SQLULEN) ValuePtr;
       return retcode;
 
     case SQL_ATTR_ROWS_FETCHED_PTR:
