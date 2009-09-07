@@ -1,3 +1,63 @@
+2009-09-07 23:11  source
+
+	* Added defines for Virtuoso ODBC SPASQL extensions
+
+2009-09-07 23:00  source
+
+	* Fixed case label for x86_64 linux systems
+
+2009-09-07 22:29  source
+
+	* Fixed compiler warning
+
+2009-09-07 22:10  source
+
+	* FIxed namespace for internal dlopen functions
+
+2009-09-07 22:04  source
+
+	* Added support for Mac OS X 10.6
+
+2009-09-07 22:02  source
+
+	* Added support for Mac OS X 10.5
+
+2009-09-07 21:56  source
+
+	* Fixed allow installation in temp directory structure
+
+2009-09-07 21:53  source
+
+	* Fixed typo
+
+2009-09-07 21:53  source
+
+	* More files to ignore
+
+2009-09-07 21:51  source
+
+	* Fixed install rules
+
+2009-09-07 21:42  source
+
+	* Fixed copyright year
+
+2009-09-07 21:35  source
+
+	* Fixed support to quit application from decoration
+
+2009-09-07 11:27  source
+
+	* Added iODBCdemo sample program for Mac OS X
+
+2009-09-01 23:26  source
+
+	* Fixed prototype
+
+2009-09-01 23:19  source
+
+	* Fixed find relevant section instead of reading all entries in the file
+
 2009-09-01 14:15  source
 
 	* Ignore files from libtool 2.x
