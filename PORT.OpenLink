@@ -250,7 +250,7 @@ case $OS in
 	$BUILD 64
 	;;
 
-    sparc-sun-solaris2.[89]*)
+    sparc-sun-solaris2.*)
 	CFLAGS="-O"
 	export CFLAGS
 	$BUILD 32
@@ -259,6 +259,16 @@ case $OS in
 	export CFLAGS
 	$BUILD 64
 	;;
+
+    i[3456]86-*-solaris2.*)
+        CFLAGS="-O -xtarget=opteron"
+        export CFLAGS
+        $BUILD 32
+
+        CFLAGS="-O -xtarget=opteron -xarch=amd64"
+        export CFLAGS
+        $BUILD 64
+        ;;
 
     i[3456]86-pc-linux-*)
     	CFLAGS="-O3"
