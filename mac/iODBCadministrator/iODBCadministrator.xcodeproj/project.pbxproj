@@ -411,8 +411,8 @@
 					ppc,
 					i386,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				SDKROOT = $IODBC_SDK;
 			};
 			name = Development;
 		};
@@ -423,8 +423,8 @@
 					ppc,
 					i386,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				SDKROOT = $IODBC_SDK;
 			};
 			name = Deployment;
 		};

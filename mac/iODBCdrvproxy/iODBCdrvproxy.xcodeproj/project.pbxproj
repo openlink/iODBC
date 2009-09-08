@@ -535,8 +535,8 @@
 				);
 				COPY_PHASE_STRIP = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				SDKROOT = $IODBC_SDK;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Development;
@@ -548,8 +548,8 @@
 					ppc,
 					i386,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				SDKROOT = $IODBC_SDK;
 			};
 			name = Deployment;
 		};
