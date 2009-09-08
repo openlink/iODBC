@@ -116,6 +116,14 @@ endif
 
 
 #
+#  Mac OS X 10.6
+#
+ifeq (10.6, $(findstring 10.6, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
+endif
+
+
+#
 #  Build the libraries
 #
 all: include
