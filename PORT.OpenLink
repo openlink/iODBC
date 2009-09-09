@@ -81,12 +81,13 @@ TOP=`pwd`
 OS=`admin/config.guess`
 PREFIX=/usr/local/iODBC
 
-CC=cc
-CFLAGS="-O"
-LDFLAGS=""
-CONFLAGS="--disable-gui --enable-maintainer-mode"
+CC=${CC:-cc}
+CFLAGS=${CFLAGS:-"-O"}
+LDFLAGS=${LDFLAGS:-""}
+CONFLAGS=${CONFLAGS:-"--disable-gui --enable-maintainer-mode"}
+MAKE=${MAKE:-gmake}
+
 BUILD=run_make
-MAKE=gmake
 
 export TOP CC CFLAGS LDFLAGS OS PREFIX CONFLAGS BUILD MAKE
 
