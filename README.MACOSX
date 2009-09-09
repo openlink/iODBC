@@ -18,20 +18,18 @@ which can be found at:
 	http://developer.apple.com/tools
 
 
-Then, you can open the Xcode Project Builder files under mac/iODBCinst,
-mac/iODBC, mac/iODBCtest and mac/iODBCtestw, or execute the following
-commands from a terminal session to build all the frameworks and
-demo applications:
+Then execute the following commands from a terminal session to build
+all the frameworks and demo applications:
 
 	$ cd mac
 	$ make
 
 
-After building the iODBC and iODBCinst frameworks, you have to
+After building the iODBC libraries and applications, you have to
 install them on your system with the command:
 
 	$ cd mac
-	$ make install
+	$ sudo make install
 
 
 This installs the iODBCinst and iODBC frameworks into:
@@ -59,7 +57,7 @@ is located in:
 Method 2: Using configure and make
 ----------------------------------
 
-The iODBC package can also be build like any other OpenSource package
+The iODBC package can also be build like any other Open Source package
 not using any frameworks.
 
 To build the libraries, open up a terminal session and execute the
@@ -71,4 +69,26 @@ following commands:
 To install the header files and libraries in /usr/local, you execute
 the following command as administrator:
 
+	$ sudo make install
+
+
+Note that this will build all code based that only runs on the CPU
+type you build it on, so PowerPC on older systems, 32bit Intel on
+early CoreDuo machine and 64bit on current models. However iODBC
+can also be configured to build a universal library that works with
+all 3 models embedded.
+
+The following commands will build a release of iODBC that works on
+both Mac OS X 10.5 as well as Mac OS X 10.6:
+
+	$ CFLAGS="-O -arch ppc -arch i386 -arch x86_64"
+	$ CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk"
+	$ CFLAGS="$CFLAGS -mmacosx-version-min=10.5"
+	$ export CFLAGS
+	
+	$ ./configure \
+		--disable-dependency-tracking \
+		--prefix=/usr/local/iODBC.universal
+
+	$ make
 	$ sudo make install
