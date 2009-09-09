@@ -92,12 +92,14 @@ ifeq (10.2, $(findstring 10.2, $(macosx_version)))
     PROJBUILD := /usr/bin/pbxbuild -buildstyle $(MODEL)
 endif
 
+
 #
 #  Mac OS X 10.3
 #
 ifeq (10.3, $(findstring 10.3, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -buildstyle $(MODEL)
 endif
+
 
 #
 #  Mac OS X 10.4
@@ -162,25 +164,38 @@ include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sq
 #  Install libraries in /Library/Frameworks
 #
 install:
+	#
+	#  Install Frameworks
+	#
 	-rm $(DESTDIR)/Library/Frameworks/iODBC.framework/Versions/Current
 	-rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
 	cd iODBCinst;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	cd iODBC;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBCtest;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBCtestw;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	#
+	#  Install /usr/local/iODBC
 	#
 	sh link-inclibs.sh
 	#
+	#  Install iODBC Administrator
+	#
 	cd iODBCadministrator;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	#
 	#  Next ones are a bit special as they need to be installed twice
-	#
 	cd iODBCadm;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
 	cd iODBCadm;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
 	cd iODBCdrvproxy;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
 	cd iODBCdrvproxy;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
 	#
+	#  Install application
+	#
 	cd iODBCdemo;		$(PROJBUILD) install -alltargets DSTROOT=$(DESTDIR)/
+	cd iODBCtest;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBCtestw;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	#
+	#  Install CFM bridge for Microsoft Office
+	#
+	install -m755 "iODBCcfmbridge/iODBC CFM Bridge" "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
+	install -m755 "iODBCcfmbridge/iODBC CFM Bridge.res" "$(DESTDIR)/Library/CFMSupport/._iODBC CFM Bridge"
+	/System/Library/CoreServices/FixupResourceForks /Library/CFMSupport
 
 
 #
