@@ -61,7 +61,6 @@
 				OTHER_CFLAGS = (
 					"-DODBCVER=0x351",
 					"-D_MACX",
-					"-DMACOSX=103",
 				);
 				RESMERGER_SOURCES_FORK = data;
 				SKIP_INSTALL = YES;
@@ -305,7 +304,6 @@
 				OTHER_CFLAGS = (
 					"-DODBCVER=0x351",
 					"-D_MACX",
-					"-DMACOSX=103",
 				);
 				OTHER_LDFLAGS = (
 					"-multiply_defined",
@@ -452,7 +450,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ODBCVER=0x351",
 					_MACX,
-					"MACOSX=103",
 				);
 				HEADER_SEARCH_PATHS = (
 					../../include,
@@ -498,7 +495,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ODBCVER=0x351",
 					_MACX,
-					"MACOSX=103",
 				);
 				HEADER_SEARCH_PATHS = (
 					../../include,

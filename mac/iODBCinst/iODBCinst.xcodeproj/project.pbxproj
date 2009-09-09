@@ -478,6 +478,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
@@ -490,6 +491,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;

@@ -86,7 +86,6 @@
 					"-DODBCVER=0x351",
 					"-D_MACX",
 					"-DDLDAPI_MACX",
-					"-DMACOSX=103",
 				);
 				SKIP_INSTALL = YES;
 				STRIPFLAGS = "-u -r -s ../../macosx/iodbcadm.exp";
@@ -377,7 +376,6 @@
 					"-DODBCVER=0x351",
 					"-D_MACX",
 					"-DDLDAPI_MACX",
-					"-DMACOSX=103",
 				);
 				OTHER_LDFLAGS = (
 					"-multiply_defined",
@@ -606,7 +604,6 @@
 					"ODBCVER=0x351",
 					_MACX,
 					DLDAPI_MACX,
-					"MACOSX=103",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = "Info-iODBCadm.plist";
@@ -653,7 +650,6 @@
 					"ODBCVER=0x351",
 					_MACX,
 					DLDAPI_MACX,
-					"MACOSX=103",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = "Info-iODBCadm.plist";
