@@ -1,3 +1,84 @@
+2009-09-09 22:01  source
+
+	* Fixed distribution packaging
+
+2009-09-09 21:09  source
+
+	* Removed deprecated file
+
+2009-09-09 20:43  source
+
+	* Removed space from file name
+
+2009-09-09 20:06  source
+
+	* Moved iodbcunix.h from sql.h to sqltypes.h
+
+2009-09-09 19:54  source
+
+	* Fixed description
+
+2009-09-09 19:45  source
+
+	* Updated debian files
+
+2009-09-09 12:10  source
+
+	* Fixed compiler warnings
+
+2009-09-09 11:35  source
+
+	* Updated version info
+
+2009-09-09 11:33  source
+
+	* Fixed compile flags
+
+2009-09-09 11:26  source
+
+	* Fixed check for wchar.h on Mac framework build
+
+2009-09-09 11:01  source
+
+	* Moved symbol files
+
+2009-09-09 11:00  source
+
+	* Added install rules for iODBC CFM bridge
+
+2009-09-09 10:48  source
+
+	* Added iODBC CFM Bridge code
+
+2009-09-09 10:27  source
+
+	* Added support for overruling CFLAGS, CC and other environment vars
+
+2009-09-09 08:00  source
+
+	* Updated Mac OS X build instructions
+
+2009-09-09 07:37  source
+
+	* Fixed building/installing iODBC Demo Unicode version
+	* Removed sudo from rules, user should perform 'sudo make install"
+
+2009-09-08 14:11  source
+
+	* Fixed portability between various versions of Mac OS X
+
+2009-09-08 14:01  source
+
+	* Updated version info
+
+2009-09-08 11:09  source
+
+	* Added support for building solaris 2.10 on AMD64 and Sparc
+
+2009-09-08 00:10  source
+
+	* Added support for Mac OS X 10.6
+
 2009-09-07 23:11  source
 
 	* Added defines for Virtuoso ODBC SPASQL extensions
