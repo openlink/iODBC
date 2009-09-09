@@ -85,7 +85,7 @@ iodbctestw_SOURCES	= iodbctest.c
 iodbctestw_LDADD	= ../iodbc/libiodbc.la
 iodbctestw_LDFLAGS	= -static
 
-EXTRA_DIST		= Makefile.sample 
+EXTRA_DIST		= $(srcdir)/Makefile.sample 
 
 install-exec-hook:
 	$(mkinstalldirs) ${DESTDIR}${pkgdatadir}/samples

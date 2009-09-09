@@ -136,4 +136,4 @@ libiodbcinst.la: $(libiodbcinst_la_OBJECTS) $(libiodbcinst_la_DEPENDENCIES)
 	-$(STRIP) -s $(top_srcdir)/mac/iodbcinst.exp -u .libs/*.dylib
 endif
 
-EXTRA_DIST		= iodbcinst.exp
+EXTRA_DIST		= $(srcdir)/iodbcinst.exp

@@ -71,5 +71,5 @@
 #
 
 EXTRA_DIST = \
-	odbc.ini.sample \
-	odbcinst.ini.sample
+	$(srcdir)/odbc.ini.sample \
+	$(srcdir)/odbcinst.ini.sample

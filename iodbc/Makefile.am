@@ -97,8 +97,12 @@ libiodbc.la: $(libiodbc_la_OBJECTS) $(libiodbc_la_DEPENDENCIES)
 	-$(STRIP) -s $(top_srcdir)/mac/iodbc.exp -u .libs/*.dylib
 endif
 
-EXTRA_DIST		= iodbc.def iodbc.exp main.c vmscompile.com \
-			  install_libodbc.sh
+EXTRA_DIST		= \
+	$(srcdir)/iodbc.def \
+	$(srcdir)/iodbc.exp \
+	$(srcdir)/main.c \
+	$(srcdir)/vmscompile.com \
+	$(srcdir)/install_libodbc.sh
 
 
 #

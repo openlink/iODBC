@@ -128,4 +128,23 @@ noinst_HEADERS		= \
 	gui.h \
 	iodbcadm.h
 
-EXTRA_DIST		= iodbcadm.exp
+EXTRA_DIST		= \
+	$(srcdir)/iodbcadm.exp \
+	$(srcdir)/macosx/administrator.c \
+	$(srcdir)/macosx/confirm.c \
+	$(srcdir)/macosx/driverchooser.c \
+	$(srcdir)/macosx/driversetup.c \
+	$(srcdir)/macosx/dsnchooser.c \
+	$(srcdir)/macosx/errorbox.c \
+	$(srcdir)/macosx/fdriverchoose.c \
+	$(srcdir)/macosx/filedsn.c \
+	$(srcdir)/macosx/gensetup.c \
+	$(srcdir)/macosx/getfpn.c \
+	$(srcdir)/macosx/getfpn.h \
+	$(srcdir)/macosx/gui.h \
+	$(srcdir)/macosx/iodbcadm.r \
+	$(srcdir)/macosx/keyval.c \
+	$(srcdir)/macosx/main.c \
+	$(srcdir)/macosx/messagebox.c \
+	$(srcdir)/macosx/odbcdriverf.c \
+	$(srcdir)/macosx/translatorchooser.c
