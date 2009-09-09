@@ -1,2 +1,3 @@
 version=3
-http://www.iodbc.org/downloads/iODBC/libiodbc-([\d\.]+).tar.gz debian true
+#http://www.iodbc.org/downloads/iODBC/libiodbc-(\d.*)\.tar\.gz
+http://sf.net/iodbc/libiodbc-(\d.*)\.tar\.gz

@@ -1,3 +1,4 @@
-iodbc: non-dev-pkg-with-shlib-symlink usr/lib/libiodbcadm.so.2.1.16 usr/lib/libiodbcadm.so
-iodbc: non-dev-pkg-with-shlib-symlink usr/lib/libdrvproxy.so.2.1.16 usr/lib/libdrvproxy.so
+iodbc: non-dev-pkg-with-shlib-symlink usr/lib/libiodbcadm.so.2.1.18 usr/lib/libiodbcadm.so
+iodbc: non-dev-pkg-with-shlib-symlink usr/lib/libdrvproxy.so.2.1.18 usr/lib/libdrvproxy.so
 iodbc: package-name-doesnt-match-sonames libiodbcadm2 libdrvproxy2
+iodbc: package-name-doesnt-match-sonames libdrvproxy2 libiodbcadm2

@@ -7,6 +7,7 @@ DEB_AUTO_UPDATE_AUTOCONF=2.50
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
 # To make sure that every package that links against libiodbc defines
 # a versioned dependency and not just a normal one.
@@ -16,6 +17,31 @@ DEB_SHLIBDEPS_LIBRARY_iodbc := libiodbc2
 DEB_SHLIBDEPS_INCLUDE_iodbc := debian/libiodbc2/usr/lib:debian/iodbc/usr/lib
 DEB_SHLIBDEPS_INCLUDE_libiodbc2 := debian/libiodbc2/usr/lib
 
+CRUFT := \
+	aclocal.m4 \
+	admin/ltmain.sh \
+	admin/Makefile.in \
+	bin/Makefile.in \
+	configure \
+	drvproxy/gtk/Makefile.in \
+	drvproxy/Makefile.in \
+	etc/Makefile.in \
+	include/Makefile.in \
+	iodbc/Makefile.in \
+	iodbc/trace/Makefile.in \
+	iodbcadm/gtk/Makefile.in \
+	iodbcadm/Makefile.in \
+	iodbcinst/Makefile.in \
+	Makefile.in \
+	man/Makefile.in \
+	samples/Makefile.in \
+
+update-config::
+	for f in $(CRUFT) ; do [ -e $$f.d-r-orig ] || cp -p $$f $$f.d-r-orig ; done
+
+reverse-config::
+	for f in $(CRUFT) ; do [ ! -e $$f.d-r-orig ] || mv $$f.d-r-orig $$f ; done
+
 install/iodbc ::
 	mkdir -p debian/tmp/usr/share/lintian/overrides/
 	cp debian/iodbc.lintian-overrides debian/tmp/usr/share/lintian/overrides/iodbc
@@ -23,3 +49,7 @@ install/iodbc ::
 install/libiodbc2 ::
 	mkdir -p debian/tmp/usr/share/lintian/overrides/
 	cp debian/libiodbc2.lintian-overrides debian/tmp/usr/share/lintian/overrides/libiodbc2
+
+#clean::
+#	for f in $(CRUFT) ; do cp -p ../orig/*/$$f $$f ; done
+
