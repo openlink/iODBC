@@ -28,7 +28,6 @@ all the frameworks and demo applications:
 After building the iODBC libraries and applications, you have to
 install them on your system with the command:
 
-	$ cd mac
 	$ sudo make install
 
 
@@ -36,9 +35,13 @@ This installs the iODBCinst and iODBC frameworks into:
 
 	/Library/Frameworks
 
-and the demo applications iodbctest and iodbctest into:
+and the test applications iodbctest and iodbctestw into:
 
 	/Library/Application Support/iODBC/bin
+
+and the iODBC Administrator and the iODBC Demo applications in:
+
+	/Applications/iODBC
 
 
 Now that you have installed the iODBC frameworks on your system,
@@ -63,6 +66,7 @@ not using any frameworks.
 To build the libraries, open up a terminal session and execute the
 following commands:
 
+	$ sh bootstrap.sh
 	$ ./configure
 	$ make
 
@@ -71,12 +75,12 @@ the following command as administrator:
 
 	$ sudo make install
 
-
 Note that this will build all code based that only runs on the CPU
 type you build it on, so PowerPC on older systems, 32bit Intel on
-early CoreDuo machine and 64bit on current models. However iODBC
-can also be configured to build a universal library that works with
-all 3 models embedded.
+early CoreDuo machine and 64bit on current models. 
+
+However iODBC can also be configured to build a universal library that
+works with all 3 models embedded.
 
 The following commands will build a release of iODBC that works on
 both Mac OS X 10.5 as well as Mac OS X 10.6:
@@ -86,9 +90,17 @@ both Mac OS X 10.5 as well as Mac OS X 10.6:
 	$ CFLAGS="$CFLAGS -mmacosx-version-min=10.5"
 	$ export CFLAGS
 	
+	$ sh bootstrap.sh
 	$ ./configure \
 		--disable-dependency-tracking \
 		--prefix=/usr/local/iODBC.universal
 
 	$ make
 	$ sudo make install
+
+Once you have installed an ODBC driver and configured a DSN, you
+will be able to make a connection using the iodbctest command which
+is located in:
+
+	/usr/local/iODBC.universal/bin/iodbctest
+
