@@ -226,9 +226,9 @@ _ConvParam (STMT_t *pstmt, PPARM pparm, SQLULEN row, BOOL bOutput)
 
   if (pstmt->bind_type)
     /* row-wise binding of parameters in force */
-    value = pparm->pm_data + row * pstmt->bind_type;
+    value = (char *) pparm->pm_data + row * pstmt->bind_type;
   else
-    value = pparm->pm_data + row * elementSize;
+    value = (char *) pparm->pm_data + row * elementSize;
 
   if (bOutput)
     _Conv_A2W(value, pInd, elementSize);

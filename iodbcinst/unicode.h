@@ -78,7 +78,7 @@
 #define _UNICODE_H
 
 
-#if defined (__APPLE__) && !defined (MACOSX102)
+#if defined (__APPLE__) && !defined (MACOSX102) && !defined (HAVE_CONFIG_H)
 #define HAVE_WCHAR_H 
 #define HAVE_WCSLEN 
 #define HAVE_WCSCPY 
