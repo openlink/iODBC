@@ -1,3 +1,20 @@
+2009-09-10 13:08  source
+
+	* Updated version of package to 3.52.7 for final release
+	* Updated library versions
+
+2009-09-10 13:04  source
+
+	* Fixed loading libdrvproxy.so.2 and libiodbcadm.so.2 using major version
+	  number.
+	* Removed libdrvproxy.{a|so} and libiodbcadm.{a|so} from packaging
+	  since they are not development libraries that user applications
+	  should try to link with.
+
+2009-09-09 22:31  source
+
+	* Fixed instructions
+
 2009-09-09 22:01  source
 
 	* Fixed distribution packaging
