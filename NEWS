@@ -1,12 +1,14 @@
-Sep 01 2009, V3.52.7:
+Sep 09 2009, V3.52.7:
+    * Added Mac OS X Graphical Administrator
+    * Added iODBC CFM Bridge
+    * Added resizable windows and dialogs for GTK+
     * Added option in tracefile for sequence number ($S)
     * Added additional translations between ANSI and Unicode
-    * Added resizable windows and dialogs for GTK+
     * Fixed if tracefile gets too big, continue in new tracefile
     * Fixed unload bug due to wrong pointer deref
     * Fixed Connection Pooling UI
     * Fixed checking odbc_ver on connect handle
-    * Fixed small porting issues
+    * Fixed porting issues
 
 Oct 08 2007, V3.52.6:
     * Added support for GTK+ 2.x
