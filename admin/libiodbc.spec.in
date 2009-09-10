@@ -249,11 +249,13 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %if %{with_admin}
 %files admin
 %attr(0755, root, root) %{_bindir}/iodbcadm-gtk
-%attr(0644, root, root) %{_libdir}/libdrvproxy.a
-%attr(0644, root, root) %{_libdir}/libdrvproxy.la
-%attr(0755, root, root) %{_libdir}/libdrvproxy.so*
-%attr(0644, root, root) %{_libdir}/libiodbcadm.a
-%attr(0644, root, root) %{_libdir}/libiodbcadm.la
-%attr(0755, root, root) %{_libdir}/libiodbcadm.so*
+%ghost %{_libdir}/libdrvproxy.a
+%ghost %{_libdir}/libdrvproxy.la
+%ghost %{_libdir}/libdrvproxy.so
+%attr(0755, root, root) %{_libdir}/libdrvproxy.so.*
+%ghost %{_libdir}/libiodbcadm.a
+%ghost %{_libdir}/libiodbcadm.la
+%ghost %{_libdir}/libiodbcadm.so
+%attr(0755, root, root) %{_libdir}/libiodbcadm.so.*
 %attr(0644, root, root) %{_mandir}/man1/iodbcadm-gtk.1*
 %endif

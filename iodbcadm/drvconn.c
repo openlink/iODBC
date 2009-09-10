@@ -470,7 +470,7 @@ iodbcdm_drvconn_dialboxw (
 	}
     }
 #else
-  CALL_DRVCONN_DIALBOXW ("libdrvproxy.so", 'A');
+  CALL_DRVCONN_DIALBOXW ("libdrvproxy.so.2", 'A');
 #endif /* __APPLE__ */
 
   if (sqlStat)

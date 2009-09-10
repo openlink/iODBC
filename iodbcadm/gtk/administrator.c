@@ -111,11 +111,11 @@ static struct
   char *lib_ver_sym;
 } iODBC_Components[] =
 {
-  {"libiodbc.so", "iODBC Driver Manager", "iodbc_version"},
-  {"libiodbcadm.so", "iODBC Administrator", "iodbcadm_version"},
-  {"libiodbcinst.so", "iODBC Installer", "iodbcinst_version"},
-  {"libdrvproxy.so", "iODBC Driver Setup Proxy", "iodbcproxy_version"},
-  {"libtranslator.so", "iODBC Translation Manager", "iodbctrans_version"}
+  {"libiodbc.so.2", "iODBC Driver Manager", "iodbc_version"},
+  {"libiodbcadm.so.2", "iODBC Administrator", "iodbcadm_version"},
+  {"libiodbcinst.so.2", "iODBC Installer", "iodbcinst_version"},
+  {"libdrvproxy.so.2", "iODBC Driver Setup Proxy", "iodbcproxy_version"},
+  {"libtranslator.so.2", "iODBC Translation Manager", "iodbctrans_version"}
 };
 
 

@@ -6,10 +6,6 @@ debian/tmp/usr/lib/libiodbcadm.a
 debian/tmp/usr/lib/libiodbcadm.la
 debian/tmp/usr/lib/libiodbcinst.a
 debian/tmp/usr/lib/libiodbcinst.la
-debian/tmp/usr/lib/libdrvproxy.a
-debian/tmp/usr/lib/libdrvproxy.la
 debian/tmp/usr/share/man/man1/iodbc-config.1
 debian/tmp/usr/lib/libiodbc.so
 debian/tmp/usr/lib/libiodbcinst.so
-debian/tmp/usr/lib/libdrvproxy.so
-debian/tmp/usr/lib/libiodbcadm.so

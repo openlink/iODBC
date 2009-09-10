@@ -172,7 +172,7 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 	    CFRelease (libname);
 	}
 #else
-      CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so");
+      CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so.2");
 #endif
 
       if (ret == SQL_NO_DATA)
@@ -229,7 +229,7 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 	    }
 
 	  /* The last ressort, a proxy driver */
-	  CALL_CONFIG_TRANSLATOR ("libtranslator.so");
+	  CALL_CONFIG_TRANSLATOR ("libtranslator.so.2");
 
 	  /* Error : ConfigDSN could no be found */
 	  PUSH_ERROR (ODBC_ERROR_LOAD_LIB_FAILED);

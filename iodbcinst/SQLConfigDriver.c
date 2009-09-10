@@ -372,11 +372,11 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 #else
   if (waMode == 'A')
     {
-      CALL_CONFIG_DRIVER ("libdrvproxy.so");
+      CALL_CONFIG_DRIVER ("libdrvproxy.so.2");
     }
   else
     {
-      CALL_CONFIG_DRIVERW ("libdrvproxy.so");
+      CALL_CONFIG_DRIVERW ("libdrvproxy.so.2");
     }
 #endif
 

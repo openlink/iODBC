@@ -452,11 +452,11 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
 #else
   if (waMode == 'A')
     {
-      CALL_CONFIG_DSN ("libdrvproxy.so");
+      CALL_CONFIG_DSN ("libdrvproxy.so.2");
     }
   else
     {
-      CALL_CONFIG_DSNW ("libdrvproxy.so");
+      CALL_CONFIG_DSNW ("libdrvproxy.so.2");
     }
 #endif
 

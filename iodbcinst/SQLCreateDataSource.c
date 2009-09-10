@@ -157,11 +157,11 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 #else
   if (waMode == 'A')
     {
-      CALL_DRVCONN_DIALBOX ("libiodbcadm.so");
+      CALL_DRVCONN_DIALBOX ("libiodbcadm.so.2");
     }
   else
     {
-      CALL_DRVCONN_DIALBOXW ("libiodbcadm.so");
+      CALL_DRVCONN_DIALBOXW ("libiodbcadm.so.2");
     }
 #endif
 

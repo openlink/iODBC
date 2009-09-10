@@ -2598,7 +2598,7 @@ SQLDriverConnect_Internal (
 	    CFRelease (libname);
 	}
 #else
-      hdll = _iodbcdm_dllopen ("libiodbcadm.so");
+      hdll = _iodbcdm_dllopen ("libiodbcadm.so.2");
 #endif
 
       if (!hdll)

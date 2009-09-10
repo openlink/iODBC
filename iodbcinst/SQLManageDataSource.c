@@ -134,7 +134,7 @@ ManageDataSources (HWND hwndParent)
     }
 
 #else
-  CALL_ADMIN_DIALBOX ("libiodbcadm.so");
+  CALL_ADMIN_DIALBOX ("libiodbcadm.so.2");
 #endif
 
   return retcode;
