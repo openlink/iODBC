@@ -102,10 +102,10 @@ _trace_data (
     {
     case SQL_C_BINARY:
       {
-        int len;
-	if (pcbValue && cbValueMax > 0)
-	  len = *((SQLINTEGER *) pcbValue);
-	else
+        ssize_t len = cbValueMax;
+	if (pcbValue)
+	  len = *pcbValue;
+  	if (len > cbValueMax)
 	  len = cbValueMax;
 	trace_emit_binary ((unsigned char *) rgbValue, len);
       }
@@ -121,10 +121,10 @@ _trace_data (
 
     case SQL_C_CHAR:
       {
-        int len;
-        if (pcbValue && cbValueMax > 0)
- 	  len =  *((SQLINTEGER *) pcbValue);
-        else
+	ssize_t len = cbValueMax;
+	if (pcbValue)
+	  len = (long) *pcbValue;
+	if (len > cbValueMax)
 	  len = cbValueMax;
 	trace_emit_string ((SQLCHAR *) rgbValue, len, 0);
       }
@@ -416,10 +416,10 @@ _trace_data (
     case SQL_C_WCHAR:
       {
 	SQLCHAR *wstr;
-        int len;
-	if (pcbValue && cbValueMax > 0)
-	  len = *((SQLINTEGER *) pcbValue);
-	else
+        ssize_t len;
+	if (pcbValue)
+	  len = (ssize_t) *pcbValue;
+        if (len > cbValueMax)
 	  len = cbValueMax;
 	wstr = dm_SQL_W2A ((wchar_t *) rgbValue, len);
 	trace_emit_string (wstr, SQL_NTS, 1);

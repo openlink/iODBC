@@ -510,7 +510,7 @@ trace_emit (char *fmt, ...)
 
 
 void
-trace_emit_string (SQLCHAR *str, int len, int is_utf8)
+trace_emit_string (SQLCHAR *str, ssize_t len, int is_utf8)
 {
   ssize_t length = len;
   int i, j;
@@ -621,7 +621,7 @@ trace_emit_string (SQLCHAR *str, int len, int is_utf8)
 
 
 void
-trace_emit_binary (unsigned char *str, int len)
+trace_emit_binary (unsigned char *str, long len)
 {
   long length = len;
   int i;
