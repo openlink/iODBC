@@ -523,8 +523,8 @@ trace_emit_string (SQLCHAR *str, ssize_t len, int is_utf8)
     return;
 
   if (len == SQL_NTS)
-    length = strlen ((char *) str);
-  else if (len <= 0)
+    length = STRLEN ((char *) str);
+  if (len <= 0)
     return;
 
   /*
