@@ -337,7 +337,7 @@ _trace_data (
 #if defined (ODBCINT64)
       {
 	ODBCINT64 l = *(ODBCINT64 *) rgbValue;
-	sprintf (buf, "%lld", l);
+	sprintf (buf, "%lld", (long long int)l);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
 #endif
@@ -347,7 +347,7 @@ _trace_data (
 #if defined (ODBCINT64)
       {
 	unsigned ODBCINT64 l = *(unsigned ODBCINT64 *) rgbValue;
-	sprintf (buf, "%llu", l);
+	sprintf (buf, "%llu", (long long unsigned int)l);
 	trace_emit_string ((SQLCHAR *) buf, SQL_NTS, 0);
       }
 #endif
