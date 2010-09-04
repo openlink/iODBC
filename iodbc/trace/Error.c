@@ -98,7 +98,7 @@ trace_SQLError (int trace_leave, int retcode,
   _trace_string (szSqlstate, SQL_NTS, NULL, TRACE_OUTPUT_SUCCESS);
   _trace_integer_p (pfNativeError, TRACE_OUTPUT_SUCCESS);
   _trace_string (szErrorMsg, cbErrorMsgMax, pcbErrorMsg, TRACE_OUTPUT_SUCCESS);
-  _trace_stringlen ("SQLINTEGER", cbErrorMsgMax);
+  _trace_stringlen ("SQLSMALLINT", cbErrorMsgMax);
   _trace_smallint_p (pcbErrorMsg, TRACE_OUTPUT_SUCCESS);
 }
 
@@ -125,7 +125,7 @@ trace_SQLErrorW (int trace_leave, int retcode,
   _trace_string_w (szSqlstate, SQL_NTS, NULL, TRACE_OUTPUT_SUCCESS);
   _trace_integer_p (pfNativeError, trace_leave);
   _trace_string_w (szErrorMsg, cbErrorMsgMax, pcbErrorMsg, TRACE_OUTPUT_SUCCESS);
-  _trace_stringlen ("SQLINTEGER", cbErrorMsgMax);
+  _trace_stringlen ("SQLSMALLINT", cbErrorMsgMax);
   _trace_smallint_p (pcbErrorMsg, TRACE_OUTPUT_SUCCESS);
 }
 #endif
