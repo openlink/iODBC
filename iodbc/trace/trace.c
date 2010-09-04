@@ -453,8 +453,6 @@ void
 trace_stop(void)
 {
   char mesgBuf[200];
-  time_t now;
-  struct tm *timeNow;
 
   if (trace_fp)
     {
