@@ -81,7 +81,7 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT([iODBC Driver Manager],
-        [3.52.7],
+        [3.52.7a],
 	[iodbc@openlinksw.com],
 	[libiodbc])
 AC_CONFIG_SRCDIR([include/isql.h])
@@ -103,7 +103,7 @@ AM_MAINTAINER_MODE
 #  Version information for SQLGetInfo(SQL_DM_VER) call
 #
 BUILD_MAJOR="7"			# last digit of version number
-BUILD_MINOR="090909"		# year/month/day of release
+BUILD_MINOR="100904"		# year/month/day of release
 BUILD_VER="${BUILD_MAJOR}${BUILD_MINOR}"
 
 #
