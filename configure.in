@@ -380,7 +380,7 @@ AC_CHECK_FUNC(NSCreateObjectFileImageFromFile,
 AC_SUBST(LIBADD_DL)
 
 AC_CACHE_CHECK([for underscore before symbols], libltdl_cv_uscore, [
-  echo "main(){int i=1;} fnord(){int i=23; int ltuae=42;}" > conftest.c
+  echo "int main(){int i=1; return 0;} void fnord(){int i=23; int ltuae=42;}" > conftest.c
   ${CC} -c conftest.c > /dev/null
   if (nm conftest.o | grep _fnord) > /dev/null; then
     libltdl_cv_uscore=yes
@@ -434,11 +434,13 @@ if test x"$libltdl_cv_uscore" = xyes; then
 # endif
 #endif
 
+void
 fnord ()
 {
   int i = 42;
 }
 
+int
 main ()
 {
   void *self, *ptr1, *ptr2;
