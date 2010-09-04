@@ -514,7 +514,7 @@ trace_emit_string (SQLCHAR *str, ssize_t len, int is_utf8)
 {
   ssize_t length = len;
   int i, j;
-  long col;
+  int col;
   SQLCHAR *ptr;
   int bytes;
   int truncated = 0;
@@ -621,11 +621,11 @@ trace_emit_string (SQLCHAR *str, ssize_t len, int is_utf8)
 
 
 void
-trace_emit_binary (unsigned char *str, long len)
+trace_emit_binary (unsigned char *str, ssize_t  len)
 {
-  long length = len;
+  ssize_t length = len;
   int i;
-  long col;
+  int col;
   unsigned char *ptr;
   int truncated = 0;
   char buf[80];
@@ -957,7 +957,7 @@ _trace_ulen_p (SQLULEN *p, int output)
 void
 _trace_string (SQLCHAR * str, SQLSMALLINT len, SQLSMALLINT * lenptr, int output)
 {
-  long length;
+  ssize_t length;
 
   if (!str)
     {
@@ -994,7 +994,7 @@ void
 _trace_string_w (SQLWCHAR * str, SQLSMALLINT len, SQLSMALLINT * lenptr,
     int output)
 {
-  long length;
+  ssize_t length;
 
   if (!str)
     {
