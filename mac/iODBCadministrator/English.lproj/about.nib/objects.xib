@@ -13,7 +13,7 @@
         <array count="2" name="subviews">
           <object class="IBCarbonStaticText" id="183">
             <string name="bounds">12 20 181 440 </string>
-            <string name="title">Copyright 1995-2009, OpenLink Software and Ke Jin&#10;&#10;Version 3.52.7&#10;&#10;iODBC is an Open Source Driver Manager maintained by OpenLink Software and is dual licensed under LGPL and BSD licenses.&#10;&#10;Please visit http://www.openlinksw.com for more information on OpenLink Software or to download additional ODBC Drivers.&#10;More information on iODBC is available at http://www.iodbc.org</string>
+            <string name="title">Copyright 1995-2011, OpenLink Software and Ke Jin&#10;&#10;Version 3.52.7&#10;&#10;iODBC is an Open Source Driver Manager maintained by OpenLink Software and is dual licensed under LGPL and BSD licenses.&#10;&#10;Please visit http://www.openlinksw.com for more information on OpenLink Software or to download additional ODBC Drivers.&#10;More information on iODBC is available at http://www.iodbc.org</string>
           </object>
           <object class="IBCarbonButton" id="185">
             <string name="bounds">183 387 201 440 </string>

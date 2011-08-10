@@ -2,5 +2,5 @@
 
 CFBundleName = "OpenLink ODBC Administrator";
 CFBundleShortVersionString = "OpenLink ODBC Administrator version 3.52.7";
-CFBundleGetInfoString = "OpenLink ODBC Administrator version 3.52.7, Copyright 1995-2009, OpenLink Software";
-NSHumanReadableCopyright = "Copyright © 1995-2009, OpenLink Software";
+CFBundleGetInfoString = "OpenLink ODBC Administrator version 3.52.7, Copyright 1995-2011, OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 1995-2011, OpenLink Software";
