@@ -1044,9 +1044,6 @@ _iodbcdm_driverload (
 	      path_tmp, sizeof (path_tmp), "odbcinst.ini") && path_tmp[0])
 	path = path_tmp;
 
-      if (tmp_drv)
-	free (tmp_drv);
-
       /*
        *  Get CPTimeout value
        */
@@ -1060,6 +1057,9 @@ _iodbcdm_driverload (
        */
       SQLGetPrivateProfileString (drv, "CPProbe", "",
    	    cp_probe, sizeof(cp_probe), "odbcinst.ini");
+
+      if (tmp_drv)
+	free (tmp_drv);
     }
   else if (dsn != NULL && *dsn != '\0')
     {
