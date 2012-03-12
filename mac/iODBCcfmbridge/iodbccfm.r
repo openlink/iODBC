@@ -5,7 +5,7 @@
  *
  *  Ressources for the iODBC CFM Bridge
  *
- *  Copyright (C) 1996-2011 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
