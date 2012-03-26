@@ -12,8 +12,8 @@
 		85F0775709F871F60007FC8F /* TestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0775609F871F60007FC8F /* TestController.m */; };
 		85F0784609F88DFC0007FC8F /* iODBC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85F0784509F88DFC0007FC8F /* iODBC.framework */; };
 		85F0799D09FDC35E0007FC8F /* ExecController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0799C09FDC35E0007FC8F /* ExecController.m */; };
-		85F079A809FDD9D70007FC8F /* ExecSQL.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85F079A609FDD9D70007FC8F /* ExecSQL.nib */; };
-		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		85F079A809FDD9D70007FC8F /* ExecSQL.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85F079A609FDD9D70007FC8F /* ExecSQL.xib */; };
+		8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -22,9 +22,9 @@
 		CD6EAFEF0A1213FA003E7EC1 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CD6EAFED0A1213FA003E7EC1 /* Credits.rtf */; };
 		CD6EAFF00A1213FA003E7EC1 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CD6EAFED0A1213FA003E7EC1 /* Credits.rtf */; };
 		CD7C36450A0109AA001A43B7 /* iODBCinst.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7C36440A0109AA001A43B7 /* iODBCinst.framework */; };
-		CD7C37A90A063F40001A43B7 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		CD7C37A90A063F40001A43B7 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.xib */; };
 		CD7C37AA0A063F40001A43B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
-		CD7C37AB0A063F40001A43B7 /* ExecSQL.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85F079A609FDD9D70007FC8F /* ExecSQL.nib */; };
+		CD7C37AB0A063F40001A43B7 /* ExecSQL.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85F079A609FDD9D70007FC8F /* ExecSQL.xib */; };
 		CD7C37AD0A063F40001A43B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		CD7C37AE0A063F40001A43B7 /* TestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0775609F871F60007FC8F /* TestController.m */; };
 		CD7C37AF0A063F40001A43B7 /* ExecController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0799C09FDC35E0007FC8F /* ExecController.m */; };
@@ -53,7 +53,7 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* iodbcdemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iodbcdemo_Prefix.pch; sourceTree = "<group>"; };
@@ -64,7 +64,7 @@
 		85F0784509F88DFC0007FC8F /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = /Library/Frameworks/iODBC.framework; sourceTree = "<absolute>"; };
 		85F0799B09FDC35E0007FC8F /* ExecController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ExecController.h; sourceTree = "<group>"; };
 		85F0799C09FDC35E0007FC8F /* ExecController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ExecController.m; sourceTree = "<group>"; };
-		85F079A709FDD9D70007FC8F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ExecSQL.nib; sourceTree = "<group>"; };
+		85F079A709FDD9D70007FC8F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/ExecSQL.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* iODBC Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD6EAFC30A12036B003E7EC1 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = English; path = English.lproj/iODBCdemo.icns; sourceTree = "<group>"; };
@@ -166,10 +166,10 @@
 			children = (
 				CD6EAFED0A1213FA003E7EC1 /* Credits.rtf */,
 				CD6EAFC20A12036B003E7EC1 /* iODBCdemo.icns */,
-				85F079A609FDD9D70007FC8F /* ExecSQL.nib */,
+				85F079A609FDD9D70007FC8F /* ExecSQL.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
-				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.xib */,
 				CD7C37B90A063F41001A43B7 /* InfoUnicode.plist */,
 			);
 			name = Resources;
@@ -254,9 +254,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
+				8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
-				85F079A809FDD9D70007FC8F /* ExecSQL.nib in Resources */,
+				85F079A809FDD9D70007FC8F /* ExecSQL.xib in Resources */,
 				CD6EAFC40A12036B003E7EC1 /* iODBCdemo.icns in Resources */,
 				CD6EAFEF0A1213FA003E7EC1 /* Credits.rtf in Resources */,
 			);
@@ -266,9 +266,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD7C37A90A063F40001A43B7 /* MainMenu.nib in Resources */,
+				CD7C37A90A063F40001A43B7 /* MainMenu.xib in Resources */,
 				CD7C37AA0A063F40001A43B7 /* InfoPlist.strings in Resources */,
-				CD7C37AB0A063F40001A43B7 /* ExecSQL.nib in Resources */,
+				CD7C37AB0A063F40001A43B7 /* ExecSQL.xib in Resources */,
 				CD6EAFC50A12036B003E7EC1 /* iODBCdemo.icns in Resources */,
 				CD6EAFF00A1213FA003E7EC1 /* Credits.rtf in Resources */,
 			);
@@ -310,20 +310,20 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+		29B97318FDCFA39411CA2CEA /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				29B97319FDCFA39411CA2CEA /* English */,
 			);
-			name = MainMenu.nib;
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
-		85F079A609FDD9D70007FC8F /* ExecSQL.nib */ = {
+		85F079A609FDD9D70007FC8F /* ExecSQL.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85F079A709FDD9D70007FC8F /* English */,
 			);
-			name = ExecSQL.nib;
+			name = ExecSQL.xib;
 			sourceTree = "<group>";
 		};
 		CD6EAFC20A12036B003E7EC1 /* iODBCdemo.icns */ = {
