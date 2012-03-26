@@ -44,3 +44,16 @@ man/iodbctest.1
 man/iodbctestw.1
 libiodbc*.tar.gz
 libiodbc*.zip
+
+#
+# Mac OS X Xcode build trees
+#
+mac/iODBC/build/
+mac/iODBCadm/build/
+mac/iODBCadministrator/build/
+mac/iODBCdemo/build/
+mac/iODBCdrvproxy/build/
+mac/iODBCinst/build/
+mac/iODBCtest/build/
+mac/iODBCtestw/build/
+mac/include/
