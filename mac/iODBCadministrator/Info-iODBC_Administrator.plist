@@ -19,10 +19,10 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.7</string>
+	<string>3.52.8</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.7</string>
+	<string>3.52.8</string>
 </dict>
 </plist>
