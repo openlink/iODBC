@@ -93,82 +93,67 @@ EXTRA_DIST		= \
 	$(srcdir)/mac/Makefile \
 	$(srcdir)/mac/myodbc.configure.diff \
 	$(srcdir)/mac/README.MYODBC \
+	$(srcdir)/mac/iODBC/*.plist \
+	$(srcdir)/mac/iODBC/English.lproj/*.strings \
+	$(srcdir)/mac/iODBC/iODBC.pbproj/project.pbxproj \
+	$(srcdir)/mac/iODBC/iODBC.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCadm/*.plist \
 	$(srcdir)/mac/iODBCadm/*.strings \
-	$(srcdir)/mac/iODBCadm/English.lproj/confirmation.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/confirmation.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/connectionpool.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/connectionpool.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/driverremove.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/driverremove.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/driversetup.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/driversetup.nib/*.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/confirmation.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/connectionpool.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/driverremove.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/driversetup.xib \
 	$(srcdir)/mac/iODBCadm/English.lproj/drvchoose.tiff \
-	$(srcdir)/mac/iODBCadm/English.lproj/dsnchooser.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/dsnchooser.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/gensetup.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/gensetup.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/keyval.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/keyval.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/odbcadmin.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/odbcadmin.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/odbcdriverf.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/odbcdriverf.nib/*.xib \
-	$(srcdir)/mac/iODBCadm/English.lproj/odbcdriver.nib/*.nib \
-	$(srcdir)/mac/iODBCadm/English.lproj/odbcdriver.nib/*.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/dsnchooser.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/gensetup.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/keyval.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/odbcadmin.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/odbcdriver.xib \
+	$(srcdir)/mac/iODBCadm/English.lproj/odbcdriverf.xib \
 	$(srcdir)/mac/iODBCadm/iODBCadm.pbproj/project.pbxproj \
 	$(srcdir)/mac/iODBCadm/iODBCadm.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCadministrator/*.plist \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/about.nib/*.nib \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/about.nib/*.xib \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/iODBCAdministrator.icns \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/main.nib/*.nib \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/main.nib/*.xib \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/odbcman.tiff \
 	$(srcdir)/mac/iODBCadministrator/English.lproj/*.strings \
+	$(srcdir)/mac/iODBCadministrator/English.lproj/about.xib \
+	$(srcdir)/mac/iODBCadministrator/English.lproj/iODBCAdministrator.icns \
+	$(srcdir)/mac/iODBCadministrator/English.lproj/main.xib \
+	$(srcdir)/mac/iODBCadministrator/English.lproj/odbcman.tiff \
 	$(srcdir)/mac/iODBCadministrator/iODBCadministrator.pbproj/project.pbxproj \
 	$(srcdir)/mac/iODBCadministrator/iODBCadministrator.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCcfmbridge/*.exp \
 	$(srcdir)/mac/iODBCcfmbridge/Info.c \
+	$(srcdir)/mac/iODBCcfmbridge/Makefile \
 	$(srcdir)/mac/iODBCcfmbridge/iODBC_CFM_Bridge \
 	$(srcdir)/mac/iODBCcfmbridge/iODBC_CFM_Bridge.res \
 	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.c \
 	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.h \
 	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.r \
-	$(srcdir)/mac/iODBCcfmbridge/Makefile \
-	$(srcdir)/mac/iODBCdemo/main.m \
-	$(srcdir)/mac/iODBCdemo/NSResWindow.h \
-	$(srcdir)/mac/iODBCdemo/NSResWindow.m \
 	$(srcdir)/mac/iODBCdemo/*.plist \
-	$(srcdir)/mac/iODBCdemo/TestController.h \
-	$(srcdir)/mac/iODBCdemo/TestController.m \
-	$(srcdir)/mac/iODBCdemo/English.lproj/Credits.rtf \
-	$(srcdir)/mac/iODBCdemo/English.lproj/ExecSQL.nib/*.nib \
-	$(srcdir)/mac/iODBCdemo/English.lproj/iODBCdemo.icns \
-	$(srcdir)/mac/iODBCdemo/English.lproj/MainMenu.nib/*.nib \
 	$(srcdir)/mac/iODBCdemo/English.lproj/*.strings \
+	$(srcdir)/mac/iODBCdemo/English.lproj/Credits.rtf \
+	$(srcdir)/mac/iODBCdemo/English.lproj/ExecSQL.xib \
+	$(srcdir)/mac/iODBCdemo/English.lproj/MainMenu.xib \
+	$(srcdir)/mac/iODBCdemo/English.lproj/iODBCdemo.icns \
 	$(srcdir)/mac/iODBCdemo/ExecController.h \
 	$(srcdir)/mac/iODBCdemo/ExecController.m \
-	$(srcdir)/mac/iODBCdemo/iodbcdemo_Prefix.pch \
+	$(srcdir)/mac/iODBCdemo/NSResWindow.h \
+	$(srcdir)/mac/iODBCdemo/NSResWindow.m \
+	$(srcdir)/mac/iODBCdemo/TestController.h \
+	$(srcdir)/mac/iODBCdemo/TestController.m \
 	$(srcdir)/mac/iODBCdemo/iodbcdemo.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBCdemo/iodbcdemo_Prefix.pch \
+	$(srcdir)/mac/iODBCdemo/main.m \
 	$(srcdir)/mac/iODBCdrvproxy/*.plist \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/confirmation.nib/*.nib \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/confirmation.nib/*.xib \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/gensetup.nib/*.nib \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/gensetup.nib/*.xib \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/login.nib/*.nib \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/login.nib/*.xib \
 	$(srcdir)/mac/iODBCdrvproxy/English.lproj/*.strings \
+	$(srcdir)/mac/iODBCdrvproxy/English.lproj/confirmation.xib \
+	$(srcdir)/mac/iODBCdrvproxy/English.lproj/gensetup.xib \
+	$(srcdir)/mac/iODBCdrvproxy/English.lproj/login.xib \
 	$(srcdir)/mac/iODBCdrvproxy/iODBCdrvproxy.pbproj/project.pbxproj \
 	$(srcdir)/mac/iODBCdrvproxy/iODBCdrvproxy.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCinst/*.plist \
 	$(srcdir)/mac/iODBCinst/English.lproj/*.strings \
 	$(srcdir)/mac/iODBCinst/iODBCinst.pbproj/project.pbxproj \
 	$(srcdir)/mac/iODBCinst/iODBCinst.xcodeproj/project.pbxproj \
-	$(srcdir)/mac/iODBC/*.plist \
-	$(srcdir)/mac/iODBC/English.lproj/*.strings \
-	$(srcdir)/mac/iODBC/iODBC.pbproj/project.pbxproj \
-	$(srcdir)/mac/iODBC/iODBC.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCtest/iODBCtest.pbproj/project.pbxproj \
 	$(srcdir)/mac/iODBCtest/iODBCtest.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCtestw/iODBCtestw.pbproj/project.pbxproj \
