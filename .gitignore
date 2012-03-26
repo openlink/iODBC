@@ -42,4 +42,5 @@ man/iodbc-config.1
 man/iodbcadm-gtk.1
 man/iodbctest.1
 man/iodbctestw.1
-
+libiodbc*.tar.gz
+libiodbc*.zip
