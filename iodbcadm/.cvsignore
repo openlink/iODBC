@@ -1,9 +1,0 @@
-Makefile.in
-Makefile
-*.swp
-*.o
-*.lo
-*.la
-.libs
-.deps
-iodbcadm-gtk

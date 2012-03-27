@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		856FBD9A09EA17B600A6A93D /* filedsn.c in Sources */ = {isa = PBXBuildFile; fileRef = 856FBD9809EA17B600A6A93D /* filedsn.c */; };
 		856FBD9B09EA17B600A6A93D /* gensetup.c in Sources */ = {isa = PBXBuildFile; fileRef = 856FBD9909EA17B600A6A93D /* gensetup.c */; };
-		85E671EB09F06C7200E3A1BA /* gensetup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85E671E909F06C7200E3A1BA /* gensetup.nib */; };
-		85F07C550A0A1CD80007FC8F /* keyval.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85F07C530A0A1CD80007FC8F /* keyval.nib */; };
+		85E671EB09F06C7200E3A1BA /* gensetup.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85E671E909F06C7200E3A1BA /* gensetup.xib */; };
+		85F07C550A0A1CD80007FC8F /* keyval.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85F07C530A0A1CD80007FC8F /* keyval.xib */; };
 		85F07C580A0A24CF0007FC8F /* keyval.c in Sources */ = {isa = PBXBuildFile; fileRef = 85F07C570A0A24CF0007FC8F /* keyval.c */; };
-		85F07CA20A0AD1D90007FC8F /* odbcdriverf.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85F07CA00A0AD1D90007FC8F /* odbcdriverf.nib */; };
+		85F07CA20A0AD1D90007FC8F /* odbcdriverf.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85F07CA00A0AD1D90007FC8F /* odbcdriverf.xib */; };
 		85F07CAB0A0AFCF40007FC8F /* odbcdriverf.c in Sources */ = {isa = PBXBuildFile; fileRef = 85F07CAA0A0AFCF40007FC8F /* odbcdriverf.c */; };
 		CDAE3BEB0987D71D003250F8 /* gui.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C5D07D2B7260022E958 /* gui.h */; };
 		CDAE3BEC0987D71D003250F8 /* iodbcadm.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C6007D2B7260022E958 /* iodbcadm.h */; };
@@ -31,14 +31,14 @@
 		CDAE3BF90987D71D003250F8 /* odbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CBD07D2B9B30022E958 /* odbcinst.h */; };
 		CDAE3BFA0987D71D003250F8 /* getfpn.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CC007D2B9DE0022E958 /* getfpn.h */; };
 		CDAE3BFC0987D71D003250F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167EFE841241C02AAC07 /* InfoPlist.strings */; };
-		CDAE3BFD0987D71D003250F8 /* confirmation.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CCA07D2BCCD0022E958 /* confirmation.nib */; };
-		CDAE3BFE0987D71D003250F8 /* connectionpool.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CCC07D2BCCD0022E958 /* connectionpool.nib */; };
-		CDAE3BFF0987D71D003250F8 /* driverremove.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CCE07D2BCCD0022E958 /* driverremove.nib */; };
-		CDAE3C000987D71D003250F8 /* driversetup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD007D2BCCD0022E958 /* driversetup.nib */; };
+		CDAE3BFD0987D71D003250F8 /* confirmation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CCA07D2BCCD0022E958 /* confirmation.xib */; };
+		CDAE3BFE0987D71D003250F8 /* connectionpool.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CCC07D2BCCD0022E958 /* connectionpool.xib */; };
+		CDAE3BFF0987D71D003250F8 /* driverremove.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CCE07D2BCCD0022E958 /* driverremove.xib */; };
+		CDAE3C000987D71D003250F8 /* driversetup.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD007D2BCCD0022E958 /* driversetup.xib */; };
 		CDAE3C010987D71D003250F8 /* drvchoose.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD207D2BCCD0022E958 /* drvchoose.tiff */; };
-		CDAE3C020987D71D003250F8 /* dsnchooser.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD407D2BCCD0022E958 /* dsnchooser.nib */; };
-		CDAE3C030987D71D003250F8 /* odbcadmin.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD607D2BCCD0022E958 /* odbcadmin.nib */; };
-		CDAE3C040987D71D003250F8 /* odbcdriver.nib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD807D2BCCD0022E958 /* odbcdriver.nib */; };
+		CDAE3C020987D71D003250F8 /* dsnchooser.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD407D2BCCD0022E958 /* dsnchooser.xib */; };
+		CDAE3C030987D71D003250F8 /* odbcadmin.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD607D2BCCD0022E958 /* odbcadmin.xib */; };
+		CDAE3C040987D71D003250F8 /* odbcdriver.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85983CD807D2BCCD0022E958 /* odbcdriver.xib */; };
 		CDAE3C060987D71D003250F8 /* drvconn.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5907D2B7000022E958 /* drvconn.c */; };
 		CDAE3C070987D71D003250F8 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5A07D2B7000022E958 /* error.c */; };
 		CDAE3C080987D71D003250F8 /* Info.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5E07D2B7260022E958 /* Info.c */; };
@@ -69,11 +69,11 @@
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.7;
+				CURRENT_PROJECT_VERSION = 3.52.8;
 				DEBUGGING_SYMBOLS = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.7;
+				DYLIB_CURRENT_VERSION = 3.52.8;
 				EXPORTED_SYMBOLS_FILE = ../../macosx/iodbcadm.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -144,21 +144,21 @@
 		85983CBD07D2B9B30022E958 /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
 		85983CBF07D2B9DE0022E958 /* getfpn.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = getfpn.c; path = ../../iodbcadm/macosx/getfpn.c; sourceTree = SOURCE_ROOT; };
 		85983CC007D2B9DE0022E958 /* getfpn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = getfpn.h; path = ../../iodbcadm/macosx/getfpn.h; sourceTree = SOURCE_ROOT; };
-		85983CCB07D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/confirmation.nib; sourceTree = "<group>"; };
-		85983CCD07D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/connectionpool.nib; sourceTree = "<group>"; };
-		85983CCF07D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/driverremove.nib; sourceTree = "<group>"; };
-		85983CD107D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/driversetup.nib; sourceTree = "<group>"; };
+		85983CCB07D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/confirmation.xib; sourceTree = "<group>"; };
+		85983CCD07D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/connectionpool.xib; sourceTree = "<group>"; };
+		85983CCF07D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/driverremove.xib; sourceTree = "<group>"; };
+		85983CD107D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/driversetup.xib; sourceTree = "<group>"; };
 		85983CD307D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = English; path = English.lproj/drvchoose.tiff; sourceTree = "<group>"; };
-		85983CD507D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/dsnchooser.nib; sourceTree = "<group>"; };
-		85983CD707D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/odbcadmin.nib; sourceTree = "<group>"; };
-		85983CD907D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/odbcdriver.nib; sourceTree = "<group>"; };
+		85983CD507D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/dsnchooser.xib; sourceTree = "<group>"; };
+		85983CD707D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/odbcadmin.xib; sourceTree = "<group>"; };
+		85983CD907D2BCCD0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/odbcdriver.xib; sourceTree = "<group>"; };
 		85983D8507D2C1870022E958 /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = "../../mac/iODBC/build/Deployment ../../mac/iODBC/build/iODBC.framework"; sourceTree = SOURCE_ROOT; };
 		85983D8707D2C1A50022E958 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../../mac/iODBCinst/build/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		85983E0E07D2C2080022E958 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
-		85E671EA09F06C7200E3A1BA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/gensetup.nib; sourceTree = "<group>"; };
-		85F07C540A0A1CD80007FC8F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/keyval.nib; sourceTree = "<group>"; };
+		85E671EA09F06C7200E3A1BA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/gensetup.xib; sourceTree = "<group>"; };
+		85F07C540A0A1CD80007FC8F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/keyval.xib; sourceTree = "<group>"; };
 		85F07C570A0A24CF0007FC8F /* keyval.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = keyval.c; path = ../../iodbcadm/macosx/keyval.c; sourceTree = SOURCE_ROOT; };
-		85F07CA10A0AD1D90007FC8F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/odbcdriverf.nib; sourceTree = "<group>"; };
+		85F07CA10A0AD1D90007FC8F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/odbcdriverf.xib; sourceTree = "<group>"; };
 		85F07CAA0A0AFCF40007FC8F /* odbcdriverf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = odbcdriverf.c; path = ../../iodbcadm/macosx/odbcdriverf.c; sourceTree = SOURCE_ROOT; };
 		CDAE3C230987D71D003250F8 /* Info-iODBCadm.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-iODBCadm.plist"; sourceTree = "<group>"; };
 		CDAE3C240987D71D003250F8 /* iODBCadm.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iODBCadm.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,17 +205,17 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				85F07CA00A0AD1D90007FC8F /* odbcdriverf.nib */,
-				85F07C530A0A1CD80007FC8F /* keyval.nib */,
-				85E671E909F06C7200E3A1BA /* gensetup.nib */,
-				85983CCA07D2BCCD0022E958 /* confirmation.nib */,
-				85983CCC07D2BCCD0022E958 /* connectionpool.nib */,
-				85983CCE07D2BCCD0022E958 /* driverremove.nib */,
-				85983CD007D2BCCD0022E958 /* driversetup.nib */,
+				85F07CA00A0AD1D90007FC8F /* odbcdriverf.xib */,
+				85F07C530A0A1CD80007FC8F /* keyval.xib */,
+				85E671E909F06C7200E3A1BA /* gensetup.xib */,
+				85983CCA07D2BCCD0022E958 /* confirmation.xib */,
+				85983CCC07D2BCCD0022E958 /* connectionpool.xib */,
+				85983CCE07D2BCCD0022E958 /* driverremove.xib */,
+				85983CD007D2BCCD0022E958 /* driversetup.xib */,
 				85983CD207D2BCCD0022E958 /* drvchoose.tiff */,
-				85983CD407D2BCCD0022E958 /* dsnchooser.nib */,
-				85983CD607D2BCCD0022E958 /* odbcadmin.nib */,
-				85983CD807D2BCCD0022E958 /* odbcdriver.nib */,
+				85983CD407D2BCCD0022E958 /* dsnchooser.xib */,
+				85983CD607D2BCCD0022E958 /* odbcadmin.xib */,
+				85983CD807D2BCCD0022E958 /* odbcdriver.xib */,
 				089C167EFE841241C02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -427,17 +427,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDAE3BFC0987D71D003250F8 /* InfoPlist.strings in Resources */,
-				CDAE3BFD0987D71D003250F8 /* confirmation.nib in Resources */,
-				CDAE3BFE0987D71D003250F8 /* connectionpool.nib in Resources */,
-				CDAE3BFF0987D71D003250F8 /* driverremove.nib in Resources */,
-				CDAE3C000987D71D003250F8 /* driversetup.nib in Resources */,
+				CDAE3BFD0987D71D003250F8 /* confirmation.xib in Resources */,
+				CDAE3BFE0987D71D003250F8 /* connectionpool.xib in Resources */,
+				CDAE3BFF0987D71D003250F8 /* driverremove.xib in Resources */,
+				CDAE3C000987D71D003250F8 /* driversetup.xib in Resources */,
 				CDAE3C010987D71D003250F8 /* drvchoose.tiff in Resources */,
-				CDAE3C020987D71D003250F8 /* dsnchooser.nib in Resources */,
-				CDAE3C030987D71D003250F8 /* odbcadmin.nib in Resources */,
-				CDAE3C040987D71D003250F8 /* odbcdriver.nib in Resources */,
-				85E671EB09F06C7200E3A1BA /* gensetup.nib in Resources */,
-				85F07C550A0A1CD80007FC8F /* keyval.nib in Resources */,
-				85F07CA20A0AD1D90007FC8F /* odbcdriverf.nib in Resources */,
+				CDAE3C020987D71D003250F8 /* dsnchooser.xib in Resources */,
+				CDAE3C030987D71D003250F8 /* odbcadmin.xib in Resources */,
+				CDAE3C040987D71D003250F8 /* odbcdriver.xib in Resources */,
+				85E671EB09F06C7200E3A1BA /* gensetup.xib in Resources */,
+				85F07C550A0A1CD80007FC8F /* keyval.xib in Resources */,
+				85F07CA20A0AD1D90007FC8F /* odbcdriverf.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,36 +487,36 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		85983CCA07D2BCCD0022E958 /* confirmation.nib */ = {
+		85983CCA07D2BCCD0022E958 /* confirmation.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CCB07D2BCCD0022E958 /* English */,
 			);
-			name = confirmation.nib;
+			name = confirmation.xib;
 			sourceTree = "<group>";
 		};
-		85983CCC07D2BCCD0022E958 /* connectionpool.nib */ = {
+		85983CCC07D2BCCD0022E958 /* connectionpool.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CCD07D2BCCD0022E958 /* English */,
 			);
-			name = connectionpool.nib;
+			name = connectionpool.xib;
 			sourceTree = "<group>";
 		};
-		85983CCE07D2BCCD0022E958 /* driverremove.nib */ = {
+		85983CCE07D2BCCD0022E958 /* driverremove.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CCF07D2BCCD0022E958 /* English */,
 			);
-			name = driverremove.nib;
+			name = driverremove.xib;
 			sourceTree = "<group>";
 		};
-		85983CD007D2BCCD0022E958 /* driversetup.nib */ = {
+		85983CD007D2BCCD0022E958 /* driversetup.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CD107D2BCCD0022E958 /* English */,
 			);
-			name = driversetup.nib;
+			name = driversetup.xib;
 			sourceTree = "<group>";
 		};
 		85983CD207D2BCCD0022E958 /* drvchoose.tiff */ = {
@@ -527,52 +527,52 @@
 			name = drvchoose.tiff;
 			sourceTree = "<group>";
 		};
-		85983CD407D2BCCD0022E958 /* dsnchooser.nib */ = {
+		85983CD407D2BCCD0022E958 /* dsnchooser.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CD507D2BCCD0022E958 /* English */,
 			);
-			name = dsnchooser.nib;
+			name = dsnchooser.xib;
 			sourceTree = "<group>";
 		};
-		85983CD607D2BCCD0022E958 /* odbcadmin.nib */ = {
+		85983CD607D2BCCD0022E958 /* odbcadmin.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CD707D2BCCD0022E958 /* English */,
 			);
-			name = odbcadmin.nib;
+			name = odbcadmin.xib;
 			sourceTree = "<group>";
 		};
-		85983CD807D2BCCD0022E958 /* odbcdriver.nib */ = {
+		85983CD807D2BCCD0022E958 /* odbcdriver.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85983CD907D2BCCD0022E958 /* English */,
 			);
-			name = odbcdriver.nib;
+			name = odbcdriver.xib;
 			sourceTree = "<group>";
 		};
-		85E671E909F06C7200E3A1BA /* gensetup.nib */ = {
+		85E671E909F06C7200E3A1BA /* gensetup.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85E671EA09F06C7200E3A1BA /* English */,
 			);
-			name = gensetup.nib;
+			name = gensetup.xib;
 			sourceTree = "<group>";
 		};
-		85F07C530A0A1CD80007FC8F /* keyval.nib */ = {
+		85F07C530A0A1CD80007FC8F /* keyval.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85F07C540A0A1CD80007FC8F /* English */,
 			);
-			name = keyval.nib;
+			name = keyval.xib;
 			sourceTree = "<group>";
 		};
-		85F07CA00A0AD1D90007FC8F /* odbcdriverf.nib */ = {
+		85F07CA00A0AD1D90007FC8F /* odbcdriverf.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				85F07CA10A0AD1D90007FC8F /* English */,
 			);
-			name = odbcdriverf.nib;
+			name = odbcdriverf.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -582,10 +582,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.7;
+				CURRENT_PROJECT_VERSION = 3.52.8;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.7;
+				DYLIB_CURRENT_VERSION = 3.52.8;
 				EXPORTED_SYMBOLS_FILE = ../../macosx/iodbcadm.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Deployment,

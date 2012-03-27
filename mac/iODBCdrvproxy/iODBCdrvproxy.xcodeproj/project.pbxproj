@@ -23,9 +23,9 @@
 		CDAE3BB10987D6B4003250F8 /* iodbcext.h in Headers */ = {isa = PBXBuildFile; fileRef = 71A26EE1069D5691005AC343 /* iodbcext.h */; };
 		CDAE3BB20987D6B4003250F8 /* iodbcunix.h in Headers */ = {isa = PBXBuildFile; fileRef = 71A26EE2069D5691005AC343 /* iodbcunix.h */; };
 		CDAE3BB40987D6B4003250F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
-		CDAE3BB50987D6B4003250F8 /* gensetup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0145C11DFFD6607A7F000001 /* gensetup.nib */; };
-		CDAE3BB60987D6B4003250F8 /* login.nib in Resources */ = {isa = PBXBuildFile; fileRef = 10DCE822FFD6A5D57F000001 /* login.nib */; };
-		CDAE3BB70987D6B4003250F8 /* confirmation.nib in Resources */ = {isa = PBXBuildFile; fileRef = 859843D707D356DA0022E958 /* confirmation.nib */; };
+		CDAE3BB50987D6B4003250F8 /* gensetup in Resources */ = {isa = PBXBuildFile; fileRef = 0145C11DFFD6607A7F000001 /* gensetup.xib */; };
+		CDAE3BB60987D6B4003250F8 /* login in Resources */ = {isa = PBXBuildFile; fileRef = 10DCE822FFD6A5D57F000001 /* login.xib */; };
+		CDAE3BB70987D6B4003250F8 /* confirmation in Resources */ = {isa = PBXBuildFile; fileRef = 859843D707D356DA0022E958 /* confirmation.xib */; };
 		CDAE3BB90987D6B4003250F8 /* ConfigDriver.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C1241FC005FB6B37F000001 /* ConfigDriver.c */; };
 		CDAE3BBA0987D6B4003250F8 /* ConfigDSN.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C1241FD005FB6B37F000001 /* ConfigDSN.c */; };
 		CDAE3BBB0987D6B4003250F8 /* drvconn.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C1241FE005FB6B37F000001 /* drvconn.c */; };
@@ -45,11 +45,11 @@
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.52.7;
-				"Current project version" = 3.52.7;
+				CURRENT_PROJECT_VERSION = 3.52.8;
+				"Current project version" = 3.52.8;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.7;
+				DYLIB_CURRENT_VERSION = 3.52.8;
 				EXPORTED_SYMBOLS_FILE = ../../macosx/drvproxy.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -80,11 +80,11 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
-		0145C11EFFD6607A7F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/gensetup.nib; sourceTree = "<group>"; };
+		0145C11EFFD6607A7F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = English; path = English.lproj/gensetup.xib; sourceTree = "<group>"; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0A7B5B2F005FB5307F000001 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		0A7B5B30005FB5307F000001 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		10DCE823FFD6A5D57F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/login.nib; sourceTree = "<group>"; };
+		10DCE823FFD6A5D57F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = English; path = English.lproj/login.xib; sourceTree = "<group>"; };
 		1C1241FC005FB6B37F000001 /* ConfigDriver.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ConfigDriver.c; sourceTree = "<group>"; };
 		1C1241FD005FB6B37F000001 /* ConfigDSN.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ConfigDSN.c; sourceTree = "<group>"; };
 		1C1241FE005FB6B37F000001 /* drvconn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = drvconn.c; sourceTree = "<group>"; };
@@ -103,7 +103,7 @@
 		71A26EE1069D5691005AC343 /* iodbcext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcext.h; path = ../../include/iodbcext.h; sourceTree = SOURCE_ROOT; };
 		71A26EE2069D5691005AC343 /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
 		859838AB07CF6D6D0022E958 /* confirm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = confirm.c; sourceTree = "<group>"; };
-		859843D807D356DA0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/confirmation.nib; sourceTree = "<group>"; };
+		859843D807D356DA0022E958 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = English; path = English.lproj/confirmation.xib; sourceTree = "<group>"; };
 		85D1BB9807E7D55A0070A59E /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../../mac/iODBCinst/build/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		CDAE3BCB0987D6B4003250F8 /* Info-iODBCdrvproxy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-iODBCdrvproxy.plist"; sourceTree = "<group>"; };
 		CDAE3BCC0987D6B4003250F8 /* iODBCdrvproxy.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iODBCdrvproxy.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,10 +157,10 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				859843D707D356DA0022E958 /* confirmation.nib */,
+				859843D707D356DA0022E958 /* confirmation */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
-				0145C11DFFD6607A7F000001 /* gensetup.nib */,
-				10DCE822FFD6A5D57F000001 /* login.nib */,
+				0145C11DFFD6607A7F000001 /* gensetup */,
+				10DCE822FFD6A5D57F000001 /* login */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -355,9 +355,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDAE3BB40987D6B4003250F8 /* InfoPlist.strings in Resources */,
-				CDAE3BB50987D6B4003250F8 /* gensetup.nib in Resources */,
-				CDAE3BB60987D6B4003250F8 /* login.nib in Resources */,
-				CDAE3BB70987D6B4003250F8 /* confirmation.nib in Resources */,
+				CDAE3BB50987D6B4003250F8 /* gensetup in Resources */,
+				CDAE3BB60987D6B4003250F8 /* login in Resources */,
+				CDAE3BB70987D6B4003250F8 /* confirmation in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,12 +393,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		0145C11DFFD6607A7F000001 /* gensetup.nib */ = {
+		0145C11DFFD6607A7F000001 /* gensetup */ = {
 			isa = PBXVariantGroup;
 			children = (
 				0145C11EFFD6607A7F000001 /* English */,
 			);
-			name = gensetup.nib;
+			name = gensetup;
 			sourceTree = "<group>";
 		};
 		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
@@ -409,20 +409,20 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		10DCE822FFD6A5D57F000001 /* login.nib */ = {
+		10DCE822FFD6A5D57F000001 /* login */ = {
 			isa = PBXVariantGroup;
 			children = (
 				10DCE823FFD6A5D57F000001 /* English */,
 			);
-			name = login.nib;
+			name = login;
 			sourceTree = "<group>";
 		};
-		859843D707D356DA0022E958 /* confirmation.nib */ = {
+		859843D707D356DA0022E958 /* confirmation */ = {
 			isa = PBXVariantGroup;
 			children = (
 				859843D807D356DA0022E958 /* English */,
 			);
-			name = confirmation.nib;
+			name = confirmation;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -432,11 +432,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.7;
-				"Current project version" = 3.52.7;
+				CURRENT_PROJECT_VERSION = 3.52.8;
+				"Current project version" = 3.52.8;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.7;
+				DYLIB_CURRENT_VERSION = 3.52.8;
 				EXPORTED_SYMBOLS_FILE = ../../macosx/drvproxy.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Deployment,

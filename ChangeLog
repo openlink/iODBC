@@ -1,3 +1,41 @@
+2012-03-27:
+
+	* Updated version number to 3.52.8
+	* Added support for Mac OS X 10.7
+
+2012-03-26:
+
+	* Added Mac OS X build files to ignore list
+	* Added initial .gitignore
+	* Added more files to ignore
+	* Converted build rules to compile the UI from new .xib files
+	* Converted old .nib format to .xib format
+	* Fixed list of files to be distributed
+	* Fixed problem installing CFMSupport
+	* Removed old .cvsignore files
+	* Updated copyright to 2012
+	* Updated version of iODBC Demo to 1.1
+	* Updated version to 3.52.8-rc1
+
+2011-08-10:
+
+	* Fixed issue with using buffer after free
+	* Updated copyright year
+
+2010-09-04:
+
+	* Fixed use ssize_t where appropriate
+	* Fixed issue with strlen if param can be NULL
+	* Fixed use ssize_t for length of string
+	* Fixed tracing SQLGetData using multiple chunks
+	* Fixed problem tracing on big-endian machines
+	* Fixed wrong type label
+	* Fixed compiler warning
+	* Fixed warnings
+	* Fixed version info
+	* Removed unused variables
+
+
 2009-09-10 13:08  source
 
 	* Updated version of package to 3.52.7 for final release

@@ -13,8 +13,8 @@
 		CDAE3B780987D655003250F8 /* iodbc.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C2EB150518627501A801EC /* iodbc.h */; };
 		CDAE3B790987D655003250F8 /* iodbcunix.h in Headers */ = {isa = PBXBuildFile; fileRef = 71A26EE8069D5782005AC343 /* iodbcunix.h */; };
 		CDAE3B7B0987D655003250F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
-		CDAE3B7C0987D655003250F8 /* main.nib in Resources */ = {isa = PBXBuildFile; fileRef = 04DF5BC2FFC03B507F000001 /* main.nib */; };
-		CDAE3B7D0987D655003250F8 /* about.nib in Resources */ = {isa = PBXBuildFile; fileRef = 4973747CFFCC29477F000001 /* about.nib */; };
+		CDAE3B7C0987D655003250F8 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04DF5BC2FFC03B507F000001 /* main.xib */; };
+		CDAE3B7D0987D655003250F8 /* about.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4973747CFFCC29477F000001 /* about.xib */; };
 		CDAE3B7E0987D655003250F8 /* iODBCAdministrator.icns in Resources */ = {isa = PBXBuildFile; fileRef = 032007F4FFF1FEE97F000001 /* iODBCAdministrator.icns */; };
 		CDAE3B800987D655003250F8 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CEA8F15005FBBC97F000001 /* main.c */; };
 		CDAE3B820987D655003250F8 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04DF5BB1FFC0300D7F000001 /* Carbon.framework */; };
@@ -27,11 +27,11 @@
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.7;
-				"Current project version" = 3.52.7;
+				CURRENT_PROJECT_VERSION = 3.52.8;
+				"Current project version" = 3.52.8;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = 3.52.7;
+				DYLIB_CURRENT_VERSION = 3.52.8;
 				FRAMEWORK_VERSION = 3.52;
 				"Framework version" = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -64,10 +64,10 @@
 /* Begin PBXFileReference section */
 		032007F5FFF1FEE97F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = English; path = English.lproj/iODBCAdministrator.icns; sourceTree = "<group>"; };
 		04DF5BB1FFC0300D7F000001 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		04DF5BC3FFC03B507F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/main.nib; sourceTree = "<group>"; };
+		04DF5BC3FFC03B507F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/main.xib; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1CEA8F15005FBBC97F000001 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../../iodbcadm/macosx/main.c; sourceTree = SOURCE_ROOT; };
-		4973747DFFCC29477F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/about.nib; sourceTree = "<group>"; };
+		4973747DFFCC29477F000001 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xib; name = English; path = English.lproj/about.xib; sourceTree = "<group>"; };
 		71A26EE8069D5782005AC343 /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
 		85D1BBC707E7D7C90070A59E /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../../mac/iODBC/build/iODBC.framework; sourceTree = SOURCE_ROOT; };
 		CDAE3B890987D655003250F8 /* Info-iODBC_Administrator.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-iODBC_Administrator.plist"; sourceTree = "<group>"; };
@@ -129,9 +129,9 @@
 		20286C2CFDCF999611CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				04DF5BC2FFC03B507F000001 /* main.nib */,
+				04DF5BC2FFC03B507F000001 /* main.xib */,
 				0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */,
-				4973747CFFCC29477F000001 /* about.nib */,
+				4973747CFFCC29477F000001 /* about.xib */,
 				032007F4FFF1FEE97F000001 /* iODBCAdministrator.icns */,
 			);
 			name = Resources;
@@ -245,8 +245,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDAE3B7B0987D655003250F8 /* InfoPlist.strings in Resources */,
-				CDAE3B7C0987D655003250F8 /* main.nib in Resources */,
-				CDAE3B7D0987D655003250F8 /* about.nib in Resources */,
+				CDAE3B7C0987D655003250F8 /* main.xib in Resources */,
+				CDAE3B7D0987D655003250F8 /* about.xib in Resources */,
 				CDAE3B7E0987D655003250F8 /* iODBCAdministrator.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -283,12 +283,12 @@
 			name = iODBCAdministrator.icns;
 			sourceTree = SOURCE_ROOT;
 		};
-		04DF5BC2FFC03B507F000001 /* main.nib */ = {
+		04DF5BC2FFC03B507F000001 /* main.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				04DF5BC3FFC03B507F000001 /* English */,
 			);
-			name = main.nib;
+			name = main.xib;
 			sourceTree = "<group>";
 		};
 		0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */ = {
@@ -299,12 +299,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		4973747CFFCC29477F000001 /* about.nib */ = {
+		4973747CFFCC29477F000001 /* about.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				4973747DFFCC29477F000001 /* English */,
 			);
-			name = about.nib;
+			name = about.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -314,11 +314,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.7;
-				"Current project version" = 3.52.7;
+				CURRENT_PROJECT_VERSION = 3.52.8;
+				"Current project version" = 3.52.8;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = 3.52.7;
+				DYLIB_CURRENT_VERSION = 3.52.8;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Development,
 					../../mac/iODBC/build,
