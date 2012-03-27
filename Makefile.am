@@ -83,6 +83,7 @@ EXTRA_DIST		= \
 	$(srcdir)/LICENSE.LGPL \
 	$(srcdir)/LICENSE.BSD \
 	$(srcdir)/README.CVS \
+	$(srcdir)/README.GIT \
 	$(srcdir)/README.MACOSX \
 	$(srcdir)/bootstrap.sh \
 	$(srcdir)/PORT.OpenLink \
