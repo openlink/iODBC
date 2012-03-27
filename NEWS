@@ -1,3 +1,16 @@
+Mar 27 2012, V3.52.8:
+    * Converted from CVS to GIT
+    * Added build support for Mac OS X 10.5, 10.6 and 10.7
+    * Converted old Mac OS X .nib format to newer .xib format
+    * Fixed issue with using buffer after free
+    * Fixed use ssize_t where appropriate
+    * Fixed issue with strlen if param can be NULL
+    * Fixed use ssize_t for length of string
+    * Fixed tracing SQLGetData using multiple chunks
+    * Fixed problem tracing on big-endian machines
+    * Fixed wrong type label
+    * Fixed compiler warnings
+
 Sep 10 2009, V3.52.7:
     * Added iODBC Graphical Administrator for Mac OS X
     * Added iODBC CFM Bridge
