@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2013 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -170,7 +170,7 @@ main (int argc, char *argv[])
 
   printf ("iODBC Administrator (GTK)\n");
   printf ("%s\n", PACKAGE_STRING);
-  printf ("Copyright (C) 2000-2012 OpenLink Software\n");
+  printf ("Copyright (C) 2000-2013 OpenLink Software\n");
   printf ("Please report all bugs to <%s>\n\n", PACKAGE_BUGREPORT);
 
   /* Check options commands */

@@ -79,7 +79,7 @@ variable, before using the following Makefile fragment:
 .fi
 
 .SH COPYRIGHT
-Copyright \(co 1996-2012 by OpenLink Software
+Copyright \(co 1996-2013 by OpenLink Software
 
 .SH AUTHOR
 iODBC Administrator <iodbc@openlinksw.com>
