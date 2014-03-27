@@ -1006,6 +1006,7 @@ _iodbcdm_driverload (
   char *path = drv;
   char cp_probe[1024] = {""};
   int cp_timeout = 0;
+  void *pfaux;
 
   if (drv == NULL || ((char*)drv)[0] == '\0')
     {
@@ -1184,7 +1185,8 @@ _iodbcdm_driverload (
           /*
            *  If the driver is Unicode
            */
-	  if ( _iodbcdm_getproc (pdbc, en_ConnectW))
+          pfaux = _iodbcdm_getproc (pdbc, en_ConnectW);
+          if ((pfaux) && (pfaux != (void *)SQLConnectW))
             penv->unicode_driver = 1;
 
 	  /* call driver's SQLAllocHandle() or SQLAllocEnv() */
