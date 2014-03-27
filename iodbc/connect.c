@@ -805,6 +805,7 @@ _iodbcdm_pool_get_conn (
 	  DPRINTF ((stderr, "DEBUG: connection %p expired (cp_expiry_time %d, current_time %d)\n",
             cp_pdbc, cp_pdbc->cp_expiry_time, current_time));
 	  _iodbcdm_pool_drop_conn (cp_pdbc, cp_pdbc_prev);
+          cp_pdbc = cp_pdbc_prev;
 	  continue;
         }
 
