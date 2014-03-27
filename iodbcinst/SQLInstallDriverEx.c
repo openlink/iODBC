@@ -229,7 +229,7 @@ SQLInstallDriverEx (LPCSTR lpszDriver, LPCSTR lpszPathIn, LPSTR lpszPathOut,
 
   CLEAR_ERROR ();
 
-  if (lpszPathIn && access (lpszPathIn, R_OK | W_OK | X_OK))
+  if (lpszPathIn && access (lpszPathIn, R_OK | X_OK))
     {
       PUSH_ERROR (ODBC_ERROR_INVALID_PATH);
       goto quit;
