@@ -212,9 +212,33 @@ STMT_t;
         ODBC_UNLOCK()
 	
 
+#define ENTER_STMT_CANCEL(hstmt, trace) \
+	STMT (pstmt, hstmt); \
+	SQLRETURN retcode = SQL_SUCCESS; \
+	int stmt_cip = 0; \
+        ODBC_LOCK(); \
+	TRACE (trace); \
+    	if (!IS_VALID_HSTMT (pstmt)) \
+	  { \
+	    retcode = SQL_INVALID_HANDLE; \
+	    goto done; \
+	  } \
+	stmt_cip = pstmt->stmt_cip; \
+	CLEAR_ERRORS (pstmt); \
+        ODBC_UNLOCK()
+	
+
 #define LEAVE_STMT(hstmt, trace) \
 	ODBC_LOCK (); \
 	pstmt->stmt_cip = 0; \
+    done: \
+    	TRACE(trace); \
+	ODBC_UNLOCK (); \
+	return (retcode)
+
+
+#define LEAVE_STMT_CANCEL(hstmt, trace) \
+	ODBC_LOCK (); \
     done: \
     	TRACE(trace); \
 	ODBC_UNLOCK (); \

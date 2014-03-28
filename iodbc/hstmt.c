@@ -1042,7 +1042,7 @@ SQLGetStmtOptionA (
 
 
 static SQLRETURN 
-SQLCancel_Internal (SQLHSTMT hstmt)
+SQLCancel_Internal (SQLHSTMT hstmt, int stmt_cip)
 {
   STMT (pstmt, hstmt);
   HPROC hproc;
@@ -1070,62 +1070,69 @@ SQLCancel_Internal (SQLHSTMT hstmt)
       return retcode;
     }
 
-  switch (pstmt->state)
+  if (stmt_cip == 0) 
     {
-    case en_stmt_allocated:
-    case en_stmt_prepared:
-      break;
+      ODBC_LOCK();
 
-    case en_stmt_executed_with_info:
-    case en_stmt_executed:
-      if (pstmt->prep_state)
-	{
-	  pstmt->state = en_stmt_prepared;
-	}
-      else
-	{
-	  pstmt->state = en_stmt_allocated;
-	}
-      break;
+      switch (pstmt->state)
+        {
+        case en_stmt_allocated:
+        case en_stmt_prepared:
+          break;
 
-    case en_stmt_cursoropen:
-    case en_stmt_fetched:
-    case en_stmt_xfetched:
-      if (pstmt->prep_state)
-	{
-	  pstmt->state = en_stmt_prepared;
-	}
-      else
-	{
-	  pstmt->state = en_stmt_allocated;
-	}
-      break;
+        case en_stmt_executed_with_info:
+        case en_stmt_executed:
+          if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
+          else
+	    {
+	      pstmt->state = en_stmt_allocated;
+	    }
+          break;
 
-    case en_stmt_needdata:
-    case en_stmt_mustput:
-    case en_stmt_canput:
-      switch (pstmt->need_on)
-	{
-	case en_ExecDirect:
-	  pstmt->state = en_stmt_allocated;
-	  break;
+        case en_stmt_cursoropen:
+        case en_stmt_fetched:
+        case en_stmt_xfetched:
+          if (pstmt->prep_state)
+	    {
+	      pstmt->state = en_stmt_prepared;
+	    }
+          else
+	    {
+	      pstmt->state = en_stmt_allocated;
+	    }
+          break;
 
-	case en_Execute:
-	  pstmt->state = en_stmt_prepared;
-	  break;
+        case en_stmt_needdata:
+        case en_stmt_mustput:
+        case en_stmt_canput:
+          switch (pstmt->need_on)
+	    {
+	    case en_ExecDirect:
+	      pstmt->state = en_stmt_allocated;
+	      break;
 
-	case en_SetPos:
-	  pstmt->state = en_stmt_xfetched;
-	  break;
+	    case en_Execute:
+	      pstmt->state = en_stmt_prepared;
+	      break;
 
-	default:
-	  break;
-	}
-      pstmt->need_on = en_NullProc;
-      break;
+	    case en_SetPos:
+	      pstmt->state = en_stmt_xfetched;
+	      break;
 
-    default:
-      break;
+	    default:
+	      break;
+	    }
+          pstmt->need_on = en_NullProc;
+          break;
+
+        default:
+          break;
+        }
+      
+      ODBC_UNLOCK();
     }
 
   return retcode;
@@ -1135,12 +1142,12 @@ SQLCancel_Internal (SQLHSTMT hstmt)
 SQLRETURN SQL_API 
 SQLCancel (SQLHSTMT hstmt)
 {
-  ENTER_STMT (hstmt,
+  ENTER_STMT_CANCEL (hstmt,
     trace_SQLCancel (TRACE_ENTER, hstmt));
 
-  retcode = SQLCancel_Internal (hstmt);
+  retcode = SQLCancel_Internal (hstmt, stmt_cip);
 
-  LEAVE_STMT (hstmt,
+  LEAVE_STMT_CANCEL (hstmt,
     trace_SQLCancel (TRACE_LEAVE, hstmt));
 }
 
