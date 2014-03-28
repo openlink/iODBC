@@ -88,5 +88,6 @@ Name: iODBC
 Description: @PACKAGE_NAME@
 Version: @PACKAGE_VERSION@
 Requires:
-Libs: -L${libdir} -liodbc -liodbcinst -ldl
+Libs: -L${libdir} -liodbc -liodbcinst @LIBADD_DL@
+Libs.private: -lpthread
 Cflags: -I${includedir}
