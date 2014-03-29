@@ -379,8 +379,8 @@ AC_CHECK_FUNC(NSCreateObjectFileImageFromFile,
 AC_SUBST(LIBADD_DL)
 
 AC_CACHE_CHECK([for underscore before symbols], libltdl_cv_uscore, [
-  echo "int main(){int i=1; return 0;} void fnord(){int i=23; int ltuae=42;}" > conftest.c
-  ${CC} -c conftest.c > /dev/null
+  echo "int fnord(void){return 42;}int main(void){return fnord();}" > conftest.c
+  ${CC} ${CFLAGS} -c conftest.c > /dev/null 2>&1
   if (nm conftest.o | grep _fnord) > /dev/null; then
     libltdl_cv_uscore=yes
   else
@@ -703,7 +703,7 @@ then
     #
     #  Check headers
     #
-    AC_CHECK_HEADER(pthread.h)
+    AC_CHECK_HEADER([pthread.h], , [AC_MSG_ERROR([pthreads header not found])])
 
     #
     #  If mutex functions are in C library, we should not need to link

@@ -343,7 +343,7 @@ SQL_INTERVAL_STRUCT;
  */
 #if (ODBCVER >= 0x0300)
 
-#if (_MSC_VER >= 900)
+#if defined(_MSC_VER) && (_MSC_VER >= 900)
 #  define ODBCINT64 		__int64
 #endif
 
