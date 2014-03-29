@@ -74,7 +74,7 @@ if GTK
 noinst_LTLIBRARIES		= libdrvproxy-gtk.la
 endif
 
-INCLUDES			= \
+AM_CPPFLAGS			= \
 	-I$(top_srcdir)/include -I$(top_srcdir)/iodbc \
 	@GTK_CFLAGS@ -D__GTK__
 

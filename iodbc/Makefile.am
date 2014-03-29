@@ -74,7 +74,7 @@
 
 SUBDIRS			= trace .
 
-INCLUDES		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbcinst
+AM_CPPFLAGS		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbcinst
 
 lib_LTLIBRARIES		= libiodbc.la
 

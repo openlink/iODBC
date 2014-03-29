@@ -80,7 +80,7 @@ if GTK
 noinst_LTLIBRARIES		= libiodbcadm-gtk.la
 endif
 
-INCLUDES			= \
+AM_CPPFLAGS			= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcadm \

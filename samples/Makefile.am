@@ -71,7 +71,7 @@
 #
 
 bin_PROGRAMS		= iodbctest iodbctestw
-INCLUDES		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
+AM_CPPFLAGS		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
 
 #
 #  Build odbctest program

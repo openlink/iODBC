@@ -72,7 +72,7 @@
 
 noinst_LTLIBRARIES		= libiodbctrace.la
 
-INCLUDES			= \
+AM_CPPFLAGS			= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcinst
