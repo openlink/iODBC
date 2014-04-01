@@ -200,8 +200,8 @@ create_messagew (HWND hwnd, LPCWSTR dsn, LPCWSTR text)
   LPSTR _dsn = NULL;
   LPSTR _text = NULL;
 
-  _dsn = dm_SQL_WtoU8(dsn, SQL_NTS);
-  _text = dm_SQL_WtoU8(text, SQL_NTS);
+  _dsn = dm_SQL_WtoU8((SQLWCHAR*)dsn, SQL_NTS);
+  _text = dm_SQL_WtoU8((SQLWCHAR*)text, SQL_NTS);
 
   create_message(hwnd, _dsn, _text);
 

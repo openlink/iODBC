@@ -756,7 +756,7 @@ SQLSetStmtOption_Internal (
 #if (ODBCVER >= 0x0300)
   if (hproc3 != SQL_NULL_HPROC)
     {
-      switch (fOption)
+      switch ((int)fOption)
 	{
 	/* ODBC integer attributes */   
 	  case SQL_ATTR_ASYNC_ENABLE:
@@ -942,7 +942,7 @@ SQLGetStmtOption_Internal (
 #if (ODBCVER >= 0x0300)
   if (hproc3 != SQL_NULL_HPROC)
     {
-      switch (fOption)
+      switch ((int)fOption)
 	{
 	  /* ODBC integer attributes */
 	case SQL_ATTR_ASYNC_ENABLE:

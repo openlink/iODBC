@@ -151,10 +151,10 @@ gensetup_add_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
 
   if (gensetup_t)
     {
-      data[0] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
+      data[0] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
       if (STRLEN (data[0]))
 	{
-	  data[1] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
+	  data[1] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
 
 	  /* Try to see if the keyword already exists */
 	  for (i = 0; i < GTK_CLIST (gensetup_t->key_list)->rows; i++)
@@ -194,10 +194,10 @@ gensetup_update_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
 
   if (gensetup_t)
     {
-      data[0] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
+      data[0] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
       if (STRLEN (data[0]))
 	{
-	  data[1] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
+	  data[1] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
 
 	  if (GTK_CLIST (gensetup_t->key_list)->selection != NULL)
 	    i = GPOINTER_TO_INT (GTK_CLIST (gensetup_t->key_list)->selection->
@@ -324,7 +324,7 @@ gensetup_ok_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
 
       gensetup_t->dsn_entry = NULL;
       gensetup_t->key_list = NULL;
-      gensetup_t->verify_conn = gtk_toggle_button_get_active(gensetup_t->verify_conn_cb);
+      gensetup_t->verify_conn = gtk_toggle_button_get_active((GtkToggleButton*)gensetup_t->verify_conn_cb);
 
       gtk_signal_disconnect_by_func (GTK_OBJECT (gensetup_t->mainwnd),
 	  GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
@@ -684,7 +684,7 @@ create_fgensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_co
   gensetup_t.verify_conn_cb = cb_verify;
   gensetup_t.verify_conn = *verify_conn;
 
-  gtk_toggle_button_set_active(cb_verify, *verify_conn);
+  gtk_toggle_button_set_active((GtkToggleButton*)cb_verify, *verify_conn);
 
   /* Parse the attributes line */
   parse_attribute_line (&gensetup_t, dsn, attrs, add);
@@ -988,7 +988,7 @@ create_keyval (HWND hwnd, LPCSTR attrs, BOOL *verify_conn)
   gensetup_t.verify_conn_cb = cb_verify;
   gensetup_t.verify_conn = *verify_conn;
 
-  gtk_toggle_button_set_active(cb_verify, *verify_conn);
+  gtk_toggle_button_set_active((GtkToggleButton*)cb_verify, *verify_conn);
 
   /* Parse the attributes line */
   parse_attribute_line (&gensetup_t, NULL, attrs, TRUE);

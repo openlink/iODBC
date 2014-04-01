@@ -727,7 +727,7 @@ SQLGetInfo_Internal (
   void * _InfoValue = NULL;
   void * infoValueOut = rgbInfoValue;
 
-  DWORD dword = 0;
+  SQLPOINTER ptr = 0;
   int size = 0, len = 0, ret = 0;
   wchar_t buf[20] = {'\0'};
 
@@ -814,20 +814,20 @@ SQLGetInfo_Internal (
   switch (fInfoType)
     {
     case SQL_DRIVER_HDBC:
-      dword = (DWORD) (pdbc->dhdbc);
-      size = sizeof (dword);
+      ptr = (SQLPOINTER) (pdbc->dhdbc);
+      size = sizeof (ptr);
       break;
 
     case SQL_DRIVER_HENV:
       penv = (ENV_t *) (pdbc->henv);
-      dword = (DWORD) (penv->dhenv);
-      size = sizeof (dword);
+      ptr = (SQLPOINTER) (penv->dhenv);
+      size = sizeof (ptr);
       break;
 
     case SQL_DRIVER_HLIB:
       penv = (ENV_t *) (pdbc->henv);
-      dword = (DWORD) (penv->hdll);
-      size = sizeof (dword);
+      ptr = (SQLPOINTER) (penv->hdll);
+      size = sizeof (ptr);
       break;
 
     case SQL_DRIVER_HSTMT:
@@ -853,8 +853,8 @@ SQLGetInfo_Internal (
 	  return SQL_ERROR;
 	}
 
-      dword = (DWORD) (pstmt->dhstmt);
-      size = sizeof (dword);
+      ptr = (SQLPOINTER) (pstmt->dhstmt);
+      size = sizeof (ptr);
       break;
 
     case SQL_DRIVER_NAME:
@@ -876,7 +876,7 @@ SQLGetInfo_Internal (
     {
       if (rgbInfoValue != NULL)
 	{
-	  *((DWORD *) rgbInfoValue) = dword;
+	  rgbInfoValue = ptr;
 	}
 
       if (pcbInfoValue != NULL)

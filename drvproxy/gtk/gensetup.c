@@ -156,10 +156,10 @@ gensetup_add_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
 
   if (gensetup_t)
     {
-      data[0] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
+      data[0] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
       if (STRLEN (data[0]))
 	{
-	  data[1] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
+	  data[1] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
 
 	  /* Try to see if the keyword already exists */
 	  for (i = 0; i < GTK_CLIST (gensetup_t->key_list)->rows; i++)
@@ -199,10 +199,10 @@ gensetup_update_clicked(GtkWidget* widget, TGENSETUP *gensetup_t)
 
   if (gensetup_t)
     {
-      data[0] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
+      data[0] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->key_entry));
       if (STRLEN (data[0]))
 	{
-	  data[1] = gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
+	  data[1] = (char*)gtk_entry_get_text (GTK_ENTRY (gensetup_t->value_entry));
 
 	  if (GTK_CLIST (gensetup_t->key_list)->selection != NULL)
 	    i = GPOINTER_TO_INT (GTK_CLIST (gensetup_t->key_list)->selection->

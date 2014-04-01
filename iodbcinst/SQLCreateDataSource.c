@@ -103,7 +103,7 @@ extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 	if ((handle = DLL_OPEN(path)) != NULL) \
 	{ \
 		if ((pDrvConnW = (pDrvConnWFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
-		  pDrvConnW(parent, dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+		  pDrvConnW(parent, (LPWSTR)dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
       retcode = TRUE; \
 		DLL_CLOSE(handle); \
 	}

@@ -731,7 +731,7 @@ filedsn_add_clicked (EventHandlerCallRef inHandlerRef,
   /* Check output parameters */
   if (drvchoose_t.ok)
     {
-      if (sizeof(drv) > strlen(drvchoose_t.driver) + strlen("DRIVER="))
+      if (sizeof(drv) > WCSLEN(drvchoose_t.driver) + strlen("DRIVER="))
 	{
           s = strcpy(drv, "DRIVER=");
           s += strlen("DRIVER=");
