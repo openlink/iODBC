@@ -201,7 +201,8 @@ fi
 if test "$echo_staticlibs" = "yes"; then
 	libs=""
 	if test "$lib_iodbc" = "yes"; then
-		libs="@libdir@/libiodbc.a @libdir@/libiodbcinst.a -lpthread @LIBADD_DL@"	fi
+		libs="@libdir@/libiodbc.a @libdir@/libiodbcinst.a -lpthread @LIBADD_DL@"
+	fi
 	echo "$libs"
 fi
 if test "$echo_libtoollibs" = "yes"; then
