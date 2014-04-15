@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -1125,7 +1125,7 @@ filedsn_add_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
   /* Check output parameters */
   if (drvchoose_t.ok)
     {
-      if (sizeof(drv) > strlen(drvchoose_t.driver) + strlen("DRIVER="))
+      if (sizeof(drv) > WCSLEN(drvchoose_t.driver) + strlen("DRIVER="))
 	{
           s = strcpy(drv, "DRIVER=");
           s += strlen("DRIVER=");
@@ -1153,13 +1153,13 @@ void
 filedsn_remove_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
   char msg[4096];
-  gchar *filedsn;
+  char *filedsn;
 
   if (!choose_t)
     return;
 
   /* Retrieve filedsn file name */
-  filedsn = gtk_entry_get_text (GTK_ENTRY (choose_t->file_entry));
+  filedsn = (char*)gtk_entry_get_text (GTK_ENTRY (choose_t->file_entry));
 
   /* Confirm removing a file dsn */
   snprintf (msg, sizeof (msg),
@@ -1185,7 +1185,7 @@ void
 filedsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
   char dsn[1024];
-  gchar *filedsn;
+  char *filedsn;
   char *drv = NULL;
   char *attrs = NULL;
   char *_attrs = NULL;	/* attr list */
@@ -1198,7 +1198,7 @@ filedsn_configure_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
     return;
 
   /* Retrieve filedsn file name */
-  filedsn = gtk_entry_get_text (GTK_ENTRY (choose_t->file_entry));
+  filedsn = (char*)gtk_entry_get_text (GTK_ENTRY (choose_t->file_entry));
   filedsn_get_dsn (filedsn, dsn, sizeof (dsn));
 
   /* Get list of entries in .dsn file */
@@ -1284,13 +1284,13 @@ filedsn_test_clicked (GtkWidget *widget, TDSNCHOOSER *choose_t)
 {
   char dsn[1024];
   char connstr[4096] = { 0 };
-  gchar *filedsn;
+  char *filedsn;
 
   if (!choose_t)
     return;
 
   /* Retrieve filedsn file name */
-  filedsn = gtk_entry_get_text (GTK_ENTRY (choose_t->file_entry));
+  filedsn = (char*)gtk_entry_get_text (GTK_ENTRY (choose_t->file_entry));
   filedsn_get_dsn (filedsn, dsn, sizeof (dsn));
 
   /* Create connection string and connect to data source */

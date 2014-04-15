@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
 DEB_AUTO_UPDATE_LIBTOOL=pre
-DEB_AUTO_UPDATE_ACLOCAL=1.9
-DEB_AUTO_UPDATE_AUTOMAKE=1.9
+DEB_AUTO_UPDATE_ACLOCAL=1.11
+DEB_AUTO_UPDATE_AUTOMAKE=1.11
 DEB_AUTO_UPDATE_AUTOCONF=2.50
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
+include /usr/share/dpkg/architecture.mk
 
 # To make sure that every package that links against libiodbc defines
 # a versioned dependency and not just a normal one.
@@ -53,3 +53,5 @@ install/libiodbc2 ::
 #clean::
 #	for f in $(CRUFT) ; do cp -p ../orig/*/$$f $$f ; done
 
+clean::
+	rm -f admin/libtool.m4 admin/ltoptions.m4 admin/ltversion.m4 admin/lt~obsolete.m4

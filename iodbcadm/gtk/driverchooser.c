@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -269,7 +269,7 @@ adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
       else
 	data[3] = "-";
 
-      gtk_clist_append (GTK_CLIST (widget), data);
+      gtk_clist_append (GTK_CLIST (widget), (gchar**)data);
 
     skip:
       ret = SQLDrivers (henv, SQL_FETCH_NEXT, drvdesc,
@@ -621,7 +621,7 @@ fdriverchooser_switch_page (GtkNotebook * notebook, GtkNotebookPage * page,
                   break;
 	        }
 
-              dsn = gtk_entry_get_text(GTK_ENTRY(choose_t->dsn_entry));
+              dsn = (char*)gtk_entry_get_text(GTK_ENTRY(choose_t->dsn_entry));
               if (strlen(dsn) < 1)
                 {
 	          _iodbcdm_messagebox(choose_t->mainwnd, NULL, "Enter File DSN Name...");
@@ -725,7 +725,7 @@ fdriverchooser_finish_clicked (GtkWidget *widget, TFDRIVERCHOOSER *choose_t)
       else
 	choose_t->driver = NULL;
 
-      dsn = gtk_entry_get_text(choose_t->dsn_entry);
+      dsn = (char*)gtk_entry_get_text((GtkEntry*)choose_t->dsn_entry);
       if (strchr(dsn, '/') != NULL)
         snprintf(buff, sizeof(buff), "%s", dsn);
       else
@@ -849,7 +849,7 @@ fdriverchooser_browse_clicked (GtkWidget * widget, TFDRIVERCHOOSER * choose_t)
       filesel = gtk_file_selection_new ("Save as ...");
       gtk_window_set_modal (GTK_WINDOW (filesel), TRUE);
 
-      dsn = gtk_entry_get_text(choose_t->dsn_entry);
+      dsn = (char*)gtk_entry_get_text((GtkEntry*)choose_t->dsn_entry);
       if (strchr(dsn, '/') != NULL)
         snprintf(buff, sizeof(buff), "%s", dsn);
       else

@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -264,10 +264,10 @@ driversetup_add_clicked (GtkWidget *widget, TDRIVERSETUP *driversetup_t)
 
   if (driversetup_t)
     {
-      data[0] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->key_entry));
+      data[0] = (char*)gtk_entry_get_text (GTK_ENTRY (driversetup_t->key_entry));
       if (!STRLEN (data[0]))
 	goto done;
-      data[1] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->value_entry));
+      data[1] = (char*)gtk_entry_get_text (GTK_ENTRY (driversetup_t->value_entry));
 
       for (i = 0; i < GTK_CLIST (driversetup_t->key_list)->rows; i++)
 	{
@@ -299,10 +299,10 @@ driversetup_update_clicked (GtkWidget *widget, TDRIVERSETUP *driversetup_t)
 
   if (driversetup_t)
     {
-      data[0] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->key_entry));
+      data[0] = (char*)gtk_entry_get_text (GTK_ENTRY (driversetup_t->key_entry));
       if (STRLEN (data[0]))
 	{
-	  data[1] = gtk_entry_get_text (GTK_ENTRY (driversetup_t->value_entry));
+	  data[1] = (char*)gtk_entry_get_text (GTK_ENTRY (driversetup_t->value_entry));
 
 	  if (GTK_CLIST (driversetup_t->key_list)->selection != NULL)
 	    i = GPOINTER_TO_INT (GTK_CLIST (driversetup_t->key_list)->selection->

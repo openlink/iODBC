@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -204,7 +204,7 @@ addkeywords_to_list (ControlRef widget,
   UInt16 colSize[2] = { 150, 250 };
   SInt16 outBaseline;
   Point ioBound;
-  void *curr, *cour;
+  char *curr, *cour;
   int i;
 
   if (!widget)
@@ -237,7 +237,7 @@ addkeywords_to_list (ControlRef widget,
   KEYVAL_nrows = 0;
   item = DBITEM_ID + 1;
 
-  for (curr = (LPSTR) attrs; *((char*)curr); ((char*)curr) += (STRLEN (curr) + 1))
+  for (curr = (LPSTR) attrs; *curr; curr += (STRLEN (curr) + 1))
     {
       if (!strncasecmp (curr, "DSN=", STRLEN ("DSN=")) ||
           !strncasecmp (curr, "Driver=", STRLEN ("Driver=")) ||
@@ -246,10 +246,10 @@ addkeywords_to_list (ControlRef widget,
 
       if ((cour = strchr ((char*)curr, '=')))
         {
-          *((char*)cour) = '\0';
+          *cour = '\0';
           KEYVAL_array[0][KEYVAL_nrows] =
             CFStringCreateWithCString (NULL, curr, kCFStringEncodingUTF8);
-          *((char*)cour) = '=';
+          *cour = '=';
           KEYVAL_array[1][KEYVAL_nrows] =
             CFStringCreateWithCString (NULL, ((char*)cour) + 1, kCFStringEncodingUTF8);
         }
@@ -466,7 +466,7 @@ keyval_ok_clicked (EventHandlerCallRef inHandlerRef,
     EventRef inEvent, void *inUserData)
 {
   TKEYVAL *keyval_t = (TKEYVAL *) inUserData;
-  void *cour;
+  char *cour;
   int i = 0, size = 1;
   char msg[1024], msg1[1024];
 

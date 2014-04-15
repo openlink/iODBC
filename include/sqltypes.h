@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -343,7 +343,7 @@ SQL_INTERVAL_STRUCT;
  */
 #if (ODBCVER >= 0x0300)
 
-#if (_MSC_VER >= 900)
+#if defined(_MSC_VER) && (_MSC_VER >= 900)
 #  define ODBCINT64 		__int64
 #endif
 

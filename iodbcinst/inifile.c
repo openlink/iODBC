@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -1021,7 +1021,7 @@ _iodbcdm_list_entries (PCONFIG pCfg, LPCSTR lpszSection, LPSTR lpszRetBuffer, in
   int curr = 0, sect_len = 0;
   lpszRetBuffer[0] = 0;
 
-  if (!_iodbcdm_cfg_find (pCfg, lpszSection, NULL))
+  if (!_iodbcdm_cfg_find (pCfg, (char*)lpszSection, NULL))
     {
       while (curr < cbRetBuffer && 0 == _iodbcdm_cfg_nextentry (pCfg))
 	{

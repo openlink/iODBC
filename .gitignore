@@ -11,6 +11,7 @@
 .deps
 .libs
 .generated
+ChangeLog
 Makefile
 Makefile.in
 aclocal.m4
@@ -44,6 +45,11 @@ man/iodbctest.1
 man/iodbctestw.1
 libiodbc*.tar.gz
 libiodbc*.zip
+
+#
+#  Build trees for Unix
+#
+build-*
 
 #
 # Mac OS X Xcode build trees

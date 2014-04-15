@@ -7,7 +7,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -187,11 +187,13 @@ fi
 echo
 echo "${B}Generating build scripts${N} ..."
 
+touch ChangeLog
+
 RUN $LIBTOOLIZE --force --copy
-RUN aclocal -I admin
-RUN autoheader
-RUN automake --copy --add-missing
-RUN autoconf
+RUN aclocal -I admin #--warnings=all
+RUN autoheader --warnings=all
+RUN automake --copy --add-missing --warnings=all
+RUN autoconf --warnings=all,no-obsolete
 
 echo
 echo "Please check the ${B}INSTALL${N} and ${B}README${N} files for instructions to"

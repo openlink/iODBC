@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -229,7 +229,7 @@ SQLInstallDriverEx (LPCSTR lpszDriver, LPCSTR lpszPathIn, LPSTR lpszPathOut,
 
   CLEAR_ERROR ();
 
-  if (lpszPathIn && access (lpszPathIn, R_OK | W_OK | X_OK))
+  if (lpszPathIn && access (lpszPathIn, R_OK | X_OK))
     {
       PUSH_ERROR (ODBC_ERROR_INVALID_PATH);
       goto quit;

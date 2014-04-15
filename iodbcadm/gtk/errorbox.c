@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -235,9 +235,9 @@ create_errorw (HWND hwnd, LPCWSTR dsn, LPCWSTR text, LPCWSTR errmsg)
   LPSTR _text = NULL;
   LPSTR _errmsg = NULL;
 
-  _dsn = dm_SQL_WtoU8(dsn, SQL_NTS);
-  _text = dm_SQL_WtoU8(text, SQL_NTS);
-  _errmsg = dm_SQL_WtoU8(errmsg, SQL_NTS);
+  _dsn = dm_SQL_WtoU8((SQLWCHAR*)dsn, SQL_NTS);
+  _text = dm_SQL_WtoU8((SQLWCHAR*)text, SQL_NTS);
+  _errmsg = dm_SQL_WtoU8((SQLWCHAR*)errmsg, SQL_NTS);
 
   create_error(hwnd, _dsn, _text, _errmsg);
 

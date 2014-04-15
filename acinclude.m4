@@ -4,7 +4,7 @@
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -71,13 +71,13 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-AC_DEFUN(IODBC_CHECK_PTHREAD_LIB,
+AC_DEFUN([IODBC_CHECK_PTHREAD_LIB],
 [AC_MSG_CHECKING([for $2 in -l$1 $5])
 ac_save_LIBS="$LIBS"
 LIBS="-l$1 $5 $LIBS"
 
-AC_TRY_LINK(dnl
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM(dnl
+[[
 #ifdef __cplusplus
 extern "C"
 #endif
@@ -85,8 +85,8 @@ extern "C"
 #if defined (HAVE_PTHREAD_H)
 #include <pthread.h>
 #endif
-],
-[$2(0)],
+]],
+[[$2(0)]])],
 eval "ac_cv_lib_$ac_lib_var=yes",
 eval "ac_cv_lib_$ac_lib_var=no")
 LIBS="$ac_save_LIBS"

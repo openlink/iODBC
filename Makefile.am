@@ -4,7 +4,7 @@
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -71,7 +71,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-AUTOMAKE_OPTIONS	= gnu dist-zip 1.9.2
+AUTOMAKE_OPTIONS	= gnu dist-zip 1.9.6
 
 SUBDIRS 		= admin bin etc man include iodbcinst iodbc iodbcadm drvproxy samples
 
@@ -83,6 +83,7 @@ EXTRA_DIST		= \
 	$(srcdir)/LICENSE.LGPL \
 	$(srcdir)/LICENSE.BSD \
 	$(srcdir)/README.CVS \
+	$(srcdir)/README.GIT \
 	$(srcdir)/README.MACOSX \
 	$(srcdir)/bootstrap.sh \
 	$(srcdir)/PORT.OpenLink \
@@ -230,7 +231,8 @@ release:
 #
 #  Generate ChangeLog
 #
+.PHONY: changelog
 changelog:
-	cvs2cl --no-wrap --utc --hide-filenames --prune --window 3600
+	git2cl --format='%s%n%n%b%n' --strip-tab --strip-cherry-pick > ChangeLog
 
 endif

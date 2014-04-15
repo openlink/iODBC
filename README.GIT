@@ -1,7 +1,7 @@
 Using the iODBC GIT Tree
 ========================
 
-Copyright (C) 1996-2012 OpenLink Software <iodbc@openlinksw.com>
+Copyright (C) 1996-2014 OpenLink Software <iodbc@openlinksw.com>
 
 
 Introduction
@@ -72,12 +72,12 @@ please make sure the following packages and recommended versions are
 installed on your system.
 
     Package   Version  From
-    autoconf  2.57     http://www.gnu.org/software/autoconf/
-    automake  1.9      http://www.gnu.org/software/automake/
-    libtool   1.5      http://www.gnu.org/software/libtool/
-    make      3.79.1   http://www.gnu.org/software/make/
+    ========  =======  ==================================
+    autoconf  2.59     ftp://ftp.gnu.org/pub/gnu/autoconf
+    automake  1.9.6    ftp://ftp.gnu.org/pub/gnu/automake
+    libtool   1.5.22   ftp://ftp.gnu.org/pub/gnu/libtool
+    make      3.79.1   http://www.gnu.org/software/make
     gtk+      1.2.10   ftp://ftp.gtk.org/pub/gtk/v1.2
-
 
 and any GNU packages required by these. The autogen.sh and configure
 scripts check for the presence and right version of some of the required

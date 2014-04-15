@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -128,6 +128,34 @@ ifeq (10.6, $(findstring 10.6, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
     IODBC_TARGET=10.6
     IODBC_SDK=/Developer/SDKs/MacOSX10.6.sdk/
+endif
+
+
+#
+#  Mac OS X 10.7
+#
+ifeq (10.7, $(findstring 10.7, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.7
+    IODBC_TARGET=10.7
+    #IODBC_SDK=/Developer/SDKs/MacOSX10.7.sdk/
+endif
+
+
+#
+#  Mac OS X 10.8
+#
+ifeq (10.8, $(findstring 10.8, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.8
+    IODBC_TARGET=10.8
+endif
+
+
+#
+#  Mac OS X 10.9
+#
+ifeq (10.9, $(findstring 10.9, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.9
+    IODBC_TARGET=10.9
 endif
 
 

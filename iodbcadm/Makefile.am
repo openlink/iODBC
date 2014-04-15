@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -78,13 +78,13 @@ lib_LTLIBRARIES		= libiodbcadm.la
 endif
 
 if GTK
-INCLUDES		= \
+AM_CPPFLAGS		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcinst \
 	@GTK_CFLAGS@ -D__GTK__
 else
-INCLUDES		= \
+AM_CPPFLAGS		= \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/iodbc \
 	-I$(top_srcdir)/iodbcinst
@@ -96,7 +96,7 @@ libiodbcadm_la_LDFLAGS	= \
 
 if GTK
 libiodbcadm_la_LIBADD	= \
-	../iodbcadm/gtk/libiodbcadm-gtk.la \
+	gtk/libiodbcadm-gtk.la \
 	$(LIBADD_DL) \
 	@GTK_LIBS@ \
 	../iodbcinst/libiodbc_common.la \
@@ -117,8 +117,8 @@ libiodbcadm_la_SOURCES	= \
 
 iodbcadm_gtk_SOURCES	=
 iodbcadm_gtk_LDADD	= \
-	../iodbcadm/gtk/main.lo \
-	../iodbcadm/libiodbcadm.la \
+	gtk/main.lo \
+	libiodbcadm.la \
 	../iodbcinst/libiodbcinst.la \
 	../iodbc/libiodbc.la \
 	@GTK_LIBS@

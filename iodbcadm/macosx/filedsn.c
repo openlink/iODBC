@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -731,7 +731,7 @@ filedsn_add_clicked (EventHandlerCallRef inHandlerRef,
   /* Check output parameters */
   if (drvchoose_t.ok)
     {
-      if (sizeof(drv) > strlen(drvchoose_t.driver) + strlen("DRIVER="))
+      if (sizeof(drv) > WCSLEN(drvchoose_t.driver) + strlen("DRIVER="))
 	{
           s = strcpy(drv, "DRIVER=");
           s += strlen("DRIVER=");

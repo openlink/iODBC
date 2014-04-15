@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -71,7 +71,7 @@
 #
 
 bin_PROGRAMS		= iodbctest iodbctestw
-INCLUDES		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
+AM_CPPFLAGS		= -I$(top_srcdir)/include -DNO_FRAMEWORKS
 
 #
 #  Build odbctest program

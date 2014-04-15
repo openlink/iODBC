@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -205,7 +205,7 @@ addkeywords_to_list (ControlRef widget,
   UInt16 colSize[2] = { 150, 250 };
   SInt16 outBaseline;
   Point ioBound;
-  void *curr, *cour;
+  char *curr, *cour;
   int i;
 
   if (!widget)
@@ -238,7 +238,7 @@ addkeywords_to_list (ControlRef widget,
   DSNSETUP_nrows = 0;
   item = DBITEM_ID + 1;
 
-  for (curr = (LPSTR) attrs; *((char*)curr); ((char*)curr) += (STRLEN (curr) + 1))
+  for (curr = (LPSTR) attrs; *curr; curr += (STRLEN (curr) + 1))
     {
       if (!strncasecmp (curr, "DSN=", STRLEN ("DSN=")) ||
           !strncasecmp (curr, "Driver=", STRLEN ("Driver=")) ||
@@ -247,10 +247,10 @@ addkeywords_to_list (ControlRef widget,
 
       if ((cour = strchr ((char*)curr, '=')))
         {
-          *((char*)cour) = '\0';
+          *cour = '\0';
           DSNSETUP_array[0][DSNSETUP_nrows] =
             CFStringCreateWithCString (NULL, curr, kCFStringEncodingUTF8);
-          *((char*)cour) = '=';
+          *cour = '=';
           DSNSETUP_array[1][DSNSETUP_nrows] =
             CFStringCreateWithCString (NULL, ((char*)cour) + 1, kCFStringEncodingUTF8);
         }
@@ -486,7 +486,7 @@ gensetup_ok_clicked (EventHandlerCallRef inHandlerRef,
     EventRef inEvent, void *inUserData)
 {
   TGENSETUP *gensetup_t = (TGENSETUP *) inUserData;
-  void *cour, *curr;
+  char *cour, *curr;
   int i = 0, size = 0;
   char msg[1024], msg1[1024];
   Size len;
@@ -502,7 +502,7 @@ gensetup_ok_clicked (EventHandlerCallRef inHandlerRef,
       if ((gensetup_t->connstr = (char *) malloc (++size)))
         {
           for (curr = STRCONN, cour = gensetup_t->connstr;
-            i < STRCONN_NB_TOKENS; i++, ((char*)curr) += (STRLEN (curr) + 1))
+            i < STRCONN_NB_TOKENS; i++, curr += (STRLEN (curr) + 1))
             switch (i)
               {
                 case 0:
@@ -510,12 +510,12 @@ gensetup_ok_clicked (EventHandlerCallRef inHandlerRef,
                     kControlEditTextTextTag, sizeof (msg), msg, &len);
                   msg[len] = '\0';
                   sprintf ((char*)cour, (char*)curr, msg);
-                    ((char*)cour) += (STRLEN (cour) + 1);
+                  cour += (STRLEN (cour) + 1);
                   break;
                 case 1:
                   msg[0] = '\0';
                   sprintf ((char*)cour, (char*)curr, msg);
-                    ((char*)cour) += (STRLEN (cour) + 1);
+                  cour += (STRLEN (cour) + 1);
                   break;
                 };
 

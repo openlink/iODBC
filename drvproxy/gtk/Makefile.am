@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -74,7 +74,7 @@ if GTK
 noinst_LTLIBRARIES		= libdrvproxy-gtk.la
 endif
 
-INCLUDES			= \
+AM_CPPFLAGS			= \
 	-I$(top_srcdir)/include -I$(top_srcdir)/iodbc \
 	@GTK_CFLAGS@ -D__GTK__
 

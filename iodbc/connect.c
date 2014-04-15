@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -805,6 +805,7 @@ _iodbcdm_pool_get_conn (
 	  DPRINTF ((stderr, "DEBUG: connection %p expired (cp_expiry_time %d, current_time %d)\n",
             cp_pdbc, cp_pdbc->cp_expiry_time, current_time));
 	  _iodbcdm_pool_drop_conn (cp_pdbc, cp_pdbc_prev);
+          cp_pdbc = cp_pdbc_prev;
 	  continue;
         }
 
@@ -1006,6 +1007,7 @@ _iodbcdm_driverload (
   char *path = drv;
   char cp_probe[1024] = {""};
   int cp_timeout = 0;
+  void *pfaux;
 
   if (drv == NULL || ((char*)drv)[0] == '\0')
     {
@@ -1184,7 +1186,8 @@ _iodbcdm_driverload (
           /*
            *  If the driver is Unicode
            */
-	  if ( _iodbcdm_getproc (pdbc, en_ConnectW))
+          pfaux = _iodbcdm_getproc (pdbc, en_ConnectW);
+          if ((pfaux) && (pfaux != (void *)SQLConnectW))
             penv->unicode_driver = 1;
 
 	  /* call driver's SQLAllocHandle() or SQLAllocEnv() */

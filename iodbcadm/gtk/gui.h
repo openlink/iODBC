@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -219,5 +219,6 @@ void addfiles_to_list(HWND hwnd, GtkWidget* widget, LPCSTR path);
 void addlistofdir_to_optionmenu(GtkWidget* widget, LPCSTR path, TDSNCHOOSER *choose_t);
 LPSTR create_keyval (HWND wnd, LPCSTR attrs, BOOL *verify_conn);
 LPSTR create_fgensetup (HWND hwnd, LPCSTR dsn, LPCSTR attrs, BOOL add, BOOL *verify_conn);
+void  create_message (HWND hwnd, LPCSTR dsn, LPCSTR text);
 
 #endif

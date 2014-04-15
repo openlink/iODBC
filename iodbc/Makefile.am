@@ -4,7 +4,7 @@
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
-#  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -74,7 +74,7 @@
 
 SUBDIRS			= trace .
 
-INCLUDES		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbcinst
+AM_CPPFLAGS		= -I$(top_srcdir)/include -I$(top_srcdir)/iodbcinst
 
 lib_LTLIBRARIES		= libiodbc.la
 

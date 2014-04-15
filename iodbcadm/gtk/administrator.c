@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2012 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -72,6 +72,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef __linux
+# ifndef _GNU_SOURCE
+#  define _GNU_SOURCE	/* make sure dladdr is declared */
+# endif
+# define HAVE_DL_INFO 1
+#endif
+
 #include <iodbc.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
@@ -82,7 +89,7 @@
 #include "odbc4.xpm"
 
 
-#if !defined(HAVE_DL_INFO)
+#if defined (HAVE_DLADDR) && !defined(HAVE_DL_INFO)
 typedef struct
 {
   const char *dli_fname;	/* File name of defining object.  */
@@ -90,6 +97,7 @@ typedef struct
   const char *dli_sname;	/* Name of nearest symbol.  */
   void *dli_saddr;		/* Exact value of nearest symbol.  */
 } Dl_info;
+
 #endif /* HAVE_DL_INFO */
 
 static char *szDriverButtons[] = {
