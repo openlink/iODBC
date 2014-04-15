@@ -71,7 +71,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-AUTOMAKE_OPTIONS	= gnu dist-zip 1.9.2
+AUTOMAKE_OPTIONS	= gnu dist-zip 1.9.6
 
 SUBDIRS 		= admin bin etc man include iodbcinst iodbc iodbcadm drvproxy samples
 
