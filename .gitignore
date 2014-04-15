@@ -46,6 +46,11 @@ libiodbc*.tar.gz
 libiodbc*.zip
 
 #
+#  Build trees for Unix
+#
+build-*
+
+#
 # Mac OS X Xcode build trees
 #
 mac/iODBC/build/
