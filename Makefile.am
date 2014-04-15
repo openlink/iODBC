@@ -231,7 +231,8 @@ release:
 #
 #  Generate ChangeLog
 #
+.PHONY: changelog
 changelog:
-	cvs2cl --no-wrap --utc --hide-filenames --prune --window 3600
+	git2cl --format='%s%n%n%b%n' --strip-tab --strip-cherry-pick > ChangeLog
 
 endif

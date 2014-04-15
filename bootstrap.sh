@@ -187,6 +187,8 @@ fi
 echo
 echo "${B}Generating build scripts${N} ..."
 
+touch ChangeLog
+
 RUN $LIBTOOLIZE --force --copy
 RUN aclocal -I admin #--warnings=all
 RUN autoheader --warnings=all

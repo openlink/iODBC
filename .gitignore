@@ -11,6 +11,7 @@
 .deps
 .libs
 .generated
+ChangeLog
 Makefile
 Makefile.in
 aclocal.m4
