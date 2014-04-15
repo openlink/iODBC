@@ -1,62 +1,64 @@
 Source: libiodbc2
 Section: libs
 Priority: optional
-Maintainer: Bart Martens <bartm@debian.org>
-Build-Depends: debhelper (>= 5), autotools-dev, libtool (>= 1.5-2), automake1.9, autoconf, cdbs, m4 (>= 1.4.7), libgtk2.0-dev
-Standards-Version: 3.7.3
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Build-Depends: debhelper (>= 8), autotools-dev, libtool (>= 1.5-2), automake1.11, autoconf, cdbs, m4 (>= 1.4.7), libgtk2.0-dev
+Standards-Version: 3.8.0
 Homepage: http://www.iodbc.org/
 
 Package: iodbc
 Section: misc
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends} 
 Description: GTK+ config frontend for the iODBC Driver Manager
- The iODBC (intrinsic Open Database Connectivity) driver manager is
- compatible with the ODBC 2.x and 3.x specification and performs all
- the jobs of a ODBC driver manager (i.e. driver loading, parameters and
- function sequence checking, driver's function invoking, etc). Any ODBC
- driver working with ODBC 2.0 and 3.x driver manager will also work with
- iODBC driver manager and vice versa.
+ The iODBC (intrinsic Open Database Connectivity) driver manager is compatible
+ with the ODBC 2.x and 3.x specification and performs all the jobs of a
+ ODBC driver manager (i.e. driver loading, parameters and function sequence
+ checking, driver's function invoking, etc). Any ODBC driver working with
+ ODBC 2.0 and 3.x driver manager will also work with iODBC driver manager
+ and vice versa.
  .
- Applications (using ODBC function calls) linked with iODBC driver
- manager will be able to simultaneously access different types of data
- sources within one process through suitable iODBC drivers.
+ Applications (using ODBC function calls) linked with iODBC driver manager
+ will be able to simultaneously access different types of data sources within
+ one process through suitable iODBC drivers.
  .
  This package contains the configuration binaries.
 
 Package: libiodbc2
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends} 
+Suggests: iodbc (= ${binary:Version})
 Description: iODBC Driver Manager
- The iODBC (intrinsic Open Database Connectivity) driver manager is
- compatible with the ODBC 2.x and 3.x specification and performs all
- the jobs of a ODBC driver manager (i.e. driver loading, parameters and
- function sequence checking, driver's function invoking, etc). Any ODBC
- driver working with ODBC 2.0 and 3.x driver manager will also work with
- iODBC driver manager and vice versa.
+ The iODBC (intrinsic Open Database Connectivity) driver manager is compatible
+ with the ODBC 2.x and 3.x specification and performs all the jobs of a
+ ODBC driver manager (i.e. driver loading, parameters and function sequence
+ checking, driver's function invoking, etc). Any ODBC driver working with
+ ODBC 2.0 and 3.x driver manager will also work with iODBC driver manager
+ and vice versa.
  .
- Applications (using ODBC function calls) linked with iODBC driver
- manager will be able to simultaneously access different types of data
- sources within one process through suitable iODBC drivers.
+ Applications (using ODBC function calls) linked with iODBC driver manager
+ will be able to simultaneously access different types of data sources within
+ one process through suitable iODBC drivers.
  .
  This package contains the library files. Look for the iodbc package, too!
 
 Package: libiodbc2-dev
 Section: libdevel
 Architecture: any
-Depends: libiodbc2 (= ${binary:Version}), libc6-dev
+Depends: libiodbc2 (= ${binary:Version}), 
+ ${misc:Depends} 
 Conflicts: libiodbc2 (<= 3.52.6-1), iodbc (<= 3.52.6-1)
 Description: iODBC Driver Manager (development files)
- The iODBC (intrinsic Open Database Connectivity) driver manager is
- compatible with the ODBC 2.x and 3.x specification and performs all
- the jobs of a ODBC driver manager (i.e. driver loading, parameters and
- function sequence checking, driver's function invoking, etc). Any ODBC
- driver working with ODBC 2.0 and 3.x driver manager will also work with
- iODBC driver manager and vice versa.
+ The iODBC (intrinsic Open Database Connectivity) driver manager is compatible
+ with the ODBC 2.x and 3.x specification and performs all the jobs of a
+ ODBC driver manager (i.e. driver loading, parameters and function sequence
+ checking, driver's function invoking, etc). Any ODBC driver working with
+ ODBC 2.0 and 3.x driver manager will also work with iODBC driver manager
+ and vice versa.
  .
- Applications (using ODBC function calls) linked with iODBC driver
- manager will be able to simultaneously access different types of data
- sources within one process through suitable iODBC drivers.
+ Applications (using ODBC function calls) linked with iODBC driver manager
+ will be able to simultaneously access different types of data sources within
+ one process through suitable iODBC drivers.
  .
  This package contains the development files.
