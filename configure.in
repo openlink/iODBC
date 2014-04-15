@@ -262,7 +262,8 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 dnl AC_PROG_RANLIB
-LT_INIT(dlopen)
+AC_PROG_LIBTOOL
+dnl LT_INIT(dlopen)
 
 
 ##########################################################################

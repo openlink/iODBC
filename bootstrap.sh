@@ -188,7 +188,7 @@ echo
 echo "${B}Generating build scripts${N} ..."
 
 RUN $LIBTOOLIZE --force --copy
-RUN aclocal -I admin --warnings=all
+RUN aclocal -I admin #--warnings=all
 RUN autoheader --warnings=all
 RUN automake --copy --add-missing --warnings=all
 RUN autoconf --warnings=all,no-obsolete
