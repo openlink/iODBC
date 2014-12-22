@@ -73,6 +73,8 @@
 #import "TestController.h"
 #import "ExecController.h"
 
+#define MIN_WIDTH       5
+#define MAX_WIDTH       80
 #define OpenTag         56000
 #define CloseTag        56001
 #define ExecSQLTag      56002
@@ -281,6 +283,7 @@ _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
   SQLRETURN sts;
 
   [self clearGrid];
+  mSPARQL_executed = false;
 
   if (mExistsResultset == YES)
     {
@@ -293,6 +296,9 @@ _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
   
   mExistsResultset = NO;
   mNextResultset = NO;
+    
+  NSString *query = TEXTtoNS(szSQL);
+  mSPARQL_executed = [[query.uppercaseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] hasPrefix:@"SPARQL"];
 
   if (!TEXTCMP(szSQL, TEXT("tables")))
     {
@@ -357,8 +363,11 @@ error:
   unsigned long totalRows;
   NSTableColumn *aColumn;
   NSMutableArray *row;
-  NSFont  *fnt = [RSTable font];
+  NSFont  *fnt = RSTable.font;
 
+  if (!fnt)
+      fnt = [NSFont systemFontOfSize:11.0];
+    
   [self clearGrid];
 
   if (SQLNumResultCols (hstmt, &numCols) != SQL_SUCCESS)
@@ -470,27 +479,29 @@ error:
 	displayWidth = TEXTLEN(colName);
       if (displayWidth > sizeof(fetchBuffer) - 1)
 	displayWidth = sizeof(fetchBuffer) - 1;
-      if (displayWidth > 80)
-        displayWidth = 80;
+      if (displayWidth > MAX_WIDTH)
+        displayWidth = MAX_WIDTH;
+        
+    if (mSPARQL_executed && displayWidth <= 10)
+        displayWidth = MAX_WIDTH;
 
       /* Add new column */
       aColumn = [NSTableColumn new]; 
 
       /* Calculate size of font */
-      float fontWidth = [fnt widthOfString:@"W"];
-      if (fontWidth == 0.0)
-        fontWidth = [fnt widthOfString:@" "];
+      float fontWidth = [fnt boundingRectForFont].size.width;
       if (fontWidth == 0.0)
         fontWidth = [fnt maximumAdvancement].width;
       if (fontWidth == 0.0)
         fontWidth = 10.0; 	// Default
 
       /* Make sure we always have room for column label */
-      float minWidth = fontWidth * TEXTLEN(colName);
+      int colNameLen = TEXTLEN(colName);
+      float minWidth = fontWidth * (colNameLen<MIN_WIDTH?MIN_WIDTH:colNameLen);
       [aColumn setMinWidth:minWidth];
 
       /* Calculate maximum size of column */
-      float strWidth = fontWidth * displayWidth;
+        float strWidth = fontWidth * (displayWidth<MIN_WIDTH?MIN_WIDTH:displayWidth);
       [aColumn setMaxWidth:strWidth];
 
       /* Fill in column information  */
@@ -544,7 +555,8 @@ error:
 	  if (colIndicator == SQL_NULL_DATA)
 	    TEXTCPY(fetchBuffer, TEXT("<NULL>"));
 
-	  [row addObject:TEXTtoNS (fetchBuffer)];
+          NSString *val = TEXTtoNS (fetchBuffer);
+          [row addObject:val?val:@"??"];
 	}
       [mBuffer addObject:row];
       totalRows++;
@@ -557,6 +569,8 @@ error:
 
   mRows = totalRows;
   [RSTable reloadData];
+  if (mSPARQL_executed)
+    [RSTable sizeToFit];
   return;
 
 endCursor:

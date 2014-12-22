@@ -92,6 +92,7 @@
     NSString *fQuery;
     BOOL     mExistsResultset;
     BOOL     mNextResultset;
+    BOOL     mSPARQL_executed;
 }
 
 
