@@ -137,7 +137,6 @@ endif
 ifeq (10.7, $(findstring 10.7, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.7
     IODBC_TARGET=10.7
-    #IODBC_SDK=/Developer/SDKs/MacOSX10.7.sdk/
 endif
 
 
@@ -156,6 +155,15 @@ endif
 ifeq (10.9, $(findstring 10.9, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.9
     IODBC_TARGET=10.9
+endif
+
+
+#
+#  Mac OS X 10.10
+#
+ifeq (10.10, $(findstring 10.9, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.10
+    IODBC_TARGET=10.10
 endif
 
 
