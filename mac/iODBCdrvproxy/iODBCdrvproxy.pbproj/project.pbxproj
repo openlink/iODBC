@@ -129,11 +129,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.8</string>
+	<string>3.52.9</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.8</string>
+	<string>3.52.9</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
@@ -289,11 +289,11 @@
 		0A7B5B2D005FB5097F000001 = {
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.8;
-				"Current project version" = 3.52.8;
+				CURRENT_PROJECT_VERSION = 3.52.9;
+				"Current project version" = 3.52.9;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.8;
+				DYLIB_CURRENT_VERSION = 3.52.9;
 				EXPORTED_SYMBOLS_FILE = ../../macosx/drvproxy.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
