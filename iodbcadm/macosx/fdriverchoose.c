@@ -624,10 +624,8 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
   NavDialogOptions dialogOptions;
   TFDRIVERCHOOSER *choose_t = (TFDRIVERCHOOSER *) inUserData;
   NavReplyRecord reply;
-  char tokenstr[4096] = { 0 };
   OSStatus err;
   FSSpec file;
-  char *dir;
   AEDesc defaultLoc;
   CFStringRef str;
   CFURLRef url;
@@ -663,19 +661,24 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
-	  /* Get back some information about the directory */
-	  dir = get_full_pathname (file.parID, file.vRefNum);
-	  sprintf (tokenstr, "%s/", dir ? dir : "");
-	  strncat (tokenstr, &file.name[1], file.name[0]);
-	  /* Display the constructed string re. the file choosen */
-	  SetControlData (choose_t->dsn_entry, 0,
-	      kControlEditTextTextTag,
-	      STRLEN (tokenstr) ? STRLEN (tokenstr) : STRLEN ("xxx.dsn"),
-	      STRLEN (tokenstr) ? tokenstr : "xxx.dsn");
-	  DrawOneControl (choose_t->dsn_entry);
-	  /* Clean up */
-	  if (dir)
-	    free (dir);
+          char file_path[PATH_MAX] = { '\0' };
+          FSRef ref;
+
+          if( file.name[0] == 0 )
+            err = FSMakeFSSpec(file.vRefNum, file.parID, file.name, &file);
+          if( err == noErr )
+            err = FSpMakeFSRef(&file, &ref);
+
+          err = FSRefMakePath(&ref, file_path, PATH_MAX); // translate the FSRef into a path
+          if (err == noErr)
+            {
+	      /* Display the constructed string re. the file choosen */
+	      SetControlData (choose_t->dsn_entry, 0,
+	          kControlEditTextTextTag,
+	          STRLEN (file_path) ? STRLEN (file_path) : STRLEN ("xxx.dsn"),
+	          STRLEN (file_path) ? file_path : "xxx.dsn");
+	      DrawOneControl (choose_t->dsn_entry);
+	    }
 	}
     }
 
