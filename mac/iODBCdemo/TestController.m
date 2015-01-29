@@ -214,9 +214,9 @@ _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
     [RSTable setDelegate:self];
     [self clearGrid];
 #ifdef UNICODE
-    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo Unicode - Disconnected"]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Disconnected"]];
 #else
-    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo - Disconnected"]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Disconnected"]];
 #endif
 }
 
@@ -240,9 +240,9 @@ _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
             SQLDisconnect (hdbc);
         
 #ifdef UNICODE
-        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo Unicode - Disconnected"]];
+        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Disconnected"]];
 #else
-        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo - Disconnected"]];
+        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Disconnected"]];
 #endif
         [self clearGrid];
         
@@ -682,9 +682,9 @@ error:
     SQLGetInfo (hdbc, SQL_DATA_SOURCE_NAME, szDSN, sizeof (szDSN), NULL);
     
 #ifdef UNICODE
-    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo Unicode - Connected to [%@]", TEXTtoNS(szDSN)]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Connected to [%@]", TEXTtoNS(szDSN)]];
 #else
-    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo - Connected to [%@]", TEXTtoNS(szDSN)]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Connected to [%@]", TEXTtoNS(szDSN)]];
 #endif
     
 #if (ODBCVER < 0x0300)
