@@ -5,21 +5,21 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>iODBC Demo Unicode</string>
+	<string>iODBC Demo Ansi</string>
 	<key>CFBundleIconFile</key>
 	<string>iODBCdemo.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.openlinksw.iodbcdemo-uni</string>
+	<string>com.openlinksw.iodbcdemo-ansi</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>iODBC Demo Unicode</string>
+	<string>iODBC Demo Ansi</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.2</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

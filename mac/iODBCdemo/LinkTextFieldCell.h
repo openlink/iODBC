@@ -69,77 +69,14 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#import "ExecController.h"
 
-@implementation ExecController
+#import <Cocoa/Cocoa.h>
 
-@synthesize fSQL = _SQL;
-@synthesize MaxRows= _MaxRows;
-
-
-- (id)init
-{
-    return [super initWithWindowNibName:@"ExecSQL"];
+@interface LinkTextFieldCell : NSTextFieldCell {
+@private
+    void (^_clickHandler)(NSString *uri, id sender);
 }
 
-- (void)dealloc
-{
-    [_SQL release];
-    [super dealloc];
-}
-
- 
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
-    _dialogCode = 0;
-    
-    [[self window] center];  // Center the window.
-    fSQLText.stringValue = _SQL;
-    fMaxRowsText.stringValue = [NSString stringWithFormat:@"%d",_MaxRows];
-}
-
-- (IBAction)aCancel:(id)sender
-{
-    [self.window close];
-    [NSApp stopModalWithCode:0];
-}
-
-- (IBAction)aOK:(id)sender
-{
-    self.fSQL = [fSQLText stringValue];
-    self.MaxRows = [fMaxRowsText.stringValue integerValue];
-    [self.window close];
-    [NSApp stopModalWithCode:1];
-}
-
-
-- (void)windowWillClose:(NSNotification*)notification
-{
-    [NSApp stopModalWithCode:_dialogCode];
-}
-
-
-- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)commandSelector
-
-{
-    BOOL result = NO;
-    
-    if (commandSelector == @selector(insertNewline:))
-    {
-        // new line action:
-        // always insert a line-break character and don’t cause the receiver to end editing
-        [textView insertNewlineIgnoringFieldEditor:self];
-        result = YES;
-    }
-    else if (commandSelector == @selector(insertTab:))
-    {
-        // tab action:
-        // always insert a tab character and don’t cause the receiver to end editing
-        [textView insertTabIgnoringFieldEditor:self];
-        result = YES;
-    }
-    return result;
-}
+@property(copy) void (^clickHandler)(NSString * uri, id sender);
 
 @end

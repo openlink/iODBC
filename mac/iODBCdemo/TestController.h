@@ -77,7 +77,7 @@
 #import <iODBC/sqltypes.h>
 #import <iODBC/sqlucode.h>
 
-@interface TestController : NSObject
+@interface TestController : NSObject <NSTableViewDelegate, NSTableViewDataSource>
 {
     IBOutlet id mMenu;
     IBOutlet id mWindow;
@@ -89,12 +89,14 @@
     BOOL     mConnected;
     NSMutableArray *mBuffer;
     int      mRows;
-    NSString *fQuery;
+    NSString *_fQuery;
     BOOL     mExistsResultset;
     BOOL     mNextResultset;
     BOOL     mSPARQL_executed;
+    int      mMaxRows;
 }
 
+@property (nonatomic, retain) NSString *fQuery;
 
 - (void)disconnect;
 - (void)execSQL:(SQLTCHAR *)szSQL;

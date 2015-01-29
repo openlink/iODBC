@@ -69,77 +69,100 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#import "ExecController.h"
 
-@implementation ExecController
+#import "LinkTextFieldCell.h"
 
-@synthesize fSQL = _SQL;
-@synthesize MaxRows= _MaxRows;
+@implementation LinkTextFieldCell
+@synthesize clickHandler = _clickHandler;
 
-
-- (id)init
-{
-    return [super initWithWindowNibName:@"ExecSQL"];
+- (id)copyWithZone:(NSZone *)zone {
+    
+    LinkTextFieldCell *result = [super copyWithZone:zone];
+    result->_clickHandler = [_clickHandler copy];
+    return result;
 }
+
 
 - (void)dealloc
 {
-    [_SQL release];
+    [_clickHandler release];
     [super dealloc];
 }
 
- 
-- (void)windowDidLoad
+
++ (BOOL)prefersTrackingUntilMouseUp
 {
-    [super windowDidLoad];
-    _dialogCode = 0;
+    return YES;
+}
+
+- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
     
-    [[self window] center];  // Center the window.
-    fSQLText.stringValue = _SQL;
-    fMaxRowsText.stringValue = [NSString stringWithFormat:@"%d",_MaxRows];
-}
-
-- (IBAction)aCancel:(id)sender
-{
-    [self.window close];
-    [NSApp stopModalWithCode:0];
-}
-
-- (IBAction)aOK:(id)sender
-{
-    self.fSQL = [fSQLText stringValue];
-    self.MaxRows = [fMaxRowsText.stringValue integerValue];
-    [self.window close];
-    [NSApp stopModalWithCode:1];
-}
-
-
-- (void)windowWillClose:(NSNotification*)notification
-{
-    [NSApp stopModalWithCode:_dialogCode];
-}
-
-
-- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)commandSelector
-
-{
-    BOOL result = NO;
-    
-    if (commandSelector == @selector(insertNewline:))
-    {
-        // new line action:
-        // always insert a line-break character and don’t cause the receiver to end editing
-        [textView insertNewlineIgnoringFieldEditor:self];
-        result = YES;
+    NSUInteger hitTestResult = [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
+    if ((hitTestResult & NSCellHitContentArea) != 0) {
+        hitTestResult |= NSCellHitTrackableArea;
     }
-    else if (commandSelector == @selector(insertTab:))
+    return hitTestResult;
+}
+
+- (void)_setAttributedStringTextColor:(NSColor *)color {
+    
+    NSMutableAttributedString *attrValue = [[self attributedStringValue] mutableCopy];
+    NSRange range = NSMakeRange(0, [attrValue length]);
+    [attrValue addAttribute:NSForegroundColorAttributeName value:color range:range];
+    [self setAttributedStringValue:attrValue];
+}
+
+- (void)_handleLinkClick {
+    
+    NSAttributedString *attrValue = [self attributedStringValue];
+    NSString *link = [attrValue attribute:NSLinkAttributeName atIndex:0 effectiveRange:NULL];
+    if (link!=nil) {
+        if (_clickHandler != nil)
+            _clickHandler(link, self);
+        else
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:link]];
+    }
+}
+
+- (BOOL)trackMouse:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)flag {
+    
+    BOOL result = YES;
+
+    NSUInteger hitTestResult = [self hitTestForEvent:theEvent inRect:cellFrame ofView:controlView];
+    if ((hitTestResult & NSCellHitContentArea) != 0)
     {
-        // tab action:
-        // always insert a tab character and don’t cause the receiver to end editing
-        [textView insertTabIgnoringFieldEditor:self];
-        result = YES;
+        [self _setAttributedStringTextColor:[NSColor redColor]];
+        result = [super trackMouse:theEvent inRect:cellFrame ofView:controlView untilMouseUp:flag];
+        theEvent = [NSApp currentEvent];
+        hitTestResult = [self hitTestForEvent:theEvent inRect:cellFrame ofView:controlView];
+
+        if ((hitTestResult & NSCellHitContentArea) != 0) {
+            [self _handleLinkClick];
+        }
     }
     return result;
+}
+
+- (void)setBackgroundStyle:(NSBackgroundStyle)style {
+    
+    [super setBackgroundStyle:style];
+    if (style == NSBackgroundStyleDark) {
+        [self _setAttributedStringTextColor:[NSColor whiteColor]];
+    }
+}
+
+- (NSArray *)accessibilityActionNames
+{
+    return [[super accessibilityActionNames] arrayByAddingObject:NSAccessibilityPressAction];
+}
+
+- (void)accessibilityPerformAction:(NSString *)action
+{
+    if ([action isEqualToString:NSAccessibilityPressAction]) {
+        [self _handleLinkClick];
+    } else {
+        [super accessibilityPerformAction:action];
+    }
 }
 
 @end

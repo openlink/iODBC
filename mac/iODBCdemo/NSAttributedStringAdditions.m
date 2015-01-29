@@ -69,77 +69,30 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#import "ExecController.h"
 
-@implementation ExecController
+#import "NSAttributedStringAdditions.h"
 
-@synthesize fSQL = _SQL;
-@synthesize MaxRows= _MaxRows;
+@implementation NSAttributedString (TVLAttributedStringAdditions)
 
-
-- (id)init
-{
-    return [super initWithWindowNibName:@"ExecSQL"];
-}
-
-- (void)dealloc
-{
-    [_SQL release];
-    [super dealloc];
-}
-
- 
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
-    _dialogCode = 0;
++ (NSAttributedString *)attributedStringWithBlueLink:(NSString *)val {
     
-    [[self window] center];  // Center the window.
-    fSQLText.stringValue = _SQL;
-    fMaxRowsText.stringValue = [NSString stringWithFormat:@"%d",_MaxRows];
-}
-
-- (IBAction)aCancel:(id)sender
-{
-    [self.window close];
-    [NSApp stopModalWithCode:0];
-}
-
-- (IBAction)aOK:(id)sender
-{
-    self.fSQL = [fSQLText stringValue];
-    self.MaxRows = [fMaxRowsText.stringValue integerValue];
-    [self.window close];
-    [NSApp stopModalWithCode:1];
-}
-
-
-- (void)windowWillClose:(NSNotification*)notification
-{
-    [NSApp stopModalWithCode:_dialogCode];
-}
-
-
-- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)commandSelector
-
-{
-    BOOL result = NO;
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:val];
+    NSRange range = NSMakeRange(0, [attrString length]);
     
-    if (commandSelector == @selector(insertNewline:))
-    {
-        // new line action:
-        // always insert a line-break character and don’t cause the receiver to end editing
-        [textView insertNewlineIgnoringFieldEditor:self];
-        result = YES;
-    }
-    else if (commandSelector == @selector(insertTab:))
-    {
-        // tab action:
-        // always insert a tab character and don’t cause the receiver to end editing
-        [textView insertTabIgnoringFieldEditor:self];
-        result = YES;
-    }
-    return result;
+    [attrString beginEditing];
+    [attrString addAttribute:NSLinkAttributeName value:val range:range];
+    
+    [attrString addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:range];
+    [attrString addAttribute:NSUnderlineStyleAttributeName
+                       value:[NSNumber numberWithInteger:NSSingleUnderlineStyle] range:range];
+    
+    NSMutableParagraphStyle *ps = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [ps setLineBreakMode:NSLineBreakByTruncatingTail];
+    [attrString addAttribute:NSParagraphStyleAttributeName value:ps range:range];
+
+    [attrString endEditing];
+    
+    return attrString;    
 }
 
 @end

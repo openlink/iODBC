@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1020</int>
-		<string key="IBDocument.SystemVersion">14B25</string>
+		<string key="IBDocument.SystemVersion">13F34</string>
 		<string key="IBDocument.InterfaceBuilderVersion">6250</string>
-		<string key="IBDocument.AppKitVersion">1343.16</string>
-		<string key="IBDocument.HIToolboxVersion">755.00</string>
+		<string key="IBDocument.AppKitVersion">1265.21</string>
+		<string key="IBDocument.HIToolboxVersion">698.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">6250</string>
@@ -42,7 +42,7 @@
 			<object class="NSWindowTemplate" id="537273161">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{172, 407}, {799, 572}}</string>
+				<string key="NSWindowRect">{{179, 225}, {799, 572}}</string>
 				<int key="NSWTFlags">1886912512</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSResWindow</string>
@@ -52,7 +52,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="163822942">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSScrollView" id="954987691">
@@ -68,8 +68,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{797, 554}</string>
 											<reference key="NSSuperview" ref="1053749496"/>
-											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -78,17 +76,13 @@
 												<int key="NSvFlags">256</int>
 												<string key="NSFrameSize">{797, 17}</string>
 												<reference key="NSSuperview" ref="692259861"/>
-												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="896310239"/>
 												<reference key="NSTableView" ref="543565483"/>
 											</object>
-											<object class="_NSCornerView" key="NSCornerView" id="541076870">
-												<reference key="NSNextResponder" ref="954987691"/>
+											<object class="_NSCornerView" key="NSCornerView">
+												<nil key="NSNextResponder"/>
 												<int key="NSvFlags">-2147483392</int>
 												<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
-												<reference key="NSSuperview" ref="954987691"/>
-												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="692259861"/>
 											</object>
 											<array class="NSMutableArray" key="NSTableColumns">
 												<object class="NSTableColumn" id="275046620">
@@ -205,23 +199,18 @@
 									</array>
 									<string key="NSFrame">{{1, 17}, {797, 554}}</string>
 									<reference key="NSSuperview" ref="954987691"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="543565483"/>
 									<reference key="NSDocView" ref="543565483"/>
 									<reference key="NSBGColor" ref="626201590"/>
 									<int key="NScvFlags">4</int>
-									<bool key="NSAutomaticallyAdjustsContentInsets">YES</bool>
 								</object>
 								<object class="NSScroller" id="896310239">
 									<reference key="NSNextResponder" ref="954987691"/>
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{-30, 17}, {15, 539}}</string>
 									<reference key="NSSuperview" ref="954987691"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="1053749496"/>
 									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-									<string key="NSControlAction">_doScroller:</string>
-									<reference key="NSControlTarget" ref="954987691"/>
 									<reference key="NSTarget" ref="954987691"/>
 									<string key="NSAction">_doScroller:</string>
 									<double key="NSPercent">0.81578949999999995</double>
@@ -231,11 +220,8 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{1, -30}, {865, 15}}</string>
 									<reference key="NSSuperview" ref="954987691"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="541076870"/>
+									<reference key="NSNextKeyView" ref="692259861"/>
 									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-									<string key="NSControlAction">_doScroller:</string>
-									<reference key="NSControlTarget" ref="954987691"/>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="954987691"/>
 									<string key="NSAction">_doScroller:</string>
@@ -249,23 +235,18 @@
 									</array>
 									<string key="NSFrame">{{1, 0}, {797, 17}}</string>
 									<reference key="NSSuperview" ref="954987691"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="769292673"/>
 									<reference key="NSDocView" ref="769292673"/>
-									<bool key="NSAutomaticallyAdjustsContentInsets">YES</bool>
 								</object>
-								<reference ref="541076870"/>
 							</array>
 							<string key="NSFrameSize">{799, 572}</string>
 							<reference key="NSSuperview" ref="163822942"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="924131997"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="896310239"/>
 							<reference key="NSHScroller" ref="924131997"/>
 							<reference key="NSContentView" ref="1053749496"/>
 							<reference key="NSHeaderClipView" ref="692259861"/>
-							<reference key="NSCornerView" ref="541076870"/>
 							<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 							<double key="NSMinMagnification">0.25</double>
 							<double key="NSMaxMagnification">4</double>
@@ -273,11 +254,9 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{799, 572}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="954987691"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1440, 877}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -580,7 +559,7 @@
 								</object>
 								<object class="NSMenuItem" id="1021808296">
 									<reference key="NSMenu" ref="662051454"/>
-									<string key="NSTitle">Fetch Next Rowset</string>
+									<string key="NSTitle">More ResultSet</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1226,111 +1205,7 @@
 			<nil key="sourceID"/>
 			<int key="maxID">322</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">NSResWindow</string>
-					<string key="superclassName">NSWindow</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">myApp</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">myApp</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">myApp</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../NSResWindow.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">TestController</string>
-					<string key="superclassName">NSObject</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="aCloseConnection:">id</string>
-						<string key="aExecSQL:">id</string>
-						<string key="aFetchNextRowset:">id</string>
-						<string key="aOpenConnection:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="aCloseConnection:">
-							<string key="name">aCloseConnection:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="aExecSQL:">
-							<string key="name">aExecSQL:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="aFetchNextRowset:">
-							<string key="name">aFetchNextRowset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="aOpenConnection:">
-							<string key="name">aOpenConnection:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="RSTable">NSTableView</string>
-						<string key="mMenu">id</string>
-						<string key="mWindow">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="RSTable">
-							<string key="name">RSTable</string>
-							<string key="candidateClassName">NSTableView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mMenu">
-							<string key="name">mMenu</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mWindow">
-							<string key="name">mWindow</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../TestController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">TestController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="aCloseConnection:">id</string>
-						<string key="aExecSQL:">id</string>
-						<string key="aFetchNextRowset:">id</string>
-						<string key="aOpenConnection:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="aCloseConnection:">
-							<string key="name">aCloseConnection:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="aExecSQL:">
-							<string key="name">aExecSQL:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="aFetchNextRowset:">
-							<string key="name">aFetchNextRowset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="aOpenConnection:">
-							<string key="name">aOpenConnection:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../TestController.m</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<bool key="IBDocument.previouslyAttemptedUpgradeToXcode5">NO</bool>
@@ -1345,8 +1220,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NSMenuCheckmark">{12, 12}</string>
-			<string key="NSMenuMixedState">{10, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 		</dictionary>
 	</data>
 </archive>
