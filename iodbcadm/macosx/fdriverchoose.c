@@ -624,19 +624,35 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
   NavDialogOptions dialogOptions;
   TFDRIVERCHOOSER *choose_t = (TFDRIVERCHOOSER *) inUserData;
   NavReplyRecord reply;
+  char tokenstr[4096] = { 0 };
   OSStatus err;
   FSSpec file;
+  char *dir;
   AEDesc defaultLoc;
   CFStringRef str;
   CFURLRef url;
   Str255 param;
-  char path[1024];
+  char path[4096];
+  char buf[4096];
+  Size len;
+
+  GetControlData (choose_t->dsn_entry, 0, kControlEditTextTextTag, 
+        sizeof (buf), buf, &len);
+  buf[len] = '\0';
+
+  if (STRLEN(buf)==0)
+    STRCPY(path, "xxx.dsn");
+  else
+    {
+      char *s = strrchr(buf,'/');
+      STRCPY(path, s?s+1:buf);
+    }
 
   NavGetDefaultDialogOptions (&dialogOptions);
   STRCPY (dialogOptions.windowTitle + 1, "Save as ...");
   dialogOptions.windowTitle[0] = STRLEN ("Save as ...");
-  STRCPY (dialogOptions.savedFileName + 1, "xxx.dsn");
-  dialogOptions.savedFileName[0] = STRLEN ("xxx.dsn");
+  STRCPY (dialogOptions.savedFileName + 1, path);
+  dialogOptions.savedFileName[0] = STRLEN (path);
 
   str = CFStringCreateWithCString(NULL, choose_t->curr_dir, kCFStringEncodingMacRoman);
   url = CFURLCreateWithFileSystemPath(NULL, str, kCFURLHFSPathStyle, TRUE);
@@ -650,6 +666,8 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
 
   AECreateDesc(typeFSS, &file, sizeof(file), &defaultLoc);
 
+  dialogOptions.dialogOptionFlags |= kNavAllowPreviews|kNavAllowStationery;
+
   err = NavPutFile (&defaultLoc, &reply, &dialogOptions,
     NewNavEventUPP (fdriverchooser_nav_events),
     'TEXT', kNavGenericSignature, NULL);
@@ -661,24 +679,29 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
-          char file_path[PATH_MAX] = { '\0' };
-          FSRef ref;
+	  int l;
+	  /* Get back some information about the directory */
+	  dir = get_full_pathname (file.parID, file.vRefNum);
+	  sprintf (tokenstr, "%s/", dir ? dir : "");
+	  strncat (tokenstr, &file.name[1], file.name[0]);
+	  /* Display the constructed string re. the file choosen */
+	  l = STRLEN(tokenstr);
 
-          if( file.name[0] == 0 )
-            err = FSMakeFSSpec(file.vRefNum, file.parID, file.name, &file);
-          if( err == noErr )
-            err = FSpMakeFSRef(&file, &ref);
+	  if (l == 0)
+	    STRCPY(buf, "xxx.dsn");
+	  else if (l > 4 && strcmp(tokenstr+l-4, ".dsn")!=0)
+	    snprintf(buf, sizeof(buf), "%s.dsn", tokenstr);
+	  else
+	    STRNCPY(buf, tokenstr, sizeof(buf));
 
-          err = FSRefMakePath(&ref, file_path, PATH_MAX); // translate the FSRef into a path
-          if (err == noErr)
-            {
-	      /* Display the constructed string re. the file choosen */
-	      SetControlData (choose_t->dsn_entry, 0,
-	          kControlEditTextTextTag,
-	          STRLEN (file_path) ? STRLEN (file_path) : STRLEN ("xxx.dsn"),
-	          STRLEN (file_path) ? file_path : "xxx.dsn");
-	      DrawOneControl (choose_t->dsn_entry);
-	    }
+	  buf[sizeof(buf)-1]=0;
+
+	  SetControlData (choose_t->dsn_entry, 0,
+	      kControlEditTextTextTag, STRLEN(buf), buf);
+	  DrawOneControl (choose_t->dsn_entry);
+	  /* Clean up */
+	  if (dir)
+	    free (dir);
 	}
     }
 

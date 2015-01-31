@@ -1041,8 +1041,10 @@ tracing_logfile_choosen (EventHandlerCallRef inHandlerRef,
   NavDialogOptions dialogOptions;
   TTRACING *tracing_t = (TTRACING *) inUserData;
   NavReplyRecord reply;
+  char tokenstr[4096] = { 0 };
   OSStatus err;
   FSSpec file;
+  char *dir;
 
   NavGetDefaultDialogOptions (&dialogOptions);
   STRCPY (dialogOptions.windowTitle + 1, "Choose your trace file ...");
@@ -1066,25 +1068,19 @@ tracing_logfile_choosen (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
-          char file_path[PATH_MAX] = { '\0' };
-          FSRef ref;
-
-          if( file.name[0] == 0 )
-            err = FSMakeFSSpec(file.vRefNum, file.parID, file.name, &file);
-          if( err == noErr )
-            err = FSpMakeFSRef(&file, &ref);
-
-          err = FSRefMakePath(&ref, file_path, PATH_MAX); // translate the FSRef into a path
-          if (err == noErr)
-            {
-	      /* Display the constructed string re. the file choosen */
-	      SetControlData (tracing_t->logfile_entry, 0,
-	        kControlEditTextTextTag,
-	        STRLEN (file_path) ? STRLEN (file_path) : STRLEN ("sql.log"),
-	        STRLEN (file_path) ? file_path : "sql.log");
-	      DrawOneControl (tracing_t->logfile_entry);
-	    }
-	  
+	  /* Get back some information about the directory */
+	  dir = get_full_pathname (file.parID, file.vRefNum);
+	  sprintf (tokenstr, "%s/", dir ? dir : "");
+	  strncat (tokenstr, (char *)&file.name[1], file.name[0]);
+	  /* Display the constructed string re. the file choosen */
+	  SetControlData (tracing_t->logfile_entry, 0,
+	      kControlEditTextTextTag,
+	      STRLEN (tokenstr) ? STRLEN (tokenstr) : STRLEN ("sql.log"),
+	      STRLEN (tokenstr) ? tokenstr : "sql.log");
+	  DrawOneControl (tracing_t->logfile_entry);
+	  /* Clean up */
+	  if (dir)
+	    free (dir);
 	}
     }
 
