@@ -71,7 +71,7 @@
 		71A26EE8069D5782005AC343 /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
 		85D1BBC707E7D7C90070A59E /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../../mac/iODBC/build/iODBC.framework; sourceTree = SOURCE_ROOT; };
 		CDAE3B890987D655003250F8 /* Info-iODBC_Administrator.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-iODBC_Administrator.plist"; sourceTree = "<group>"; };
-		CDAE3B8A0987D655003250F8 /* OpenLink ODBC Administrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OpenLink ODBC Administrator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Administrator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5C2EB0D0518623801A801EC /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../../mac/iODBCinst/build/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		F5C2EB0F0518625501A801EC /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
 		F5C2EB100518625501A801EC /* sql.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sql.h; path = ../../include/sql.h; sourceTree = SOURCE_ROOT; };
@@ -96,12 +96,12 @@
 		195DF8CFFE9D517E11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CDAE3B8A0987D655003250F8 /* OpenLink ODBC Administrator.app */,
+				CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		20286C29FDCF999611CA2CEA /* OpenLink ODBC Administrator */ = {
+		20286C29FDCF999611CA2CEA /* iODBC Administrator */ = {
 			isa = PBXGroup;
 			children = (
 				20286C2AFDCF999611CA2CEA /* Sources */,
@@ -110,7 +110,7 @@
 				195DF8CFFE9D517E11CA2CBB /* Products */,
 				CDAE3B890987D655003250F8 /* Info-iODBC_Administrator.plist */,
 			);
-			name = "OpenLink ODBC Administrator";
+			name = "iODBC Administrator";
 			sourceTree = "<group>";
 		};
 		20286C2AFDCF999611CA2CEA /* Sources */ = {
@@ -201,7 +201,7 @@
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "OpenLink ODBC Administrator";
+				PRODUCT_NAME = "iODBC Administrator";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -215,7 +215,7 @@
 			name = "iODBC Administrator";
 			productInstallPath = /Applications/Utilities;
 			productName = "iODBC Administrator";
-			productReference = CDAE3B8A0987D655003250F8 /* OpenLink ODBC Administrator.app */;
+			productReference = CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -231,7 +231,7 @@
 				1CEA8F0E005FBAFB7F000001 /* Deployment */,
 			);
 			hasScannedForEncodings = 1;
-			mainGroup = 20286C29FDCF999611CA2CEA /* OpenLink ODBC Administrator */;
+			mainGroup = 20286C29FDCF999611CA2CEA /* iODBC Administrator */;
 			projectDirPath = "";
 			targets = (
 				CDAE3B730987D655003250F8 /* iODBC Administrator */,
@@ -348,7 +348,7 @@
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "OpenLink ODBC Administrator";
+				PRODUCT_NAME = "iODBC Administrator";
 				RESMERGER_SOURCES_FORK = data;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
@@ -392,7 +392,7 @@
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "OpenLink ODBC Administrator";
+				PRODUCT_NAME = "iODBC Administrator";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
