@@ -229,7 +229,7 @@ install:
 	#
 	#  Install CFM bridge for Microsoft Office
 	#
-	mkdir -p "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
+	-mkdir -p "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
 	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge" "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
 	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge.res" "$(DESTDIR)/Library/CFMSupport/._iODBC CFM Bridge"
 	/System/Library/CoreServices/FixupResourceForks /Library/CFMSupport
