@@ -186,7 +186,7 @@
 					../../mac/iODBCinst/build,
 				);
 				HEADER_SEARCH_PATHS = ../../include;
-				INSTALL_PATH = /Applications/Utilities;
+				INSTALL_PATH = /Applications/iODBC;
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O2";
 				OTHER_CFLAGS = (
@@ -213,7 +213,7 @@
 			dependencies = (
 			);
 			name = "iODBC Administrator";
-			productInstallPath = /Applications/Utilities;
+			productInstallPath = /Applications/iODBC;
 			productName = "iODBC Administrator";
 			productReference = CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */;
 			productType = "com.apple.product-type.application";
@@ -338,7 +338,7 @@
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = "Info-iODBC_Administrator.plist";
-				INSTALL_PATH = /Applications/Utilities;
+				INSTALL_PATH = /Applications/iODBC;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -382,7 +382,7 @@
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = "Info-iODBC_Administrator.plist";
-				INSTALL_PATH = /Applications/Utilities;
+				INSTALL_PATH = /Applications/iODBC;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
