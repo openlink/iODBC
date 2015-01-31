@@ -79,6 +79,8 @@ extern wchar_t* convert_CFString_to_wchar(const CFStringRef str);
 extern CFStringRef convert_wchar_to_CFString(wchar_t *str);
 extern void __create_message (HWND hwnd, SQLPOINTER dsn, SQLPOINTER text,
   SQLCHAR waMode, AlertType id);
+extern char *get_home(char *buf, size_t size);
+
 
 extern UInt32 FDSN_nrows;
 
@@ -1415,7 +1417,12 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", 
       dsnchoose_t->curr_dir, sizeof(dsnchoose_t->curr_dir), "odbcinst.ini"))
-    strcpy(dsnchoose_t->curr_dir, DEFAULT_FILEDSNPATH);
+    {
+      char tmp[1024];
+      snprintf(dsnchoose_t->curr_dir, sizeof(dsnchoose_t->curr_dir),
+        "%s/Documents", get_home(tmp, sizeof(tmp)));
+/*was   "%s"DEFAULT_FILEDSNPATH, get_home(tmp, sizeof(tmp))); */
+    }
 
   /* Force to go on the first tab */
   DisplayTabControlNumber (1, tabControl, dsnchooser, tabs);

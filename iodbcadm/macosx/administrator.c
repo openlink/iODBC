@@ -125,6 +125,22 @@ admin_filter_tracefiles (AEDesc * item, void *info,
   return display;
 }*/
 
+char *get_home(char *buf, size_t size)
+{
+  char *ptr;
+
+  if ((ptr = getenv ("HOME")) == NULL)
+    {
+      ptr = (char *) getpwuid (getuid ());
+
+      if (ptr != NULL)
+        ptr = ((struct passwd *) ptr)->pw_dir;
+    }
+  STRNCPY(buf, ptr, size);
+  buf[size-1]=0;
+  return buf;
+}
+
 static pascal void
 admin_nav_events (NavEventCallbackMessage callBackSelector,
     NavCBRecPtr callBackParms, NavCallBackUserData callBackUD)
@@ -1872,7 +1888,12 @@ create_administrator (HWND hwnd)
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", 
       dsnchoose_t.curr_dir, sizeof(dsnchoose_t.curr_dir), "odbcinst.ini"))
-    strcpy(dsnchoose_t.curr_dir, DEFAULT_FILEDSNPATH);
+    {
+      char tmp[1024];
+      snprintf(dsnchoose_t.curr_dir, sizeof(dsnchoose_t.curr_dir),
+        "%s/Documents", get_home(tmp, sizeof(tmp)));
+/*        "%s"DEFAULT_FILEDSNPATH, get_home(tmp, sizeof(tmp))); */
+    }
 
   /* Force to go on the first tab */
   DisplayTabControlNumber (1, tabControl, admin, tabs);
