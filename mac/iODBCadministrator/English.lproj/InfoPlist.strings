@@ -1,6 +1,6 @@
 /* Localized versions of Info.plist keys */
 
-CFBundleName = "OpenLink ODBC Administrator";
-CFBundleShortVersionString = "OpenLink ODBC Administrator version 3.52.9";
-CFBundleGetInfoString = "OpenLink ODBC Administrator version 3.52.9, Copyright 1995-2015, OpenLink Software";
-NSHumanReadableCopyright = "Copyright © 1995-2015, OpenLink Software";
+CFBundleName = "iODBC Administrator";
+CFBundleShortVersionString = "iODBC Administrator version 3.52.9";
+CFBundleGetInfoString = "iODBC Administrator version 3.52.9, Copyright © 1995-2015 OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 1995-2015 OpenLink Software";

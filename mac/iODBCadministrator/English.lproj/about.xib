@@ -113,13 +113,7 @@
 							<reference key="instantiationProperties" ref="0"/>
 							<nil key="classID"/>
                             <string type="base64-UTF8" key="title">
-Q29weXJpZ2h0IDE5OTUtMjAxNSwgT3BlbkxpbmsgU29mdHdhcmUgYW5kIEtlIEppbgoKVmVyc2lvbiAz
-LjUyLjkKCmlPREJDIGlzIGFuIE9wZW4gU291cmNlIERyaXZlciBNYW5hZ2VyIG1haW50YWluZWQgYnkg
-T3BlbkxpbmsgU29mdHdhcmUgYW5kIGlzIGR1YWwgbGljZW5zZWQgdW5kZXIgTEdQTCBhbmQgQlNEIGxp
-Y2Vuc2VzLgoKUGxlYXNlIHZpc2l0IGh0dHA6Ly93d3cub3Blbmxpbmtzdy5jb20gZm9yIG1vcmUgaW5m
-b3JtYXRpb24gb24gT3BlbkxpbmsgU29mdHdhcmUgb3IgdG8gZG93bmxvYWQgYWRkaXRpb25hbCBPREJD
-IERyaXZlcnMuCk1vcmUgaW5mb3JtYXRpb24gb24gaU9EQkMgaXMgYXZhaWxhYmxlIGF0IGh0dHA6Ly93
-d3cuaW9kYmMub3JnCg
+Q29weXJpZ2h0IChDKSAxOTk1LTIwMTUgT3BlbkxpbmsgU29mdHdhcmUKClZlcnNpb24gMy41Mi45CgppT0RCQyBpcyBhbiBPcGVuIFNvdXJjZSBEcml2ZXIgTWFuYWdlciB3aGljaCBpcyBkdWFsIGxpY2Vuc2VkIHVuZGVyIExHUEwgYW5kIEJTRCBsaWNlbnNlcy4KClBsZWFzZSB2aXNpdCBodHRwOi8vd3d3LmlvZGJjLm9yZy8gZm9yIG1vcmUgaW5mb3JtYXRpb24uCg
                             </string>
 							<nil key="textColor"/>
 							<reference key="usesTextColor" ref="8"/>

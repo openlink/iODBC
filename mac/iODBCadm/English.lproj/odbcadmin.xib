@@ -4147,10 +4147,9 @@
 												<reference key="layoutSuspended" ref="8"/>
 												<reference key="instantiationProperties" ref="0"/>
 												<nil key="classID"/>
-												<string type="base64-UTF8" key="title">aU9EQkMgaXMgYW4gTEdQTCBEcml2ZXIgTWFuYWdlciBtYWludGFpbmVkIGJ5IE9wZW5MaW5rIFNvZnR3
-YXJlLiAKQWRkaXRpb25hbCBPREJDIERyaXZlcnMgYXJlIGF2YWlsYWJsZSBhdCBodHRwOi8vd3d3Lm9w
-ZW5saW5rc3cuY29tCkFkZGl0aW9uYWwgaU9EQkMgaW5mb3JtYXRpb24gaXMgYXZhaWxhYmxlIGF0IGh0
-dHA6Ly93d3cuaW9kYmMub3JnA</string>
+												<string type="base64-UTF8" key="title">
+aU9EQkMgaXMgYW4gT3BlbiBTb3VyY2UgRHJpdmVyIE1hbmFnZXIgd2hpY2ggaXMgZHVhbCBsaWNlbnNlZCAKdW5kZXIgTEdQTCBhbmQgQlNEIGxpY2Vuc2VzLgpQbGVhc2UgdmlzaXQgaHR0cDovL3d3dy5pb2RiYy5vcmcvIGZvciBtb3JlIGluZm9ybWF0aW9uLgo
+</string>
 												<nil key="textColor"/>
 												<reference key="usesTextColor" ref="8"/>
 												<reference key="justification" ref="8"/>

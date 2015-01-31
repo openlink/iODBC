@@ -29,7 +29,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="IBHIMenuItem" id="744410619">
 						<reference key="NSMenu" ref="991054007"/>
-						<string key="NSTitle">OpenLink ODBC Administrator</string>
+						<string key="NSTitle">iODBC Administrator</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -43,7 +43,7 @@
 						</object>
 						<string key="NSAction">submenuAction:</string>
 						<object class="IBHIMenu" key="NSSubmenu" id="786418772">
-							<string key="NSTitle">OpenLink ODBC Administrator</string>
+							<string key="NSTitle">iODBC Administrator</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="IBHIMenuItem" id="692727974">
@@ -108,7 +108,7 @@
 							<object class="NSMutableString" key="NSName" id="626561448">
 								<characters key="NS.bytes">_NSAppleMenu</characters>
 							</object>
-							<string key="title">OpenLink ODBC Administrator</string>
+							<string key="title">iODBC Administrator</string>
 							<integer value="128" key="menuID"/>
 							<reference key="name" ref="626561448"/>
 							<reference key="excludesMarkColumn" ref="8"/>
@@ -117,7 +117,7 @@
 							<reference key="hidden" ref="8"/>
 							<reference key="condenseSeparators" ref="8"/>
 						</object>
-						<string key="title">OpenLink ODBC Administrator</string>
+						<string key="title">iODBC Administrator</string>
 						<string key="keyEquivalent"/>
 						<reference key="disabled" ref="8"/>
 						<reference key="checked" ref="8"/>
