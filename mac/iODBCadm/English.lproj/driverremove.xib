@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archive type="com.apple.InterfaceBuilder3.Carbon.XIB" version="7.03">
+<archive type="com.apple.InterfaceBuilder3.Carbon.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9L30</string>
-		<string key="IBDocument.InterfaceBuilderVersion">680</string>
-		<string key="IBDocument.AppKitVersion">949.54</string>
-		<string key="IBDocument.HIToolboxVersion">353.00</string>
-		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
+		<string key="IBDocument.SystemVersion">10K549</string>
+		<string key="IBDocument.InterfaceBuilderVersion">788</string>
+		<string key="IBDocument.AppKitVersion">1038.36</string>
+		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-		</object>
-		<object class="NSArray" key="IBDocument.PluginDependencies">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-		</object>
-		<object class="NSMutableDictionary" key="IBDocument.Metadata">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys">
+			<object class="NSArray" key="dict.sortedKeys" id="0">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 			</object>
+			<object class="NSMutableArray" key="dict.values">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+			</object>
+		</object>
+		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
+			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="167"/>
+		</object>
+		<reference key="IBDocument.PluginDependencies" ref="0"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<bool key="EncodedWithXMLCoder">YES</bool>
+			<reference key="dict.sortedKeys" ref="0"/>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 			</object>
@@ -24,299 +30,317 @@
 		<object class="NSMutableArray" key="IBDocument.RootObjects" id="976906253">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="IBHIWindowTemplate" id="815246743">
-				<integer value="0" key="doesNotHide" id="8"/>
-				<reference key="squareCorners" ref="8"/>
-				<reference key="autoViewDragTracking" ref="8"/>
-				<integer value="1" key="receivesActivates" id="9"/>
-				<reference key="receivesUpdates" ref="9"/>
-				<reference key="hasCloseBox" ref="9"/>
-				<reference key="hasCollapseBox" ref="9"/>
-				<reference key="hasHorizontalZoom" ref="9"/>
-				<reference key="resizable" ref="8"/>
-				<reference key="hasSideTitle" ref="8"/>
-				<reference key="hasVerticalZoom" ref="9"/>
-				<reference key="standardHandler" ref="9"/>
-				<reference key="liveResize" ref="8"/>
-				<reference key="toolbarButton" ref="8"/>
-				<reference key="metal" ref="8"/>
-				<reference key="unifiedTitleAndToolbar" ref="8"/>
-				<reference key="compositing" ref="8"/>
-				<reference key="ignoreClicks" ref="8"/>
-				<reference key="asyncDrag" ref="8"/>
-				<reference key="constrained" ref="9"/>
-				<reference key="hideOnFullScreen" ref="8"/>
-				<reference key="hideOnSuspend" ref="8"/>
-				<reference key="hasShadow" ref="9"/>
-				<reference key="noMetalContentSeparator" ref="8"/>
-				<reference key="doesNotCycle" ref="8"/>
-				<reference key="inWindowMenu" ref="9"/>
-				<reference key="visibleWithoutLogin" ref="8"/>
-				<reference key="opaqueForEvents" ref="8"/>
+				<integer value="0" key="doesNotHide"/>
+				<integer value="0" key="squareCorners"/>
+				<integer value="0" key="autoViewDragTracking"/>
+				<integer value="1" key="receivesActivates"/>
+				<integer value="1" key="receivesUpdates"/>
+				<integer value="1" key="hasCloseBox"/>
+				<integer value="1" key="hasCollapseBox"/>
+				<integer value="1" key="hasHorizontalZoom"/>
+				<integer value="0" key="resizable"/>
+				<integer value="0" key="hasSideTitle"/>
+				<integer value="1" key="hasVerticalZoom"/>
+				<integer value="1" key="standardHandler"/>
+				<integer value="0" key="liveResize"/>
+				<integer value="0" key="toolbarButton"/>
+				<integer value="0" key="metal"/>
+				<integer value="0" key="unifiedTitleAndToolbar"/>
+				<integer value="0" key="compositing"/>
+				<integer value="0" key="ignoreClicks"/>
+				<integer value="0" key="asyncDrag"/>
+				<integer value="1" key="constrained"/>
+				<integer value="0" key="hideOnFullScreen"/>
+				<integer value="0" key="hideOnSuspend"/>
+				<integer value="1" key="hasShadow"/>
+				<integer value="0" key="noMetalContentSeparator"/>
+				<integer value="0" key="doesNotCycle"/>
+				<integer value="1" key="inWindowMenu"/>
+				<integer value="0" key="visibleWithoutLogin"/>
+				<integer value="0" key="opaqueForEvents"/>
 				<integer value="4" key="windowClass"/>
-				<reference key="themeBrush" ref="8"/>
+				<integer value="0" key="themeBrush"/>
 				<integer value="7" key="windowPosition"/>
-				<reference key="scalingMode" ref="8"/>
+				<integer value="0" key="scalingMode"/>
 				<nil key="helpTagText"/>
 				<nil key="helpTagExtendedText"/>
 				<nil key="classID"/>
 				<string key="title">Remove driver ...</string>
 				<object class="IBHIRootControl" key="rootControl" id="794752512">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="IBHIStaticText" id="1070195402">
 							<reference key="NSNextResponder" ref="794752512"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{20, 20}, {355, 16}}</string>
+							<string key="NSFrame">{{15, 20}, {355, 16}}</string>
 							<reference key="NSSuperview" ref="794752512"/>
-							<reference key="controlSignature" ref="8"/>
-							<reference key="controlID" ref="8"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="0" key="controlSignature"/>
+							<integer value="0" key="controlID"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<object class="NSArray" key="auxiliaryProperties" id="0">
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
 							<string key="title">From which set do you want to remove it ?</string>
 							<nil key="textColor"/>
-							<reference key="usesTextColor" ref="8"/>
-							<reference key="justification" ref="8"/>
-							<reference key="isMultiline" ref="8"/>
+							<integer value="0" key="usesTextColor"/>
+							<integer value="0" key="justification"/>
+							<integer value="0" key="isMultiline"/>
 						</object>
 						<object class="IBHICheckBox" id="989959572">
 							<reference key="NSNextResponder" ref="794752512"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{43, 46}, {77, 18}}</string>
+							<string key="NSFrame">{{31, 46}, {77, 18}}</string>
 							<reference key="NSSuperview" ref="794752512"/>
 							<integer value="1129206860" key="controlSignature"/>
 							<integer value="8002" key="controlID"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<reference key="auxiliaryProperties" ref="0"/>
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
-							<reference key="state" ref="8"/>
-							<reference key="autoToggle" ref="9"/>
+							<integer value="0" key="state"/>
+							<integer value="1" key="autoToggle"/>
 							<string key="title">User</string>
 						</object>
 						<object class="IBHICheckBox" id="219568156">
 							<reference key="NSNextResponder" ref="794752512"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{125, 46}, {265, 18}}</string>
+							<string key="NSFrame">{{113, 46}, {286, 18}}</string>
 							<reference key="NSSuperview" ref="794752512"/>
 							<integer value="1129206860" key="controlSignature"/>
 							<integer value="8003" key="controlID"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<reference key="auxiliaryProperties" ref="0"/>
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
-							<reference key="state" ref="8"/>
-							<reference key="autoToggle" ref="9"/>
+							<integer value="0" key="state"/>
+							<integer value="1" key="autoToggle"/>
 							<string key="title">System (you have to be an administrator)</string>
 						</object>
 						<object class="IBHIStaticText" id="770749033">
 							<reference key="NSNextResponder" ref="794752512"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{20, 82}, {355, 16}}</string>
+							<string key="NSFrame">{{15, 82}, {355, 16}}</string>
 							<reference key="NSSuperview" ref="794752512"/>
-							<reference key="controlSignature" ref="8"/>
-							<reference key="controlID" ref="8"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="0" key="controlSignature"/>
+							<integer value="0" key="controlID"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<reference key="auxiliaryProperties" ref="0"/>
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
 							<string key="title">Do you want to remove all DSN associated to it ?</string>
 							<nil key="textColor"/>
-							<reference key="usesTextColor" ref="8"/>
-							<reference key="justification" ref="8"/>
-							<reference key="isMultiline" ref="8"/>
+							<integer value="0" key="usesTextColor"/>
+							<integer value="0" key="justification"/>
+							<integer value="0" key="isMultiline"/>
 						</object>
 						<object class="IBHIRadioGroup" id="221173271">
 							<reference key="NSNextResponder" ref="794752512"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{43, 109}, {164, 20}}</string>
+							<string key="NSFrame">{{31, 109}, {164, 20}}</string>
 							<reference key="NSSuperview" ref="794752512"/>
 							<integer value="1129206860" key="controlSignature"/>
 							<integer value="8004" key="controlID"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<reference key="auxiliaryProperties" ref="0"/>
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
-							<reference key="rows" ref="9"/>
-							<integer value="2" key="columns" id="10"/>
-							<reference key="selectedRow" ref="9"/>
-							<reference key="selectedColumn" ref="9"/>
-							<reference key="intercellSpacing" ref="10"/>
+							<integer value="1" key="rows"/>
+							<integer value="2" key="columns"/>
+							<integer value="1" key="selectedRow"/>
+							<integer value="1" key="selectedColumn"/>
+							<integer value="2" key="intercellSpacing"/>
 							<object class="NSArray" key="titles">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMutableString">
@@ -334,48 +358,52 @@
 							<reference key="NSSuperview" ref="794752512"/>
 							<integer value="1129206860" key="controlSignature"/>
 							<integer value="8000" key="controlID"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<reference key="auxiliaryProperties" ref="0"/>
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
-							<reference key="buttonType" ref="9"/>
-							<integer value="6" key="iconPosition" id="14"/>
-							<reference key="contentResID" ref="8"/>
-							<reference key="contentType" ref="8"/>
+							<integer value="1" key="buttonType"/>
+							<integer value="6" key="iconPosition"/>
+							<integer value="0" key="contentResID"/>
+							<integer value="0" key="contentType"/>
 							<string key="title">Ok</string>
 						</object>
 						<object class="IBHIButton" id="721062172">
@@ -385,98 +413,109 @@
 							<reference key="NSSuperview" ref="794752512"/>
 							<integer value="1129206860" key="controlSignature"/>
 							<integer value="8001" key="controlID"/>
-							<reference key="enabled" ref="9"/>
-							<reference key="hidden" ref="8"/>
+							<integer value="1" key="enabled"/>
+							<integer value="0" key="hidden"/>
 							<integer value="9999" key="fontStyle"/>
-							<reference key="controlSize" ref="8"/>
-							<reference key="command" ref="8"/>
+							<integer value="0" key="controlSize"/>
+							<integer value="0" key="command"/>
 							<nil key="helpTagExtendedText"/>
 							<nil key="helpTagText"/>
-							<reference key="helpTagDisplaySide" ref="8"/>
-							<reference key="auxiliaryProperties" ref="0"/>
+							<integer value="0" key="helpTagDisplaySide"/>
+							<object class="NSArray" key="auxiliaryProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 								<nil key="bindingTopView"/>
-								<reference key="bindingTopKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingTopOffset"/>
+								<integer value="0" key="bindingTopKind"/>
+								<real value="0.0" key="bindingTopOffset"/>
 								<nil key="bindingLeftView"/>
-								<reference key="bindingLeftKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingLeftOffset"/>
+								<integer value="0" key="bindingLeftKind"/>
+								<real value="0.0" key="bindingLeftOffset"/>
 								<nil key="bindingBottomView"/>
-								<reference key="bindingBottomKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingBottomOffset"/>
+								<integer value="0" key="bindingBottomKind"/>
+								<real value="0.0" key="bindingBottomOffset"/>
 								<nil key="bindingRightView"/>
-								<reference key="bindingRightKind" ref="8"/>
-								<real value="0.000000e+00" key="bindingRightOffset"/>
-								<real value="0.000000e+00" key="scaleXRatio"/>
+								<integer value="0" key="bindingRightKind"/>
+								<real value="0.0" key="bindingRightOffset"/>
+								<real value="0.0" key="scaleXRatio"/>
 								<nil key="scaleXView"/>
-								<reference key="scaleXKind" ref="8"/>
-								<real value="0.000000e+00" key="scaleYRatio"/>
+								<integer value="0" key="scaleXKind"/>
+								<real value="0.0" key="scaleYRatio"/>
 								<nil key="scaleYView"/>
-								<reference key="scaleYKind" ref="8"/>
-								<reference key="positionXKind" ref="8"/>
+								<integer value="0" key="scaleYKind"/>
+								<integer value="0" key="positionXKind"/>
 								<nil key="positionXView"/>
-								<real value="0.000000e+00" key="positionXOffset"/>
-								<reference key="positionYKind" ref="8"/>
+								<real value="0.0" key="positionXOffset"/>
+								<integer value="0" key="positionYKind"/>
 								<nil key="positionYView"/>
-								<real value="0.000000e+00" key="positionYOffset"/>
+								<real value="0.0" key="positionYOffset"/>
 							</object>
-							<reference key="layoutSuspended" ref="8"/>
-							<reference key="instantiationProperties" ref="0"/>
+							<integer value="0" key="layoutSuspended"/>
+							<object class="NSArray" key="instantiationProperties">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+							</object>
 							<nil key="classID"/>
-							<reference key="buttonType" ref="10"/>
-							<reference key="iconPosition" ref="14"/>
-							<reference key="contentResID" ref="8"/>
-							<reference key="contentType" ref="8"/>
+							<integer value="2" key="buttonType"/>
+							<integer value="6" key="iconPosition"/>
+							<integer value="0" key="contentResID"/>
+							<integer value="0" key="contentType"/>
 							<string key="title">Cancel</string>
 						</object>
 					</object>
 					<string key="NSFrameSize">{408, 181}</string>
-					<reference key="controlSignature" ref="8"/>
-					<reference key="controlID" ref="8"/>
-					<reference key="enabled" ref="9"/>
-					<reference key="hidden" ref="8"/>
+					<reference key="NSSuperview"/>
+					<integer value="0" key="controlSignature"/>
+					<integer value="0" key="controlID"/>
+					<integer value="1" key="enabled"/>
+					<integer value="0" key="hidden"/>
 					<integer value="9999" key="fontStyle"/>
-					<reference key="controlSize" ref="8"/>
-					<reference key="command" ref="8"/>
+					<integer value="0" key="controlSize"/>
+					<integer value="0" key="command"/>
 					<nil key="helpTagExtendedText"/>
 					<nil key="helpTagText"/>
-					<reference key="helpTagDisplaySide" ref="8"/>
-					<reference key="auxiliaryProperties" ref="0"/>
+					<integer value="0" key="helpTagDisplaySide"/>
+					<object class="NSArray" key="auxiliaryProperties">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+					</object>
 					<object class="IBCarbonHILayoutInfo" key="layoutInfo">
 						<nil key="bindingTopView"/>
-						<reference key="bindingTopKind" ref="8"/>
-						<real value="0.000000e+00" key="bindingTopOffset"/>
+						<integer value="0" key="bindingTopKind"/>
+						<real value="0.0" key="bindingTopOffset"/>
 						<nil key="bindingLeftView"/>
-						<reference key="bindingLeftKind" ref="8"/>
-						<real value="0.000000e+00" key="bindingLeftOffset"/>
+						<integer value="0" key="bindingLeftKind"/>
+						<real value="0.0" key="bindingLeftOffset"/>
 						<nil key="bindingBottomView"/>
-						<reference key="bindingBottomKind" ref="8"/>
-						<real value="0.000000e+00" key="bindingBottomOffset"/>
+						<integer value="0" key="bindingBottomKind"/>
+						<real value="0.0" key="bindingBottomOffset"/>
 						<nil key="bindingRightView"/>
-						<reference key="bindingRightKind" ref="8"/>
-						<real value="0.000000e+00" key="bindingRightOffset"/>
-						<real value="0.000000e+00" key="scaleXRatio"/>
+						<integer value="0" key="bindingRightKind"/>
+						<real value="0.0" key="bindingRightOffset"/>
+						<real value="0.0" key="scaleXRatio"/>
 						<nil key="scaleXView"/>
-						<reference key="scaleXKind" ref="8"/>
-						<real value="0.000000e+00" key="scaleYRatio"/>
+						<integer value="0" key="scaleXKind"/>
+						<real value="0.0" key="scaleYRatio"/>
 						<nil key="scaleYView"/>
-						<reference key="scaleYKind" ref="8"/>
-						<reference key="positionXKind" ref="8"/>
+						<integer value="0" key="scaleYKind"/>
+						<integer value="0" key="positionXKind"/>
 						<nil key="positionXView"/>
-						<real value="0.000000e+00" key="positionXOffset"/>
-						<reference key="positionYKind" ref="8"/>
+						<real value="0.0" key="positionXOffset"/>
+						<integer value="0" key="positionYKind"/>
 						<nil key="positionYView"/>
-						<real value="0.000000e+00" key="positionYOffset"/>
+						<real value="0.0" key="positionYOffset"/>
 					</object>
-					<reference key="layoutSuspended" ref="8"/>
-					<reference key="instantiationProperties" ref="0"/>
+					<integer value="0" key="layoutSuspended"/>
+					<object class="NSArray" key="instantiationProperties">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+					</object>
 					<nil key="classID"/>
 				</object>
-				<reference key="autoPositionMask" ref="8"/>
+				<integer value="0" key="autoPositionMask"/>
 				<string key="windowRectAsNSRect">{{174, 44}, {408, 181}}</string>
 				<string key="autoScreenRectAsNSRect">{{0, 0}, {1024, 768}}</string>
-				<reference key="helpTagDisplaySide" ref="8"/>
-				<reference key="instantiationProperties" ref="0"/>
+				<integer value="0" key="helpTagDisplaySide"/>
+				<object class="NSArray" key="instantiationProperties">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+				</object>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -565,16 +604,18 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="NSArray" key="dict.sortedKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>166.IBEditorWindowLastContentRect</string>
+					<string>166.IBWindowTemplateEditedContentRect</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>{{42, 742}, {408, 181}}</string>
+					<string>{{42, 742}, {408, 181}}</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<object class="NSArray" key="dict.sortedKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-				</object>
+				<reference key="dict.sortedKeys" ref="0"/>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 				</object>
@@ -582,9 +623,7 @@
 			<nil key="activeLocalization"/>
 			<object class="NSMutableDictionary" key="localizations">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<object class="NSArray" key="dict.sortedKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-				</object>
+				<reference key="dict.sortedKeys" ref="0"/>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 				</object>
@@ -594,6 +633,16 @@
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
+		<string key="IBDocument.TargetRuntimeIdentifier">IBCarbonFramework</string>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CarbonPlugin.macosx</string>
+			<integer value="1050" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CarbonPlugin.InterfaceBuilder3</string>
+			<integer value="3000" key="NS.object.0"/>
+		</object>
+		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<nil key="IBDocument.LastKnownRelativeProjectPath"/>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
