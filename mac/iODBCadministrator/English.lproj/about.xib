@@ -113,7 +113,7 @@
 							<reference key="instantiationProperties" ref="0"/>
 							<nil key="classID"/>
                             <string type="base64-UTF8" key="title">
-Q29weXJpZ2h0IChDKSAxOTk1LTIwMTUgT3BlbkxpbmsgU29mdHdhcmUKClZlcnNpb24gMy41Mi45CgppT0RCQyBpcyBhbiBPcGVuIFNvdXJjZSBEcml2ZXIgTWFuYWdlciB3aGljaCBpcyBkdWFsIGxpY2Vuc2VkIHVuZGVyIExHUEwgYW5kIEJTRCBsaWNlbnNlcy4KClBsZWFzZSB2aXNpdCBodHRwOi8vd3d3LmlvZGJjLm9yZy8gZm9yIG1vcmUgaW5mb3JtYXRpb24uCg
+Q29weXJpZ2h0IChDKSAxOTk1LTIwMTUgT3BlbkxpbmsgU29mdHdhcmUKClZlcnNpb24gMy41Mi4xMAoKaU9EQkMgaXMgYW4gT3BlbiBTb3VyY2UgRHJpdmVyIE1hbmFnZXIgd2hpY2ggaXMgZHVhbCBsaWNlbnNlZCB1bmRlciBMR1BMIGFuZCBCU0QgbGljZW5zZXMuCgpQbGVhc2UgdmlzaXQgaHR0cDovL3d3dy5pb2RiYy5vcmcvIGZvciBtb3JlIGluZm9ybWF0aW9uLgo
                             </string>
 							<nil key="textColor"/>
 							<reference key="usesTextColor" ref="8"/>

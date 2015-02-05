@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.9</string>
+	<string>3.52.10</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.9</string>
+	<string>3.52.10</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
