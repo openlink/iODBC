@@ -1,3 +1,30 @@
+Feb 05 2015, V3.52.10-rc1:
+     * Fixed issue with ~/Library/ODBC/odbc[inst].ini on Mac OS X
+     
+	iODBC created ~/.odbc[inst].ini when ~/Library/ODBC/odbc[inst].ini did not exist
+	* If $HOME/.odbc[inst].ini exists, automatically import it and then replace it 
+	  with symlink to $HOME/Library/ODBC/odbc[inst].ini for backward compatibility 
+	  with third party drivers
+	* Always read from $HOME/Library/ODBC/odbc[inst].ini
+
+    * Added build support for Mac OS X 10.10
+
+    * Updated iODBC Administrator
+	- Renamed OpenLink ODBC Administrator to iODBC Administrator
+	- Install iODBC Administrator in /Applications/iODBC/
+	- Fixed About dialog
+	- Fixed UI elements
+	- Fixed FileDSN default path
+	- Fixed FileDSN save dialog 
+	- Fixed Set Trace file option
+	- Fixed Mac OS X file chooser dialogs to return long file names
+
+    * Updated iODBC Demo
+	- Fixed app names/titles to iODBC Demo Unicode and iODBC Demo Ansi
+	- Updated iODBCdemo on Mac OS X to support blue links in gridView
+	- Fixed column resize in gridView for "SPARQL DESCRIBE..." queries
+
+
 Apr 15 2014, V3.52.9:
     * Added support for building on recent versions of Mac OS X
     * Fixed warnings from autoconf/automake
