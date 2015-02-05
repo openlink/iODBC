@@ -81,7 +81,7 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT([iODBC Driver Manager],
-        [3.52.10-dev],
+        [3.52.10-rc1],
 	[iodbc@openlinksw.com],
 	[libiodbc])
 AC_CONFIG_SRCDIR([include/isql.h])
