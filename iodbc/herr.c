@@ -1539,7 +1539,10 @@ SQLGetDiagField_Internal (
 		else
 		  {
 		    dm_StrCopyOut2_A2W((SQLCHAR *) szval, 
-		    	(SQLWCHAR *) pDiagInfoPtr, nBufferLength, pnStringLengthPtr);
+		    	(SQLWCHAR *) pDiagInfoPtr, 
+		    	nBufferLength / sizeof(wchar_t), pnStringLengthPtr);
+                    if (pnStringLengthPtr)
+                      *pnStringLengthPtr *= sizeof(wchar_t);
 		  }
 	      
 	      }
@@ -1569,8 +1572,8 @@ SQLGetDiagField_Internal (
                     if (waMode != 'W')
                       {
                       /* ansi=>unicode*/
-                        if ((_DiagInfoPtr = malloc((nBufferLength + 1) * 
-                               sizeof(wchar_t))) == NULL)
+                        nBufferLength *= sizeof(wchar_t);
+                        if ((_DiagInfoPtr = malloc(nBufferLength + sizeof(wchar_t))) == NULL)
                           {
                             return SQL_ERROR;
                           }
@@ -1578,6 +1581,7 @@ SQLGetDiagField_Internal (
                     else
                       {
                       /* unicode=>ansi*/
+                        nBufferLength /= sizeof(wchar_t); 
                         if ((_DiagInfoPtr = malloc(nBufferLength + 1)) == NULL)
                           {
                             return SQL_ERROR;
@@ -1612,7 +1616,7 @@ SQLGetDiagField_Internal (
                           /* ansi<=unicode*/
                             dm_StrCopyOut2_W2A ((SQLWCHAR *) diagInfoPtr, 
 				(SQLCHAR *) pDiagInfoPtr, 
-				nBufferLength, pnStringLengthPtr);
+				nBufferLength/sizeof(wchar_t), pnStringLengthPtr);
                           }
                         else
                           {
@@ -1620,6 +1624,8 @@ SQLGetDiagField_Internal (
                             dm_StrCopyOut2_A2W ((SQLCHAR *)diagInfoPtr, 
 			    	(SQLWCHAR *) pDiagInfoPtr, 
 				nBufferLength, pnStringLengthPtr);
+                            if (pnStringLengthPtr)
+                              *pnStringLengthPtr *= sizeof(wchar_t);
                           }
                       }
                   }
@@ -1701,6 +1707,25 @@ SQLGetDiagField_Internal (
 		    break;
 
 		  case SQL_DIAG_MESSAGE_TEXT:
+                    if (unicode_driver && waMode != 'W') 
+                      {
+                        /* ansi=>unicode*/
+                        if ((_DiagInfoPtr = malloc((nBufferLength + 1)*sizeof(wchar_t))) == NULL)
+                          return SQL_ERROR;
+                        diagInfoPtr = _DiagInfoPtr;
+                      }
+                    else if (!unicode_driver && waMode == 'W')
+                      {
+                        /* unicode=>ansi*/
+                        nBufferLength /= sizeof(wchar_t); 
+                        if ((_DiagInfoPtr = malloc(nBufferLength + 1)) == NULL)
+                          return SQL_ERROR;
+                        diagInfoPtr = _DiagInfoPtr;
+                      }
+                    else if (unicode_driver && waMode == 'W')
+                      {
+                        nBufferLength /= sizeof(wchar_t); 
+                      }
 		    CALL_UDRIVER (con, Handle, retcode, hproc, unicode_driver,
 		      en_Error, (SQL_NULL_HENV,
 		      nHandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
@@ -1712,24 +1737,28 @@ SQLGetDiagField_Internal (
                         MEM_FREE(_DiagInfoPtr);
 		        return SQL_INVALID_HANDLE;
                       }
-                    if (pDiagInfoPtr
-                        && SQL_SUCCEEDED (retcode)
-                        && ((unicode_driver && waMode != 'W')
-                            || (!unicode_driver && waMode == 'W')))
+                    if (pDiagInfoPtr && SQL_SUCCEEDED (retcode))
                       {
-                        if (waMode != 'W')
+                        if (unicode_driver && waMode != 'W')
                           {
                           /* ansi<=unicode*/
                             dm_StrCopyOut2_W2A ((SQLWCHAR *) diagInfoPtr, 
 				(SQLCHAR *) pDiagInfoPtr, 
 		      		nBufferLength, pnStringLengthPtr);
                           }
-                        else
+                        else if (!unicode_driver && waMode == 'W')
                           {
                           /* unicode<=ansi*/
                             dm_StrCopyOut2_A2W ((SQLCHAR *)diagInfoPtr, 
 			    	(SQLWCHAR *) pDiagInfoPtr, 
 				nBufferLength, pnStringLengthPtr);
+                            if (pnStringLengthPtr)
+                              *pnStringLengthPtr *= sizeof(wchar_t);
+                          }
+                        else if (unicode_driver && waMode == 'W')
+                          {
+                            if (pnStringLengthPtr)
+                              *pnStringLengthPtr *= sizeof(wchar_t);
                           }
                       }
 
@@ -1777,7 +1806,9 @@ SQLGetDiagField_Internal (
                           /* unicode<=ansi*/
                             dm_StrCopyOut2_A2W ((SQLCHAR *)szState, 
 			    	(SQLWCHAR *) pDiagInfoPtr, 
-				nBufferLength, pnStringLengthPtr);
+				nBufferLength / sizeof(wchar_t), pnStringLengthPtr);
+                            if (pnStringLengthPtr)
+                              *pnStringLengthPtr *= sizeof(wchar_t);
                           }
                       }
 
@@ -1804,7 +1835,9 @@ SQLGetDiagField_Internal (
 		  {
 		    dm_StrCopyOut2_A2W((SQLCHAR *) szval, 
 		    	(SQLWCHAR *) pDiagInfoPtr, 
-			nBufferLength, pnStringLengthPtr);
+			nBufferLength / sizeof(wchar_t), pnStringLengthPtr);
+                    if (pnStringLengthPtr)
+                      *pnStringLengthPtr *= sizeof(wchar_t);
 		  }
 	      }			/* ODBC3->ODBC2 */
 	  }			/* driver's errors */

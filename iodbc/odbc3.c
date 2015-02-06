@@ -1946,7 +1946,7 @@ SQLGetConnectAttr_Internal (
             {
             /* ansi=>unicode*/
               StringLength *= sizeof(wchar_t);
-              if ((_Value = malloc(StringLength + 1)) == NULL)
+              if ((_Value = malloc(StringLength + sizeof(wchar_t))) == NULL)
 	        {
                   PUSHSQLERR (con->herr, en_HY001);
                   return SQL_ERROR;
@@ -2163,7 +2163,7 @@ SQLGetDescField_Internal (
             {
             /* ansi=>unicode*/
               BufferLength *= sizeof(wchar_t);
-              if ((_ValuePtr = malloc(BufferLength + 1)) == NULL)
+              if ((_ValuePtr = malloc(BufferLength + sizeof(wchar_t))) == NULL)
 	        {
                   PUSHSQLERR (desc->herr, en_HY001);
                   return SQL_ERROR;
@@ -2866,7 +2866,7 @@ SQLColAttribute_Internal (
             {
             /* ansi=>unicode*/
               BufferLength *= sizeof(wchar_t);
-              if ((_charAttr = malloc(BufferLength + 1)) == NULL)
+              if ((_charAttr = malloc(BufferLength + sizeof(wchar_t))) == NULL)
                 {
                   PUSHSQLERR (stmt->herr, en_HY001);
                   return SQL_ERROR;
