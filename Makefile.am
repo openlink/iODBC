@@ -88,6 +88,7 @@ EXTRA_DIST		= \
 	$(srcdir)/bootstrap.sh \
 	$(srcdir)/PORT.OpenLink \
 	$(srcdir)/acinclude.m4 \
+	$(srcdir)/drvproxy/*.exp \
 	$(srcdir)/mac/*.exp \
 	$(srcdir)/mac/*.sh \
 	$(srcdir)/mac/iodbc-config.macosx \
