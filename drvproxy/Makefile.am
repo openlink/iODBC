@@ -119,8 +119,9 @@ libdrvproxy_la_SOURCES	= \
 noinst_HEADERS		= gui.h
 
 EXTRA_DIST		= \
-	$(srcdir)/drvproxy.exp \
-	$(srcdir)/macosx/confirm.c \
-	$(srcdir)/macosx/gensetup.c \
-	$(srcdir)/macosx/gui.h \
-	$(srcdir)/macosx/loginbox.c
+	$(srcdir)/*.c \
+	$(srcdir)/*.h \
+	$(srcdir)/gtk/*.c \
+	$(srcdir)/gtk/*.h \
+	$(srcdir)/macosx/*.c \
+	$(srcdir)/macosx/*.h
