@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -101,6 +101,7 @@ WORD configMode = ODBC_BOTH_DSN;
 # define UNIX_PWD
 #endif
 
+
 /*
  * Algorithm for resolving an odbc.ini reference
  *
@@ -126,16 +127,14 @@ WORD configMode = ODBC_BOTH_DSN;
  *               3. No odbc.ini presence, return NULL.
  *
  * For MacX:     1. Check for $ODBCINI variable, if exists return $ODBCINI.
- *               2. Check for $HOME/.odbc.ini or ~/.odbc.ini file, if exists
- *                  return it.
- *               3. Check for $HOME/Library/ODBC/odbc.ini or
- *                  ~/.odbc.ini file, if exists return it.
- *               4. Check for SYS_ODBC_INI build variable, if exists return
+ *               2. Check for $HOME/Library/ODBC/odbc.ini, 
+ *                  if exists return it.
+ *               3. Check for SYS_ODBC_INI build variable, if exists return
  *                  it. (ie : /etc/odbc.ini).
- *               5. Check for /Library/ODBC/odbc.ini
+ *               4. Check for /Library/ODBC/odbc.ini
  *                  file, if exists return it.
- *               6. No odbc.ini presence, return NULL.
- */
+ *               5. No odbc.ini presence, return NULL.
+**/
 char *
 _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 {
@@ -257,9 +256,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
       if (doCreate || access (buf, R_OK) == 0)
 	return buf;
 #  else	/* else VMS */
-      /*
-       *  2b. Check either $HOME/.odbc.ini or ~/.odbc.ini
-       */
+
       if ((ptr = getenv ("HOME")) == NULL)
 	{
 	  ptr = (char *) getpwuid (getuid ());
@@ -269,16 +266,10 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	}
 
       if (ptr != NULL)
-	{
-	  snprintf (buf, size, bIsInst ? "%s/.odbcinst.ini" : "%s/.odbc.ini",
-	      ptr);
-
-	  if (doCreate || access (buf, R_OK) == 0)
-	    return buf;
-
+        {
 #if defined(__APPLE__)
 	  /*
-	   * Try to check the ~/Library/ODBC/odbc.ini
+	   * 2b. Try to check the ~/Library/ODBC/odbc.ini
 	   */
 	  snprintf (buf, size,
 	      bIsInst ? "%s" ODBCINST_INI_APP : "%s" ODBC_INI_APP, ptr);
@@ -295,10 +286,19 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 		  return buf;
 		}
 	    }
-#   endif /* endif __APPLE__ */
-	}
+#   else /* else __APPLE__ */
+      
+          /*
+           *  2b. Check either $HOME/.odbc.ini or ~/.odbc.ini
+           */
+	  snprintf (buf, size, bIsInst ? "%s/.odbcinst.ini" : "%s/.odbc.ini",
+	      ptr);
 
+	  if (doCreate || access (buf, R_OK) == 0)
+	    return buf;
+#   endif /* endif __APPLE__ */
 #  endif /* endif VMS */
+        }
     }
 
   /*
@@ -357,7 +357,6 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
   return NULL;
 #endif /* UNIX_PWD */
 }
-
 
 const char *
 _iodbcdm_check_for_string(const char *szList, const char *szString, int bContains)

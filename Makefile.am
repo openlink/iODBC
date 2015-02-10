@@ -4,7 +4,7 @@
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
-#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -129,21 +129,17 @@ EXTRA_DIST		= \
 	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.c \
 	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.h \
 	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.r \
-	$(srcdir)/mac/iODBCdemo/*.plist \
-	$(srcdir)/mac/iODBCdemo/English.lproj/*.strings \
+	$(srcdir)/mac/iODBCdemo/*.h \
+	$(srcdir)/mac/iODBCdemo/*.m \
 	$(srcdir)/mac/iODBCdemo/English.lproj/Credits.rtf \
 	$(srcdir)/mac/iODBCdemo/English.lproj/ExecSQL.xib \
-	$(srcdir)/mac/iODBCdemo/English.lproj/MainMenu.xib \
+	$(srcdir)/mac/iODBCdemo/English.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBCdemo/English.lproj/iODBCdemo.icns \
-	$(srcdir)/mac/iODBCdemo/ExecController.h \
-	$(srcdir)/mac/iODBCdemo/ExecController.m \
-	$(srcdir)/mac/iODBCdemo/NSResWindow.h \
-	$(srcdir)/mac/iODBCdemo/NSResWindow.m \
-	$(srcdir)/mac/iODBCdemo/TestController.h \
-	$(srcdir)/mac/iODBCdemo/TestController.m \
+	$(srcdir)/mac/iODBCdemo/English.lproj/MainMenu.xib \
+	$(srcdir)/mac/iODBCdemo/InfoAnsi.plist \
+	$(srcdir)/mac/iODBCdemo/InfoUnicode.plist \
 	$(srcdir)/mac/iODBCdemo/iodbcdemo.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCdemo/iodbcdemo_Prefix.pch \
-	$(srcdir)/mac/iODBCdemo/main.m \
 	$(srcdir)/mac/iODBCdrvproxy/*.plist \
 	$(srcdir)/mac/iODBCdrvproxy/English.lproj/*.strings \
 	$(srcdir)/mac/iODBCdrvproxy/English.lproj/confirmation.xib \

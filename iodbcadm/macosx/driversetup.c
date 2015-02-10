@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -350,10 +350,8 @@ driversetup_drvbrowse_clicked (EventHandlerCallRef inHandlerRef,
   NavDialogOptions dialogOptions;
   TDRIVERSETUP *driversetup_t = (TDRIVERSETUP *) inUserData;
   NavReplyRecord reply;
-  char tokenstr[4096] = { 0 };
   OSStatus err;
   FSSpec file;
-  char *dir;
 
   NavGetDefaultDialogOptions (&dialogOptions);
   err =
@@ -368,17 +366,22 @@ driversetup_drvbrowse_clicked (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
-	  /* Get back some information about the directory */
-	  dir = get_full_pathname (file.parID, file.vRefNum);
-	  sprintf (tokenstr, "%s/", dir ? dir : "");
-	  strncat (tokenstr, &file.name[1], file.name[0]);
-	  /* Display the constructed string re. the file choosen */
-	  SetControlData (driversetup_t->driver_entry, 0,
-	      kControlEditTextTextTag, STRLEN (tokenstr), tokenstr);
-	  DrawOneControl (driversetup_t->driver_entry);
-	  /* Clean up */
-	  if (dir)
-	    free (dir);
+          char file_path[PATH_MAX] = { '\0' };
+          FSRef ref;
+
+          if( file.name[0] == 0 )
+            err = FSMakeFSSpec(file.vRefNum, file.parID, file.name, &file);
+          if( err == noErr )
+            err = FSpMakeFSRef(&file, &ref);
+
+          err = FSRefMakePath(&ref, file_path, PATH_MAX); // translate the FSRef into a path
+          if (err == noErr)
+            {
+	      /* Display the constructed string re. the file choosen */
+	      SetControlData (driversetup_t->driver_entry, 0,
+	          kControlEditTextTextTag, STRLEN (file_path), file_path);
+	      DrawOneControl (driversetup_t->driver_entry);
+	    }
 	}
     }
 
@@ -393,10 +396,8 @@ driversetup_stpbrowse_clicked (EventHandlerCallRef inHandlerRef,
   NavDialogOptions dialogOptions;
   TDRIVERSETUP *driversetup_t = (TDRIVERSETUP *) inUserData;
   NavReplyRecord reply;
-  char tokenstr[4096] = { 0 };
   OSStatus err;
   FSSpec file;
-  char *dir;
 
   NavGetDefaultDialogOptions (&dialogOptions);
   err =
@@ -411,17 +412,22 @@ driversetup_stpbrowse_clicked (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
-	  /* Get back some information about the directory */
-	  dir = get_full_pathname (file.parID, file.vRefNum);
-	  sprintf (tokenstr, "%s/", dir ? dir : "");
-	  strncat (tokenstr, &file.name[1], file.name[0]);
-	  /* Display the constructed string re. the file choosen */
-	  SetControlData (driversetup_t->setup_entry, 0,
-	      kControlEditTextTextTag, STRLEN (tokenstr), tokenstr);
-	  DrawOneControl (driversetup_t->setup_entry);
-	  /* Clean up */
-	  if (dir)
-	    free (dir);
+          char file_path[PATH_MAX] = { '\0' };
+          FSRef ref;
+
+          if( file.name[0] == 0 )
+            err = FSMakeFSSpec(file.vRefNum, file.parID, file.name, &file);
+          if( err == noErr )
+            err = FSpMakeFSRef(&file, &ref);
+
+          err = FSRefMakePath(&ref, file_path, PATH_MAX); // translate the FSRef into a path
+          if (err == noErr)
+            {
+	      /* Display the constructed string re. the file choosen */
+	      SetControlData (driversetup_t->setup_entry, 0,
+	          kControlEditTextTextTag, STRLEN (file_path), file_path);
+	      DrawOneControl (driversetup_t->setup_entry);
+	    }
 	}
     }
 

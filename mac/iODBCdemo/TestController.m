@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -72,61 +72,66 @@
 
 #import "TestController.h"
 #import "ExecController.h"
+#import "NSAttributedStringAdditions.h"
+#import "LinkTextFieldCell.h"
 
+
+#define MIN_WIDTH       5
+#define MAX_WIDTH       80
 #define OpenTag         56000
 #define CloseTag        56001
 #define ExecSQLTag      56002
 #define NextRowsetTag   56003
 
 @implementation TestController
-
+@synthesize fQuery = _fQuery;
 
 #ifdef UNICODE
 wchar_t *
 NStoTEXT (NSString * str)
 {
-  wchar_t *prov;
-  unsigned int len, i;
-
-  if (str == nil)
-    return NULL;
-
-  len = [str length];
-  prov = malloc (sizeof (wchar_t) * (len + 1));
-
-  if (prov)
+    wchar_t *prov;
+    unsigned int len, i;
+    
+    if (str == nil)
+        return NULL;
+    
+    len = [str length];
+    prov = malloc (sizeof (wchar_t) * (len + 1));
+    
+    if (prov)
     {
-      for (i = 0; i < len; i++)
-	prov[i] = [str characterAtIndex:i];
-      prov[i] = L'\0';
+        for (i = 0; i < len; i++)
+            prov[i] = [str characterAtIndex:i];
+        prov[i] = L'\0';
     }
-
-  return prov;
+    
+    return prov;
 }
 
 
 CFStringRef
 TEXTtoNS (wchar_t * str)
 {
-  CFMutableStringRef prov;
-  CFIndex i;
-  UniChar c;
-
-  if (!str)
-    return NULL;
-
-  prov = CFStringCreateMutable (NULL, 0);
-
-  if (prov)
+    CFMutableStringRef prov;
+    CFIndex i;
+    UniChar c;
+    
+    if (!str)
+        return NULL;
+    
+    prov = CFStringCreateMutable (NULL, 0);
+    
+    if (prov)
     {
-      for (i = 0; str[i] != L'\0'; i++)
-	{
-	  c = (UniChar) str[i];
-	  CFStringAppendCharacters (prov, &c, 1);
-	}
+        for (i = 0; str[i] != L'\0'; i++)
+        {
+            c = (UniChar) str[i];
+            CFStringAppendCharacters (prov, &c, 1);
+        }
     }
-
-  return prov;
+    
+    return prov;
 }
 
 #define TEXT(x)		(SQLWCHAR *) L##x
@@ -142,590 +147,622 @@ TEXTtoNS (wchar_t * str)
 #define TEXTCPY(x,y)	strcpy((char *) x, (char *) y)
 
 #define TEXTtoNS(x)	[NSString stringWithUTF8String: x]
-#define NStoTEXT(x)	[ x UTF8String ]	
+#define NStoTEXT(x)	[ x UTF8String ]
 #endif
 
 
 
 
-void 
+void
 _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
 {
-  SQLTCHAR buf[250];
-  SQLTCHAR sqlstate[15];
-
-  /*
-   * Get statement errors
-   */
-  if (SQLError (_henv, _hdbc, _hstmt, sqlstate, NULL,
-	  buf, sizeof (buf), NULL) == SQL_SUCCESS)
-    NSRunAlertPanel(@"Native ODBC Error", 
-    	[NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
-
-  /*
-   * Get connection errors
-   */
-  if (SQLError (_henv, _hdbc, SQL_NULL_HSTMT, sqlstate,
-	  NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
-    NSRunAlertPanel(@"Native ODBC Error", 
-    	[NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
-
-  /*
-   * Get environmental errors
-   */
-  if (SQLError (_henv, SQL_NULL_HDBC, SQL_NULL_HSTMT,
-	  sqlstate, NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
-    NSRunAlertPanel(@"Native ODBC Error", 
-    	[NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
+    SQLTCHAR buf[250];
+    SQLTCHAR sqlstate[15];
+    
+    /*
+     * Get statement errors
+     */
+    if (SQLError (_henv, _hdbc, _hstmt, sqlstate, NULL,
+                  buf, sizeof (buf), NULL) == SQL_SUCCESS)
+        NSRunAlertPanel(@"Native ODBC Error",
+                        [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
+    
+    /*
+     * Get connection errors
+     */
+    if (SQLError (_henv, _hdbc, SQL_NULL_HSTMT, sqlstate,
+                  NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+        NSRunAlertPanel(@"Native ODBC Error",
+                        [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
+    
+    /*
+     * Get environmental errors
+     */
+    if (SQLError (_henv, SQL_NULL_HDBC, SQL_NULL_HSTMT,
+                  sqlstate, NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+        NSRunAlertPanel(@"Native ODBC Error",
+                        [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
 }
 
 
 
 - (id)init
 {
-  [super init];
-  mConnected = NO;
-  mExistsResultset = NO;
-  mNextResultset = NO;
-  mBuffer = [NSMutableArray new];
-  mRows = 0;
-  fQuery = @"select * from orders";
-  return self;
+    [super init];
+    mConnected = NO;
+    mExistsResultset = NO;
+    mNextResultset = NO;
+    mBuffer = [NSMutableArray new];
+    mRows = 0;
+    self.fQuery = @"select * from orders";
+    //self.fQuery = @"sparql select * {?s ?p ?o} limit 10";
+    mMaxRows = 1000;
+    return self;
 }
 
-- (void)dealloc 
+- (void)dealloc
 {
-  [self disconnect];
-  [mBuffer release];
-  [super dealloc];
+    [self disconnect];
+    [mBuffer release];
+    [super dealloc];
 }
 
 
 - (void)awakeFromNib
 {
-  [RSTable setDataSource:self];
-  [self clearGrid];
+    [RSTable setDataSource:self];
+    [RSTable setDelegate:self];
+    [self clearGrid];
 #ifdef UNICODE
-  [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo Unicode - Disconnected"]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Disconnected"]];
 #else
-  [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo - Disconnected"]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Disconnected"]];
 #endif
 }
 
 
 - (void)disconnect
 {
-  if (hstmt != nil)
+    if (hstmt != nil)
     {
 #if (ODBCVER < 0x0300)
-      SQLFreeStmt (hstmt, SQL_DROP);
+        SQLFreeStmt (hstmt, SQL_DROP);
 #else
-      SQLCloseCursor (hstmt);
-      SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
+        SQLCloseCursor (hstmt);
+        SQLFreeHandle (SQL_HANDLE_STMT, hstmt);
 #endif
-      hstmt = nil;
+        hstmt = nil;
     }
-
-  if (hdbc != nil)
+    
+    if (hdbc != nil)
     {
-      if (mConnected)
-	SQLDisconnect (hdbc);
-
+        if (mConnected)
+            SQLDisconnect (hdbc);
+        
 #ifdef UNICODE
-      [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo Unicode - Disconnected"]];
+        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Disconnected"]];
 #else
-      [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo - Disconnected"]];
+        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Disconnected"]];
 #endif
-      [self clearGrid];
-
-      mConnected = NO;
-
+        [self clearGrid];
+        
+        mConnected = NO;
+        
 #if (ODBCVER < 0x300)
-      SQLFreeConnect (hdbc);
+        SQLFreeConnect (hdbc);
 #else
-      SQLFreeHandle (SQL_HANDLE_DBC, hdbc);
+        SQLFreeHandle (SQL_HANDLE_DBC, hdbc);
 #endif
-      hdbc = nil;
+        hdbc = nil;
     }
-
-  if (henv != nil)
+    
+    if (henv != nil)
     {
 #if (ODBCVER < 0x300)
-      SQLFreeEnv (henv);
+        SQLFreeEnv (henv);
 #else
-      SQLFreeHandle (SQL_HANDLE_ENV, henv);
+        SQLFreeHandle (SQL_HANDLE_ENV, henv);
 #endif
-      henv = nil;
+        henv = nil;
     }
 }
 
 
 - (void)clearGrid
 {
-  NSArray *arr;
-  unsigned i, count;
-  NSTableColumn *aColumn;
-
-  arr = [RSTable tableColumns];
-  count = [arr count];
-  for(i = 0; i < count; i++)
+    NSArray *arr;
+    unsigned i, count;
+    NSTableColumn *aColumn;
+    
+    arr = [RSTable tableColumns];
+    count = [arr count];
+    for(i = 0; i < count; i++)
     {
-      aColumn = [arr objectAtIndex:0];
-      [RSTable removeTableColumn:aColumn];
+        aColumn = [arr objectAtIndex:0];
+        [RSTable removeTableColumn:aColumn];
     }
-}  
+}
 
 
 - (void)execSQL:(SQLTCHAR *)szSQL
 {
-  SQLRETURN sts;
-
-  [self clearGrid];
-
-  if (mExistsResultset == YES)
+    SQLRETURN sts;
+    
+    [self clearGrid];
+    mSPARQL_executed = false;
+    
+    if (mExistsResultset == YES)
     {
 #if (ODBCVER < 0x0300)
-      SQLFreeStmt (hstmt, SQL_CLOSE);
+        SQLFreeStmt (hstmt, SQL_CLOSE);
 #else
-      SQLCloseCursor (hstmt);
+        SQLCloseCursor (hstmt);
 #endif
     }
-  
-  mExistsResultset = NO;
-  mNextResultset = NO;
-
-  if (!TEXTCMP(szSQL, TEXT("tables")))
+    
+    mExistsResultset = NO;
+    mNextResultset = NO;
+    
+    NSString *query = TEXTtoNS(szSQL);
+    mSPARQL_executed = [[query.uppercaseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] hasPrefix:@"SPARQL"];
+    
+    if (!TEXTCMP(szSQL, TEXT("tables")))
     {
-      if (SQLTables (hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0) != SQL_SUCCESS)
-        goto error;
+        if (SQLTables (hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0) != SQL_SUCCESS)
+            goto error;
     }
-  else if (!TEXTCMP(szSQL, TEXT("qualifiers")))
+    else if (!TEXTCMP(szSQL, TEXT("qualifiers")))
     {
-      if (SQLTables (hstmt, TEXT("%"), SQL_NTS, TEXT(""), 0, TEXT(""), 0, TEXT(""), 0) != SQL_SUCCESS)
-        goto error;
+        if (SQLTables (hstmt, TEXT("%"), SQL_NTS, TEXT(""), 0, TEXT(""), 0, TEXT(""), 0) != SQL_SUCCESS)
+            goto error;
     }
-  else if (!TEXTCMP(szSQL, TEXT("owners")))
+    else if (!TEXTCMP(szSQL, TEXT("owners")))
     {
-      if (SQLTables (hstmt, TEXT(""), SQL_NTS, TEXT("%"), 0, TEXT(""), 0, TEXT(""), 0) != SQL_SUCCESS)
-        goto error;
+        if (SQLTables (hstmt, TEXT(""), SQL_NTS, TEXT("%"), 0, TEXT(""), 0, TEXT(""), 0) != SQL_SUCCESS)
+            goto error;
     }
-  else if (!TEXTCMP(szSQL, TEXT("types")))
+    else if (!TEXTCMP(szSQL, TEXT("types")))
     {
-      if (SQLTables (hstmt, TEXT(""), SQL_NTS, TEXT(""), 0, TEXT(""), 0, TEXT("%"), 0) != SQL_SUCCESS)
-        goto error;
+        if (SQLTables (hstmt, TEXT(""), SQL_NTS, TEXT(""), 0, TEXT(""), 0, TEXT("%"), 0) != SQL_SUCCESS)
+            goto error;
     }
-  else if (!TEXTCMP(szSQL, TEXT("datatypes")))
+    else if (!TEXTCMP(szSQL, TEXT("datatypes")))
     {
-      if (SQLGetTypeInfo (hstmt, 0) != SQL_SUCCESS)
-        goto error;
+        if (SQLGetTypeInfo (hstmt, 0) != SQL_SUCCESS)
+            goto error;
     }
-  else
+    else
     {
-      if (SQLPrepare (hstmt, szSQL, SQL_NTS) != SQL_SUCCESS)
-        goto error;
-
-	  if ((sts = SQLExecute (hstmt)) != SQL_SUCCESS)
-	    {
-              _nativeerrorbox (henv, hdbc, hstmt);
-
-	      if (sts != SQL_SUCCESS_WITH_INFO)
-		return;
-	    }
+        if (SQLPrepare (hstmt, szSQL, SQL_NTS) != SQL_SUCCESS)
+            goto error;
+        
+        if ((sts = SQLExecute (hstmt)) != SQL_SUCCESS)
+        {
+            _nativeerrorbox (henv, hdbc, hstmt);
+            
+            if (sts != SQL_SUCCESS_WITH_INFO)
+                return;
+        }
     }
-
-  [self loadResult];
-  return;
-
+    
+    [self loadResult];
+    return;
+    
 error:
-  _nativeerrorbox (henv, hdbc, hstmt);
-  return;
+    _nativeerrorbox (henv, hdbc, hstmt);
+    return;
 }
 
 
 - (void)loadResult
 {
-  SQLTCHAR fetchBuffer[1024];
-  size_t displayWidth;
-  short numCols;
-  unsigned colNum;
-  SQLTCHAR colName[256];
-  SQLSMALLINT colType;
-  SQLULEN colPrecision;
-  SQLLEN colIndicator;
-  SQLSMALLINT colScale;
-  SQLSMALLINT colNullable;
-  unsigned long totalRows;
-  NSTableColumn *aColumn;
-  NSMutableArray *row;
-  NSFont  *fnt = [RSTable font];
-
-  [self clearGrid];
-
-  if (SQLNumResultCols (hstmt, &numCols) != SQL_SUCCESS)
+    SQLTCHAR fetchBuffer[1024];
+    size_t displayWidth;
+    short numCols;
+    unsigned colNum;
+    SQLTCHAR colName[256];
+    SQLSMALLINT colType;
+    SQLULEN colPrecision;
+    SQLLEN colIndicator;
+    SQLSMALLINT colScale;
+    SQLSMALLINT colNullable;
+    unsigned long totalRows;
+    NSTableColumn *aColumn;
+    NSMutableArray *row;
+    NSFont  *fnt = nil; //RSTable.font;
+    
+    if (!fnt)
+        fnt = [NSFont systemFontOfSize:11.0];
+    
+    [self clearGrid];
+    
+    if (SQLNumResultCols (hstmt, &numCols) != SQL_SUCCESS)
     {
-      _nativeerrorbox (henv, hdbc, hstmt);
-      goto endCursor;
+        _nativeerrorbox (henv, hdbc, hstmt);
+        goto endCursor;
     }
-
-  if (numCols == 0)
+    
+    if (numCols == 0)
     {
-      SQLLEN nrows = 0;
-      SQLRowCount (hstmt, &nrows);
-
-      NSRunAlertPanel(@"This operation completed successfully without returning data:", 
-    	[NSString stringWithFormat:@"%ld rows affected", (long)nrows], 
-    	NULL, NULL, NULL);
-      goto endCursor;
+        SQLLEN nrows = 0;
+        SQLRowCount (hstmt, &nrows);
+        
+        NSRunAlertPanel(@"This operation completed successfully without returning data:",
+                        [NSString stringWithFormat:@"%ld rows affected", (long)nrows],
+                        NULL, NULL, NULL);
+        goto endCursor;
     }
-
-  mExistsResultset = YES;
-
-  /*
-   *  Get the names for the columns
-   */
-  for (colNum = 1; colNum <= numCols; colNum++)
+    
+    mExistsResultset = YES;
+    
+    /*
+     *  Get the names for the columns
+     */
+    for (colNum = 1; colNum <= numCols; colNum++)
     {
-      /*
-       *  Get the name and other type information
-       */
-      if (SQLDescribeCol (hstmt, colNum, (SQLTCHAR *) colName, 
-      		sizeof(colName), NULL, &colType, &colPrecision, &colScale,
-	      &colNullable) != SQL_SUCCESS)
-	{
-      	  _nativeerrorbox (henv, hdbc, hstmt);
-	  goto endCursor;
-	}
-
-      /*
-       *  Calculate the display width for the column
-       */
-      switch (colType)
-	{
-	case SQL_VARCHAR:
-	case SQL_CHAR:
-	case SQL_WVARCHAR:
-	case SQL_WCHAR:
-	case SQL_GUID:
-	  displayWidth = colPrecision;
-	  break;
-
-	case SQL_BINARY:
-	  displayWidth = colPrecision * 2;
-	  break;
-
-	case SQL_LONGVARCHAR:
-	case SQL_WLONGVARCHAR:
-	case SQL_LONGVARBINARY:
-	  displayWidth = 256;	/* show only first 256 */
-	  break;
-
-	case SQL_BIT:
-	  displayWidth = 1;
-	  break;
-
-	case SQL_TINYINT:
-	case SQL_SMALLINT:
-	case SQL_INTEGER:
-	case SQL_BIGINT:
-	  displayWidth = colPrecision + 1;	/* sign */
-	  break;
-
-	case SQL_DOUBLE:
-	case SQL_DECIMAL:
-	case SQL_NUMERIC:
-	case SQL_FLOAT:
-	case SQL_REAL:
-	  displayWidth = colPrecision + 2;	/* sign, comma */
-	  break;
-
+        /*
+         *  Get the name and other type information
+         */
+        if (SQLDescribeCol (hstmt, colNum, (SQLTCHAR *) colName,
+                            sizeof(colName), NULL, &colType, &colPrecision, &colScale,
+                            &colNullable) != SQL_SUCCESS)
+        {
+            _nativeerrorbox (henv, hdbc, hstmt);
+            goto endCursor;
+        }
+        
+        /*
+         *  Calculate the display width for the column
+         */
+        switch (colType)
+        {
+            case SQL_VARCHAR:
+            case SQL_CHAR:
+            case SQL_WVARCHAR:
+            case SQL_WCHAR:
+            case SQL_GUID:
+                displayWidth = colPrecision;
+                break;
+                
+            case SQL_BINARY:
+                displayWidth = colPrecision * 2;
+                break;
+                
+            case SQL_LONGVARCHAR:
+            case SQL_WLONGVARCHAR:
+            case SQL_LONGVARBINARY:
+                displayWidth = 256;	/* show only first 256 */
+                break;
+                
+            case SQL_BIT:
+                displayWidth = 1;
+                break;
+                
+            case SQL_TINYINT:
+            case SQL_SMALLINT:
+            case SQL_INTEGER:
+            case SQL_BIGINT:
+                displayWidth = colPrecision + 1;	/* sign */
+                break;
+                
+            case SQL_DOUBLE:
+            case SQL_DECIMAL:
+            case SQL_NUMERIC:
+            case SQL_FLOAT:
+            case SQL_REAL:
+                displayWidth = colPrecision + 2;	/* sign, comma */
+                break;
+                
 #ifdef SQL_TYPE_DATE
-	case SQL_TYPE_DATE:
+            case SQL_TYPE_DATE:
 #endif
-	case SQL_DATE:
-	  displayWidth = 10;
-	  break;
-
+            case SQL_DATE:
+                displayWidth = 10;
+                break;
+                
 #ifdef SQL_TYPE_TIME
-	case SQL_TYPE_TIME:
+            case SQL_TYPE_TIME:
 #endif
-	case SQL_TIME:
-	  displayWidth = 8;
-	  break;
-
+            case SQL_TIME:
+                displayWidth = 8;
+                break;
+                
 #ifdef SQL_TYPE_TIMESTAMP
-	case SQL_TYPE_TIMESTAMP:
+            case SQL_TYPE_TIMESTAMP:
 #endif
-	case SQL_TIMESTAMP:
-	  displayWidth = 19;
-	  if (colScale > 0)
-	    displayWidth = displayWidth + colScale + 1;
-	  break;
-
-	default:
-	  displayWidth = 0;	/* skip other data types */
-	  continue;
-	}
-
-      if (displayWidth < TEXTLEN(colName))
-	displayWidth = TEXTLEN(colName);
-      if (displayWidth > sizeof(fetchBuffer) - 1)
-	displayWidth = sizeof(fetchBuffer) - 1;
-      if (displayWidth > 80)
-        displayWidth = 80;
-
-      /* Add new column */
-      aColumn = [NSTableColumn new]; 
-
-      /* Calculate size of font */
-      float fontWidth = [fnt widthOfString:@"W"];
-      if (fontWidth == 0.0)
-        fontWidth = [fnt widthOfString:@" "];
-      if (fontWidth == 0.0)
-        fontWidth = [fnt maximumAdvancement].width;
-      if (fontWidth == 0.0)
-        fontWidth = 10.0; 	// Default
-
-      /* Make sure we always have room for column label */
-      float minWidth = fontWidth * TEXTLEN(colName);
-      [aColumn setMinWidth:minWidth];
-
-      /* Calculate maximum size of column */
-      float strWidth = fontWidth * displayWidth;
-      [aColumn setMaxWidth:strWidth];
-
-      /* Fill in column information  */
-      [aColumn setIdentifier:[NSString stringWithFormat:@"%d", colNum-1]];
-      [aColumn setEditable:NO];
-      [aColumn setResizingMask:NSTableColumnAutoresizingMask|NSTableColumnUserResizingMask];
-
-      [[aColumn headerCell] setStringValue:TEXTtoNS(colName)];
-
-      /* Add to table */
-      [RSTable addTableColumn:aColumn];
+            case SQL_TIMESTAMP:
+                displayWidth = 19;
+                if (colScale > 0)
+                    displayWidth = displayWidth + colScale + 1;
+                break;
+                
+            default:
+                displayWidth = 0;	/* skip other data types */
+                continue;
+        }
+        
+        if (displayWidth < TEXTLEN(colName))
+            displayWidth = TEXTLEN(colName);
+        if (displayWidth > sizeof(fetchBuffer) - 1)
+            displayWidth = sizeof(fetchBuffer) - 1;
+        if (displayWidth > MAX_WIDTH)
+            displayWidth = MAX_WIDTH;
+        
+        if (mSPARQL_executed && displayWidth <= 10)
+            displayWidth = MAX_WIDTH;
+        
+        /* Add new column */
+        aColumn = [NSTableColumn new];
+        NSCell *cell = [[[LinkTextFieldCell alloc] init] autorelease];
+        [aColumn setDataCell:cell];
+        
+        
+        /* Calculate size of font */
+        /**
+         float fontWidth = [fnt boundingRectForFont].size.width;
+         if (fontWidth == 0.0)
+         fontWidth = [fnt maximumAdvancement].width;
+         if (fontWidth == 0.0)
+         fontWidth = 10.0; 	// Default
+         **/
+        float fontWidth = 10.0;
+        
+        /* Make sure we always have room for column label */
+        int colNameLen = TEXTLEN(colName);
+        colNameLen = colNameLen<MIN_WIDTH?MIN_WIDTH:colNameLen;
+        displayWidth = displayWidth<MIN_WIDTH?MIN_WIDTH:displayWidth;
+        
+        float minWidth = fontWidth * (colNameLen<displayWidth?colNameLen:displayWidth);
+        [aColumn setMinWidth:minWidth];
+        
+        /* Calculate maximum size of column */
+        float strWidth = fontWidth * (displayWidth>colNameLen?displayWidth:colNameLen);
+        [aColumn setMaxWidth:strWidth];
+        
+        /* Fill in column information  */
+        [aColumn setIdentifier:[NSString stringWithFormat:@"%d", colNum-1]];
+        [aColumn setEditable:NO];
+        [aColumn setResizingMask:NSTableColumnAutoresizingMask|NSTableColumnUserResizingMask];
+        
+        [[aColumn headerCell] setStringValue:TEXTtoNS(colName)];
+        
+        /* Add to table */
+        [RSTable addTableColumn:aColumn];
     }
-
-  [mBuffer removeAllObjects];
-
-  /*
-   *  Print all the fields
-   */
-  totalRows = 0;
-  while (1)
+    
+    [mBuffer removeAllObjects];
+    
+    /*
+     *  Print all the fields
+     */
+    totalRows = 0;
+    while (totalRows < mMaxRows)
     {
-      int sts = SQLFetch (hstmt);
-
-      if (sts == SQL_NO_DATA_FOUND)
-	break;
-
-      if (sts != SQL_SUCCESS)
-	{
-      	  _nativeerrorbox (henv, hdbc, hstmt);
-	  break;
-	}
-
-      row = [NSMutableArray arrayWithCapacity:numCols];
-
-      for (colNum = 1; colNum <= numCols; colNum++)
-	{
-	  /*
-	   *  Fetch this column as character
-	   */
-	  sts = SQLGetData (hstmt, colNum, SQL_C_TCHAR, fetchBuffer,
-	      sizeof(fetchBuffer), &colIndicator);
-	  if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS)
-	    {
-      	      _nativeerrorbox (henv, hdbc, hstmt);
-	      goto endCursor;
-	    }
-
-	  /*
-	   *  Show NULL fields as ****
-	   */
-	  if (colIndicator == SQL_NULL_DATA)
-	    TEXTCPY(fetchBuffer, TEXT("<NULL>"));
-
-	  [row addObject:TEXTtoNS (fetchBuffer)];
-	}
-      [mBuffer addObject:row];
-      totalRows++;
+        int sts = SQLFetch (hstmt);
+        
+        if (sts == SQL_NO_DATA_FOUND)
+            break;
+        
+        if (sts != SQL_SUCCESS)
+        {
+            _nativeerrorbox (henv, hdbc, hstmt);
+            break;
+        }
+        
+        row = [NSMutableArray arrayWithCapacity:numCols];
+        
+        for (colNum = 1; colNum <= numCols; colNum++)
+        {
+            /*
+             *  Fetch this column as character
+             */
+            sts = SQLGetData (hstmt, colNum, SQL_C_TCHAR, fetchBuffer,
+                              sizeof(fetchBuffer), &colIndicator);
+            if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS)
+            {
+                _nativeerrorbox (henv, hdbc, hstmt);
+                goto endCursor;
+            }
+            
+            /*
+             *  Show NULL fields as ****
+             */
+            if (colIndicator == SQL_NULL_DATA)
+                TEXTCPY(fetchBuffer, TEXT("<NULL>"));
+            
+            NSString *val = TEXTtoNS (fetchBuffer);
+            if (val!=nil && ([val hasPrefix:@"http://"] || [val hasPrefix:@"https://"]))
+                [row addObject:[NSAttributedString attributedStringWithBlueLink:val]];
+            else
+                [row addObject:val?val:@"??"];
+        }
+        [mBuffer addObject:row];
+        totalRows++;
     }
-
-  if (SQLMoreResults (hstmt) == SQL_SUCCESS)
-    mNextResultset = YES;
-  else
-    mNextResultset = NO;
-
-  mRows = totalRows;
-  [RSTable reloadData];
-  return;
-
+    
+    
+    mRows = totalRows;
+    [RSTable reloadData];
+    if (mSPARQL_executed)
+        [RSTable sizeToFit];
+    return;
+    
 endCursor:
 #if (ODBCVER < 0x0300)
-  SQLFreeStmt (hstmt, SQL_CLOSE);
+    SQLFreeStmt (hstmt, SQL_CLOSE);
 #else
-  SQLCloseCursor (hstmt);
+    SQLCloseCursor (hstmt);
 #endif
-  return;
- 
+    return;
+    
 error:
-  _nativeerrorbox (henv, hdbc, hstmt);
-  return;
+    _nativeerrorbox (henv, hdbc, hstmt);
+    return;
 }
 
 - (IBAction)aCloseConnection:(id)sender
 {
-  [self disconnect];
+    [self disconnect];
 }
 
 
 - (IBAction)aExecSQL:(id)sender
 {
-  ExecController *dlg;
-  NSString *ret = nil;
+    ExecController *dlg = [[ExecController alloc] init];
+    dlg.fSQL = _fQuery;
+    dlg.MaxRows = mMaxRows;
+    
+    NSInteger rc = [NSApp runModalForWindow:dlg.window];
+    self.fQuery = dlg.fSQL;
+    mMaxRows = dlg.MaxRows;
 
-  dlg = [[ExecController alloc] initWithString:fQuery];
-
-  [NSApp beginSheet: [dlg Panel]
-            modalForWindow: mWindow
-            modalDelegate: nil
-            didEndSelector: nil
-            contextInfo: nil];  
-
-  if ([NSApp runModalForWindow:[dlg Panel]])
-    {
-      [fQuery release];
-      fQuery = ret = [dlg execSQL];
-    }
-
-  [NSApp endSheet:[dlg Panel]];
-  [[dlg Panel] orderOut:mWindow];
-  [dlg release];
-
-  if (ret != nil)
-    {
-      [self execSQL:NStoTEXT(ret)];
-    }
+    [dlg.window orderOut:mWindow];
+    [dlg release];
+    
+    if (rc)
+        [self execSQL:NStoTEXT(self.fQuery)];
 }
 
 
 - (IBAction)aFetchNextRowset:(id)sender
 {
-  if (mNextResultset)
-    [self loadResult];
+    if (mExistsResultset)
+    {
+        if (SQLMoreResults (hstmt) == SQL_SUCCESS)
+        {
+            [self loadResult];
+        }
+    }
 }
 
 
 - (IBAction)aOpenConnection:(id)sender
 {
-  SQLTCHAR szDSN[1024];
-  SQLTCHAR dataSource[1024];
-  SQLSMALLINT dsLen;
-  SQLRETURN status;
-
+    SQLTCHAR szDSN[1024];
+    SQLTCHAR dataSource[1024];
+    SQLSMALLINT dsLen;
+    SQLRETURN status;
+    
 #if (ODBCVER < 0x300)
-  if (SQLAllocEnv (&henv) != SQL_SUCCESS)
+    if (SQLAllocEnv (&henv) != SQL_SUCCESS)
 #else
-  if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
+        if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
+#endif
+        {
+            _nativeerrorbox (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+            return;
+        }
+    
+#if (ODBCVER < 0x300)
+    if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
+#else
+        SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION,
+                       (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_UINTEGER);
+    if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
 #endif
     {
-      _nativeerrorbox (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
-      return;
+        _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
+        [self disconnect];
+        return;
     }
-
-#if (ODBCVER < 0x300)
-  if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
-#else
-  SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION,
-		 (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_UINTEGER);
-  if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
-#endif
+    
+    status = SQLDriverConnect (hdbc, [mWindow windowRef], TEXT(""), SQL_NTS,
+                               dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_COMPLETE);
+    if (status != SQL_SUCCESS)
     {
-      _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
-      [self disconnect];
-      return;
+        _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
+        if (status != SQL_SUCCESS_WITH_INFO)
+        {
+            [self disconnect];
+            return;
+        }
     }
-
-  status = SQLDriverConnect (hdbc, [mWindow windowRef], TEXT(""), SQL_NTS, 
-      dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_COMPLETE);
-  if (status != SQL_SUCCESS)
-    {
-      _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
-      if (status != SQL_SUCCESS_WITH_INFO)
-	{
-	  [self disconnect];
-	  return;
-	}
-    }
-
-  mConnected = YES;
-  SQLGetInfo (hdbc, SQL_DRIVER_NAME, szDSN, sizeof (szDSN), NULL);
-
+    
+    mConnected = YES;
+    SQLGetInfo (hdbc, SQL_DATA_SOURCE_NAME, szDSN, sizeof (szDSN), NULL);
+    
 #ifdef UNICODE
-  [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo Unicode - Connected to [%@]", TEXTtoNS(szDSN)]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Connected to [%@]", TEXTtoNS(szDSN)]];
 #else
-  [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo - Connected to [%@]", TEXTtoNS(szDSN)]];
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Connected to [%@]", TEXTtoNS(szDSN)]];
 #endif
-
+    
 #if (ODBCVER < 0x0300)
-  if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
+    if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
 #else
-  if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
+        if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
 #endif
-    {
-      _nativeerrorbox (henv, hdbc, hstmt);
-      [self disconnect];
-      return;
-    }
-
-  [RSTable reloadData];
+        {
+            _nativeerrorbox (henv, hdbc, hstmt);
+            [self disconnect];
+            return;
+        }
+    
+    [RSTable reloadData];
 }
 
 
 
 // Show/hide menu items
-- (BOOL)validateMenuItem:(NSMenuItem *)item 
+- (BOOL)validateMenuItem:(NSMenuItem *)item
 {
     int tag = [item tag];
     if (tag == OpenTag)
-      {
+    {
         return (hdbc == nil ? YES : NO);
-      }
+    }
     else if (tag == CloseTag)
-      {
+    {
         return (hdbc == nil ? NO : YES);
-      }
+    }
     else if (tag == ExecSQLTag)
-      {
+    {
         return (hstmt != nil ? YES : NO);
-      }
+    }
     else if (tag == NextRowsetTag)
-      {
+    {
         return mNextResultset;
-      }
+    }
     else
-      return YES;
+        return YES;
 }
 
 
-- (id)tableView:(NSTableView *)aTable
-    objectValueForTableColumn:(NSTableColumn *)aColumn
-    row:(int)rowIndex
+- (id)tableView:(NSTableView *)aTable objectValueForTableColumn:(NSTableColumn *)aColumn
+            row:(int)rowIndex
 {
-  NSMutableArray *row;
-  unsigned id;
-
-  if (rowIndex < 0)
-    return nil;
-
-  id = [[aColumn identifier] intValue];
-  row = [mBuffer objectAtIndex:rowIndex];
-  return [row objectAtIndex:id];
+    NSMutableArray *row;
+    unsigned id;
+    
+    if (rowIndex < 0)
+        return nil;
+    
+    id = [[aColumn identifier] intValue];
+    row = [mBuffer objectAtIndex:rowIndex];
+    return [row objectAtIndex:id];
 }
+
 
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTable
 {
-  return mRows;
+    return mRows;
 }
+
+
+/**
+ - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn 
+     row:(NSInteger)row
+ {
+   if ([cell isKindOfClass:[LinkTextFieldCell class]]) 
+   {
+      LinkTextFieldCell *linkCell = (LinkTextFieldCell *)cell;
+       // Setup the work to be done when a link is clicked
+      linkCell.clickHandler = ^(NSString *url, id sender) {
+      };
+    }
+ }
+ **/
+
 
 @end

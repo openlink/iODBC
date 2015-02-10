@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -72,18 +72,19 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ExecController : NSObject
+@interface ExecController : NSWindowController 
 {
     IBOutlet NSTextField *fSQLText;
-    IBOutlet id panel;
+    IBOutlet NSTextField *fMaxRowsText;
 
-    NSString *fSQL;
+    NSString *_SQL;
+    int _MaxRows;
+    int _dialogCode;
 }
+
+@property (nonatomic, retain) NSString *fSQL;
+@property (assign) int MaxRows;
 
 - (IBAction)aCancel:(id)sender;
 - (IBAction)aOK:(id)sender;
-
-- (NSWindow *)Panel;
-- (NSString *)execSQL;
-- (id)initWithString:(NSString *)str;
 @end

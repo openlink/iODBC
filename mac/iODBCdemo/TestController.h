@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -77,7 +77,7 @@
 #import <iODBC/sqltypes.h>
 #import <iODBC/sqlucode.h>
 
-@interface TestController : NSObject
+@interface TestController : NSObject <NSTableViewDelegate, NSTableViewDataSource>
 {
     IBOutlet id mMenu;
     IBOutlet id mWindow;
@@ -89,11 +89,14 @@
     BOOL     mConnected;
     NSMutableArray *mBuffer;
     int      mRows;
-    NSString *fQuery;
+    NSString *_fQuery;
     BOOL     mExistsResultset;
     BOOL     mNextResultset;
+    BOOL     mSPARQL_executed;
+    int      mMaxRows;
 }
 
+@property (nonatomic, retain) NSString *fQuery;
 
 - (void)disconnect;
 - (void)execSQL:(SQLTCHAR *)szSQL;

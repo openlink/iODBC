@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -137,7 +137,6 @@ endif
 ifeq (10.7, $(findstring 10.7, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.7
     IODBC_TARGET=10.7
-    #IODBC_SDK=/Developer/SDKs/MacOSX10.7.sdk/
 endif
 
 
@@ -156,6 +155,15 @@ endif
 ifeq (10.9, $(findstring 10.9, $(macosx_version)))
     PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.9
     IODBC_TARGET=10.9
+endif
+
+
+#
+#  Mac OS X 10.10
+#
+ifeq (10.10, $(findstring 10.10, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.10
+    IODBC_TARGET=10.10
 endif
 
 
@@ -221,7 +229,7 @@ install:
 	#
 	#  Install CFM bridge for Microsoft Office
 	#
-	mkdir -p "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
+	-mkdir -p "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
 	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge" "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
 	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge.res" "$(DESTDIR)/Library/CFMSupport/._iODBC CFM Bridge"
 	/System/Library/CoreServices/FixupResourceForks /Library/CFMSupport

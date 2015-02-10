@@ -122,11 +122,11 @@
 		4F9091AC011F3BD104CA0E50 = {
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.8;
+				CURRENT_PROJECT_VERSION = 3.52.10;
 				DEBUGGING_SYMBOLS = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.8;
+				DYLIB_CURRENT_VERSION = 3.52.10;
 				EXPORTED_SYMBOLS_FILE = ../../macosx/iodbcadm.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1125,11 +1125,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.8</string>
+	<string>3.52.10</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.8</string>
+	<string>3.52.10</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>

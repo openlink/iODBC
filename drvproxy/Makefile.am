@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -119,8 +119,9 @@ libdrvproxy_la_SOURCES	= \
 noinst_HEADERS		= gui.h
 
 EXTRA_DIST		= \
-	$(srcdir)/drvproxy.exp \
-	$(srcdir)/macosx/confirm.c \
-	$(srcdir)/macosx/gensetup.c \
-	$(srcdir)/macosx/gui.h \
-	$(srcdir)/macosx/loginbox.c
+	$(srcdir)/*.c \
+	$(srcdir)/*.h \
+	$(srcdir)/gtk/*.c \
+	$(srcdir)/gtk/*.h \
+	$(srcdir)/macosx/*.c \
+	$(srcdir)/macosx/*.h

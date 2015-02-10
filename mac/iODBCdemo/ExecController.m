@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -73,47 +73,73 @@
 
 @implementation ExecController
 
+@synthesize fSQL = _SQL;
+@synthesize MaxRows= _MaxRows;
+
+
 - (id)init
 {
-    [super init];
-    if (self) {
-        // load up the nib
-        if (!panel)
-            [NSBundle loadNibNamed:@"ExecSQL" owner:self];
-    }
-    return self;
+    return [super initWithWindowNibName:@"ExecSQL"];
 }
 
-
-- (id)initWithString:(NSString *)str
+- (void)dealloc
 {
-    [self init];
-    [fSQLText setStringValue:str];
-    return self;
+    [_SQL release];
+    [super dealloc];
 }
 
+ 
+- (void)windowDidLoad
+{
+    [super windowDidLoad];
+    _dialogCode = 0;
+    
+    [[self window] center];  // Center the window.
+    fSQLText.stringValue = _SQL;
+    fMaxRowsText.stringValue = [NSString stringWithFormat:@"%d",_MaxRows];
+}
 
 - (IBAction)aCancel:(id)sender
 {
-    [panel close];
+    [self.window close];
     [NSApp stopModalWithCode:0];
 }
 
 - (IBAction)aOK:(id)sender
 {
-    fSQL = [fSQLText stringValue];
-    [panel close];
+    self.fSQL = [fSQLText stringValue];
+    self.MaxRows = [fMaxRowsText.stringValue integerValue];
+    [self.window close];
     [NSApp stopModalWithCode:1];
 }
 
-- (NSWindow *)Panel
+
+- (void)windowWillClose:(NSNotification*)notification
 {
-    return panel;
+    [NSApp stopModalWithCode:_dialogCode];
 }
 
-- (NSString *)execSQL
+
+- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)commandSelector
+
 {
-    return [fSQLText stringValue];
+    BOOL result = NO;
+    
+    if (commandSelector == @selector(insertNewline:))
+    {
+        // new line action:
+        // always insert a line-break character and don’t cause the receiver to end editing
+        [textView insertNewlineIgnoringFieldEditor:self];
+        result = YES;
+    }
+    else if (commandSelector == @selector(insertTab:))
+    {
+        // tab action:
+        // always insert a tab character and don’t cause the receiver to end editing
+        [textView insertTabIgnoringFieldEditor:self];
+        result = YES;
+    }
+    return result;
 }
 
 @end

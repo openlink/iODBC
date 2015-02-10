@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -90,6 +90,11 @@
 
 #include "inifile.h"
 #include "misc.h"
+
+#if !defined(WINDOWS) && !defined(WIN32) && !defined(OS2) && !defined(macintosh)
+# include <pwd.h>
+# define UNIX_PWD
+#endif
 
 
 extern BOOL ValidDSN (LPCSTR lpszDSN);
@@ -969,18 +974,241 @@ _iodbcdm_cfg_next_section(PCONFIG pconfig)
 }
 
 
+#if defined(__APPLE__)
+
+#define DSN_LST			"ODBC Data Sources"
+#define DRV_LST			"ODBC Drivers"
+
+typedef struct stat stat_t;
+
+/**
+ * return name ini file 
+ *    for $HOME/.odbc.ini or ~/.odbcinst.ini file
+ * OR  
+ *    for $HOME/Library/ODBC/odbc.ini or $HOME/Library/ODBC/odbcinst.ini 
+ *
+ **/
+static char *
+_getinifilename (char *buf, int size, int bIsInst, int bHome)
+{
+  int j;
+  char *ptr;
+
+  j = STRLEN (bIsInst ? "/odbcinst.ini" : "/odbc.ini") + 1;
+
+  if (size < j)
+    return NULL;
+
+  if (wSystemDSN == USERDSN_ONLY)
+    {
+      /*
+       *  2b. Check either $HOME/.odbc.ini or ~/.odbc.ini
+       */
+      if ((ptr = getenv ("HOME")) == NULL)
+	{
+	  ptr = (char *) getpwuid (getuid ());
+
+	  if (ptr != NULL)
+	    ptr = ((struct passwd *) ptr)->pw_dir;
+	}
+
+      if (ptr != NULL)
+        {
+          if (bHome)
+	    snprintf (buf, size, bIsInst ? "%s/.odbcinst.ini" : "%s/.odbc.ini",
+	      ptr);
+	  else
+	    snprintf (buf, size,
+	      bIsInst ? "%s" ODBCINST_INI_APP : "%s" ODBC_INI_APP, ptr);
+
+          return buf;
+        }
+    }
+  return NULL;
+}
+
+
+static int
+_fix_home_odbc(PCONFIG pconf, char *lib_odbcini, int bIsInst)
+{
+  char pathbuf[1024];
+  char *home_odbcini = _getinifilename (pathbuf, sizeof (pathbuf), bIsInst, TRUE);
+
+  if (home_odbcini && lib_odbcini)
+    {
+      PCONFIG pCfg = NULL;
+      stat_t home_stat;
+      stat_t lib_stat;
+
+      if (access(home_odbcini, R_OK)!=0)
+        {
+          symlink(lib_odbcini, home_odbcini);
+          return 0;
+        }
+        else
+        {
+          char buf[4096];
+          int rc;
+
+          if (stat(home_odbcini, &home_stat))
+            return -1;
+
+          /* 
+           * if $HOME/.odbc[inst].ini is link 
+           *  to $HOME/Library/ODBC/odbc[inst].ini 
+           */
+          if ((home_stat.st_mode & S_IFLNK) 
+              && (rc = readlink(home_odbcini, buf, sizeof(buf)))>0)
+            {
+              buf[rc]=0; 
+              if (strcmp(buf,lib_odbcini)==0)
+                return 0; /* OK  $HOME/.odbc.ini is linked to odbc.ini */
+            }
+
+          if (stat(lib_odbcini, &lib_stat))
+            return -1;
+
+          /* if $HOME/Library/ODBC/odbc[inst].ini is link 
+           *  to $HOME/.odbc[inst].ini 
+           */
+          if ((lib_stat.st_mode & S_IFLNK) 
+              && (rc = readlink(lib_odbcini, buf, sizeof(buf)))>0)
+            { 
+              buf[rc]=0; 
+              if (strcmp(buf,home_odbcini)==0)
+                return 0; /* OK  $HOME/.odbc.ini is linked to odbc.ini */
+            }
+        }
+
+      /* 
+       * import $HOME/.odbc[inst].ini and replace it with link 
+       *  to $HOME/Library/ODBC/odbc[inst].ini 
+       */
+      if (!_iodbcdm_cfg_init (&pCfg, home_odbcini, FALSE))
+        {
+          int len = 0;
+          char root_buf[4096] = {0};
+          char *proot;
+          char *root_val = NULL;
+          int was_error = FALSE;
+          char *root_lst = bIsInst?DRV_LST:DSN_LST;
+
+          /* Move DSN/Driver list*/
+          len = _iodbcdm_list_entries (pCfg, root_lst, root_buf, sizeof(root_buf));
+          if (len >0)
+            {
+              /* move [ODBC Data Sources] section */
+              for(proot = root_buf; *proot; proot += STRLEN(proot) + 1)
+                {
+                  if (!_iodbcdm_cfg_find (pCfg, root_lst, proot))
+                    root_val = pCfg->value;
+                  else
+                    root_val = NULL;
+
+                  if (!proot || !root_val) 
+                    continue;
+
+                  if (_iodbcdm_cfg_write (pconf, root_lst, proot, root_val)
+                      || _iodbcdm_cfg_commit (pconf))
+      		    {
+      		      was_error = TRUE;
+                      break;
+                    }
+                }
+
+              /* move DSN defines */
+              for(proot = root_buf; *proot; proot += STRLEN(proot) + 1)
+                {
+                  char buffer[4096];
+                  char *pattr;
+                  char *pattr_val;
+
+                  len = _iodbcdm_list_entries (pCfg, proot, buffer, sizeof(buffer));
+                  if (len>0)
+                    {
+                      /* move [DSN] description */
+                      for(pattr = buffer; *pattr; pattr += STRLEN(pattr) + 1)
+                        {
+                          if (!_iodbcdm_cfg_find (pCfg, proot, pattr))
+                            pattr_val = pCfg->value;
+                          else
+                            pattr_val = NULL;
+                      
+
+                          if (!pattr || !pattr_val)
+                            continue;
+                          
+                          if (_iodbcdm_cfg_write (pconf, proot, pattr, pattr_val)
+                              || _iodbcdm_cfg_commit (pconf))
+      			    {
+      			      was_error = TRUE;
+                              break;
+                            }
+                        }
+                    }
+                }
+            }
+          if (was_error)
+            return -1;
+        }
+     /* make link */
+      if (access(home_odbcini, R_OK)==0)
+        {
+          if (unlink(home_odbcini))
+            return -1;
+        }
+
+      if (symlink(lib_odbcini, home_odbcini))
+        return -1;
+    }
+  return 0;
+}
+#endif
+
+
 int
 _iodbcdm_cfg_search_init(PCONFIG *ppconf, const char *filename, int doCreate)
 {
   char pathbuf[1024];
+  int rc;
 
   if (strstr (filename, "odbc.ini") || strstr (filename, "ODBC.INI"))
-    return _iodbcdm_cfg_init (ppconf, _iodbcadm_getinifile (pathbuf,
-	    sizeof (pathbuf), FALSE, doCreate), doCreate);
+    {
+      char *fname_odbcini = _iodbcadm_getinifile (pathbuf,
+	    sizeof (pathbuf), FALSE, doCreate);
+      rc = _iodbcdm_cfg_init (ppconf, fname_odbcini, doCreate);
+#if defined(__APPLE__)
+      if (!rc && fname_odbcini && wSystemDSN == USERDSN_ONLY) 
+        {
+          char buf[1024];
+          char *lib_odbcini = _getinifilename (buf, sizeof (buf), FALSE, FALSE);
+
+          /* if we try open ~/Library/ODBC/odbc.ini */
+          if (lib_odbcini && strcmp(fname_odbcini, lib_odbcini)==0)
+            _fix_home_odbc(*ppconf, fname_odbcini, FALSE);
+        }
+#endif
+      return rc;
+    }
   else if (strstr (filename, "odbcinst.ini")
       || strstr (filename, "ODBCINST.INI"))
-    return _iodbcdm_cfg_init (ppconf, _iodbcadm_getinifile (pathbuf,
-	    sizeof (pathbuf), TRUE, doCreate), doCreate);
+    {
+      char *fname_odbcinst = _iodbcadm_getinifile (pathbuf,
+	    sizeof (pathbuf), TRUE, doCreate);
+      rc = _iodbcdm_cfg_init (ppconf, fname_odbcinst, doCreate);
+#if defined(__APPLE__)
+      if (!rc && fname_odbcinst && wSystemDSN == USERDSN_ONLY) 
+        {
+          char buf[1024];
+          char *lib_odbcinst = _getinifilename (buf, sizeof (buf), TRUE, FALSE);
+
+          /* if we try open ~/Library/ODBC/odbcinst.ini */
+          if (lib_odbcinst && strcmp(fname_odbcinst, lib_odbcinst)==0)
+            _fix_home_odbc(*ppconf, fname_odbcinst, TRUE);
+        }
+#endif
+      return rc;
+    }
   else if (doCreate || (!doCreate && access(filename, R_OK) == 0))
     return _iodbcdm_cfg_init (ppconf, filename, doCreate);
   else

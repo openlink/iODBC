@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -632,13 +632,27 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
   CFStringRef str;
   CFURLRef url;
   Str255 param;
-  char path[1024];
+  char path[4096];
+  char buf[4096];
+  Size len;
+
+  GetControlData (choose_t->dsn_entry, 0, kControlEditTextTextTag, 
+        sizeof (buf), buf, &len);
+  buf[len] = '\0';
+
+  if (STRLEN(buf)==0)
+    STRCPY(path, "xxx.dsn");
+  else
+    {
+      char *s = strrchr(buf,'/');
+      STRCPY(path, s?s+1:buf);
+    }
 
   NavGetDefaultDialogOptions (&dialogOptions);
   STRCPY (dialogOptions.windowTitle + 1, "Save as ...");
   dialogOptions.windowTitle[0] = STRLEN ("Save as ...");
-  STRCPY (dialogOptions.savedFileName + 1, "xxx.dsn");
-  dialogOptions.savedFileName[0] = STRLEN ("xxx.dsn");
+  STRCPY (dialogOptions.savedFileName + 1, path);
+  dialogOptions.savedFileName[0] = STRLEN (path);
 
   str = CFStringCreateWithCString(NULL, choose_t->curr_dir, kCFStringEncodingMacRoman);
   url = CFURLCreateWithFileSystemPath(NULL, str, kCFURLHFSPathStyle, TRUE);
@@ -652,6 +666,8 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
 
   AECreateDesc(typeFSS, &file, sizeof(file), &defaultLoc);
 
+  dialogOptions.dialogOptionFlags |= kNavAllowPreviews|kNavAllowStationery;
+
   err = NavPutFile (&defaultLoc, &reply, &dialogOptions,
     NewNavEventUPP (fdriverchooser_nav_events),
     'TEXT', kNavGenericSignature, NULL);
@@ -663,15 +679,25 @@ fdriverchooser_browse_clicked (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
+	  int l;
 	  /* Get back some information about the directory */
 	  dir = get_full_pathname (file.parID, file.vRefNum);
 	  sprintf (tokenstr, "%s/", dir ? dir : "");
 	  strncat (tokenstr, &file.name[1], file.name[0]);
 	  /* Display the constructed string re. the file choosen */
+	  l = STRLEN(tokenstr);
+
+	  if (l == 0)
+	    STRCPY(buf, "xxx.dsn");
+	  else if (l > 4 && strcmp(tokenstr+l-4, ".dsn")!=0)
+	    snprintf(buf, sizeof(buf), "%s.dsn", tokenstr);
+	  else
+	    STRNCPY(buf, tokenstr, sizeof(buf));
+
+	  buf[sizeof(buf)-1]=0;
+
 	  SetControlData (choose_t->dsn_entry, 0,
-	      kControlEditTextTextTag,
-	      STRLEN (tokenstr) ? STRLEN (tokenstr) : STRLEN ("xxx.dsn"),
-	      STRLEN (tokenstr) ? tokenstr : "xxx.dsn");
+	      kControlEditTextTextTag, STRLEN(buf), buf);
 	  DrawOneControl (choose_t->dsn_entry);
 	  /* Clean up */
 	  if (dir)

@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2014 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -124,6 +124,22 @@ admin_filter_tracefiles (AEDesc * item, void *info,
 
   return display;
 }*/
+
+char *get_home(char *buf, size_t size)
+{
+  char *ptr;
+
+  if ((ptr = getenv ("HOME")) == NULL)
+    {
+      ptr = (char *) getpwuid (getuid ());
+
+      if (ptr != NULL)
+        ptr = ((struct passwd *) ptr)->pw_dir;
+    }
+  STRNCPY(buf, ptr, size);
+  buf[size-1]=0;
+  return buf;
+}
 
 static pascal void
 admin_nav_events (NavEventCallbackMessage callBackSelector,
@@ -1095,10 +1111,8 @@ tracing_browse_clicked (EventHandlerCallRef inHandlerRef,
   NavDialogOptions dialogOptions;
   TTRACING *tracing_t = (TTRACING *) inUserData;
   NavReplyRecord reply;
-  char tokenstr[4096] = { 0 };
   OSStatus err;
   FSSpec file;
-  char *dir;
 
   NavGetDefaultDialogOptions (&dialogOptions);
   STRCPY (dialogOptions.windowTitle + 1, "Choose your trace library ...");
@@ -1118,17 +1132,22 @@ tracing_browse_clicked (EventHandlerCallRef inHandlerRef,
 	  sizeof (file), NULL);
       if (!err)
 	{
-	  /* Get back some information about the directory */
-	  dir = get_full_pathname (file.parID, file.vRefNum);
-	  sprintf (tokenstr, "%s/", dir ? dir : "");
-	  strncat (tokenstr, &file.name[1], file.name[0]);
-	  /* Display the constructed string re. the file choosen */
-	  SetControlData (tracing_t->tracelib_entry, 0,
-	      kControlEditTextTextTag, STRLEN (tokenstr), tokenstr);
-	  DrawOneControl (tracing_t->tracelib_entry);
-	  /* Clean up */
-	  if (dir)
-	    free (dir);
+          char file_path[PATH_MAX] = { '\0' };
+          FSRef ref;
+
+          if( file.name[0] == 0 )
+            err = FSMakeFSSpec(file.vRefNum, file.parID, file.name, &file);
+          if( err == noErr )
+            err = FSpMakeFSRef(&file, &ref);
+
+          err = FSRefMakePath(&ref, file_path, PATH_MAX); // translate the FSRef into a path
+          if (err == noErr)
+            {
+	      /* Display the constructed string re. the file choosen */
+	      SetControlData (tracing_t->tracelib_entry, 0,
+	          kControlEditTextTextTag, STRLEN (file_path), file_path);
+	      DrawOneControl (tracing_t->tracelib_entry);
+            }
 	}
     }
 
@@ -1869,7 +1888,12 @@ create_administrator (HWND hwnd)
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", 
       dsnchoose_t.curr_dir, sizeof(dsnchoose_t.curr_dir), "odbcinst.ini"))
-    strcpy(dsnchoose_t.curr_dir, DEFAULT_FILEDSNPATH);
+    {
+      char tmp[1024];
+      snprintf(dsnchoose_t.curr_dir, sizeof(dsnchoose_t.curr_dir),
+        "%s/Documents", get_home(tmp, sizeof(tmp)));
+/*        "%s"DEFAULT_FILEDSNPATH, get_home(tmp, sizeof(tmp))); */
+    }
 
   /* Force to go on the first tab */
   DisplayTabControlNumber (1, tabControl, admin, tabs);
