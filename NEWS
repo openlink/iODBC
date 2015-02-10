@@ -1,4 +1,4 @@
-Feb 05 2015, V3.52.10-rc1:
+Feb 10 2015, V3.52.10:
      * Fixed issue with ~/Library/ODBC/odbc[inst].ini on Mac OS X
      
 	iODBC created ~/.odbc[inst].ini when ~/Library/ODBC/odbc[inst].ini did not exist
@@ -23,6 +23,8 @@ Feb 05 2015, V3.52.10-rc1:
 	- Fixed app names/titles to iODBC Demo Unicode and iODBC Demo Ansi
 	- Updated iODBCdemo on Mac OS X to support blue links in gridView
 	- Fixed column resize in gridView for "SPARQL DESCRIBE..." queries
+
+    * Fixed string truncation in Unicode <-> Ansi conversion on some API calls
 
 
 Apr 15 2014, V3.52.9:
