@@ -110,6 +110,7 @@ _iodbcdm_popsqlerr (HERR herr)
       return herr;
     }
 
+  MEM_FREE(list->msg);
   next = list->next;
   list->next = NULL;
 
@@ -150,8 +151,7 @@ _iodbcdm_pushsqlerr (
     /* overwrite the top entry to prevent error stack blow out */
     {
       perr->code = code;
-      perr->msg = (char *) msg;
-
+      perr->msg = msg?strdup((char *) msg): NULL;
       return herr;
     }
 
@@ -162,7 +162,7 @@ _iodbcdm_pushsqlerr (
       return NULL;
     }
 
-  ebuf->msg = (char *) msg;
+  ebuf->msg = msg?strdup((char *) msg):NULL;
   ebuf->code = code;
   ebuf->idx = idx;
   ebuf->next = (sqlerr_t *) herr;
@@ -526,7 +526,7 @@ _iodbcdm_sqlerror (
   else
     {
       int len;
-      char msgbuf[256] = {'\0'};
+      char msgbuf[4096] = {'\0'};
 
       /* get sql state message */
       errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
@@ -539,7 +539,7 @@ _iodbcdm_sqlerror (
 #if defined(HAVE_SNPRINTF)
       snprintf (msgbuf, sizeof(msgbuf), "%s%s", sqlerrhd, (char*)errmsg);
 #else
-      sprintf (msgbuf, "%s%s", sqlerrhd, (char*)errmsg);
+      sprintf (msgbuf, "%s%.*s", sqlerrhd, sizeof(msgbuf)-8, (char*)errmsg);
 #endif
 
       len = STRLEN (msgbuf);
