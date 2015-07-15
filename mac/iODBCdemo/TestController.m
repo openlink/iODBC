@@ -156,14 +156,14 @@ TEXTtoNS (wchar_t * str)
 void
 _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
 {
-    SQLTCHAR buf[250];
+    SQLTCHAR buf[4096];
     SQLTCHAR sqlstate[15];
     
     /*
      * Get statement errors
      */
     if (SQLError (_henv, _hdbc, _hstmt, sqlstate, NULL,
-                  buf, sizeof (buf), NULL) == SQL_SUCCESS)
+                  buf, sizeof (buf)/sizeof(SQLTCHAR), NULL) == SQL_SUCCESS)
         NSRunAlertPanel(@"Native ODBC Error",
                         [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
     
@@ -171,7 +171,7 @@ _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
      * Get connection errors
      */
     if (SQLError (_henv, _hdbc, SQL_NULL_HSTMT, sqlstate,
-                  NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+                  NULL, buf, sizeof (buf)/sizeof(SQLTCHAR), NULL) == SQL_SUCCESS)
         NSRunAlertPanel(@"Native ODBC Error",
                         [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
     
@@ -179,7 +179,7 @@ _nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
      * Get environmental errors
      */
     if (SQLError (_henv, SQL_NULL_HDBC, SQL_NULL_HSTMT,
-                  sqlstate, NULL, buf, sizeof (buf), NULL) == SQL_SUCCESS)
+                  sqlstate, NULL, buf, sizeof (buf)/sizeof(SQLTCHAR), NULL) == SQL_SUCCESS)
         NSRunAlertPanel(@"Native ODBC Error",
                         [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
 }
