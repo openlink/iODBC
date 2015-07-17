@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>1.3</string>
+	<string>1.4</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

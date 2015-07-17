@@ -71,9 +71,11 @@
  */
 
 #import "TestController.h"
+#import "Helpers.h"
 #import "ExecController.h"
 #import "NSAttributedStringAdditions.h"
 #import "LinkTextFieldCell.h"
+#import "DSNchooserController.h"
 
 
 #define MIN_WIDTH       5
@@ -85,105 +87,6 @@
 
 @implementation TestController
 @synthesize fQuery = _fQuery;
-
-#ifdef UNICODE
-wchar_t *
-NStoTEXT (NSString * str)
-{
-    wchar_t *prov;
-    unsigned int len, i;
-    
-    if (str == nil)
-        return NULL;
-    
-    len = [str length];
-    prov = malloc (sizeof (wchar_t) * (len + 1));
-    
-    if (prov)
-    {
-        for (i = 0; i < len; i++)
-            prov[i] = [str characterAtIndex:i];
-        prov[i] = L'\0';
-    }
-    
-    return prov;
-}
-
-
-CFStringRef
-TEXTtoNS (wchar_t * str)
-{
-    CFMutableStringRef prov;
-    CFIndex i;
-    UniChar c;
-    
-    if (!str)
-        return NULL;
-    
-    prov = CFStringCreateMutable (NULL, 0);
-    
-    if (prov)
-    {
-        for (i = 0; str[i] != L'\0'; i++)
-        {
-            c = (UniChar) str[i];
-            CFStringAppendCharacters (prov, &c, 1);
-        }
-    }
-    
-    return prov;
-}
-
-#define TEXT(x)		(SQLWCHAR *) L##x
-#define TEXTLEN(x)	wcslen ((wchar_t *) x)
-#define TEXTCMP(x,y)	wcscmp((wchar_t *) x, (wchar_t *) y)
-#define TEXTCPY(x,y)	wcscpy((wchar_t *) x, (wchar_t *) y)
-
-#else
-
-#define TEXT(x)		(SQLCHAR *) x
-#define TEXTLEN(x)	strlen ((char *) x)
-#define TEXTCMP(x,y)	strcmp((char *) x, (char *) y)
-#define TEXTCPY(x,y)	strcpy((char *) x, (char *) y)
-
-#define TEXTtoNS(x)	[NSString stringWithUTF8String: x]
-#define NStoTEXT(x)	[ x UTF8String ]
-#endif
-
-
-
-
-void
-_nativeerrorbox (SQLHENV _henv, SQLHDBC _hdbc, SQLHSTMT _hstmt)
-{
-    SQLTCHAR buf[4096];
-    SQLTCHAR sqlstate[15];
-    
-    /*
-     * Get statement errors
-     */
-    if (SQLError (_henv, _hdbc, _hstmt, sqlstate, NULL,
-                  buf, sizeof (buf)/sizeof(SQLTCHAR), NULL) == SQL_SUCCESS)
-        NSRunAlertPanel(@"Native ODBC Error",
-                        [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
-    
-    /*
-     * Get connection errors
-     */
-    if (SQLError (_henv, _hdbc, SQL_NULL_HSTMT, sqlstate,
-                  NULL, buf, sizeof (buf)/sizeof(SQLTCHAR), NULL) == SQL_SUCCESS)
-        NSRunAlertPanel(@"Native ODBC Error",
-                        [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
-    
-    /*
-     * Get environmental errors
-     */
-    if (SQLError (_henv, SQL_NULL_HDBC, SQL_NULL_HSTMT,
-                  sqlstate, NULL, buf, sizeof (buf)/sizeof(SQLTCHAR), NULL) == SQL_SUCCESS)
-        NSRunAlertPanel(@"Native ODBC Error",
-                        [NSString stringWithFormat:@"%@ [%@]", TEXTtoNS(buf), TEXTtoNS(sqlstate)], NULL, NULL, NULL);
-}
-
 
 
 - (id)init
@@ -638,67 +541,95 @@ error:
 
 - (IBAction)aOpenConnection:(id)sender
 {
-    SQLTCHAR szDSN[1024];
-    SQLTCHAR dataSource[1024];
-    SQLSMALLINT dsLen;
-    SQLRETURN status;
+    DSNchooserController *dlg = [[DSNchooserController alloc] init];
+    NSInteger rc = [NSApp runModalForWindow:dlg.window];
     
-#if (ODBCVER < 0x300)
-    if (SQLAllocEnv (&henv) != SQL_SUCCESS)
-#else
-        if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
-#endif
+    NSString *type_dsn = dlg.type_dsn;
+    NSString *selected_dsn = dlg.selected_dsn;
+    NSString *uid = dlg.uid.stringValue;
+    NSString *pwd = dlg.pwd.stringValue;
+    
+    [dlg.window orderOut:mWindow];
+    [dlg release];
+
+    if (rc)
+    {
+        NSMutableString *sconn = [NSMutableString stringWithString:[type_dsn isEqualToString:@"filedsn"]?@"FILEDSN=":@"DSN="];
+        [sconn appendString:selected_dsn];
+        if (uid.length > 0)
         {
-            _nativeerrorbox (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
-            return;
+            [sconn appendString:@"UID="];
+            [sconn appendString:uid];
         }
-    
-#if (ODBCVER < 0x300)
-    if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
-#else
-        SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION,
-                       (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_UINTEGER);
-    if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
-#endif
-    {
-        _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
-        [self disconnect];
-        return;
-    }
-    
-    status = SQLDriverConnect (hdbc, [mWindow windowRef], TEXT(""), SQL_NTS,
-                               dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_COMPLETE);
-    if (status != SQL_SUCCESS)
-    {
-        _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
-        if (status != SQL_SUCCESS_WITH_INFO)
+        if (pwd.length > 0)
         {
+            [sconn appendString:@"PWD="];
+            [sconn appendString:pwd];
+        }
+        
+        SQLTCHAR szDSN[1024];
+        SQLTCHAR dataSource[1024];
+        SQLSMALLINT dsLen;
+        SQLRETURN status;
+        
+#if (ODBCVER < 0x300)
+        if (SQLAllocEnv (&henv) != SQL_SUCCESS)
+#else
+            if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
+#endif
+            {
+                _nativeerrorbox (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+                return;
+            }
+        
+#if (ODBCVER < 0x300)
+        if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
+#else
+            SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION,
+                           (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_UINTEGER);
+        if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
+#endif
+        {
+            _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
             [self disconnect];
             return;
         }
-    }
-    
-    mConnected = YES;
-    SQLGetInfo (hdbc, SQL_DATA_SOURCE_NAME, szDSN, sizeof (szDSN), NULL);
-    
+        
+        status = SQLDriverConnect (hdbc, [mWindow windowRef], NStoTEXT(sconn), SQL_NTS,
+                                   dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_NOPROMPT);
+        if (status != SQL_SUCCESS)
+        {
+            _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
+            if (status != SQL_SUCCESS_WITH_INFO)
+            {
+                [self disconnect];
+                return;
+            }
+        }
+        
+        mConnected = YES;
+        SQLGetInfo (hdbc, SQL_DATA_SOURCE_NAME, szDSN, sizeof (szDSN), NULL);
+        
 #ifdef UNICODE
-    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Connected to [%@]", TEXTtoNS(szDSN)]];
+        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Connected to [%@]", TEXTtoNS(szDSN)]];
 #else
-    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Connected to [%@]", TEXTtoNS(szDSN)]];
+        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Connected to [%@]", TEXTtoNS(szDSN)]];
 #endif
-    
+        
 #if (ODBCVER < 0x0300)
-    if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
+        if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
 #else
-        if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
+            if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
 #endif
-        {
-            _nativeerrorbox (henv, hdbc, hstmt);
-            [self disconnect];
-            return;
-        }
-    
-    [RSTable reloadData];
+            {
+                _nativeerrorbox (henv, hdbc, hstmt);
+                [self disconnect];
+                return;
+            }
+        
+        [RSTable reloadData];
+        
+    }
 }
 
 
