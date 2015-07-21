@@ -558,12 +558,12 @@ error:
         [sconn appendString:selected_dsn];
         if (uid.length > 0)
         {
-            [sconn appendString:@"UID="];
+            [sconn appendString:@";UID="];
             [sconn appendString:uid];
         }
         if (pwd.length > 0)
         {
-            [sconn appendString:@"PWD="];
+            [sconn appendString:@";PWD="];
             [sconn appendString:pwd];
         }
         
