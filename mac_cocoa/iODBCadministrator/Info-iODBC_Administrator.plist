@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBC Administrator</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OpenLink ODBC Administrator</string>
+	<string>iODBC Administrator</string>
 	<key>CFBundleIconFile</key>
 	<string>iODBCAdministrator.icns</string>
 	<key>CFBundleIdentifier</key>

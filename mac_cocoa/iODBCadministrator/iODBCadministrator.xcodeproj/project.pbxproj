@@ -164,7 +164,7 @@
 			dependencies = (
 			);
 			name = "iODBC Administrator";
-			productInstallPath = /Applications/Utilities;
+			productInstallPath = /Applications/iODBC;
 			productName = "iODBC Administrator";
 			productReference = CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */;
 			productType = "com.apple.product-type.application";
@@ -293,7 +293,7 @@
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = "Info-iODBC_Administrator.plist";
-				INSTALL_PATH = /Applications/Utilities;
+				INSTALL_PATH = /Applications/iODBC;
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH)";
@@ -307,7 +307,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "iODBC Administrator";
 				RESMERGER_SOURCES_FORK = data;
-				SDKROOT = macosx10.9;
+				SDKROOT = $IODBC_SDK;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = (
@@ -344,7 +344,7 @@
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = "Info-iODBC_Administrator.plist";
-				INSTALL_PATH = /Applications/Utilities;
+				INSTALL_PATH = /Applications/iODBC;
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH)";
@@ -357,7 +357,7 @@
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "iODBC Administrator";
-				SDKROOT = macosx10.9;
+				SDKROOT = $IODBC_SDK;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
