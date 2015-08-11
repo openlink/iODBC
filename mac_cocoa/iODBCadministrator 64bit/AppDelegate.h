@@ -1,5 +1,5 @@
 /*
- *  main.m
+ *  AppDelegate.h
  *
  *  $Id$
  *
@@ -72,115 +72,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 #import <Cocoa/Cocoa.h>
-#include <iodbc.h>
 
-int
-macosx_gui (int *argc, char **argv[])
-{
-    return NSApplicationMain(argc, argv);
-}
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 
 
-void
-display_help (void)
-{
-  printf ("-help\t\t\tDisplay the list of options.\n\r");
-  printf ("-odbc filename\t\tSet the location of the user ODBC.INI file.\n\r");
-  printf ("-odbcinst filename\tSet the location of the user ODBCINST.INI file.\n\r");
-  printf ("-sysodbc filename\tSet the location of the system ODBC.INI file.\n\r");
-  printf ("-sysodbcinst filename\tSet the location of the system ODBCINST.INI file.\n\r");
-  printf ("-debug\t\t\tThe error messages are displayed on the console.\n\r");
-  printf ("-admin odbcinstfile\tUsed to administrate the system odbcinst.ini file.\n\r\n\r");
-  printf ("-odbcfiledsn filename\tSet the location of the default File DSN directory.\n\r");
-  _exit (1);
-}
+@end
 
-
-int
-main (int argc, char *argv[])
-{
-  BOOL debug = FALSE;
-  char *gui = NULL;
-  int i = 1;
-
-  setlocale (LC_ALL, "");	/* Use native locale */
-
-  printf ("OpenLink iODBC Administrator (Mac OS X)\n");
-  printf ("iODBC Driver Manager %s\n", VERSION);
-  printf ("Copyright (C) 2000-2015 OpenLink Software\n");
-  printf ("Please report all bugs to <iodbc@openlinksw.com>\n");
-
-  /* Check options commands */
-  if (argc > 1)
-    {
-      for (; i < argc; i++)
-	{
-	  if (!strcasecmp (argv[i], "-help"))
-	    display_help ();
-
-	  if (!strcasecmp (argv[i], "-debug"))
-	    debug = TRUE;
-
-	  if (!strcasecmp (argv[i], "-odbc"))
-	    {
-	      if (i + 1 >= argc)
-		display_help ();
-	      setenv ("ODBCINI", argv[++i], TRUE);
-	    }
-
-	  if (!strcasecmp (argv[i], "-admin"))
-	    {
-	      if (i + 1 >= argc)
-		display_help ();
-	      setenv ("ODBCINSTINI", argv[++i], TRUE);
-	      setenv ("SYSODBCINSTINI", argv[i], TRUE);
-	    }
-
-	  if (!strcasecmp (argv[i], "-odbcinst"))
-	    {
-	      if (i + 1 >= argc)
-		display_help ();
-	      setenv ("ODBCINSTINI", argv[++i], TRUE);
-	    }
-
-	  if (!strcasecmp (argv[i], "-sysodbc"))
-	    {
-	      if (i + 1 >= argc)
-		display_help ();
-	      setenv ("SYSODBCINI", argv[++i], TRUE);
-	    }
-
-	  if (!strcasecmp (argv[i], "-sysodbcinst"))
-	    {
-	      if (i + 1 >= argc)
-		display_help ();
-	      setenv ("SYSODBCINSTINI", argv[++i], TRUE);
-	    }
-
-	  if (!strcasecmp (argv[i], "-gui"))
-	    {
-	      if (i + 2 >= argc)
-		display_help ();
-	      gui = argv[++i];
-	    }
-
-	  if (!strcasecmp (argv[i], "-odbcfiledsn"))
-	    {
-	      if (i + 1 >= argc)
-		display_help ();
-	      setenv ("ODBCFILEDSN", argv[++i], TRUE);
-	    }
-	}
-    }
-
-  if (!debug)
-    {
-#ifndef __APPLE__
-      close (STDOUT_FILENO);
-      close (STDERR_FILENO);
-#endif
-    }
-
-  return macosx_gui (&argc, &argv);
-}

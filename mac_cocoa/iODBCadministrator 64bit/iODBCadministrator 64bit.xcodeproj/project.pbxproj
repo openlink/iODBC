@@ -36,7 +36,7 @@
 		85A390C71B79108D00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = en; path = odbcman.tiff; sourceTree = "<group>"; };
 		85D1BBC707E7D7C90070A59E /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../../mac_cocoa/iODBC/build/iODBC.framework; sourceTree = SOURCE_ROOT; };
 		CDAE3B890987D655003250F8 /* Info-iODBC_Administrator.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iODBC_Administrator.plist"; sourceTree = "<group>"; };
-		CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Administrator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Administrator 64bit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5C2EB0D0518623801A801EC /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../../mac_cocoa/iODBCinst/build/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		F5C2EB0F0518625501A801EC /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
 		F5C2EB100518625501A801EC /* sql.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sql.h; path = ../../include/sql.h; sourceTree = SOURCE_ROOT; };
@@ -77,7 +77,7 @@
 				195DF8CFFE9D517E11CA2CBB /* Products */,
 				CDAE3B890987D655003250F8 /* Info-iODBC_Administrator.plist */,
 			);
-			name = "iODBC Administrator";
+			name = "iODBC Administrator 64bit";
 			sourceTree = "<group>";
 		};
 		20286C2AFDCF999611CA2CEA /* Sources */ = {
@@ -163,9 +163,9 @@
 			);
 			dependencies = (
 			);
-			name = "iODBC Administrator";
+			name = "iODBC Administrator 64bit";
 			productInstallPath = /Applications/Utilities;
-			productName = "iODBC Administrator";
+			productName = "iODBC Administrator 64bit";
 			productReference = CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -269,6 +269,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 3.52.11;
@@ -305,7 +306,7 @@
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "iODBC Administrator";
+				PRODUCT_NAME = "iODBC Administrator 64bit";
 				RESMERGER_SOURCES_FORK = data;
 				SDKROOT = macosx10.9;
 				SECTORDER_FLAGS = "";
@@ -326,6 +327,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -356,7 +358,7 @@
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "iODBC Administrator";
+				PRODUCT_NAME = "iODBC Administrator 64bit";
 				SDKROOT = macosx10.9;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -375,6 +377,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
@@ -387,6 +390,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
