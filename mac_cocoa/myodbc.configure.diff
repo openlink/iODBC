@@ -1,0 +1,99 @@
+--- configure	Thu Feb 27 01:19:11 2003
++++ ../MyODBC-3.51.06.NEW/configure	Wed Sep  3 16:51:22 2003
+@@ -8453,7 +8453,7 @@
+ 
+ 
+ 
+-for ac_header in sql.h sqlext.h sqltypes.h
++for ac_header in iODBC/sql.h iODBC/sqlext.h iODBC/sqltypes.h
+ do
+ as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ if eval "test \"\${$as_ac_Header+set}\" = set"; then
+@@ -8580,7 +8580,7 @@
+ # odbc_headers manually to make AC_CHECK_ODBC_TYPE to work
+ if test "x$odbc_headers" = "x   "
+ then
+-  odbc_headers="sql.h sqlext.h sqltypes.h"
++  odbc_headers="iODBC/sql.h iODBC/sqlext.h iODBC/sqltypes.h"
+ fi
+ 
+ 
+@@ -8903,7 +8903,7 @@
+ 
+ 
+ 
+-for ac_header in isql.h isqlext.h isqltypes.h
++for ac_header in iODBC/isql.h iODBC/isqlext.h iODBC/isqltypes.h
+ do
+ as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ if eval "test \"\${$as_ac_Header+set}\" = set"; then
+@@ -9031,11 +9031,11 @@
+ # odbc_headers manually to make AC_CHECK_ODBC_TYPE to work
+ if test "x$odbc_headers" = "x"
+ then
+-  odbc_headers="isql.h isqlext.h isqltypes.h"
++  odbc_headers="iODBC/isql.h iODBC/isqlext.h iODBC/isqltypes.h"
+ fi
+ 
+ 
+-for ac_header in iodbcinst.h
++for ac_header in iODBCinst/iodbcinst.h
+ do
+ as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ if eval "test \"\${$as_ac_Header+set}\" = set"; then
+@@ -9152,17 +9152,17 @@
+ if test "x$ac_cv_header_iodbcinst_h" = "xyes"
+ then
+ 
+-  odbc_headers="$odbc_headers iodbcinst.h"
++  odbc_headers="$odbc_headers iODBCinst/iodbcinst.h"
+ 	save_LIBS="$LIBS"
+ 	LIBS="-L$iodbc_libs $LIBS"
+ 
+-	echo "$as_me:$LINENO: checking for _iodbcdm_admin_dialbox in -liodbcadm" >&5
+-echo $ECHO_N "checking for _iodbcdm_admin_dialbox in -liodbcadm... $ECHO_C" >&6
++	echo "$as_me:$LINENO: checking for _iodbcdm_admin_dialbox in -framework iODBCadm" >&5
++echo $ECHO_N "checking for _iodbcdm_admin_dialbox in -framework iODBCadm... $ECHO_C" >&6
+ if test "${ac_cv_lib_iodbcadm__iodbcdm_admin_dialbox+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-liodbcadm  $LIBS"
++LIBS="-framework iODBCadm  $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+ #include "confdefs.h"
+@@ -9212,20 +9212,20 @@
+ echo "$as_me:$LINENO: result: $ac_cv_lib_iodbcadm__iodbcdm_admin_dialbox" >&5
+ echo "${ECHO_T}$ac_cv_lib_iodbcadm__iodbcdm_admin_dialbox" >&6
+ if test $ac_cv_lib_iodbcadm__iodbcdm_admin_dialbox = yes; then
+-  LIBS="$LIBS -liodbcadm"
++  LIBS="$LIBS -framework iodbcadm"
+ 	have_iodbcadm=yes
+ else
+   LIBS="$save_LIBS"
+ fi
+ 
+ 
+-	echo "$as_me:$LINENO: checking for SQLGetPrivateProfileString in -liodbcinst" >&5
+-echo $ECHO_N "checking for SQLGetPrivateProfileString in -liodbcinst... $ECHO_C" >&6
++	echo "$as_me:$LINENO: checking for SQLGetPrivateProfileString in -framework iODBCinst" >&5
++echo $ECHO_N "checking for SQLGetPrivateProfileString in -framework iODBCinst... $ECHO_C" >&6
+ if test "${ac_cv_lib_iodbcinst_SQLGetPrivateProfileString+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-liodbcinst  $LIBS"
++LIBS="-framework iODBCinst  $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+ #include "confdefs.h"
+@@ -9280,7 +9280,7 @@
+ #define HAVE_SQLGETPRIVATEPROFILESTRING 1
+ _ACEOF
+ 
+-	LIBS="$LIBS -liodbcinst"
++	LIBS="$LIBS -framework iODBCinst"
+ 	have_iodbcinst=yes
+ else
+   LIBS="$save_LIBS"

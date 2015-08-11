@@ -1,0 +1,559 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		85349760105541030084FC17 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534975F105541030084FC17 /* NSResWindow.m */; };
+		85349761105541030084FC17 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534975F105541030084FC17 /* NSResWindow.m */; };
+		854FB8A21B58009C0041CF2F /* DSNchooserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A01B58009C0041CF2F /* DSNchooserController.m */; };
+		854FB8A61B5800AF0041CF2F /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A51B5800AF0041CF2F /* Helpers.m */; };
+		854FB8A71B58D0A70041CF2F /* DSNchooserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A01B58009C0041CF2F /* DSNchooserController.m */; };
+		854FB8A81B58D0A70041CF2F /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A51B5800AF0041CF2F /* Helpers.m */; };
+		855F56811A67B6240046BE46 /* LinkTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56801A67B6240046BE46 /* LinkTextFieldCell.m */; };
+		855F56821A67B6240046BE46 /* LinkTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56801A67B6240046BE46 /* LinkTextFieldCell.m */; };
+		855F56851A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56841A67B6330046BE46 /* NSAttributedStringAdditions.m */; };
+		855F56861A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56841A67B6330046BE46 /* NSAttributedStringAdditions.m */; };
+		85A390D81B7910FE00AC8862 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 85A390CE1B7910FE00AC8862 /* Credits.rtf */; };
+		85A390D91B7910FE00AC8862 /* ExecSQL.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390D01B7910FE00AC8862 /* ExecSQL.xib */; };
+		85A390DA1B7910FE00AC8862 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 85A390D21B7910FE00AC8862 /* InfoPlist.strings */; };
+		85A390DB1B7910FE00AC8862 /* iODBCdemo.icns in Resources */ = {isa = PBXBuildFile; fileRef = 85A390D41B7910FE00AC8862 /* iODBCdemo.icns */; };
+		85A390DC1B7910FE00AC8862 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390D61B7910FE00AC8862 /* MainMenu.xib */; };
+		85A390DD1B79112A00AC8862 /* DSNchooserController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390E01B79112A00AC8862 /* DSNchooserController.xib */; };
+		85A390DE1B79112A00AC8862 /* DSNchooserController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390E01B79112A00AC8862 /* DSNchooserController.xib */; };
+		85F0775709F871F60007FC8F /* TestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0775609F871F60007FC8F /* TestController.m */; };
+		85F0784609F88DFC0007FC8F /* iODBC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85F0784509F88DFC0007FC8F /* iODBC.framework */; };
+		85F0799D09FDC35E0007FC8F /* ExecController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0799C09FDC35E0007FC8F /* ExecController.m */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CD7C36450A0109AA001A43B7 /* iODBCinst.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7C36440A0109AA001A43B7 /* iODBCinst.framework */; };
+		CD7C37AD0A063F40001A43B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		CD7C37AE0A063F40001A43B7 /* TestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0775609F871F60007FC8F /* TestController.m */; };
+		CD7C37AF0A063F40001A43B7 /* ExecController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85F0799C09FDC35E0007FC8F /* ExecController.m */; };
+		CD7C37B10A063F40001A43B7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CD7C37B20A063F40001A43B7 /* iODBC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85F0784509F88DFC0007FC8F /* iODBC.framework */; };
+		CD7C37B30A063F40001A43B7 /* iODBCinst.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7C36440A0109AA001A43B7 /* iODBCinst.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* iodbcdemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iodbcdemo_Prefix.pch; sourceTree = "<group>"; };
+		8534975E105541030084FC17 /* NSResWindow.h */ = {isa = PBXFileReference; fileEncoding = 18446744071562067968; lastKnownFileType = sourcecode.c.h; path = NSResWindow.h; sourceTree = "<group>"; };
+		8534975F105541030084FC17 /* NSResWindow.m */ = {isa = PBXFileReference; fileEncoding = 18446744071562067968; lastKnownFileType = sourcecode.c.objc; path = NSResWindow.m; sourceTree = "<group>"; };
+		854FB89F1B58009C0041CF2F /* DSNchooserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSNchooserController.h; sourceTree = "<group>"; };
+		854FB8A01B58009C0041CF2F /* DSNchooserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSNchooserController.m; sourceTree = "<group>"; };
+		854FB8A41B5800AF0041CF2F /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
+		854FB8A51B5800AF0041CF2F /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helpers.m; sourceTree = "<group>"; };
+		855F567F1A67B6240046BE46 /* LinkTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkTextFieldCell.h; sourceTree = "<group>"; };
+		855F56801A67B6240046BE46 /* LinkTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkTextFieldCell.m; sourceTree = "<group>"; };
+		855F56831A67B6330046BE46 /* NSAttributedStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAttributedStringAdditions.h; sourceTree = "<group>"; };
+		855F56841A67B6330046BE46 /* NSAttributedStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSAttributedStringAdditions.m; sourceTree = "<group>"; };
+		85A390CF1B7910FE00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = Credits.rtf; sourceTree = "<group>"; };
+		85A390D11B7910FE00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ExecSQL.xib; sourceTree = "<group>"; };
+		85A390D31B7910FE00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		85A390D51B7910FE00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = en; path = iODBCdemo.icns; sourceTree = "<group>"; };
+		85A390D71B7910FE00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = MainMenu.xib; sourceTree = "<group>"; };
+		85A390DF1B79112A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DSNchooserController.xib; sourceTree = "<group>"; };
+		85F0775509F871F60007FC8F /* TestController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TestController.h; sourceTree = "<group>"; };
+		85F0775609F871F60007FC8F /* TestController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TestController.m; sourceTree = "<group>"; };
+		85F0784509F88DFC0007FC8F /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = /Library/Frameworks/iODBC.framework; sourceTree = "<absolute>"; };
+		85F0799B09FDC35E0007FC8F /* ExecController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ExecController.h; sourceTree = "<group>"; };
+		85F0799C09FDC35E0007FC8F /* ExecController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ExecController.m; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* InfoUnicode.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = InfoUnicode.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* iODBC Demo Unicode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Demo Unicode.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD7C36440A0109AA001A43B7 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = /Library/Frameworks/iODBCinst.framework; sourceTree = "<absolute>"; };
+		CD7C37B70A063F40001A43B7 /* iODBC Demo Ansi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Demo Ansi.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD7C37B90A063F41001A43B7 /* InfoAnsi.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoAnsi.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				85F0784609F88DFC0007FC8F /* iODBC.framework in Frameworks */,
+				CD7C36450A0109AA001A43B7 /* iODBCinst.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD7C37B00A063F40001A43B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD7C37B10A063F40001A43B7 /* Cocoa.framework in Frameworks */,
+				CD7C37B20A063F40001A43B7 /* iODBC.framework in Frameworks */,
+				CD7C37B30A063F40001A43B7 /* iODBCinst.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CD7C36440A0109AA001A43B7 /* iODBCinst.framework */,
+				85F0784509F88DFC0007FC8F /* iODBC.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* iODBC Demo Unicode.app */,
+				CD7C37B70A063F40001A43B7 /* iODBC Demo Ansi.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* iODBC Demo Unicode */ = {
+			isa = PBXGroup;
+			children = (
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = "iODBC Demo Unicode";
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				854FB8A41B5800AF0041CF2F /* Helpers.h */,
+				854FB8A51B5800AF0041CF2F /* Helpers.m */,
+				854FB89F1B58009C0041CF2F /* DSNchooserController.h */,
+				854FB8A01B58009C0041CF2F /* DSNchooserController.m */,
+				855F56831A67B6330046BE46 /* NSAttributedStringAdditions.h */,
+				855F56841A67B6330046BE46 /* NSAttributedStringAdditions.m */,
+				855F567F1A67B6240046BE46 /* LinkTextFieldCell.h */,
+				855F56801A67B6240046BE46 /* LinkTextFieldCell.m */,
+				32CA4F630368D1EE00C91783 /* iodbcdemo_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				85F0775509F871F60007FC8F /* TestController.h */,
+				85F0775609F871F60007FC8F /* TestController.m */,
+				85F0799B09FDC35E0007FC8F /* ExecController.h */,
+				85F0799C09FDC35E0007FC8F /* ExecController.m */,
+				8534975E105541030084FC17 /* NSResWindow.h */,
+				8534975F105541030084FC17 /* NSResWindow.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				85A390CD1B7910FE00AC8862 /* en.lproj */,
+				8D1107310486CEB800E47090 /* InfoUnicode.plist */,
+				CD7C37B90A063F41001A43B7 /* InfoAnsi.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		85A390CD1B7910FE00AC8862 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				85A390CE1B7910FE00AC8862 /* Credits.rtf */,
+				85A390D01B7910FE00AC8862 /* ExecSQL.xib */,
+				85A390D21B7910FE00AC8862 /* InfoPlist.strings */,
+				85A390D41B7910FE00AC8862 /* iODBCdemo.icns */,
+				85A390D61B7910FE00AC8862 /* MainMenu.xib */,
+				85A390E01B79112A00AC8862 /* DSNchooserController.xib */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* iODBC Demo Unicode */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "iODBC Demo Unicode" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "iODBC Demo Unicode";
+			productInstallPath = /Applications/iODBC;
+			productName = "iODBC Demo";
+			productReference = 8D1107320486CEB800E47090 /* iODBC Demo Unicode.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CD7C37A70A063F40001A43B7 /* iODBC Demo Ansi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD7C37B40A063F40001A43B7 /* Build configuration list for PBXNativeTarget "iODBC Demo Ansi" */;
+			buildPhases = (
+				CD7C37A80A063F40001A43B7 /* Resources */,
+				CD7C37AC0A063F40001A43B7 /* Sources */,
+				CD7C37B00A063F40001A43B7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "iODBC Demo Ansi";
+			productInstallPath = /Applications/iODBC;
+			productName = "iODBC Demo";
+			productReference = CD7C37B70A063F40001A43B7 /* iODBC Demo Ansi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iodbcdemo" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* iODBC Demo Unicode */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* iODBC Demo Unicode */,
+				CD7C37A70A063F40001A43B7 /* iODBC Demo Ansi */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85A390DD1B79112A00AC8862 /* DSNchooserController.xib in Resources */,
+				85A390D81B7910FE00AC8862 /* Credits.rtf in Resources */,
+				85A390D91B7910FE00AC8862 /* ExecSQL.xib in Resources */,
+				85A390DA1B7910FE00AC8862 /* InfoPlist.strings in Resources */,
+				85A390DB1B7910FE00AC8862 /* iODBCdemo.icns in Resources */,
+				85A390DC1B7910FE00AC8862 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD7C37A80A063F40001A43B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85A390DE1B79112A00AC8862 /* DSNchooserController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				855F56811A67B6240046BE46 /* LinkTextFieldCell.m in Sources */,
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				85F0775709F871F60007FC8F /* TestController.m in Sources */,
+				855F56851A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */,
+				85F0799D09FDC35E0007FC8F /* ExecController.m in Sources */,
+				854FB8A21B58009C0041CF2F /* DSNchooserController.m in Sources */,
+				85349760105541030084FC17 /* NSResWindow.m in Sources */,
+				854FB8A61B5800AF0041CF2F /* Helpers.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD7C37AC0A063F40001A43B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				855F56821A67B6240046BE46 /* LinkTextFieldCell.m in Sources */,
+				CD7C37AD0A063F40001A43B7 /* main.m in Sources */,
+				CD7C37AE0A063F40001A43B7 /* TestController.m in Sources */,
+				855F56861A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */,
+				CD7C37AF0A063F40001A43B7 /* ExecController.m in Sources */,
+				85349761105541030084FC17 /* NSResWindow.m in Sources */,
+				854FB8A71B58D0A70041CF2F /* DSNchooserController.m in Sources */,
+				854FB8A81B58D0A70041CF2F /* Helpers.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		85A390CE1B7910FE00AC8862 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390CF1B7910FE00AC8862 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		85A390D01B7910FE00AC8862 /* ExecSQL.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390D11B7910FE00AC8862 /* en */,
+			);
+			name = ExecSQL.xib;
+			sourceTree = "<group>";
+		};
+		85A390D21B7910FE00AC8862 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390D31B7910FE00AC8862 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		85A390D41B7910FE00AC8862 /* iODBCdemo.icns */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390D51B7910FE00AC8862 /* en */,
+			);
+			name = iODBCdemo.icns;
+			sourceTree = "<group>";
+		};
+		85A390D61B7910FE00AC8862 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390D71B7910FE00AC8862 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		85A390E01B79112A00AC8862 /* DSNchooserController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390DF1B79112A00AC8862 /* en */,
+			);
+			name = DSNchooserController.xib;
+			path = ..;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = InfoUnicode.plist;
+				INSTALL_PATH = /Applications/iODBC;
+				OTHER_CFLAGS = "-DUNICODE";
+				PRODUCT_NAME = "iODBC Demo Unicode";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		C01FCF4C08A954540054247B /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = InfoUnicode.plist;
+				INSTALL_PATH = /Applications/iODBC;
+				OTHER_CFLAGS = "-DUNICODE";
+				PRODUCT_NAME = "iODBC Demo Unicode";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Deployment;
+		};
+		C01FCF4F08A954540054247B /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../include;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				PREBINDING = NO;
+				SDKROOT = $IODBC_SDK;
+			};
+			name = Development;
+		};
+		C01FCF5008A954540054247B /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../include;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				PREBINDING = NO;
+				SDKROOT = $IODBC_SDK;
+			};
+			name = Deployment;
+		};
+		CD7C37B50A063F40001A43B7 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = InfoAnsi.plist;
+				INSTALL_PATH = /Applications/iODBC;
+				PRODUCT_NAME = "iODBC Demo Ansi";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CD7C37B60A063F40001A43B7 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = InfoAnsi.plist;
+				INSTALL_PATH = /Applications/iODBC;
+				PRODUCT_NAME = "iODBC Demo Ansi";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Deployment;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "iODBC Demo Unicode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Development */,
+				C01FCF4C08A954540054247B /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iodbcdemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Development */,
+				C01FCF5008A954540054247B /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+		CD7C37B40A063F40001A43B7 /* Build configuration list for PBXNativeTarget "iODBC Demo Ansi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD7C37B50A063F40001A43B7 /* Development */,
+				CD7C37B60A063F40001A43B7 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

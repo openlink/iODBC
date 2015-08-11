@@ -85,12 +85,88 @@
 #include "misc.h"
 #include "iodbc_error.h"
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
 #include <Carbon/Carbon.h>
 #endif
 
 #ifndef WIN32
 #include <unistd.h>
+
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+
+#define CALL_CONFIG_TRANSLATOR(path) \
+    if (path) \
+    { \
+       char *tmp_path = strdup(path); \
+       if (tmp_path) { \
+         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(tmp_path); \
+       CALL_CONFIG_TRANSLATOR_BUNDLE(); \
+    }
+
+#define CALL_CONFIG_TRANSLATOR_BUNDLE() \
+	if (bundle_dll != NULL) \
+	{ \
+		if ((pConfigTranslator = (pConfigTranslatorFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigTranslator"))) != NULL) \
+		{ \
+	  	if (pConfigTranslator(hwndParent, pvOption)) \
+	  	{ \
+	    	finish = retcode = TRUE; \
+	    	goto done; \
+	  	} \
+			else \
+			{ \
+				PUSH_ERROR(ODBC_ERROR_GENERAL_ERR); \
+	    	retcode = FALSE; \
+	    	goto done; \
+			} \
+		} \
+	}
+
+
+#define CALL_TRSCHOOSE_DIALBOX(path) \
+    if (path) \
+    { \
+       char *tmp_path = strdup(path); \
+       if (tmp_path) { \
+         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(tmp_path); \
+       CALL_TRSCHOOSE_DIALBOX_BUNDLE(); \
+    }
+
+#define CALL_TRSCHOOSE_DIALBOX_BUNDLE() \
+	if (bundle_dll != NULL) \
+	{ \
+		if ((pTrsChoose = (pTrsChooseFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_trschoose_dialbox"))) != NULL) \
+		  ret = pTrsChoose(hwndParent, translator, sizeof(translator), NULL); \
+		else ret = SQL_NO_DATA; \
+	} \
+	else ret = SQL_NO_DATA;
+
+#else
+
 #define CALL_CONFIG_TRANSLATOR(path) \
 	if ((handle = DLL_OPEN(path)) != NULL) \
 	{ \
@@ -124,6 +200,8 @@
 	else ret = SQL_NO_DATA;
 #endif
 
+#endif
+
 extern SQLRETURN _iodbcdm_trschoose_dialbox (HWND, LPSTR, DWORD, int *);
 
 BOOL INSTAPI
@@ -139,20 +217,37 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   RETCODE ret = SQL_NO_DATA;
   void *handle;
   char translator[1024];
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  CFStringRef libname = NULL;
-  CFBundleRef bundle;
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+  CFBundleRef bundle = NULL;
+  CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
-  char name[1024] = { 0 };
 #endif
 
   do
     {
       /* Load the Admin dialbox function */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+# if defined(IODBC_COCOA)
+      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+      if (bundle)
+	{
+	  /* Search for the iODBCadm library */
+	  liburl =
+	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+	      NULL, NULL);
+	  if (liburl)
+	    {
+      	      bundle_dll = CFBundleCreate (NULL, liburl);
+              CFRelease (liburl);
+      	      CALL_TRSCHOOSE_DIALBOX_BUNDLE ();
+	    }
+	}
+# else
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
       if (bundle)
 	{
+          CFStringRef libname = NULL;
+          char name[1024] = { '\0' };
 	  /* Search for the iODBCadm library */
 	  liburl =
 	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
@@ -164,14 +259,17 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
 	      CFStringGetCString (libname, name, sizeof (name),
 		  kCFStringEncodingASCII);
 	      STRCAT (name, "/Contents/MacOS/iODBCadm");
+              CFRelease (libname); 
+              CFRelease (liburl); 
+              liburl = NULL;
 	      CALL_TRSCHOOSE_DIALBOX (name);
 	    }
 	  if (liburl)
 	    CFRelease (liburl);
-	  if (libname)
-	    CFRelease (libname);
 	}
+# endif
 #else
+
       CALL_TRSCHOOSE_DIALBOX ("libiodbcadm.so.2");
 #endif
 
