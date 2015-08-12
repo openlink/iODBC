@@ -125,9 +125,9 @@ NSString* conv_wchar_to_NSString(const wchar_t* str)
 #if 1
     int num = 1;
     if(*(char *)&num == 1)
-        return [[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32LittleEndianStringEncoding];
+        return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32LittleEndianStringEncoding] autorelease];
     else
-        return [[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32BigEndianStringEncoding];
+        return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32BigEndianStringEncoding] autorelease];
 #else
     CFMutableStringRef prov = CFStringCreateMutable(NULL, 0);
     CFIndex i;

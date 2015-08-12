@@ -306,7 +306,7 @@ static char* showKeyVal(NSWindow *mainWin, char* attrs, BOOL *verify_conn)
                 continue;
             }
 
-            [_Results_ArrController addObject:[conv_char_to_NSString(curr) autorelease]];
+            [_Results_ArrController addObject:conv_char_to_NSString(curr)];
         }
     }
 }

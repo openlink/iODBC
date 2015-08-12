@@ -986,7 +986,7 @@ BOOL add_file_dsn(NSString *_curr_dir)
     if (drvchoose_t.ok == TRUE)
     {
         ret = TRUE;
-        NSString *drv = [NSString stringWithFormat:@"DRIVER=%@", [conv_wchar_to_NSString(drvchoose_t.driver) autorelease]];
+        NSString *drv = [NSString stringWithFormat:@"DRIVER=%@", conv_wchar_to_NSString(drvchoose_t.driver)];
         char *attrs = drvchoose_t.attrs;
         
         filedsn_configure ((char*)drv.UTF8String, drvchoose_t.dsn,
@@ -1001,6 +1001,17 @@ BOOL add_file_dsn(NSString *_curr_dir)
         free (drvchoose_t.dsn);
     
     return ret;
+}
+
+
+NSString * 
+get_user_documents_dir()
+{
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  if (paths.count>0)
+    return [paths objectAtIndex:0];
+  else
+    return @"";
 }
 
 

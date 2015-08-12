@@ -130,9 +130,9 @@
         {
             NSString *key, *val;
             *cour = '\0';
-            key = [conv_char_to_NSString(curr) autorelease];
+            key = conv_char_to_NSString(curr);
             *cour = '=';
-            val = [conv_char_to_NSString(cour+1) autorelease];
+            val = conv_char_to_NSString(cour+1);
             [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:key!=nil?key:@"", @"key",
                                 val!=nil?val:@"", @"val", nil]];
         }

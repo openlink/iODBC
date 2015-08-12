@@ -162,8 +162,9 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
         
         SQLSetConfigMode (ODBC_BOTH_DSN);
         if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", tmp, sizeof(tmp), "odbcinst.ini"))
-            strcpy(tmp, DEFAULT_FILEDSNPATH);
-        _cur_dir = conv_char_to_NSString(tmp);
+          self.cur_dir = get_user_documents_dir();
+        else
+          self.cur_dir = conv_char_to_NSString(tmp);
     }
     return self;
 }

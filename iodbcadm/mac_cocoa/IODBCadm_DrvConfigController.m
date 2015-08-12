@@ -132,13 +132,13 @@
     {
         if (!wcsncasecmp (curr, L"Driver=", wcslen (L"Driver=")))
         {
-            _drv_file = conv_wchar_to_NSString(curr + wcslen(L"Driver="));
+            self.drv_file = conv_wchar_to_NSString(curr + wcslen(L"Driver="));
             continue;
         }
         
         if (!wcsncasecmp (curr, L"Setup=", wcslen(L"Setup=")))
         {
-            _setup_file = conv_wchar_to_NSString(curr + wcslen(L"Setup="));
+            self.setup_file = conv_wchar_to_NSString(curr + wcslen(L"Setup="));
             continue;
         }
         

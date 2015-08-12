@@ -245,8 +245,9 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
         
         SQLSetConfigMode (ODBC_BOTH_DSN);
         if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", tmp, sizeof(tmp), "odbcinst.ini"))
-            strcpy(tmp, DEFAULT_FILEDSNPATH);
-        _cur_dir = conv_char_to_NSString(tmp);
+          self.cur_dir = get_user_documents_dir();
+        else
+          self.cur_dir = conv_char_to_NSString(tmp);
     }
     _tracing_changed = FALSE;
     _pool_changed = FALSE;

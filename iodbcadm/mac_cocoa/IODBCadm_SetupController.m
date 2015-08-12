@@ -88,7 +88,7 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
         
         IODBCadm_SetupController *dlg = [[IODBCadm_SetupController alloc] initWithAttrs:attrs];
         if (dsn)
-            dlg.d_dsn = [conv_char_to_NSString(dsn) autorelease];
+            dlg.d_dsn = conv_char_to_NSString(dsn);
         dlg._addEnabled = addEnable;
         
         NSInteger rc = [app runModalForWindow:dlg.window];
@@ -215,7 +215,7 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
     for (curr = (char*) attrs; *curr; curr += (strlen(curr) + 1))
     {
         if (!strncasecmp (curr, "Description=", strlen("Description=")))
-            self.d_comment = [conv_char_to_NSString(curr + strlen("Description=")) autorelease];
+            self.d_comment = conv_char_to_NSString(curr + strlen("Description="));
         
         if (!strncasecmp (curr, "DSN=", strlen("DSN=")) ||
             !strncasecmp (curr, "Driver=", strlen("Driver=")) ||
@@ -226,7 +226,7 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
         {
             NSString *key, *val;
             *cour = '\0';
-            key = [conv_char_to_NSString(curr) autorelease];
+            key = conv_char_to_NSString(curr);
             *cour = '=';
             val = conv_char_to_NSString(cour+1);
             [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:key!=nil?key:@"", @"key",

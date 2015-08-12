@@ -82,11 +82,11 @@ void showLogin(const char* title, const char *username, const char *password, TL
         
         IODBCProxy_LoginController *dlg = [[IODBCProxy_LoginController alloc] init];
         if (title)
-            dlg.d_title = [conv_char_to_NSString(title) autorelease];
+            dlg.d_title = conv_char_to_NSString(title);
         if (username)
-            dlg.d_uid = [conv_char_to_NSString(username) autorelease];
+            dlg.d_uid = conv_char_to_NSString(username);
         if (password)
-            dlg.d_pwd = [conv_char_to_NSString(password) autorelease];
+            dlg.d_pwd = conv_char_to_NSString(password);
         [dlg.window makeKeyAndOrderFront:nil];
         
         NSInteger rc = [app runModalForWindow:dlg.window];

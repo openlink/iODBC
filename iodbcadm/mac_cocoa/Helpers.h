@@ -96,4 +96,4 @@ BOOL remove_file_dsn(NSString *cur_dir, NSString *dsn);
 void test_file_dsn(NSString *cur_dir, NSString *dsn);
 void setdir_file_dsn(NSString *cur_dir);
 BOOL configure_file_dsn(NSString *cur_dir, NSString *dsn);
-
+NSString * get_user_documents_dir();

@@ -83,8 +83,8 @@ static void create_error_Internal (void *hwnd, const void *dsn, const void *text
 	@autoreleasepool {
 //        NSApplication *app = [NSApplication sharedApplication];
     
-        NSString *title = [conv_to_NSString(text, waMode) autorelease];
-        NSString *message = [conv_to_NSString(errmsg, waMode) autorelease];
+        NSString *title = conv_to_NSString(text, waMode);
+        NSString *message = conv_to_NSString(errmsg, waMode);
         
         NSRunAlertPanel(title, message, @"OK", nil, nil);
     }
@@ -123,11 +123,11 @@ static void __create_message (void* hwnd, const void *dsn, const void *text, cha
         if (dsn)
         {
             title = [NSString stringWithFormat:@"DSN: %@", conv_to_NSString(dsn, waMode)];
-            message = [conv_to_NSString(text, waMode) autorelease];
+            message = conv_to_NSString(text, waMode);
         }
         else
         {
-            title = [conv_to_NSString(text, waMode) autorelease];
+            title = conv_to_NSString(text, waMode);
             message = @"";
         }
         
@@ -163,8 +163,8 @@ static BOOL showConfirm(const void *title, const void *message, char waMode)
         NSApplication *app = [NSApplication sharedApplication];
         
         IODBCadm_ConfirmController *dlg = [[IODBCadm_ConfirmController alloc] init];
-        dlg.d_title = [conv_to_NSString(title, waMode) autorelease];
-        dlg.d_message = [conv_to_NSString(message, waMode) autorelease];
+        dlg.d_title = conv_to_NSString(title, waMode);
+        dlg.d_message = conv_to_NSString(message, waMode);
         
         NSInteger rc = [app runModalForWindow:dlg.window];
         [dlg.window orderOut:dlg.window];
