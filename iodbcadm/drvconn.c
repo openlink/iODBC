@@ -271,6 +271,10 @@ iodbcdm_drvconn_dialboxw (
 
   if (!szDSN && !szDriver)
     {
+      /* Initialize members in case of early create_dsnchooser return */
+      choose_t.dsn = NULL;
+      choose_t.fdsn = NULL;
+
       /* Display the DSN chooser dialog box */
       create_dsnchooser (hwnd, &choose_t);
 
