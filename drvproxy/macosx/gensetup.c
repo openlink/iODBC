@@ -698,5 +698,5 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
 
 error:
   fprintf (stderr, "Can't load Window. Err: %d\n", (int) err);
-  return gensetup_t.connstr;
+  return NULL;
 }
