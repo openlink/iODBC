@@ -50,7 +50,7 @@
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				DYLIB_CURRENT_VERSION = 3.52.10;
-				EXPORTED_SYMBOLS_FILE = ../../macosx/drvproxy.exp;
+				EXPORTED_SYMBOLS_FILE = ../../mac/drvproxy.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -437,7 +437,7 @@
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				DYLIB_CURRENT_VERSION = 3.52.10;
-				EXPORTED_SYMBOLS_FILE = ../../macosx/drvproxy.exp;
+				EXPORTED_SYMBOLS_FILE = ../../mac/drvproxy.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Deployment,
 					../../mac/iODBCinst/build,
@@ -470,7 +470,7 @@
 				RESMERGER_SOURCES_FORK = data;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
-				STRIPFLAGS = "-u -r -s ../../macosx/drvproxy.exp";
+				STRIPFLAGS = "-u -r -s ../../mac/drvproxy.exp";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
