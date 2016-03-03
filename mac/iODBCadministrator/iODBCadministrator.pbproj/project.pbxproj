@@ -173,11 +173,11 @@
 		1CEA8F0D005FBAFB7F000001 = {
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.10;
-				"Current project version" = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
+				"Current project version" = 3.52.11;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = 3.52.10;
+				DYLIB_CURRENT_VERSION = 3.52.11;
 				FRAMEWORK_VERSION = 3.52;
 				"Framework version" = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -348,11 +348,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.10</string>
+	<string>3.52.11</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.10</string>
+	<string>3.52.11</string>
 </dict>
 </plist>
 ";

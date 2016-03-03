@@ -27,11 +27,11 @@
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.10;
-				"Current project version" = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
+				"Current project version" = 3.52.11;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = 3.52.10;
+				DYLIB_CURRENT_VERSION = 3.52.11;
 				FRAMEWORK_VERSION = 3.52;
 				"Framework version" = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -314,11 +314,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.10;
-				"Current project version" = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
+				"Current project version" = 3.52.11;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = 3.52.10;
+				DYLIB_CURRENT_VERSION = 3.52.11;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Development,
 					../../mac/iODBC/build,

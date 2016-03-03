@@ -45,11 +45,11 @@
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.52.10;
-				"Current project version" = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
+				"Current project version" = 3.52.11;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.10;
+				DYLIB_CURRENT_VERSION = 3.52.11;
 				EXPORTED_SYMBOLS_FILE = ../../mac/drvproxy.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -432,11 +432,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.10;
-				"Current project version" = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
+				"Current project version" = 3.52.11;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.10;
+				DYLIB_CURRENT_VERSION = 3.52.11;
 				EXPORTED_SYMBOLS_FILE = ../../mac/drvproxy.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Deployment,

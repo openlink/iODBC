@@ -84,7 +84,7 @@
 #endif
 
 #ifndef VERSION
-#define VERSION		"3.52.10"
+#define VERSION		"3.52.11"
 #define MAJ_VERSION	"3"
 #define MIN_VERSION	"52"
 #endif
