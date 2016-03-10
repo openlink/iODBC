@@ -168,6 +168,15 @@ endif
 
 
 #
+#  Mac OS X 10.11
+#
+ifeq (10.11, $(findstring 10.11, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.11
+    IODBC_TARGET=10.11
+endif
+
+
+#
 #  Pass settings to xcodebuild
 #
 export IODBC_TARGET IODBC_SDK
