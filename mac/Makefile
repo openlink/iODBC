@@ -82,7 +82,7 @@ endif
 #
 #  Determine which version of Mac OS X we are running
 #
-macosx_version	:= $(shell sw_vers -productVersion)
+macosx_version	:= $(shell sw_vers -productVersion | cut -d . -f 1-2)
 
 
 #
