@@ -1,0 +1,16 @@
+Title iODBC Driver Manager and Software Development Kit
+Version @IODBC_VERSION@
+Description The iODBC Driver Manager and Software Development Kit includes the necessaries frameworks to develop ODBC applications or ODBC drivers, the iODBC Administrator to let you configure and manage your Data Source Names and iodbctest to let you test your database connection.
+DefaultLocation (null)
+DeleteWarning Deleting this package will delete iODBC Driver Manager and Software Development Kit from your system.
+
+### Package Flags
+
+NeedsAuthorization NO
+Required NO
+Relocatable NO
+RequiresReboot NO
+UseUserMask NO
+OverwritePermissions NO
+InstallFat NO
+RootVolumeOnly NO

@@ -185,7 +185,7 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
 {
     self = [super initWithWindowNibName:@"IODBCadm_SetupController"];
     if (self) {
-        _Attrs_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.Attrs_list = [NSMutableArray arrayWithCapacity:16];
         [self parse_attrs:attrs];
     }
     return self;

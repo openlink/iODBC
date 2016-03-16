@@ -156,9 +156,9 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
     
     self = [super initWithWindowNibName:@"IODBCadm_DSNchooserController"];
     if (self) {
-        _UserDSN_list = [[NSMutableArray alloc] initWithCapacity:16];
-        _SysDSN_list = [[NSMutableArray alloc] initWithCapacity:16];
-        _FileDSN_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.UserDSN_list = [NSMutableArray arrayWithCapacity:16];
+        self.SysDSN_list = [NSMutableArray arrayWithCapacity:16];
+        self.FileDSN_list = [NSMutableArray arrayWithCapacity:16];
         
         SQLSetConfigMode (ODBC_BOTH_DSN);
         if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", tmp, sizeof(tmp), "odbcinst.ini"))

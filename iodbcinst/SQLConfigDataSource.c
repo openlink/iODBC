@@ -139,20 +139,23 @@
 #define CALL_CONFIG_DSN_BUNDLE() \
 	if (bundle_dll != NULL) \
 	{ \
-		if ((pConfigDSN = (pConfigDSNFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSN"))) != NULL) \
-		{ \
-	  	  if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
-	  	  { \
-	    	  retcode = TRUE; \
-	    	  goto done; \
-	  	  } \
-		  else \
-		  { \
-		    PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	 retcode = FALSE; \
-	    	 goto done; \
-		  } \
-		} \
+          if ((pConfigDSN = (pConfigDSNFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSN"))) != NULL) \
+          { \
+            if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
+            { \
+              CFRelease(bundle_dll); \
+              retcode = TRUE; \
+              goto done; \
+            } \
+            else \
+            { \
+              PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+              CFRelease(bundle_dll); \
+              retcode = FALSE; \
+              goto done; \
+            } \
+          } \
+          CFRelease(bundle_dll); \
 	}
 
 #define CALL_CONFIG_DSNW_BUNDLE() \
@@ -162,12 +165,14 @@
 		{ \
 	  	  if (pConfigDSNW(hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszAttributes)) \
 	  	  { \
+             CFRelease(bundle_dll); \
 	    	 retcode = TRUE; \
 	    	 goto done; \
 	  	  } \
 		  else \
 		  { \
 		     PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+             CFRelease(bundle_dll); \
 	    	 retcode = FALSE; \
 	    	 goto done; \
 		  } \
@@ -192,12 +197,14 @@
           if (_attrs_u8 == NULL && lpszAttributes) \
           { \
             PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+            CFRelease(bundle_dll); \
             retcode = FALSE; \
             goto done; \
            } \
 	  	  if (pConfigDSN(hwndParent, fRequest, _drv_u8, _attrs_u8)) \
 	  	  { \
               MEM_FREE (_attrs_u8); \
+              CFRelease(bundle_dll); \
 	    	  retcode = TRUE; \
 	    	  goto done; \
 	  	  } \
@@ -205,10 +212,12 @@
 		  { \
              MEM_FREE (_attrs_u8); \
  		     PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+             CFRelease(bundle_dll); \
 	    	 retcode = FALSE; \
 	    	 goto done; \
 		  } \
         } \
+        CFRelease(bundle_dll); \
 	}
 
 #else

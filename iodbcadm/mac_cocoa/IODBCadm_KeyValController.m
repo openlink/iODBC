@@ -91,7 +91,7 @@
 {
     self = [super initWithWindowNibName:@"IODBCadm_KeyValController"];
     if (self) {
-        _Attrs_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.Attrs_list = [NSMutableArray arrayWithCapacity:16];
         [self parse_attrs:attrs];
     }
     return self;

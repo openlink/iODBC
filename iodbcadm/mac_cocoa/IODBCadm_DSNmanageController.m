@@ -241,7 +241,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
     
     self = [super initWithWindowNibName:@"IODBCadm_DSNmanageController"];
     if (self) {
-        _FileDSN_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.FileDSN_list = [NSMutableArray arrayWithCapacity:16];
         
         SQLSetConfigMode (ODBC_BOTH_DSN);
         if (!SQLGetPrivateProfileString("ODBC", "FileDSNPath", "", tmp, sizeof(tmp), "odbcinst.ini"))

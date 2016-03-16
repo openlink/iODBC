@@ -121,11 +121,13 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
             SQLSetConfigMode (*config); \
             if (pDrvConnW (hwnd, szInOutConnStr, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
               { \
+                CFRelease(bundle_dll); \
                 retcode = SQL_SUCCESS; \
                 goto quit; \
               } \
             else \
               { \
+                CFRelease(bundle_dll); \
                 retcode = SQL_NO_DATA_FOUND; \
                 goto quit; \
               } \
@@ -140,23 +142,26 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
                   *_prvw != L'\0' ; _prvw += WCSLEN (_prvw) + 1, \
                   _prvu8 += STRLEN (_prvu8) + 1) \
                   dm_StrCopyOut2_W2A (_prvw, _prvu8, cbInOutConnStr, NULL); \
-                *_prvu8 = '\0'; \
+                  *_prvu8 = '\0'; \
                 SQLSetConfigMode (*config); \
                 if (pDrvConn (hwnd, _szinoutconstr_u8, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
                   { \
                     dm_StrCopyOut2_A2W (_szinoutconstr_u8, szInOutConnStr, cbInOutConnStr, NULL); \
                     MEM_FREE (_szinoutconstr_u8); \
+                    CFRelease(bundle_dll); \
                     retcode = SQL_SUCCESS; \
                     goto quit; \
                   } \
                 else \
                   { \
                     MEM_FREE (_szinoutconstr_u8); \
+                    CFRelease(bundle_dll); \
                     retcode = SQL_NO_DATA_FOUND; \
                     goto quit; \
                   } \
               } \
           } \
+        CFRelease(bundle_dll); \
       }
 
 #else

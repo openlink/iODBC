@@ -1238,14 +1238,17 @@ done:
         { \
             if (CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_drvconn_dialboxw")) != NULL) \
             { \
+                CFRelease(bundle_dll); \
                 retVal = TRUE; \
                 goto quit; \
             } \
             else if (CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_drvconn_dialbox")) != NULL) \
             { \
+                CFRelease(bundle_dll); \
                 retVal = TRUE; \
                 goto quit; \
             } \
+            CFRelease(bundle_dll); \
         } \
     }
 

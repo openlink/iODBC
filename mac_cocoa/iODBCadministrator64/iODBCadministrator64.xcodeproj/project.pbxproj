@@ -36,7 +36,7 @@
 		85A390C71B79108D00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = en; path = odbcman.tiff; sourceTree = "<group>"; };
 		85D1BBC707E7D7C90070A59E /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../../mac_cocoa/iODBC/build/iODBC.framework; sourceTree = SOURCE_ROOT; };
 		CDAE3B890987D655003250F8 /* Info-iODBC_Administrator.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iODBC_Administrator.plist"; sourceTree = "<group>"; };
-		CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Administrator64.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDAE3B8A0987D655003250F8 /* iODBC Administrator64.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Administrator64.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5C2EB0D0518623801A801EC /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../../mac_cocoa/iODBCinst/build/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		F5C2EB0F0518625501A801EC /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
 		F5C2EB100518625501A801EC /* sql.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sql.h; path = ../../include/sql.h; sourceTree = SOURCE_ROOT; };
@@ -61,15 +61,14 @@
 		195DF8CFFE9D517E11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */,
+				CDAE3B8A0987D655003250F8 /* iODBC Administrator64.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		20286C29FDCF999611CA2CEA /* iODBC Administrator */ = {
+		20286C29FDCF999611CA2CEA /* iODBC Administrator64 */ = {
 			isa = PBXGroup;
 			children = (
-				858A02DB1B7883E300C8009C /* Cocoa.framework */,
 				858A02D11B787EC900C8009C /* src */,
 				20286C2AFDCF999611CA2CEA /* Sources */,
 				20286C2CFDCF999611CA2CEA /* Resources */,
@@ -103,6 +102,7 @@
 		20286C32FDCF999611CA2CEA /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				858A02DB1B7883E300C8009C /* Cocoa.framework */,
 				85D1BBC707E7D7C90070A59E /* iODBC.framework */,
 				F5C2EB0D0518623801A801EC /* iODBCinst.framework */,
 			);
@@ -149,9 +149,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		CDAE3B730987D655003250F8 /* iODBC Administrator */ = {
+		CDAE3B730987D655003250F8 /* iODBC Administrator64 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CDAE3B860987D655003250F8 /* Build configuration list for PBXNativeTarget "iODBC Administrator" */;
+			buildConfigurationList = CDAE3B860987D655003250F8 /* Build configuration list for PBXNativeTarget "iODBC Administrator64" */;
 			buildPhases = (
 				CDAE3B740987D655003250F8 /* Headers */,
 				CDAE3B7A0987D655003250F8 /* Resources */,
@@ -166,7 +166,7 @@
 			name = "iODBC Administrator64";
 			productInstallPath = /Applications/iODBC;
 			productName = "iODBC Administrator64";
-			productReference = CDAE3B8A0987D655003250F8 /* iODBC Administrator.app */;
+			productReference = CDAE3B8A0987D655003250F8 /* iODBC Administrator64.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -174,7 +174,9 @@
 /* Begin PBXProject section */
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = CDAE3B8C0987D656003250F8 /* Build configuration list for PBXProject "iODBCadministrator" */;
+			attributes = {
+			};
+			buildConfigurationList = CDAE3B8C0987D656003250F8 /* Build configuration list for PBXProject "iODBCadministrator64" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -182,11 +184,11 @@
 				en,
 				English,
 			);
-			mainGroup = 20286C29FDCF999611CA2CEA /* iODBC Administrator */;
+			mainGroup = 20286C29FDCF999611CA2CEA /* iODBC Administrator64 */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CDAE3B730987D655003250F8 /* iODBC Administrator */,
+				CDAE3B730987D655003250F8 /* iODBC Administrator64 */,
 			);
 		};
 /* End PBXProject section */
@@ -266,16 +268,12 @@
 		CDAE3B870987D655003250F8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.11;
+				CURRENT_PROJECT_VERSION = 3.52.12;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = 3.52.11;
+				DYLIB_CURRENT_VERSION = 3.52.12;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac_cocoa/iODBC/build/Deployment,
 					../../mac_cocoa/iODBC/build,
@@ -324,11 +322,7 @@
 		CDAE3B880987D655003250F8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac_cocoa/iODBC/build/Deployment,
@@ -374,11 +368,7 @@
 		CDAE3B8D0987D656003250F8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
 			};
@@ -387,11 +377,7 @@
 		CDAE3B8E0987D656003250F8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
 			};
@@ -400,7 +386,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CDAE3B860987D655003250F8 /* Build configuration list for PBXNativeTarget "iODBC Administrator" */ = {
+		CDAE3B860987D655003250F8 /* Build configuration list for PBXNativeTarget "iODBC Administrator64" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CDAE3B870987D655003250F8 /* Development */,
@@ -409,7 +395,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Deployment;
 		};
-		CDAE3B8C0987D656003250F8 /* Build configuration list for PBXProject "iODBCadministrator" */ = {
+		CDAE3B8C0987D656003250F8 /* Build configuration list for PBXProject "iODBCadministrator64" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CDAE3B8D0987D656003250F8 /* Development */,

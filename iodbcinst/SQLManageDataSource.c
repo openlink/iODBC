@@ -88,13 +88,15 @@
 
 #if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
 
+//??        CFRelease(bundle_dll); 
+
 #define CALL_ADMIN_DIALBOX() \
 	if (bundle_dll != NULL) \
 	{ \
 		if ((pAdminBox = (pAdminBoxFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_admin_dialbox"))) != NULL) \
 		  if( pAdminBox(hwndParent) == SQL_SUCCESS) \
 		    retcode = TRUE; \
-	} 
+	}
 #else
 
 #define CALL_ADMIN_DIALBOX(path) \

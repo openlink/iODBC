@@ -235,8 +235,8 @@ static char* showKeyVal(NSWindow *mainWin, char* attrs, BOOL *verify_conn)
 {
     self = [super initWithWindowNibName:@"IODBCadm_DriverChooseFDSNController"];
     if (self) {
-        _Drv_list = [[NSMutableArray alloc] initWithCapacity:16];
-        _Results_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.Drv_list = [NSMutableArray arrayWithCapacity:16];
+        self.Results_list = [NSMutableArray arrayWithCapacity:16];
         _verify_conn = TRUE;
         _attrs = calloc(sizeof(char), 2);
     }

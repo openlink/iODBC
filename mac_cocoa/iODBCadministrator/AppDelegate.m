@@ -85,7 +85,6 @@
   BOOL manage_return = false;
 
     // Insert code here to initialize your application
-//??    show_DSNmanage();
   manage_return = SQLManageDataSources (-1L);
 
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IFPkgDescriptionDeleteWarning</key>
+	<string>Deleting this package will delete the iODBC Driver Manager and Software Development Kit from your system.</string>
+	<key>IFPkgDescriptionDescription</key>
+	<string>The iODBC Driver Manager and Software Development Kit includes the necessaries frameworks to develop ODBC applications or ODBC drivers, the iODBC Administrator to let you configure and manage your Data Source Names and iodbctest to let you test your database connection.</string>
+	<key>IFPkgDescriptionTitle</key>
+	<string>iODBC Driver Manager and SDK</string>
+	<key>IFPkgDescriptionVersion</key>
+	<string>@IODBC_VERSION@</string>
+</dict>
+</plist>

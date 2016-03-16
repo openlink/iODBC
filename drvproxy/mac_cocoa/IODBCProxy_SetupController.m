@@ -182,7 +182,7 @@ char* showSetup(char* dsn, char* attrs, BOOL addEnable)
 {
     self = [super initWithWindowNibName:@"IODBCProxy_SetupController"];
     if (self) {
-        _Attrs_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.Attrs_list = [NSMutableArray arrayWithCapacity:16];
         [self parse_attrs:attrs];
     }
     return self;
@@ -250,10 +250,10 @@ char* showSetup(char* dsn, char* attrs, BOOL addEnable)
     }
     if (d_comment!=nil)
         self.fld_Comment.stringValue = d_comment;
-    if (!_addEnabled) {
-        [btn_Add setEnabled:NO];
-        [btn_Remove setEnabled:NO];
-    }
+//??    if (!_addEnabled) {
+//??        [btn_Add setEnabled:NO];
+//??        [btn_Remove setEnabled:NO];
+//??    }
 }
 
 

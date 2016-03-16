@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IFPkgDescriptionDeleteWarning</key>
+	<string>Deleting this package will delete the iODBC frameworks from your system.</string>
+	<key>IFPkgDescriptionDescription</key>
+	<string>The iODBC frameworks necessary to run ODBC based applications. (Installed by default in /Library/Frameworks)</string>
+	<key>IFPkgDescriptionTitle</key>
+	<string>iODBC Frameworks (runtime)</string>
+	<key>IFPkgDescriptionVersion</key>
+	<string>@IODBC_VERSION@</string>
+</dict>
+</plist>

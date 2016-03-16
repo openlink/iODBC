@@ -121,7 +121,7 @@ void create_driverchooser(HWND hwnd, TDRIVERCHOOSER * choose_t)
 {
     self = [super initWithWindowNibName:@"IODBCadm_DriverChooseDSNController"];
     if (self) {
-        _Drv_list = [[NSMutableArray alloc] initWithCapacity:16];
+        self.Drv_list = [NSMutableArray arrayWithCapacity:16];
     }
     return self;
 }

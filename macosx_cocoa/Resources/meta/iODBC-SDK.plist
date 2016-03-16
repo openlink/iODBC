@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleGetInfoString</key>
+	<string>iODBC Driver Manager and Software Development Kit v@IODBC_VERSION@</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.iodbc.sdkinst</string>
+	<key>CFBundleName</key>
+	<string>iODBC Driver manager and Software Development Kit</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@IODBC_VERSION@</string>
+	<key>IFMajorVersion</key>
+	<integer>@IODBC_MAJOR@</integer>
+	<key>IFMinorVersion</key>
+	<integer>@IODBC_MINOR@</integer>
+	<key>IFPkgFlagAuthorizationAction</key>
+	<string>RootAuthorization</string>
+	<key>IFPkgFlagComponentDirectory</key>
+	<string>./Packages</string>
+	<key>IFPkgFlagPackageList</key>
+	<array>
+		<dict>
+			<key>IFPkgFlagPackageLocation</key>
+			<string>iODBCframe.pkg</string>
+			<key>IFPkgFlagPackageSelection</key>
+			<string>required</string>
+		</dict>
+		<dict>
+			<key>IFPkgFlagPackageLocation</key>
+			<string>iODBCsdk.pkg</string>
+			<key>IFPkgFlagPackageSelection</key>
+			<string>selected</string>
+		</dict>
+		<dict>
+			<key>IFPkgFlagPackageLocation</key>
+			<string>iODBCapps.pkg</string>
+			<key>IFPkgFlagPackageSelection</key>
+			<string>selected</string>
+		</dict>
+		<dict>
+			<key>IFPkgFlagPackageLocation</key>
+			<string>iODBCsamples.pkg</string>
+			<key>IFPkgFlagPackageSelection</key>
+			<string>selected</string>
+		</dict>
+	</array>
+	<key>IFPkgFormatVersion</key>
+	<real>0.10000000149011612</real>
+</dict>
+</plist>

@@ -276,7 +276,7 @@ void addDSNs_to_list(BOOL systemDSN, NSArrayController* list)
                    SQL_IS_UINTEGER);
     
     /* Get the list of datasources */
-    ret = SQLDataSources (henv,
+    ret = SQLDataSourcesW (henv,
                            systemDSN ? SQL_FETCH_FIRST_SYSTEM : SQL_FETCH_FIRST_USER,
                            dsnname, sizeof (dsnname)/sizeof(SQLTCHAR), &len,
                            dsndesc, sizeof (dsndesc)/sizeof(SQLTCHAR), NULL);

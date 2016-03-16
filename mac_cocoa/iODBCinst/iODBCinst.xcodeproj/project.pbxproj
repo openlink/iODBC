@@ -429,9 +429,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.52.11;
+				CURRENT_PROJECT_VERSION = 3.52.12;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.11;
+				DYLIB_CURRENT_VERSION = 3.52.12;
 				EXPORTED_SYMBOLS_FILE = ../../mac_cocoa/iodbcinst.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac_cocoa/iODBC/build/Deployment,
@@ -476,9 +476,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.11;
+				CURRENT_PROJECT_VERSION = 3.52.12;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.11;
+				DYLIB_CURRENT_VERSION = 3.52.12;
 				EXPORTED_SYMBOLS_FILE = ../../mac_cocoa/iodbcinst.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac_cocoa/iODBC/build/Deployment,
