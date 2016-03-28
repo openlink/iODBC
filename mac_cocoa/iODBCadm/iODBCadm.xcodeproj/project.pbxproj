@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		8568A59D196E8AE900738ECF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8568A59C196E8AE900738ECF /* Cocoa.framework */; };
 		8568A5A4196E8B1D00738ECF /* confirm.png in Resources */ = {isa = PBXBuildFile; fileRef = 8568A59E196E8B1D00738ECF /* confirm.png */; };
-		8568A5A5196E8B1D00738ECF /* IODBCadm_ConfirmController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A59F196E8B1D00738ECF /* IODBCadm_ConfirmController.h */; };
-		8568A5A6196E8B1D00738ECF /* IODBCadm_ConfirmController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A5A0196E8B1D00738ECF /* IODBCadm_ConfirmController.m */; };
 		8568A5A8196E8B1D00738ECF /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A5A2196E8B1D00738ECF /* utils.h */; };
 		8568A5A9196E8B1D00738ECF /* utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A5A3196E8B1D00738ECF /* utils.m */; };
 		8568A5E11977BCE100738ECF /* Helpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A5DF1977BCE100738ECF /* Helpers.h */; };
@@ -39,7 +37,6 @@
 		85A390A81B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390AA1B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib */; };
 		85A390AB1B790E4000AC8862 /* IODBCadm_SetupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390AD1B790E4000AC8862 /* IODBCadm_SetupController.xib */; };
 		85A390AE1B790E4900AC8862 /* IODBCadm_DSNchooserController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B01B790E4900AC8862 /* IODBCadm_DSNchooserController.xib */; };
-		85A390B11B790E5100AC8862 /* IODBCadm_ConfirmController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B31B790E5100AC8862 /* IODBCadm_ConfirmController.xib */; };
 		85A390B41B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B61B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib */; };
 		85A390B71B790E5C00AC8862 /* IODBCadm_KeyValController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B91B790E5C00AC8862 /* IODBCadm_KeyValController.xib */; };
 		85D41908197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h in Headers */ = {isa = PBXBuildFile; fileRef = 85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */; };
@@ -77,8 +74,6 @@
 /* Begin PBXFileReference section */
 		8568A59C196E8AE900738ECF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		8568A59E196E8B1D00738ECF /* confirm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = confirm.png; path = ../../iodbcadm/mac_cocoa/confirm.png; sourceTree = "<group>"; };
-		8568A59F196E8B1D00738ECF /* IODBCadm_ConfirmController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_ConfirmController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_ConfirmController.h; sourceTree = "<group>"; };
-		8568A5A0196E8B1D00738ECF /* IODBCadm_ConfirmController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_ConfirmController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_ConfirmController.m; sourceTree = "<group>"; };
 		8568A5A2196E8B1D00738ECF /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../../iodbcadm/mac_cocoa/utils.h; sourceTree = "<group>"; };
 		8568A5A3196E8B1D00738ECF /* utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = utils.m; path = ../../iodbcadm/mac_cocoa/utils.m; sourceTree = "<group>"; };
 		8568A5DF1977BCE100738ECF /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Helpers.h; path = ../../iodbcadm/mac_cocoa/Helpers.h; sourceTree = "<group>"; };
@@ -126,16 +121,15 @@
 		85983D8707D2C1A50022E958 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../iODBCinst/build/Development/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		85983E0E07D2C2080022E958 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		85A3909A1B790E0A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
-		85A3909D1B790E1700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_PoolConfigController.xib; sourceTree = "<group>"; };
-		85A390A01B790E2000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_DSNmanageController.xib; sourceTree = "<group>"; };
-		85A390A31B790E2D00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_DrvConfigController.xib; sourceTree = "<group>"; };
-		85A390A61B790E3500AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_DrvRemoveController.xib; sourceTree = "<group>"; };
-		85A390A91B790E3A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_DriverChooseDSNController.xib; sourceTree = "<group>"; };
-		85A390AC1B790E4000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_SetupController.xib; sourceTree = "<group>"; };
-		85A390AF1B790E4900AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_DSNchooserController.xib; sourceTree = "<group>"; };
-		85A390B21B790E5100AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_ConfirmController.xib; sourceTree = "<group>"; };
-		85A390B51B790E5700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_DriverChooseFDSNController.xib; sourceTree = "<group>"; };
-		85A390B81B790E5C00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/IODBCadm_KeyValController.xib; sourceTree = "<group>"; };
+		85A3909D1B790E1700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_PoolConfigController.xib; sourceTree = "<group>"; };
+		85A390A01B790E2000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_DSNmanageController.xib; sourceTree = "<group>"; };
+		85A390A31B790E2D00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_DrvConfigController.xib; sourceTree = "<group>"; };
+		85A390A61B790E3500AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_DrvRemoveController.xib; sourceTree = "<group>"; };
+		85A390A91B790E3A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_DriverChooseDSNController.xib; sourceTree = "<group>"; };
+		85A390AC1B790E4000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_SetupController.xib; sourceTree = "<group>"; };
+		85A390AF1B790E4900AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_DSNchooserController.xib; sourceTree = "<group>"; };
+		85A390B51B790E5700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_DriverChooseFDSNController.xib; sourceTree = "<group>"; };
+		85A390B81B790E5C00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCadm_KeyValController.xib; sourceTree = "<group>"; };
 		85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DriverChooseFDSNController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DriverChooseFDSNController.h; sourceTree = "<group>"; };
 		85D41906197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DriverChooseFDSNController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DriverChooseFDSNController.m; sourceTree = "<group>"; };
 		85D4190B197B824300C2C443 /* IODBCadm_KeyValController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_KeyValController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_KeyValController.h; sourceTree = "<group>"; };
@@ -226,8 +220,6 @@
 				8568A5EA1977BF6400738ECF /* IODBCadm_SetupController.m */,
 				8568A5E31977BCFB00738ECF /* IODBCadm_DSNchooserController.h */,
 				8568A5E41977BCFB00738ECF /* IODBCadm_DSNchooserController.m */,
-				8568A59F196E8B1D00738ECF /* IODBCadm_ConfirmController.h */,
-				8568A5A0196E8B1D00738ECF /* IODBCadm_ConfirmController.m */,
 				85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */,
 				85D41906197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m */,
 				85D4190B197B824300C2C443 /* IODBCadm_KeyValController.h */,
@@ -314,7 +306,6 @@
 				85A390AA1B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib */,
 				85A390AD1B790E4000AC8862 /* IODBCadm_SetupController.xib */,
 				85A390B01B790E4900AC8862 /* IODBCadm_DSNchooserController.xib */,
-				85A390B31B790E5100AC8862 /* IODBCadm_ConfirmController.xib */,
 				85A390B61B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib */,
 				85A390B91B790E5C00AC8862 /* IODBCadm_KeyValController.xib */,
 			);
@@ -354,7 +345,6 @@
 				CDAE3BF80987D71D003250F8 /* iodbcinst.h in Headers */,
 				858A029C1B74E80500C8009C /* IODBCadm_DSNmanageController.h in Headers */,
 				CDAE3BF90987D71D003250F8 /* odbcinst.h in Headers */,
-				8568A5A5196E8B1D00738ECF /* IODBCadm_ConfirmController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +376,8 @@
 /* Begin PBXProject section */
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = CDAE3C250987D71E003250F8 /* Build configuration list for PBXProject "iODBCadm" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
@@ -418,7 +410,6 @@
 				85A390A21B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib in Resources */,
 				8568A5F41978D55500738ECF /* odbc.png in Resources */,
 				8568A5F21978D54600738ECF /* drvchoose.png in Resources */,
-				85A390B11B790E5100AC8862 /* IODBCadm_ConfirmController.xib in Resources */,
 				8568A5A4196E8B1D00738ECF /* confirm.png in Resources */,
 				85A3909B1B790E0A00AC8862 /* InfoPlist.strings in Resources */,
 			);
@@ -460,7 +451,6 @@
 				858A02941B74E7F000C8009C /* IODBCadm_DrvConfigController.m in Sources */,
 				858A029D1B74E80500C8009C /* IODBCadm_DSNmanageController.m in Sources */,
 				8568A5E71977BCFB00738ECF /* IODBCadm_DSNchooserController.m in Sources */,
-				8568A5A6196E8B1D00738ECF /* IODBCadm_ConfirmController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,15 +525,6 @@
 				85A390AF1B790E4900AC8862 /* en */,
 			);
 			name = IODBCadm_DSNchooserController.xib;
-			path = ../../iodbcadm/mac_cocoa;
-			sourceTree = "<group>";
-		};
-		85A390B31B790E5100AC8862 /* IODBCadm_ConfirmController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				85A390B21B790E5100AC8862 /* en */,
-			);
-			name = IODBCadm_ConfirmController.xib;
 			path = ../../iodbcadm/mac_cocoa;
 			sourceTree = "<group>";
 		};

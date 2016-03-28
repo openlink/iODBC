@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -122,13 +122,20 @@ NSString* conv_wchar_to_NSString(const wchar_t* str)
 {
     if (!str)
         return nil;
-#if 1
+
     int num = 1;
     if(*(char *)&num == 1)
         return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32LittleEndianStringEncoding] autorelease];
     else
         return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32BigEndianStringEncoding] autorelease];
-#else
+}
+
+#if OLD_1
+NSString* conv_wchar_to_NSString(const wchar_t* str)
+{
+    if (!str)
+        return nil;
+
     CFMutableStringRef prov = CFStringCreateMutable(NULL, 0);
     CFIndex i;
     UniChar c;
@@ -142,8 +149,10 @@ NSString* conv_wchar_to_NSString(const wchar_t* str)
         }
     }
     return (NSString*)prov;
-#endif
 }
+#endif
+
+
 
 wchar_t* conv_NSString_to_wchar(NSString* str)
 {
@@ -207,6 +216,26 @@ NSString* conv_to_NSString(const void * str, char waMode)
 }
 
 
+BOOL showConfirm(const void *title, const void *message, char waMode)
+{
+    @autoreleasepool {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert addButtonWithTitle:@"Yes"]; /* first button */
+        [alert addButtonWithTitle:@"No"];
+        [alert setMessageText:(title?conv_to_NSString(title, waMode):@"")];
+        [alert setInformativeText:(message?conv_to_NSString(message, waMode):@"")];
+        [alert setAlertStyle:NSInformationalAlertStyle];
+        BOOL rc = ([alert runModal] == NSAlertFirstButtonReturn);
+/**
+        if ([alert runModal] == NSAlertFirstButtonReturn) {
+            // OK clicked, delete the record
+        }
+**/
+        return rc;
+        
+    }
+    
+}
 
 
 

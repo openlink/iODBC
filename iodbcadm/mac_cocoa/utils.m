@@ -73,6 +73,7 @@
  */
 
 #import "utils.h"
+#import <gui.h>
 
 #define OPL_W2A(XW, XA, SIZE)      wcstombs((char *) XA, (wchar_t *) XW, SIZE)
 #define OPL_A2W(XA, XW, SIZE)      mbstowcs((wchar_t *) XW, (char *) XA, SIZE)
@@ -122,13 +123,20 @@ NSString* conv_wchar_to_NSString(const wchar_t* str)
 {
     if (!str)
         return nil;
-#if 1
+
     int num = 1;
     if(*(char *)&num == 1)
         return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32LittleEndianStringEncoding] autorelease];
     else
         return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32BigEndianStringEncoding] autorelease];
-#else
+}
+
+#if OLD_1
+NSString* conv_wchar_to_NSString(const wchar_t* str)
+{
+    if (!str)
+        return nil;
+
     CFMutableStringRef prov = CFStringCreateMutable(NULL, 0);
     CFIndex i;
     UniChar c;
@@ -142,8 +150,8 @@ NSString* conv_wchar_to_NSString(const wchar_t* str)
         }
     }
     return (NSString*)prov;
-#endif
 }
+#endif
 
 wchar_t* conv_NSString_to_wchar(NSString* str)
 {
@@ -206,6 +214,120 @@ NSString* conv_to_NSString(const void * str, char waMode)
         return nil;
 }
 
+static BOOL showConfirm(const void *title, const void *message, char waMode)
+{
+    @autoreleasepool {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert addButtonWithTitle:@"Yes"]; /* first button */
+        [alert addButtonWithTitle:@"No"];
+        [alert setMessageText:(title?conv_to_NSString(title, waMode):@"")];
+        [alert setInformativeText:(message?conv_to_NSString(message, waMode):@"")];
+        [alert setAlertStyle:NSInformationalAlertStyle];
+        BOOL rc = ([alert runModal] == NSAlertFirstButtonReturn);
+/**
+        if ([alert runModal] == NSAlertFirstButtonReturn) {
+            // OK clicked, delete the record
+        }
+**/
+        return rc;
+        
+    }
+    
+}
+
+BOOL create_confirm (HWND hwnd,
+                     LPCSTR dsn,
+                     LPCSTR text)
+{
+    return showConfirm(dsn, text, 'A');
+}
+
+BOOL create_confirmw (HWND hwnd,
+                      LPCWSTR dsn,
+                      LPCWSTR text)
+{
+    return showConfirm(dsn, text, 'W');
+}
+
+
+static void create_error_Internal (void *hwnd, const void *dsn, const void *text, const void *errmsg, char waMode)
+{
+    if (hwnd == NULL)
+        return;
+    
+    @autoreleasepool {
+        NSString *title = conv_to_NSString(text, waMode);
+        NSString *message = conv_to_NSString(errmsg, waMode);
+        
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:title];
+        [alert setInformativeText:message];
+        [alert runModal];
+    }
+}
+
+void
+create_error (HWND hwnd,
+    LPCSTR dsn,
+    LPCSTR text,
+    LPCSTR errmsg)
+{
+  create_error_Internal (hwnd, (SQLPOINTER)dsn, (SQLPOINTER)text, (SQLPOINTER)errmsg, 'A');
+}
+
+void
+create_errorw (HWND hwnd,
+    LPCWSTR dsn,
+    LPCWSTR text,
+    LPCWSTR errmsg)
+{
+  create_error_Internal (hwnd, (SQLPOINTER)dsn, (SQLPOINTER)text, (SQLPOINTER)errmsg, 'W');
+}
+
+
+static void __create_message (void* hwnd, const void *dsn, const void *text, char waMode, int alertType)
+{
+    if (hwnd == NULL)
+        return;
+    
+    @autoreleasepool {
+        NSString *title = nil;
+        NSString *message = nil;
+
+        if (dsn)
+        {
+            title = [NSString stringWithFormat:@"DSN: %@", conv_to_NSString(dsn, waMode)];
+            message = conv_to_NSString(text, waMode);
+        }
+        else
+        {
+            title = conv_to_NSString(text, waMode);
+            message = @"";
+        }
+
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:title];
+        [alert setInformativeText:message];
+        [alert runModal];
+    }
+}
+
+
+void
+create_message (HWND hwnd,
+    LPCSTR dsn,
+    LPCSTR text)
+{
+  __create_message (hwnd, (SQLPOINTER)dsn, (SQLPOINTER)text, 'A', kAlertStopAlert);
+}
+
+void
+create_messagew (HWND hwnd,
+    LPCWSTR dsn,
+    LPCWSTR text)
+{
+  __create_message (hwnd, (SQLPOINTER)dsn, (SQLPOINTER)text, 'W', kAlertStopAlert);
+}
 
 
 

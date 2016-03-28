@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8568A50E19664B3E00738ECF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8568A50D19664B3E00738ECF /* Cocoa.framework */; };
-		8568A55F196A916B00738ECF /* IODBCProxy_ConfirmController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A55C196A916B00738ECF /* IODBCProxy_ConfirmController.h */; };
-		8568A560196A916B00738ECF /* IODBCProxy_ConfirmController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A55D196A916B00738ECF /* IODBCProxy_ConfirmController.m */; };
 		8568A563196A93FA00738ECF /* confirm.png in Resources */ = {isa = PBXBuildFile; fileRef = 8568A562196A93FA00738ECF /* confirm.png */; };
 		8568A569196AC47700738ECF /* IODBCProxy_LoginController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A566196AC47700738ECF /* IODBCProxy_LoginController.h */; };
 		8568A56A196AC47700738ECF /* IODBCProxy_LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A567196AC47700738ECF /* IODBCProxy_LoginController.m */; };
@@ -19,7 +17,6 @@
 		8568A58D196D6FC600738ECF /* utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A58B196D6FC600738ECF /* utils.m */; };
 		8568A598196E490400738ECF /* dlf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8568A596196E490400738ECF /* dlf.c */; };
 		8568A599196E490400738ECF /* dlf.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A597196E490400738ECF /* dlf.h */; };
-		85A390871B79091300AC8862 /* IODBCProxy_ConfirmController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390891B79091300AC8862 /* IODBCProxy_ConfirmController.xib */; };
 		85A3908A1B79093F00AC8862 /* IODBCProxy_LoginController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A3908C1B79093F00AC8862 /* IODBCProxy_LoginController.xib */; };
 		85A3908D1B79094800AC8862 /* IODBCProxy_SetupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A3908F1B79094800AC8862 /* IODBCProxy_SetupController.xib */; };
 		85A390E41B7911B100AC8862 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 85A390E21B7911B100AC8862 /* InfoPlist.strings */; };
@@ -66,8 +63,6 @@
 		71A26EE1069D5691005AC343 /* iodbcext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcext.h; path = ../../include/iodbcext.h; sourceTree = SOURCE_ROOT; };
 		71A26EE2069D5691005AC343 /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
 		8568A50D19664B3E00738ECF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		8568A55C196A916B00738ECF /* IODBCProxy_ConfirmController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IODBCProxy_ConfirmController.h; sourceTree = "<group>"; };
-		8568A55D196A916B00738ECF /* IODBCProxy_ConfirmController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IODBCProxy_ConfirmController.m; sourceTree = "<group>"; };
 		8568A562196A93FA00738ECF /* confirm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confirm.png; sourceTree = "<group>"; };
 		8568A566196AC47700738ECF /* IODBCProxy_LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IODBCProxy_LoginController.h; sourceTree = "<group>"; };
 		8568A567196AC47700738ECF /* IODBCProxy_LoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IODBCProxy_LoginController.m; sourceTree = "<group>"; };
@@ -78,7 +73,6 @@
 		8568A596196E490400738ECF /* dlf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dlf.c; path = ../../iodbcinst/dlf.c; sourceTree = "<group>"; };
 		8568A597196E490400738ECF /* dlf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dlf.h; path = ../../iodbcinst/dlf.h; sourceTree = "<group>"; };
 		859838AB07CF6D6D0022E958 /* confirm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = confirm.c; sourceTree = "<group>"; };
-		85A390881B79091300AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCProxy_ConfirmController.xib; sourceTree = "<group>"; };
 		85A3908B1B79093F00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCProxy_LoginController.xib; sourceTree = "<group>"; };
 		85A3908E1B79094800AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCProxy_SetupController.xib; sourceTree = "<group>"; };
 		85A390E31B7911B100AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
@@ -185,8 +179,6 @@
 				8568A58B196D6FC600738ECF /* utils.m */,
 				8568A566196AC47700738ECF /* IODBCProxy_LoginController.h */,
 				8568A567196AC47700738ECF /* IODBCProxy_LoginController.m */,
-				8568A55C196A916B00738ECF /* IODBCProxy_ConfirmController.h */,
-				8568A55D196A916B00738ECF /* IODBCProxy_ConfirmController.m */,
 			);
 			path = mac_cocoa;
 			sourceTree = "<group>";
@@ -225,7 +217,6 @@
 			children = (
 				85A3908F1B79094800AC8862 /* IODBCProxy_SetupController.xib */,
 				85A3908C1B79093F00AC8862 /* IODBCProxy_LoginController.xib */,
-				85A390891B79091300AC8862 /* IODBCProxy_ConfirmController.xib */,
 			);
 			name = en.lproj;
 			sourceTree = "<group>";
@@ -246,7 +237,6 @@
 				CDAE3BAB0987D6B4003250F8 /* iodbcadm.h in Headers */,
 				8568A569196AC47700738ECF /* IODBCProxy_LoginController.h in Headers */,
 				8568A599196E490400738ECF /* dlf.h in Headers */,
-				8568A55F196A916B00738ECF /* IODBCProxy_ConfirmController.h in Headers */,
 				8568A58C196D6FC600738ECF /* utils.h in Headers */,
 				CDAE3BAC0987D6B4003250F8 /* sqlucode.h in Headers */,
 				CDAE3BAD0987D6B4003250F8 /* sqlext.h in Headers */,
@@ -286,6 +276,8 @@
 /* Begin PBXProject section */
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = CDAE3BCD0987D6B5003250F8 /* Build configuration list for PBXProject "iODBCdrvproxy" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
@@ -307,7 +299,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85A390871B79091300AC8862 /* IODBCProxy_ConfirmController.xib in Resources */,
 				8568A563196A93FA00738ECF /* confirm.png in Resources */,
 				85A3908A1B79093F00AC8862 /* IODBCProxy_LoginController.xib in Resources */,
 				85A3908D1B79094800AC8862 /* IODBCProxy_SetupController.xib in Resources */,
@@ -328,7 +319,6 @@
 				CDAE3BBB0987D6B4003250F8 /* drvconn.c in Sources */,
 				8568A58D196D6FC600738ECF /* utils.m in Sources */,
 				CDAE3BBC0987D6B4003250F8 /* drvproxy.exp in Sources */,
-				8568A560196A916B00738ECF /* IODBCProxy_ConfirmController.m in Sources */,
 				CDAE3BBD0987D6B4003250F8 /* Info.c in Sources */,
 				CDAE3BBE0987D6B4003250F8 /* gensetup.c in Sources */,
 				CDAE3BBF0987D6B4003250F8 /* loginbox.c in Sources */,
@@ -341,14 +331,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		85A390891B79091300AC8862 /* IODBCProxy_ConfirmController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				85A390881B79091300AC8862 /* en */,
-			);
-			name = IODBCProxy_ConfirmController.xib;
-			sourceTree = "<group>";
-		};
 		85A3908C1B79093F00AC8862 /* IODBCProxy_LoginController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

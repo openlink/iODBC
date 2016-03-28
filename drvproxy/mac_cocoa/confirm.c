@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -74,28 +74,19 @@
 
 #include <gui.h>
 
-
 extern BOOL showConfirm(const void *title, const void *message, char waMode);
-
-BOOL create_confirm_Internal (HWND hwnd,
-                              SQLPOINTER dsn,
-                              SQLPOINTER text,
-                              SQLCHAR waMode)
-{
-    return showConfirm(dsn, text, waMode);
-}
 
 BOOL create_confirm (HWND hwnd,
     LPCSTR dsn,
     LPCSTR text)
 {
-  return create_confirm_Internal (hwnd, (SQLPOINTER)dsn, (SQLPOINTER)text, 'A');
+  return showConfirm((SQLPOINTER)dsn, (SQLPOINTER)text, 'A');
 }
 
 BOOL create_confirmw (HWND hwnd,
     LPCWSTR dsn,
     LPCWSTR text)
 {
-  return create_confirm_Internal (hwnd, (SQLPOINTER)dsn, (SQLPOINTER)text, 'W');
+  return showConfirm((SQLPOINTER)dsn, (SQLPOINTER)text, 'W');
 }
 

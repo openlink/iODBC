@@ -73,6 +73,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #include <stdio.h>
 #include <wchar.h>
 

@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -73,6 +73,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #include <stdio.h>
 #include <wchar.h>
 
