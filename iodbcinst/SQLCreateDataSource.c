@@ -98,7 +98,6 @@ extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 		if ((pDrvConn = (pDrvConnFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("iodbcdm_drvconn_dialbox"))) != NULL) \
 		  pDrvConn(parent, dsn, sizeof(dsn), NULL, SQL_DRIVER_PROMPT, &config); \
       retcode = TRUE; \
-      CFRelease(bundle_dll); \
 	}
 
 #define CALL_DRVCONN_DIALBOXW() \
@@ -107,7 +106,6 @@ extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 		if ((pDrvConnW = (pDrvConnWFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("iodbcdm_drvconn_dialboxw"))) != NULL) \
 		  pDrvConnW(parent, (LPWSTR)dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
       retcode = TRUE; \
-      CFRelease(bundle_dll); \
 	}
 
 #else

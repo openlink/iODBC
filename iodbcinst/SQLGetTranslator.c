@@ -123,18 +123,15 @@
 	  	if (pConfigTranslator(hwndParent, pvOption)) \
 	  	{ \
 	    	finish = retcode = TRUE; \
-            CFRelease(bundle_dll); \
 	    	goto done; \
 	  	} \
 		else \
 		{ \
 			PUSH_ERROR(ODBC_ERROR_GENERAL_ERR); \
-            CFRelease(bundle_dll); \
 	    	retcode = FALSE; \
 	    	goto done; \
 		} \
       } \
-      CFRelease(bundle_dll); \
 	}
 
 
@@ -166,7 +163,6 @@
 		  ret = pTrsChoose(hwndParent, translator, sizeof(translator), NULL); \
 		else \
           ret = SQL_NO_DATA; \
-        CFRelease(bundle_dll); \
 	} \
 	else ret = SQL_NO_DATA;
 

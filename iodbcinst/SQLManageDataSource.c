@@ -88,6 +88,7 @@
 
 #if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
 
+
 #define CALL_ADMIN_DIALBOX() \
 	if (bundle_dll != NULL) \
 	{ \

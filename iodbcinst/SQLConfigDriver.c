@@ -144,19 +144,16 @@
 	  { \
         if (pConfigDriver (hwndParent, fRequest, lpszDriver, lpszArgs, lpszMsg, cbMsgMax, pcbMsgOut))  \
 	  	{ \
-            CFRelease(bundle_dll); \
 	    	retcode = TRUE; \
 	    	goto done; \
 	  	} \
 		else \
 		{ \
 			PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-            CFRelease(bundle_dll); \
 	    	retcode = FALSE; \
 	    	goto done; \
 		} \
 	  } \
-      CFRelease(bundle_dll); \
 	}
 
 #define CALL_CONFIG_DRIVERW_BUNDLE(driverpath) \
@@ -166,14 +163,12 @@
 	  { \
 		if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszArgs, (SQLWCHAR*)lpszMsg, cbMsgMax, pcbMsgOut))  \
 	  	{ \
-            CFRelease(bundle_dll); \
 	    	retcode = TRUE; \
 	    	goto done; \
 	  	} \
 		else \
 		{ \
 		  PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-          CFRelease(bundle_dll); \
 	      retcode = FALSE; \
 	      goto done; \
 		} \
@@ -185,7 +180,6 @@
           if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
           { \
             PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
-            CFRelease(bundle_dll); \
             retcode = FALSE; \
             goto done; \
           } \
@@ -193,7 +187,6 @@
 	  	  { \
             MEM_FREE (_args_u8); \
             MEM_FREE (_msg_u8); \
-            CFRelease(bundle_dll); \
 	    	retcode = TRUE; \
 	    	goto done; \
 	  	  } \
@@ -202,12 +195,10 @@
             MEM_FREE (_args_u8); \
             MEM_FREE (_msg_u8); \
 			PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-            CFRelease(bundle_dll); \
 	    	retcode = FALSE; \
 	    	goto done; \
 		  } \
       } \
-      CFRelease(bundle_dll); \
 	}
 
 

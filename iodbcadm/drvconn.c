@@ -121,13 +121,11 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
             SQLSetConfigMode (*config); \
             if (pDrvConnW (hwnd, szInOutConnStr, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
               { \
-                CFRelease(bundle_dll); \
                 retcode = SQL_SUCCESS; \
                 goto quit; \
               } \
             else \
               { \
-                CFRelease(bundle_dll); \
                 retcode = SQL_NO_DATA_FOUND; \
                 goto quit; \
               } \
@@ -148,20 +146,17 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
                   { \
                     dm_StrCopyOut2_A2W (_szinoutconstr_u8, szInOutConnStr, cbInOutConnStr, NULL); \
                     MEM_FREE (_szinoutconstr_u8); \
-                    CFRelease(bundle_dll); \
                     retcode = SQL_SUCCESS; \
                     goto quit; \
                   } \
                 else \
                   { \
                     MEM_FREE (_szinoutconstr_u8); \
-                    CFRelease(bundle_dll); \
                     retcode = SQL_NO_DATA_FOUND; \
                     goto quit; \
                   } \
               } \
           } \
-        CFRelease(bundle_dll); \
       }
 
 #else
