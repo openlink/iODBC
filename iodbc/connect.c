@@ -2662,11 +2662,7 @@ SQLDriverConnect_Internal (
           fDriverCompletion,	/* type of completion */
           &config);		/* config mode */
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
-      if (bundle_dll)
-        CFRelease(bundle_dll);
-#endif
-            
+
       ODBC_LOCK ();
       fDriverCompletion = SQL_DRIVER_NOPROMPT;
 

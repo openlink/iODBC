@@ -603,7 +603,7 @@ _iodbcdm_drvchoose_dialbox (
 
   if (cbInOutConnStr > 0)
     {
-      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+      if ((_string_w = malloc ((cbInOutConnStr + 1) * sizeof(wchar_t))) == NULL)
           goto done;
     }
 
@@ -698,7 +698,7 @@ _iodbcdm_trschoose_dialbox (
 
   if (cbInOutConnStr > 0)
     {
-      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+      if ((_string_w = malloc ((cbInOutConnStr + 1) * sizeof(wchar_t))) == NULL)
           goto done;
     }
 
