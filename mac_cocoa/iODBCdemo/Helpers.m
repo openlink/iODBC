@@ -72,7 +72,6 @@
 
 #import "Helpers.h"
 #include <iODBC/sql.h>
-#include "iodbc.h"
 #include <iODBCinst/iodbcinst.h>
 
 
@@ -101,28 +100,16 @@ NStoTEXT (NSString * str)
 }
 
 
-NSString *
-TEXTtoNS (wchar_t * str)
+NSString*
+TEXTtoNS(wchar_t* str)
 {
-    CFMutableStringRef prov;
-    CFIndex i;
-    UniChar c;
-    
     if (!str)
-        return NULL;
+        return nil;
     
-    prov = CFStringCreateMutable (NULL, 0);
-    
-    if (prov)
-    {
-        for (i = 0; str[i] != L'\0'; i++)
-        {
-            c = (UniChar) str[i];
-            CFStringAppendCharacters (prov, &c, 1);
-        }
-    }
-    
-    return (NSString *)prov;
+    if (NSHostByteOrder()==NS_LittleEndian)
+        return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32LittleEndianStringEncoding] autorelease];
+    else
+        return [[[NSString alloc] initWithBytes:str length:wcslen(str)*sizeof(wchar_t) encoding:NSUTF32BigEndianStringEncoding] autorelease];
 }
 
 #endif

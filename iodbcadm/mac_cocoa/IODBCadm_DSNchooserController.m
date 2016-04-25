@@ -124,10 +124,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
         }
         [dlg.window orderOut:dlg.window];
         [dlg release];
-        
-        return rc==1?TRUE:FALSE;
     }
-    
 }
 
 

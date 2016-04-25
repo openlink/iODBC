@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1090</int>
-		<string key="IBDocument.SystemVersion">14F1605</string>
+		<string key="IBDocument.SystemVersion">14F1713</string>
 		<string key="IBDocument.InterfaceBuilderVersion">5056</string>
 		<string key="IBDocument.AppKitVersion">1348.17</string>
 		<string key="IBDocument.HIToolboxVersion">758.70</string>
@@ -188,7 +188,7 @@
 											<string key="NSFrameSize">{383, 255}</string>
 											<reference key="NSSuperview" ref="817827865"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="496416049"/>
+											<reference key="NSNextKeyView" ref="605193406"/>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -360,7 +360,7 @@
 							<string key="NSFrame">{{20, 87}, {385, 273}}</string>
 							<reference key="NSSuperview" ref="321334449"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="605193406"/>
+							<reference key="NSNextKeyView" ref="817827865"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="496416049"/>
 							<reference key="NSHScroller" ref="888229647"/>
@@ -434,7 +434,6 @@
 							<string key="NSFrame">{{320, 9}, {83, 32}}</string>
 							<reference key="NSSuperview" ref="321334449"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSHuggingPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="326309878">
@@ -668,26 +667,6 @@
 						<reference key="destination" ref="772894358"/>
 					</object>
 					<string key="id">875</string>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">Attrs_list</string>
-						<reference key="source" ref="183391266"/>
-						<reference key="destination" ref="20484984"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="183391266"/>
-							<reference key="NSDestination" ref="20484984"/>
-							<string key="NSLabel">contentArray: Attrs_list</string>
-							<string key="NSBinding">contentArray</string>
-							<string key="NSKeyPath">Attrs_list</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSHandlesContentAsCompoundValue</string>
-								<boolean value="YES" key="NS.object.0"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<string key="id">466</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">

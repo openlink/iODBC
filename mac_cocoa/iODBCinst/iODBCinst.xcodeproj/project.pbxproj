@@ -163,7 +163,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				85A390E61B79121900AC8862 /* en.lproj */,
+				85A390E61B79121900AC8862 /* English.lproj */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -177,12 +177,12 @@
 			name = Source;
 			sourceTree = "<group>";
 		};
-		85A390E61B79121900AC8862 /* en.lproj */ = {
+		85A390E61B79121900AC8862 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
 				85A390E71B79121900AC8862 /* InfoPlist.strings */,
 			);
-			path = en.lproj;
+			path = English.lproj;
 			sourceTree = "<group>";
 		};
 		F535B35B0278021D01A801DE /* iodbcinst */ = {

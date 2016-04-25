@@ -94,7 +94,7 @@
 		20286C2CFDCF999611CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				85A390BF1B79108D00AC8862 /* en.lproj */,
+				85A390BF1B79108D00AC8862 /* English.lproj */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -119,7 +119,7 @@
 			name = src;
 			sourceTree = "<group>";
 		};
-		85A390BF1B79108D00AC8862 /* en.lproj */ = {
+		85A390BF1B79108D00AC8862 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
 				85A390C01B79108D00AC8862 /* InfoPlist.strings */,
@@ -127,7 +127,7 @@
 				85A390C41B79108D00AC8862 /* MainMenu.xib */,
 				85A390C61B79108D00AC8862 /* odbcman.tiff */,
 			);
-			path = en.lproj;
+			path = English.lproj;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -75,7 +75,6 @@
 #import <Cocoa/Cocoa.h>
 #import <gui.h>
 
-//??--BOOL show_DSNchooser(TDSNCHOOSER *dsnchoose_t);
 
 @interface IODBCadm_DSNchooserController : NSWindowController<NSTabViewDelegate, NSTableViewDelegate> {
     NSArrayController *_UserDSN_ArrController;

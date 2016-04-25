@@ -250,10 +250,6 @@ char* showSetup(char* dsn, char* attrs, BOOL addEnable)
     }
     if (d_comment!=nil)
         self.fld_Comment.stringValue = d_comment;
-//??    if (!_addEnabled) {
-//??        [btn_Add setEnabled:NO];
-//??        [btn_Remove setEnabled:NO];
-//??    }
 }
 
 

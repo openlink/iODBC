@@ -297,7 +297,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				85A390BB1B790FB600AC8862 /* en.lproj */,
+				85A390BB1B790FB600AC8862 /* English.lproj */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -310,12 +310,12 @@
 			name = Source;
 			sourceTree = "<group>";
 		};
-		85A390BB1B790FB600AC8862 /* en.lproj */ = {
+		85A390BB1B790FB600AC8862 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
 				85A390BC1B790FB600AC8862 /* InfoPlist.strings */,
 			);
-			path = en.lproj;
+			path = English.lproj;
 			sourceTree = "<group>";
 		};
 		CD0056F708B12B6C006E73DA /* Headers */ = {

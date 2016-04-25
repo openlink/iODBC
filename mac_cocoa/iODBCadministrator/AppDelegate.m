@@ -73,6 +73,10 @@
  */
 
 #import "AppDelegate.h"
+#import <iODBC/sql.h>
+#import <iODBC/sqlext.h>
+#import <iODBC/sqltypes.h>
+#import <iODBC/sqlucode.h>
 
 @interface AppDelegate ()
 
@@ -86,7 +90,6 @@
 
     // Insert code here to initialize your application
   manage_return = SQLManageDataSources (-1L);
-
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

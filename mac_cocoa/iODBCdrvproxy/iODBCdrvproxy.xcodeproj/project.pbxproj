@@ -73,8 +73,8 @@
 		8568A596196E490400738ECF /* dlf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dlf.c; path = ../../iodbcinst/dlf.c; sourceTree = "<group>"; };
 		8568A597196E490400738ECF /* dlf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dlf.h; path = ../../iodbcinst/dlf.h; sourceTree = "<group>"; };
 		859838AB07CF6D6D0022E958 /* confirm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = confirm.c; sourceTree = "<group>"; };
-		85A3908B1B79093F00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCProxy_LoginController.xib; sourceTree = "<group>"; };
-		85A3908E1B79094800AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IODBCProxy_SetupController.xib; sourceTree = "<group>"; };
+		85A3908B1B79093F00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCProxy_LoginController.xib; sourceTree = "<group>"; };
+		85A3908E1B79094800AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCProxy_SetupController.xib; sourceTree = "<group>"; };
 		85A390E31B7911B100AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		85D1BB9807E7D55A0070A59E /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../iODBCinst/build/Development/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		CDAE3BCB0987D6B4003250F8 /* Info-iODBCdrvproxy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iODBCdrvproxy.plist"; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				85A390E11B7911B100AC8862 /* en.lproj */,
+				85A390E11B7911B100AC8862 /* English.lproj */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -167,7 +167,7 @@
 		1C124209005FB6B37F000001 /* mac_cocoa */ = {
 			isa = PBXGroup;
 			children = (
-				85A390E51B7911C500AC8862 /* en.lproj */,
+				85A390E51B7911C500AC8862 /* English.lproj */,
 				8568A562196A93FA00738ECF /* confirm.png */,
 				859838AB07CF6D6D0022E958 /* confirm.c */,
 				1C12420B005FB6B37F000001 /* gensetup.c */,
@@ -204,21 +204,21 @@
 			name = iODBC;
 			sourceTree = "<group>";
 		};
-		85A390E11B7911B100AC8862 /* en.lproj */ = {
+		85A390E11B7911B100AC8862 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
 				85A390E21B7911B100AC8862 /* InfoPlist.strings */,
 			);
-			path = en.lproj;
+			path = English.lproj;
 			sourceTree = "<group>";
 		};
-		85A390E51B7911C500AC8862 /* en.lproj */ = {
+		85A390E51B7911C500AC8862 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
 				85A3908F1B79094800AC8862 /* IODBCProxy_SetupController.xib */,
 				85A3908C1B79093F00AC8862 /* IODBCProxy_LoginController.xib */,
 			);
-			name = en.lproj;
+			name = English.lproj;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
