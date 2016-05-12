@@ -75,7 +75,7 @@
 #import <Cocoa/Cocoa.h>
 #import <gui.h>
 
-void showLogin(const char* title, const char *username, const char *password, TLOGIN *log_t);
+BOOL showLogin(const char* title, const char *username, const char *password, TLOGIN *log_t);
 
 @interface IODBCProxy_LoginController : NSWindowController {
     NSTextField *fld_UID;

@@ -74,7 +74,7 @@
 
 #include <gui.h>
 
-extern void showLogin(const char* title, const char *username, const char *password, TLOGIN *log_t);
+extern BOOL showLogin(const char* title, const char *username, const char *password, TLOGIN *log_t);
 
 void
 create_login (HWND hwnd,
@@ -83,5 +83,6 @@ create_login (HWND hwnd,
               LPCSTR dsn,
               TLOGIN * log_t)
 {
-    showLogin(dsn, username, password, log_t);
+    BOOL rc = showLogin(dsn, username, password, log_t);
+    log_t->ok = rc;
 }

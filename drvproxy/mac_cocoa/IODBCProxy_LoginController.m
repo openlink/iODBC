@@ -75,8 +75,14 @@
 #import "IODBCProxy_LoginController.h"
 #import "utils.h"
 
-void showLogin(const char* title, const char *username, const char *password, TLOGIN *log_t)
+BOOL showLogin(const char* title, const char *username, const char *password, TLOGIN *log_t)
 {
+        if (log_t) {
+            log_t->user = NULL;
+            log_t->pwd = NULL;
+            log_t->ok = 0;
+        }
+
 	@autoreleasepool {
         NSApplication *app = [NSApplication sharedApplication];
         
@@ -91,18 +97,13 @@ void showLogin(const char* title, const char *username, const char *password, TL
         
         NSInteger rc = [app runModalForWindow:dlg.window];
         [dlg.window orderOut:dlg.window];
-        if (log_t){
-            if (rc == 1){
-                log_t->user = (char*)conv_NSString_to_char(dlg.d_uid);
-                log_t->pwd = (char*)conv_NSString_to_char(dlg.d_pwd);
-                log_t->ok = TRUE;
-            } else {
-                log_t->user = NULL;
-                log_t->pwd = NULL;
-                log_t->ok = FALSE;
-            }
+        if (log_t && rc == 1){
+            log_t->user = (char*)conv_NSString_to_char(dlg.d_uid);
+            log_t->pwd = (char*)conv_NSString_to_char(dlg.d_pwd);
+            log_t->ok = 1;
         }
         [dlg release];
+        return rc == 1 ? TRUE : FALSE;
     }
     
 }
