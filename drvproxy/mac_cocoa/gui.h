@@ -80,7 +80,7 @@
 typedef struct TLOGIN
 {
   char *user, *pwd;
-  BOOL ok;
+  int ok;
 }
 TLOGIN;
 
