@@ -85,27 +85,16 @@
 
 void create_administrator (HWND hwnd)
 {
-#if 0
-    char name[1024], path[1024];
-    WORD nameOut, pathOut;
-    DWORD option;
-
-    SQLGetTranslator ((void*)1L, name, sizeof(name), &nameOut,
-                   path, sizeof(path), &pathOut, &option);
-#endif
     @autoreleasepool {
         
         NSApplication *app = [NSApplication sharedApplication];
         
         IODBCadm_DSNmanageController *dlg = [[IODBCadm_DSNmanageController alloc] init];
         
-//        NSInteger rc = [app runModalForWindow:dlg.window];
         [app runModalForWindow:dlg.window];
 
         [dlg.window orderOut:dlg.window];
         [dlg release];
-        
-//??--        return rc==1?TRUE:FALSE;
     }
 }
 
@@ -251,6 +240,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
     }
     _tracing_changed = FALSE;
     _pool_changed = FALSE;
+    _drivers_loaded = FALSE;
     return self;
 }
 
@@ -280,7 +270,6 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
     addDSNs_to_list(FALSE, _UserDSN_ArrController);
     addDSNs_to_list(TRUE, _SysDSN_ArrController);
     [_fdsn_tableView setDoubleAction:@selector(call_FDSN_DoubleClick)];
-    addDrivers_to_list(_Drv_ArrController);
     addPools_to_list(_Pool_ArrController);
     [_pool_tableView setDoubleAction:@selector(call_Pool_DoubleClick)];
     addComponents_to_list(_About_ArrController);
@@ -378,6 +367,12 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
         addFDSNs_to_list(cur_path, FALSE, _FileDSN_ArrController);
         fill_dir_menu(cur_path, _popup_dir_btn);
         if (cur_path) free(cur_path);
+    }
+    else if ([identifier isEqualToString:@"divers"]){
+        if (!_drivers_loaded) {
+            addDrivers_to_list(_Drv_ArrController);
+            _drivers_loaded = TRUE;
+        }
     }
     else if ([identifier isEqualToString:@"pool"]){
         if (!_pool_changed)
@@ -562,6 +557,7 @@ done:
             addDSNs_to_list(FALSE, _UserDSN_ArrController);
     }
 }
+
 
 - (IBAction)call_UserDSN_Test:(id)sender {
     NSArray *item = [_UserDSN_ArrController selectedObjects];

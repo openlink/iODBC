@@ -90,6 +90,7 @@
     int _dialogCode;
     BOOL _tracing_changed;
     BOOL _pool_changed;
+    BOOL _drivers_loaded;
     
     NSMutableArray *_FileDSN_list;
     NSString *_cur_dir;
