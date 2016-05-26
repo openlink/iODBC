@@ -368,7 +368,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
         fill_dir_menu(cur_path, _popup_dir_btn);
         if (cur_path) free(cur_path);
     }
-    else if ([identifier isEqualToString:@"divers"]){
+    else if ([identifier isEqualToString:@"drivers"]){
         if (!_drivers_loaded) {
             addDrivers_to_list(_Drv_ArrController);
             _drivers_loaded = TRUE;

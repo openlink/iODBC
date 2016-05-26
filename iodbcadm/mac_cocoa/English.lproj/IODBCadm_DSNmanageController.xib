@@ -1389,7 +1389,7 @@ ZCBiZSBsb2NhbCBvciBtb3VudGVkIG92ZXIgbmV0d29yay4KA</string>
 									<reference key="NSTabView" ref="751251653"/>
 								</object>
 								<object class="NSTabViewItem" id="358647416">
-									<string key="NSIdentifier">divers</string>
+									<string key="NSIdentifier">drivers</string>
 									<object class="NSView" key="NSView" id="950519858">
 										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">274</int>
