@@ -84,8 +84,13 @@
 #elif defined(__QT__)
 #include "qt/gui.h"
 #elif defined(__APPLE__)
+# if defined(IODBC_COCOA)
+#include "mac_cocoa/gui.h"
+# else
 #include "macosx/gui.h"
+# endif
 #endif
+
 
 #ifdef __cplusplus
 extern "C" {

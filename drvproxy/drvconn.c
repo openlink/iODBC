@@ -163,7 +163,7 @@ _iodbcdm_drvconn_dialbox (
       *curr = '\0';
     }
 
-  retcode = log_t.ok ? SQL_SUCCESS : SQL_NO_DATA_FOUND;
+  retcode = log_t.ok == TRUE ? SQL_SUCCESS : SQL_NO_DATA_FOUND;
 
 quit:
   for (curr = szInOutConnStr; *curr; curr = szDSN + 1)

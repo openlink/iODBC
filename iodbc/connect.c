@@ -95,7 +95,7 @@
 
 #include <unicode.h>
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
 #include <Carbon/Carbon.h>
 #endif
 
@@ -117,6 +117,7 @@ extern SQLRETURN SQL_API _iodbcdm_SetConnectOption (SQLHDBC hdbc,
     SQLUSMALLINT fOption, SQLULEN vParam, SQLCHAR waMode);
 
 
+#if 0
 #define CHECK_DRVCONN_DIALBOX(path) \
   { \
     if ((handle = DLL_OPEN(path)) != NULL) \
@@ -202,6 +203,7 @@ quit:
 
   return retVal;
 }
+#endif
 
 
 #define RETURN(_ret)							\
@@ -1090,7 +1092,7 @@ _iodbcdm_driverload (
 
   /* This will either load the driver dll or increase its reference count */
   hdll = _iodbcdm_dllopen ((char *) path);
-
+  
   if (hdll == SQL_NULL_HDLL)
     {
       PUSHSYSERR (pdbc->herr, _iodbcdm_dllerror ());
@@ -1101,7 +1103,6 @@ _iodbcdm_driverload (
   /* Set flag if it is safe to unload the driver after use */
   if (unload_safe)
     _iodbcdm_safe_unload (hdll);
-
 
   penv = (ENV_t *) (pdbc->henv);
 
@@ -2283,7 +2284,7 @@ SQLDriverConnect_Internal (
 #if (ODBCVER >= 0x300)
   GENV (genv, NULL);
 #endif
-  HDLL hdll;
+  HDLL hdll = NULL;
   SQLCHAR *drv = NULL;
   SQLCHAR drvbuf[1024];
   SQLCHAR *dsn = NULL;
@@ -2303,11 +2304,10 @@ SQLDriverConnect_Internal (
   UWORD config;
   PCONFIG pconfig = NULL;
   BOOL bCallDmDlg = FALSE;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  CFStringRef libname = NULL;
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
   CFBundleRef bundle = NULL;
+  CFBundleRef bundle_dll = NULL;
   CFURLRef liburl = NULL;
-  char name[1024] = { 0 };
 #endif
   SQLCHAR *filedsn = NULL;
   SQLCHAR *savefile = NULL;
@@ -2317,7 +2317,6 @@ SQLDriverConnect_Internal (
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
   SQLRETURN setopterr = SQL_SUCCESS;
-
 
   /* check arguments */
   if ((cbConnStrIn < 0 && cbConnStrIn != SQL_NTS) ||
@@ -2578,11 +2577,37 @@ SQLDriverConnect_Internal (
           break;
 #endif
 
-      ODBC_UNLOCK (); 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+      ODBC_UNLOCK ();
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+# if defined(IODBC_COCOA)
+    bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+    if (bundle)
+      {
+        /* Search for the drvproxy library */
+        liburl =
+            CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
+            NULL, NULL);
+          if (liburl) {
+              bundle_dll = CFBundleCreate (NULL, liburl);
+              if (bundle_dll){
+                  if (waMode != 'W')
+                      dialproc = (HPROC)CFBundleGetFunctionPointerForName (bundle_dll, CFSTR("iodbcdm_drvconn_dialbox"));
+                  else
+                      dialproc = (HPROC)CFBundleGetFunctionPointerForName (bundle_dll, CFSTR("iodbcdm_drvconn_dialboxw"));
+              }
+          }
+          
+          if (liburl)
+            CFRelease (liburl);
+      }
+      if (!bundle_dll)
+          break;
+# else
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
       if (bundle)
         {
+          CFStringRef libname = NULL;
+          char name[1024] = { 0 };
           /* Search for the drvproxy library */
           liburl =
   	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
@@ -2593,26 +2618,36 @@ SQLDriverConnect_Internal (
             {
               CFStringGetCString (libname, name, sizeof (name),
                 kCFStringEncodingASCII);
-	      _iodbcdm_strlcat (name, "/Contents/MacOS/iODBCadm",
-		  sizeof (name));
+              _iodbcdm_strlcat (name, "/Contents/MacOS/iODBCadm",
+                  sizeof (name));
               hdll = _iodbcdm_dllopen (name);
-	    }
-	  if (liburl)
-	    CFRelease (liburl);
-	  if (libname)
-	    CFRelease (libname);
-	}
-#else
-      hdll = _iodbcdm_dllopen ("libiodbcadm.so.2");
-#endif
-
+            }
+          if (liburl)
+            CFRelease (liburl);
+          if (libname)
+            CFRelease (libname);
+        }
       if (!hdll)
-	break;
-
+         break;
+            
       if (waMode != 'W')
         dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
       else
         dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
+
+# endif
+#else
+
+      hdll = _iodbcdm_dllopen ("libiodbcadm.so.2");
+            
+      if (!hdll)
+         break;
+            
+      if (waMode != 'W')
+        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
+      else
+        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
+#endif
 
       if (dialproc == SQL_NULL_HPROC)
         {
@@ -2626,6 +2661,7 @@ SQLDriverConnect_Internal (
           &sqlstat,		/* error code */
           fDriverCompletion,	/* type of completion */
           &config);		/* config mode */
+
 
       ODBC_LOCK ();
       fDriverCompletion = SQL_DRIVER_NOPROMPT;

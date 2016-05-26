@@ -124,6 +124,7 @@ ConfigDSN (
     }
 
   /* Retrieve the corresponding driver */
+#if !defined (__APPLE__)
   if (strstr (lpszDriver, "OpenLink") || strstr (lpszDriver, "Openlink")
       || strstr (lpszDriver, "oplodbc"))
     {
@@ -167,6 +168,7 @@ ConfigDSN (
   else if ((strstr (lpszDriver, "Virtuoso")
 	  || strstr (lpszDriver, "virtodbc")))
     driver_type = 1;
+#endif
 
   /* For each request */
   switch (fRequest)

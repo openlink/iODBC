@@ -89,6 +89,78 @@ typedef SQLRETURN SQL_API (*pDriverConnFunc) (HWND hwnd, LPSTR szInOutConnStr,
 typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
     DWORD cbInOutConnStr, int FAR * sqlStat, SQLUSMALLINT fDriverCompletion, UWORD *config);
 
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+
+#define CALL_DRVCONN_DIALBOXW(path, a) \
+    if (path) \
+    { \
+       char *_path_u8 = (a == 'A') ? strdup(path) : (char*)dm_SQL_W2A ((wchar_t*)path, SQL_NTS); \
+       if (_path_u8) { \
+         char *ptr = strstr(_path_u8, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)_path_u8, strlen(_path_u8), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(_path_u8); \
+       CALL_DRVCONN_DIALBOXW_BUNDLE(); \
+    }
+
+
+#define CALL_DRVCONN_DIALBOXW_BUNDLE() \
+    if (bundle_dll != NULL) \
+      { \
+        if ((pDrvConnW = (pDriverConnWFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_drvconn_dialboxw"))) != NULL) \
+          { \
+            SQLSetConfigMode (*config); \
+            if (pDrvConnW (hwnd, szInOutConnStr, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
+              { \
+                retcode = SQL_SUCCESS; \
+                goto quit; \
+              } \
+            else \
+              { \
+                retcode = SQL_NO_DATA_FOUND; \
+                goto quit; \
+              } \
+          } \
+        else \
+          { \
+            if ((pDrvConn = (pDriverConnFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_drvconn_dialbox"))) != NULL) \
+              { \
+                char *_szinoutconstr_u8 = malloc (cbInOutConnStr + 1); \
+                wchar_t *_prvw; char *_prvu8; \
+                for (_prvw = szInOutConnStr, _prvu8 = _szinoutconstr_u8 ; \
+                  *_prvw != L'\0' ; _prvw += WCSLEN (_prvw) + 1, \
+                  _prvu8 += STRLEN (_prvu8) + 1) \
+                  dm_StrCopyOut2_W2A (_prvw, _prvu8, cbInOutConnStr, NULL); \
+                  *_prvu8 = '\0'; \
+                SQLSetConfigMode (*config); \
+                if (pDrvConn (hwnd, _szinoutconstr_u8, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
+                  { \
+                    dm_StrCopyOut2_A2W (_szinoutconstr_u8, szInOutConnStr, cbInOutConnStr, NULL); \
+                    MEM_FREE (_szinoutconstr_u8); \
+                    retcode = SQL_SUCCESS; \
+                    goto quit; \
+                  } \
+                else \
+                  { \
+                    MEM_FREE (_szinoutconstr_u8); \
+                    retcode = SQL_NO_DATA_FOUND; \
+                    goto quit; \
+                  } \
+              } \
+          } \
+      }
+
+#else
+
 #define CALL_DRVCONN_DIALBOXW(path, a) \
   { \
     char *_path_u8 = (a == 'A') ? NULL : dm_SQL_W2A ((wchar_t*)path, SQL_NTS); \
@@ -149,6 +221,8 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
   }
 #endif
 
+#endif
+
 SQLRETURN SQL_API
 iodbcdm_drvconn_dialbox (
     HWND hwnd,
@@ -167,7 +241,7 @@ iodbcdm_drvconn_dialbox (
           goto done;
     }
 
-  dm_StrCopyOut2_A2W (szInOutConnStr, _string_w,
+  dm_StrCopyOut2_A2W ((SQLCHAR*)szInOutConnStr, _string_w,
     cbInOutConnStr * sizeof(wchar_t), NULL);
 
   retcode = iodbcdm_drvconn_dialboxw (hwnd, _string_w,
@@ -175,7 +249,7 @@ iodbcdm_drvconn_dialbox (
 
   if (retcode == SQL_SUCCESS)
     {
-      dm_StrCopyOut2_W2A (_string_w, szInOutConnStr, cbInOutConnStr - 1, NULL);
+      dm_StrCopyOut2_W2A (_string_w, (SQLCHAR*)szInOutConnStr, cbInOutConnStr - 1, NULL);
     }
 
 done:
@@ -206,13 +280,14 @@ iodbcdm_drvconn_dialboxw (
   pDriverConnFunc pDrvConn;
   pDriverConnWFunc pDrvConnW;
   int i, skip;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  CFStringRef libname = NULL;
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
   CFBundleRef bundle = NULL;
+  CFBundleRef bundle_dll = NULL;
   CFURLRef liburl = NULL;
-  char name[1024] = { '\0' };
 #endif
 
+
+  memset(&choose_t, 0, sizeof(choose_t));
   /* Check input parameters */
   if (!szInOutConnStr || cbInOutConnStr < 1)
     goto quit;
@@ -419,7 +494,7 @@ iodbcdm_drvconn_dialboxw (
     }
 
   /* Call the iodbcdm_drvconn_dialbox */
-  _szdriver_u8 = dm_SQL_W2A (szDriver, SQL_NTS);
+  _szdriver_u8 = (char*)dm_SQL_W2A (szDriver, SQL_NTS);
 
   SQLSetConfigMode (ODBC_USER_DSN);
   if (!access (_szdriver_u8, X_OK))
@@ -454,37 +529,58 @@ iodbcdm_drvconn_dialboxw (
     { CALL_DRVCONN_DIALBOXW (drvbuf, 'W'); }
 
   /* The last ressort, a proxy driver */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+# if defined(IODBC_COCOA)
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+  if (bundle)
+    {
+      /* Search for the drvproxy library */
+      liburl =
+	    CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+	      NULL, NULL);
+      if (liburl)
+	  {
+            bundle_dll = CFBundleCreate (NULL, liburl);
+            CFRelease(liburl);
+            CALL_DRVCONN_DIALBOXW_BUNDLE();
+	  }
+    }
+# else
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (!bundle)
     bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {
+      CFStringRef libname = NULL;
+      char name[1024] = { '\0' };
       /* Search for the drvproxy library */
       liburl =
-	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
-	  NULL, NULL);
+          CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+          NULL, NULL);
       if (liburl && (libname =
-       CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-	{
+           CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+        {
           CFStringGetCString (libname, name, sizeof (name),
             kCFStringEncodingASCII);
           STRCAT (name, "/Contents/MacOS/iODBCdrvproxy");
+          CFRelease (libname); 
+          CFRelease (liburl); 
+          liburl = NULL;
           CALL_DRVCONN_DIALBOXW (name, 'A');
-	}
+        }
+      if (liburl) 
+        CFRelease (liburl);
     }
+# endif
 #else
+
   CALL_DRVCONN_DIALBOXW ("libdrvproxy.so.2", 'A');
-#endif /* __APPLE__ */
+#endif
 
   if (sqlStat)
     *sqlStat = en_IM003;
 
 quit:
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  if (liburl) CFRelease (liburl);
-  if (libname) CFRelease (libname);
-#endif
 
   MEM_FREE (string);
   MEM_FREE (_szdriver_u8);
@@ -507,7 +603,7 @@ _iodbcdm_drvchoose_dialbox (
 
   if (cbInOutConnStr > 0)
     {
-      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+      if ((_string_w = malloc ((cbInOutConnStr + 1) * sizeof(wchar_t))) == NULL)
           goto done;
     }
 
@@ -516,7 +612,7 @@ _iodbcdm_drvchoose_dialbox (
 
   if (retcode == SQL_SUCCESS)
     {
-      dm_StrCopyOut2_W2A (_string_w, szInOutConnStr, cbInOutConnStr - 1, &len);
+      dm_StrCopyOut2_W2A (_string_w, (SQLCHAR*)szInOutConnStr, cbInOutConnStr - 1, &len);
     }
 
 done:
@@ -602,7 +698,7 @@ _iodbcdm_trschoose_dialbox (
 
   if (cbInOutConnStr > 0)
     {
-      if ((_string_w = malloc (cbInOutConnStr * sizeof(wchar_t) + 1)) == NULL)
+      if ((_string_w = malloc ((cbInOutConnStr + 1) * sizeof(wchar_t))) == NULL)
           goto done;
     }
 
@@ -611,7 +707,7 @@ _iodbcdm_trschoose_dialbox (
 
   if (retcode == SQL_SUCCESS)
     {
-      dm_StrCopyOut2_W2A (_string_w, szInOutConnStr, cbInOutConnStr - 1, &len);
+      dm_StrCopyOut2_W2A (_string_w, (SQLCHAR*)szInOutConnStr, cbInOutConnStr - 1, &len);
     }
 
 done:

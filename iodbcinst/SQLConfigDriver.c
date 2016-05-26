@@ -81,7 +81,7 @@
 #include <odbcinst.h>
 #include <unicode.h>
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
 #  include <Carbon/Carbon.h>
 #endif
 
@@ -92,6 +92,118 @@
 
 #ifndef WIN32
 #include <unistd.h>
+
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+
+#define CALL_CONFIG_DRIVER(path) \
+    if (path) \
+    { \
+       char *tmp_path = strdup(path); \
+       if (tmp_path) { \
+         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(tmp_path); \
+       CALL_CONFIG_DRIVER_BUNDLE(); \
+    }
+
+#define CALL_CONFIG_DRIVERW(path) \
+    if (path) \
+    { \
+       char *tmp_path = strdup(path); \
+       if (tmp_path) { \
+         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(tmp_path); \
+       CALL_CONFIG_DRIVERW_BUNDLE(); \
+    }
+
+#define CALL_CONFIG_DRIVER_BUNDLE() \
+  if (bundle_dll != NULL) \
+	{ \
+	  if ((pConfigDriver = (pConfigDriverFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDriver"))) != NULL) \
+	  { \
+        if (pConfigDriver (hwndParent, fRequest, lpszDriver, lpszArgs, lpszMsg, cbMsgMax, pcbMsgOut))  \
+	  	{ \
+	    	retcode = TRUE; \
+	    	goto done; \
+	  	} \
+		else \
+		{ \
+			PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	retcode = FALSE; \
+	    	goto done; \
+		} \
+	  } \
+	}
+
+#define CALL_CONFIG_DRIVERW_BUNDLE(driverpath) \
+  if (bundle_dll != NULL) \
+	{ \
+	  if ((pConfigDriverW = (pConfigDriverFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDriverW"))) != NULL) \
+	  { \
+		if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszArgs, (SQLWCHAR*)lpszMsg, cbMsgMax, pcbMsgOut))  \
+	  	{ \
+	    	retcode = TRUE; \
+	    	goto done; \
+	  	} \
+		else \
+		{ \
+		  PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	      retcode = FALSE; \
+	      goto done; \
+		} \
+	  } \
+      else if ((pConfigDriver = (pConfigDriverFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDriver"))) != NULL) \
+      { \
+          char *_args_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszArgs, SQL_NTS); \
+          char *_msg_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszMsg, SQL_NTS); \
+          if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
+          { \
+            PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+            retcode = FALSE; \
+            goto done; \
+          } \
+		  if (pConfigDriver (hwndParent, fRequest, _drv_u8, _args_u8, _msg_u8, STRLEN(_msg_u8), pcbMsgOut))  \
+	  	  { \
+            MEM_FREE (_args_u8); \
+            MEM_FREE (_msg_u8); \
+	    	retcode = TRUE; \
+	    	goto done; \
+	  	  } \
+		  else \
+		  { \
+            MEM_FREE (_args_u8); \
+            MEM_FREE (_msg_u8); \
+			PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	retcode = FALSE; \
+	    	goto done; \
+		  } \
+      } \
+	}
+
+
+#else
+
 #define CALL_CONFIG_DRIVER(driverpath) \
   if ((handle = DLL_OPEN((driverpath))) != NULL) \
 	{ \
@@ -166,6 +278,8 @@
 	}
 #endif
 
+#endif
+
 BOOL INSTAPI
 SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
     LPCSTR lpszArgs, LPSTR lpszMsg, WORD cbMsgMax, WORD FAR * pcbMsgOut,
@@ -176,11 +290,10 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
   void *handle;
   pConfigDriverFunc pConfigDriver;
   pConfigDriverWFunc pConfigDriverW;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  CFStringRef libname = NULL;
-  CFBundleRef bundle;
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+  CFBundleRef bundle = NULL;
+  CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
-  char name[1024] = { 0 };
 #endif
   char *_drv_u8 = NULL;
 
@@ -340,10 +453,35 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
     }
 
   /* The last ressort, a proxy driver */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+# if defined(IODBC_COCOA)
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+  if (bundle)
+    {
+      /* Search for the drvproxy library */
+      liburl =
+          CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+          NULL, NULL);
+      if (liburl)
+        {
+      	  bundle_dll = CFBundleCreate (NULL, liburl);
+          CFRelease (liburl);
+          if (waMode == 'A')
+            {
+              CALL_CONFIG_DRIVER_BUNDLE ();
+            }
+          else
+            {
+              CALL_CONFIG_DRIVERW_BUNDLE ();
+            }
+        }
+    }
+# else
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
   if (bundle)
     {
+      CFStringRef libname = NULL;
+      char name[1024] = { '\0' };
       /* Search for the drvproxy library */
       liburl =
 	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
@@ -355,6 +493,9 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 	  CFStringGetCString (libname, name, sizeof (name),
 	      kCFStringEncodingASCII);
 	  strcat (name, "/Contents/MacOS/iODBCdrvproxy");
+          CFRelease (libname); 
+          CFRelease (liburl); 
+          liburl = NULL;
 	  if (waMode == 'A')
 	    {
 	      CALL_CONFIG_DRIVER (name);
@@ -366,8 +507,43 @@ SQLConfigDriver_Internal (HWND hwndParent, WORD fRequest, LPCSTR lpszDriver,
 	}
       if (liburl)
 	CFRelease (liburl);
-      if (libname)
-	CFRelease (libname);
+    }
+
+# endif
+#else
+  if (waMode == 'A')
+    {
+      CALL_CONFIG_DRIVER ("libdrvproxy.so.2");
+    }
+  else
+    {
+      CALL_CONFIG_DRIVERW ("libdrvproxy.so.2");
+    }
+#endif
+
+//#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS))
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
+  if (bundle)
+    {
+      /* Search for the drvproxy library */
+      liburl =
+	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+	  NULL, NULL);
+      if (liburl)
+	{
+      	bundle_dll = CFBundleCreate (NULL, liburl);
+	  if (waMode == 'A')
+	    {
+	      CALL_CONFIG_DRIVER_BUNDLE ();
+	    }
+	  else
+	    {
+	      CALL_CONFIG_DRIVERW_BUNDLE ();
+	    }
+	}
+      if (liburl)
+	CFRelease (liburl);
     }
 #else
   if (waMode == 'A')

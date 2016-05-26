@@ -1,0 +1,721 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8568A59D196E8AE900738ECF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8568A59C196E8AE900738ECF /* Cocoa.framework */; };
+		8568A5A4196E8B1D00738ECF /* confirm.png in Resources */ = {isa = PBXBuildFile; fileRef = 8568A59E196E8B1D00738ECF /* confirm.png */; };
+		8568A5A8196E8B1D00738ECF /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A5A2196E8B1D00738ECF /* utils.h */; };
+		8568A5A9196E8B1D00738ECF /* utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A5A3196E8B1D00738ECF /* utils.m */; };
+		8568A5E11977BCE100738ECF /* Helpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A5DF1977BCE100738ECF /* Helpers.h */; };
+		8568A5E21977BCE100738ECF /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A5E01977BCE100738ECF /* Helpers.m */; };
+		8568A5E61977BCFB00738ECF /* IODBCadm_DSNchooserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A5E31977BCFB00738ECF /* IODBCadm_DSNchooserController.h */; };
+		8568A5E71977BCFB00738ECF /* IODBCadm_DSNchooserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A5E41977BCFB00738ECF /* IODBCadm_DSNchooserController.m */; };
+		8568A5EC1977BF6400738ECF /* IODBCadm_SetupController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A5E91977BF6400738ECF /* IODBCadm_SetupController.h */; };
+		8568A5ED1977BF6400738ECF /* IODBCadm_SetupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A5EA1977BF6400738ECF /* IODBCadm_SetupController.m */; };
+		8568A5F21978D54600738ECF /* drvchoose.png in Resources */ = {isa = PBXBuildFile; fileRef = 8568A5F11978D54600738ECF /* drvchoose.png */; };
+		8568A5F41978D55500738ECF /* odbc.png in Resources */ = {isa = PBXBuildFile; fileRef = 8568A5F31978D55500738ECF /* odbc.png */; };
+		8568A604197907C100738ECF /* IODBCadm_DriverChooseDSNController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8568A601197907C100738ECF /* IODBCadm_DriverChooseDSNController.h */; };
+		8568A605197907C100738ECF /* IODBCadm_DriverChooseDSNController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8568A602197907C100738ECF /* IODBCadm_DriverChooseDSNController.m */; };
+		858A02931B74E7F000C8009C /* IODBCadm_DrvConfigController.h in Headers */ = {isa = PBXBuildFile; fileRef = 858A028D1B74E7F000C8009C /* IODBCadm_DrvConfigController.h */; };
+		858A02941B74E7F000C8009C /* IODBCadm_DrvConfigController.m in Sources */ = {isa = PBXBuildFile; fileRef = 858A028E1B74E7F000C8009C /* IODBCadm_DrvConfigController.m */; };
+		858A02961B74E7F000C8009C /* IODBCadm_DrvRemoveController.h in Headers */ = {isa = PBXBuildFile; fileRef = 858A02901B74E7F000C8009C /* IODBCadm_DrvRemoveController.h */; };
+		858A02971B74E7F000C8009C /* IODBCadm_DrvRemoveController.m in Sources */ = {isa = PBXBuildFile; fileRef = 858A02911B74E7F000C8009C /* IODBCadm_DrvRemoveController.m */; };
+		858A029C1B74E80500C8009C /* IODBCadm_DSNmanageController.h in Headers */ = {isa = PBXBuildFile; fileRef = 858A02991B74E80500C8009C /* IODBCadm_DSNmanageController.h */; };
+		858A029D1B74E80500C8009C /* IODBCadm_DSNmanageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 858A029A1B74E80500C8009C /* IODBCadm_DSNmanageController.m */; };
+		858A02A21B74E81C00C8009C /* IODBCadm_PoolConfigController.h in Headers */ = {isa = PBXBuildFile; fileRef = 858A029F1B74E81C00C8009C /* IODBCadm_PoolConfigController.h */; };
+		858A02A31B74E81C00C8009C /* IODBCadm_PoolConfigController.m in Sources */ = {isa = PBXBuildFile; fileRef = 858A02A01B74E81C00C8009C /* IODBCadm_PoolConfigController.m */; };
+		85A3909B1B790E0A00AC8862 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 85A390991B790E0A00AC8862 /* InfoPlist.strings */; };
+		85A3909C1B790E1700AC8862 /* IODBCadm_PoolConfigController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A3909E1B790E1700AC8862 /* IODBCadm_PoolConfigController.xib */; };
+		85A3909F1B790E2000AC8862 /* IODBCadm_DSNmanageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390A11B790E2000AC8862 /* IODBCadm_DSNmanageController.xib */; };
+		85A390A21B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390A41B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib */; };
+		85A390A51B790E3500AC8862 /* IODBCadm_DrvRemoveController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390A71B790E3500AC8862 /* IODBCadm_DrvRemoveController.xib */; };
+		85A390A81B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390AA1B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib */; };
+		85A390AB1B790E4000AC8862 /* IODBCadm_SetupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390AD1B790E4000AC8862 /* IODBCadm_SetupController.xib */; };
+		85A390AE1B790E4900AC8862 /* IODBCadm_DSNchooserController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B01B790E4900AC8862 /* IODBCadm_DSNchooserController.xib */; };
+		85A390B41B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B61B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib */; };
+		85A390B71B790E5C00AC8862 /* IODBCadm_KeyValController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85A390B91B790E5C00AC8862 /* IODBCadm_KeyValController.xib */; };
+		85D41908197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h in Headers */ = {isa = PBXBuildFile; fileRef = 85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */; };
+		85D41909197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D41906197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m */; };
+		85D4190E197B824300C2C443 /* IODBCadm_KeyValController.h in Headers */ = {isa = PBXBuildFile; fileRef = 85D4190B197B824300C2C443 /* IODBCadm_KeyValController.h */; };
+		85D4190F197B824300C2C443 /* IODBCadm_KeyValController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D4190C197B824300C2C443 /* IODBCadm_KeyValController.m */; };
+		CDAE3BEB0987D71D003250F8 /* gui.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C5D07D2B7260022E958 /* gui.h */; };
+		CDAE3BEC0987D71D003250F8 /* iodbcadm.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C6007D2B7260022E958 /* iodbcadm.h */; };
+		CDAE3BED0987D71D003250F8 /* gui.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C8907D2B7780022E958 /* gui.h */; };
+		CDAE3BEE0987D71D003250F8 /* iodbc.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C9D07D2B8290022E958 /* iodbc.h */; };
+		CDAE3BEF0987D71D003250F8 /* iodbcext.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C9E07D2B8290022E958 /* iodbcext.h */; };
+		CDAE3BF00987D71D003250F8 /* iodbcunix.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA107D2B85F0022E958 /* iodbcunix.h */; };
+		CDAE3BF10987D71D003250F8 /* sql.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA307D2B8930022E958 /* sql.h */; };
+		CDAE3BF20987D71D003250F8 /* sqltypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA507D2B8930022E958 /* sqltypes.h */; };
+		CDAE3BF30987D71D003250F8 /* sqlucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA607D2B8930022E958 /* sqlucode.h */; };
+		CDAE3BF40987D71D003250F8 /* dlf.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CAB07D2B8CD0022E958 /* dlf.h */; };
+		CDAE3BF50987D71D003250F8 /* dlproc.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CAD07D2B8CD0022E958 /* dlproc.h */; };
+		CDAE3BF60987D71D003250F8 /* herr.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CB507D2B9330022E958 /* herr.h */; };
+		CDAE3BF70987D71D003250F8 /* unicode.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CB807D2B94F0022E958 /* unicode.h */; };
+		CDAE3BF80987D71D003250F8 /* iodbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CBB07D2B98B0022E958 /* iodbcinst.h */; };
+		CDAE3BF90987D71D003250F8 /* odbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CBD07D2B9B30022E958 /* odbcinst.h */; };
+		CDAE3C060987D71D003250F8 /* drvconn.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5907D2B7000022E958 /* drvconn.c */; };
+		CDAE3C070987D71D003250F8 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5A07D2B7000022E958 /* error.c */; };
+		CDAE3C080987D71D003250F8 /* Info.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5E07D2B7260022E958 /* Info.c */; };
+		CDAE3C090987D71D003250F8 /* iodbcadm.exp in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5F07D2B7260022E958 /* iodbcadm.exp */; };
+		CDAE3C130987D71D003250F8 /* translatorchooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C8D07D2B7780022E958 /* translatorchooser.c */; };
+		CDAE3C140987D71D003250F8 /* dlproc.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983CB107D2B8F10022E958 /* dlproc.c */; };
+		CDAE3C150987D71D003250F8 /* dlf.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983CB307D2B90F0022E958 /* dlf.c */; };
+		CDAE3C160987D71D003250F8 /* unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983CB707D2B94F0022E958 /* unicode.c */; };
+		CDAE3C1A0987D71D003250F8 /* iODBC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85983D8507D2C1870022E958 /* iODBC.framework */; };
+		CDAE3C1B0987D71D003250F8 /* iODBCinst.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85983D8707D2C1A50022E958 /* iODBCinst.framework */; };
+		CDAE3C1C0987D71D003250F8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85983E0E07D2C2080022E958 /* CoreServices.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8568A59C196E8AE900738ECF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = SYSTEM_DEVELOPER_DIR; };
+		8568A59E196E8B1D00738ECF /* confirm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = confirm.png; path = ../../iodbcadm/mac_cocoa/confirm.png; sourceTree = "<group>"; };
+		8568A5A2196E8B1D00738ECF /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../../iodbcadm/mac_cocoa/utils.h; sourceTree = "<group>"; };
+		8568A5A3196E8B1D00738ECF /* utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = utils.m; path = ../../iodbcadm/mac_cocoa/utils.m; sourceTree = "<group>"; };
+		8568A5DF1977BCE100738ECF /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Helpers.h; path = ../../iodbcadm/mac_cocoa/Helpers.h; sourceTree = "<group>"; };
+		8568A5E01977BCE100738ECF /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Helpers.m; path = ../../iodbcadm/mac_cocoa/Helpers.m; sourceTree = "<group>"; };
+		8568A5E31977BCFB00738ECF /* IODBCadm_DSNchooserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DSNchooserController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DSNchooserController.h; sourceTree = "<group>"; };
+		8568A5E41977BCFB00738ECF /* IODBCadm_DSNchooserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DSNchooserController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DSNchooserController.m; sourceTree = "<group>"; };
+		8568A5E91977BF6400738ECF /* IODBCadm_SetupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_SetupController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_SetupController.h; sourceTree = "<group>"; };
+		8568A5EA1977BF6400738ECF /* IODBCadm_SetupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_SetupController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_SetupController.m; sourceTree = "<group>"; };
+		8568A5F11978D54600738ECF /* drvchoose.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = drvchoose.png; path = ../../iodbcadm/mac_cocoa/drvchoose.png; sourceTree = "<group>"; };
+		8568A5F31978D55500738ECF /* odbc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = odbc.png; path = ../../iodbcadm/mac_cocoa/odbc.png; sourceTree = "<group>"; };
+		8568A601197907C100738ECF /* IODBCadm_DriverChooseDSNController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DriverChooseDSNController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DriverChooseDSNController.h; sourceTree = "<group>"; };
+		8568A602197907C100738ECF /* IODBCadm_DriverChooseDSNController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DriverChooseDSNController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DriverChooseDSNController.m; sourceTree = "<group>"; };
+		858A028D1B74E7F000C8009C /* IODBCadm_DrvConfigController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DrvConfigController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DrvConfigController.h; sourceTree = "<group>"; };
+		858A028E1B74E7F000C8009C /* IODBCadm_DrvConfigController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DrvConfigController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DrvConfigController.m; sourceTree = "<group>"; };
+		858A02901B74E7F000C8009C /* IODBCadm_DrvRemoveController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DrvRemoveController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DrvRemoveController.h; sourceTree = "<group>"; };
+		858A02911B74E7F000C8009C /* IODBCadm_DrvRemoveController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DrvRemoveController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DrvRemoveController.m; sourceTree = "<group>"; };
+		858A02991B74E80500C8009C /* IODBCadm_DSNmanageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DSNmanageController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DSNmanageController.h; sourceTree = "<group>"; };
+		858A029A1B74E80500C8009C /* IODBCadm_DSNmanageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DSNmanageController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DSNmanageController.m; sourceTree = "<group>"; };
+		858A029F1B74E81C00C8009C /* IODBCadm_PoolConfigController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_PoolConfigController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_PoolConfigController.h; sourceTree = "<group>"; };
+		858A02A01B74E81C00C8009C /* IODBCadm_PoolConfigController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_PoolConfigController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_PoolConfigController.m; sourceTree = "<group>"; };
+		85983C5907D2B7000022E958 /* drvconn.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = drvconn.c; path = ../../iodbcadm/drvconn.c; sourceTree = SOURCE_ROOT; };
+		85983C5A07D2B7000022E958 /* error.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../iodbcadm/error.c; sourceTree = SOURCE_ROOT; };
+		85983C5D07D2B7260022E958 /* gui.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gui.h; path = ../../iodbcadm/gui.h; sourceTree = SOURCE_ROOT; };
+		85983C5E07D2B7260022E958 /* Info.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = Info.c; path = ../../iodbcadm/Info.c; sourceTree = SOURCE_ROOT; };
+		85983C5F07D2B7260022E958 /* iodbcadm.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = iodbcadm.exp; path = ../../mac_cocoa/iodbcadm.exp; sourceTree = SOURCE_ROOT; };
+		85983C6007D2B7260022E958 /* iodbcadm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcadm.h; path = ../../iodbcadm/iodbcadm.h; sourceTree = SOURCE_ROOT; };
+		85983C8907D2B7780022E958 /* gui.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gui.h; path = ../../iodbcadm/mac_cocoa/gui.h; sourceTree = SOURCE_ROOT; };
+		85983C8D07D2B7780022E958 /* translatorchooser.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = translatorchooser.c; path = ../../iodbcadm/mac_cocoa/translatorchooser.c; sourceTree = SOURCE_ROOT; };
+		85983C9D07D2B8290022E958 /* iodbc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbc.h; path = ../../include/iodbc.h; sourceTree = SOURCE_ROOT; };
+		85983C9E07D2B8290022E958 /* iodbcext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcext.h; path = ../../include/iodbcext.h; sourceTree = SOURCE_ROOT; };
+		85983CA107D2B85F0022E958 /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
+		85983CA307D2B8930022E958 /* sql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sql.h; path = ../../include/sql.h; sourceTree = SOURCE_ROOT; };
+		85983CA507D2B8930022E958 /* sqltypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sqltypes.h; path = ../../include/sqltypes.h; sourceTree = SOURCE_ROOT; };
+		85983CA607D2B8930022E958 /* sqlucode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sqlucode.h; path = ../../include/sqlucode.h; sourceTree = SOURCE_ROOT; };
+		85983CAB07D2B8CD0022E958 /* dlf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dlf.h; path = ../../iodbcinst/dlf.h; sourceTree = SOURCE_ROOT; };
+		85983CAD07D2B8CD0022E958 /* dlproc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dlproc.h; path = ../../iodbc/dlproc.h; sourceTree = SOURCE_ROOT; };
+		85983CB107D2B8F10022E958 /* dlproc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dlproc.c; path = ../../iodbc/dlproc.c; sourceTree = SOURCE_ROOT; };
+		85983CB307D2B90F0022E958 /* dlf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dlf.c; path = ../../iodbcinst/dlf.c; sourceTree = SOURCE_ROOT; };
+		85983CB507D2B9330022E958 /* herr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = herr.h; path = ../../iodbc/herr.h; sourceTree = SOURCE_ROOT; };
+		85983CB707D2B94F0022E958 /* unicode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = unicode.c; path = ../../iodbcinst/unicode.c; sourceTree = SOURCE_ROOT; };
+		85983CB807D2B94F0022E958 /* unicode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = unicode.h; path = ../../iodbcinst/unicode.h; sourceTree = SOURCE_ROOT; };
+		85983CBB07D2B98B0022E958 /* iodbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcinst.h; path = ../../include/iodbcinst.h; sourceTree = SOURCE_ROOT; };
+		85983CBD07D2B9B30022E958 /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
+		85983D8507D2C1870022E958 /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../iODBC/build/Development/iODBC.framework; sourceTree = SOURCE_ROOT; };
+		85983D8707D2C1A50022E958 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../iODBCinst/build/Development/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
+		85983E0E07D2C2080022E958 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		85A3909A1B790E0A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		85A3909D1B790E1700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_PoolConfigController.xib; sourceTree = "<group>"; };
+		85A390A01B790E2000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DSNmanageController.xib; sourceTree = "<group>"; };
+		85A390A31B790E2D00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DrvConfigController.xib; sourceTree = "<group>"; };
+		85A390A61B790E3500AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DrvRemoveController.xib; sourceTree = "<group>"; };
+		85A390A91B790E3A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DriverChooseDSNController.xib; sourceTree = "<group>"; };
+		85A390AC1B790E4000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_SetupController.xib; sourceTree = "<group>"; };
+		85A390AF1B790E4900AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DSNchooserController.xib; sourceTree = "<group>"; };
+		85A390B51B790E5700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DriverChooseFDSNController.xib; sourceTree = "<group>"; };
+		85A390B81B790E5C00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_KeyValController.xib; sourceTree = "<group>"; };
+		85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DriverChooseFDSNController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_DriverChooseFDSNController.h; sourceTree = "<group>"; };
+		85D41906197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DriverChooseFDSNController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_DriverChooseFDSNController.m; sourceTree = "<group>"; };
+		85D4190B197B824300C2C443 /* IODBCadm_KeyValController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_KeyValController.h; path = ../../iodbcadm/mac_cocoa/IODBCadm_KeyValController.h; sourceTree = "<group>"; };
+		85D4190C197B824300C2C443 /* IODBCadm_KeyValController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_KeyValController.m; path = ../../iodbcadm/mac_cocoa/IODBCadm_KeyValController.m; sourceTree = "<group>"; };
+		CDAE3C230987D71D003250F8 /* Info-iODBCadm.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iODBCadm.plist"; sourceTree = "<group>"; };
+		CDAE3C240987D71D003250F8 /* iODBCadm.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iODBCadm.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CDAE3C180987D71D003250F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8568A59D196E8AE900738ECF /* Cocoa.framework in Frameworks */,
+				CDAE3C1A0987D71D003250F8 /* iODBC.framework in Frameworks */,
+				CDAE3C1B0987D71D003250F8 /* iODBCinst.framework in Frameworks */,
+				CDAE3C1C0987D71D003250F8 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* iODBCadm */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77ADFE841716C02AAC07 /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				19C28FB4FE9D528D11CA2CBB /* Products */,
+				CDAE3C230987D71D003250F8 /* Info-iODBCadm.plist */,
+			);
+			name = iODBCadm;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				8568A59C196E8AE900738ECF /* Cocoa.framework */,
+				85983E0E07D2C2080022E958 /* CoreServices.framework */,
+				85983D8707D2C1A50022E958 /* iODBCinst.framework */,
+				85983D8507D2C1870022E958 /* iODBC.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				85A390981B790E0A00AC8862 /* English.lproj */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77ADFE841716C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				85983C9B07D2B7960022E958 /* iODBCinst */,
+				85983C9A07D2B78C0022E958 /* iODBC */,
+				85983C5807D2B6C60022E958 /* iodbcadm */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		19C28FB4FE9D528D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDAE3C240987D71D003250F8 /* iODBCadm.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8568A59B196E89BC00738ECF /* mac */ = {
+			isa = PBXGroup;
+			children = (
+				85A390BA1B790E6500AC8862 /* English.lproj */,
+				858A029F1B74E81C00C8009C /* IODBCadm_PoolConfigController.h */,
+				858A02A01B74E81C00C8009C /* IODBCadm_PoolConfigController.m */,
+				858A02991B74E80500C8009C /* IODBCadm_DSNmanageController.h */,
+				858A029A1B74E80500C8009C /* IODBCadm_DSNmanageController.m */,
+				858A028D1B74E7F000C8009C /* IODBCadm_DrvConfigController.h */,
+				858A028E1B74E7F000C8009C /* IODBCadm_DrvConfigController.m */,
+				858A02901B74E7F000C8009C /* IODBCadm_DrvRemoveController.h */,
+				858A02911B74E7F000C8009C /* IODBCadm_DrvRemoveController.m */,
+				8568A601197907C100738ECF /* IODBCadm_DriverChooseDSNController.h */,
+				8568A602197907C100738ECF /* IODBCadm_DriverChooseDSNController.m */,
+				8568A5E91977BF6400738ECF /* IODBCadm_SetupController.h */,
+				8568A5EA1977BF6400738ECF /* IODBCadm_SetupController.m */,
+				8568A5E31977BCFB00738ECF /* IODBCadm_DSNchooserController.h */,
+				8568A5E41977BCFB00738ECF /* IODBCadm_DSNchooserController.m */,
+				85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */,
+				85D41906197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m */,
+				85D4190B197B824300C2C443 /* IODBCadm_KeyValController.h */,
+				85D4190C197B824300C2C443 /* IODBCadm_KeyValController.m */,
+				8568A5DF1977BCE100738ECF /* Helpers.h */,
+				8568A5E01977BCE100738ECF /* Helpers.m */,
+				8568A5A2196E8B1D00738ECF /* utils.h */,
+				8568A5A3196E8B1D00738ECF /* utils.m */,
+				8568A5F31978D55500738ECF /* odbc.png */,
+				8568A59E196E8B1D00738ECF /* confirm.png */,
+				8568A5F11978D54600738ECF /* drvchoose.png */,
+			);
+			name = mac;
+			sourceTree = "<group>";
+		};
+		85983C5807D2B6C60022E958 /* iodbcadm */ = {
+			isa = PBXGroup;
+			children = (
+				8568A59B196E89BC00738ECF /* mac */,
+				85983C8107D2B7400022E958 /* macosx */,
+				85983C5D07D2B7260022E958 /* gui.h */,
+				85983C5E07D2B7260022E958 /* Info.c */,
+				85983C5F07D2B7260022E958 /* iodbcadm.exp */,
+				85983C6007D2B7260022E958 /* iodbcadm.h */,
+				85983C5907D2B7000022E958 /* drvconn.c */,
+				85983C5A07D2B7000022E958 /* error.c */,
+			);
+			name = iodbcadm;
+			sourceTree = "<group>";
+		};
+		85983C8107D2B7400022E958 /* macosx */ = {
+			isa = PBXGroup;
+			children = (
+				85983C8907D2B7780022E958 /* gui.h */,
+				85983C8D07D2B7780022E958 /* translatorchooser.c */,
+			);
+			name = macosx;
+			sourceTree = "<group>";
+		};
+		85983C9A07D2B78C0022E958 /* iODBC */ = {
+			isa = PBXGroup;
+			children = (
+				85983CB707D2B94F0022E958 /* unicode.c */,
+				85983CB807D2B94F0022E958 /* unicode.h */,
+				85983CB507D2B9330022E958 /* herr.h */,
+				85983CB307D2B90F0022E958 /* dlf.c */,
+				85983CB107D2B8F10022E958 /* dlproc.c */,
+				85983CAB07D2B8CD0022E958 /* dlf.h */,
+				85983CAD07D2B8CD0022E958 /* dlproc.h */,
+				85983CA307D2B8930022E958 /* sql.h */,
+				85983CA507D2B8930022E958 /* sqltypes.h */,
+				85983CA607D2B8930022E958 /* sqlucode.h */,
+				85983CA107D2B85F0022E958 /* iodbcunix.h */,
+				85983C9D07D2B8290022E958 /* iodbc.h */,
+				85983C9E07D2B8290022E958 /* iodbcext.h */,
+			);
+			name = iODBC;
+			sourceTree = "<group>";
+		};
+		85983C9B07D2B7960022E958 /* iODBCinst */ = {
+			isa = PBXGroup;
+			children = (
+				85983CBD07D2B9B30022E958 /* odbcinst.h */,
+				85983CBB07D2B98B0022E958 /* iodbcinst.h */,
+			);
+			name = iODBCinst;
+			sourceTree = "<group>";
+		};
+		85A390981B790E0A00AC8862 /* English.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				85A390991B790E0A00AC8862 /* InfoPlist.strings */,
+			);
+			path = English.lproj;
+			sourceTree = "<group>";
+		};
+		85A390BA1B790E6500AC8862 /* English.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				85A3909E1B790E1700AC8862 /* IODBCadm_PoolConfigController.xib */,
+				85A390A11B790E2000AC8862 /* IODBCadm_DSNmanageController.xib */,
+				85A390A41B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib */,
+				85A390A71B790E3500AC8862 /* IODBCadm_DrvRemoveController.xib */,
+				85A390AA1B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib */,
+				85A390AD1B790E4000AC8862 /* IODBCadm_SetupController.xib */,
+				85A390B01B790E4900AC8862 /* IODBCadm_DSNchooserController.xib */,
+				85A390B61B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib */,
+				85A390B91B790E5C00AC8862 /* IODBCadm_KeyValController.xib */,
+			);
+			name = English.lproj;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		CDAE3BEA0987D71D003250F8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				858A02961B74E7F000C8009C /* IODBCadm_DrvRemoveController.h in Headers */,
+				8568A5A8196E8B1D00738ECF /* utils.h in Headers */,
+				CDAE3BEB0987D71D003250F8 /* gui.h in Headers */,
+				CDAE3BEC0987D71D003250F8 /* iodbcadm.h in Headers */,
+				8568A5E11977BCE100738ECF /* Helpers.h in Headers */,
+				CDAE3BED0987D71D003250F8 /* gui.h in Headers */,
+				CDAE3BEE0987D71D003250F8 /* iodbc.h in Headers */,
+				8568A5EC1977BF6400738ECF /* IODBCadm_SetupController.h in Headers */,
+				CDAE3BEF0987D71D003250F8 /* iodbcext.h in Headers */,
+				8568A604197907C100738ECF /* IODBCadm_DriverChooseDSNController.h in Headers */,
+				CDAE3BF00987D71D003250F8 /* iodbcunix.h in Headers */,
+				CDAE3BF10987D71D003250F8 /* sql.h in Headers */,
+				858A02931B74E7F000C8009C /* IODBCadm_DrvConfigController.h in Headers */,
+				85D4190E197B824300C2C443 /* IODBCadm_KeyValController.h in Headers */,
+				CDAE3BF20987D71D003250F8 /* sqltypes.h in Headers */,
+				CDAE3BF30987D71D003250F8 /* sqlucode.h in Headers */,
+				8568A5E61977BCFB00738ECF /* IODBCadm_DSNchooserController.h in Headers */,
+				85D41908197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h in Headers */,
+				CDAE3BF40987D71D003250F8 /* dlf.h in Headers */,
+				858A02A21B74E81C00C8009C /* IODBCadm_PoolConfigController.h in Headers */,
+				CDAE3BF50987D71D003250F8 /* dlproc.h in Headers */,
+				CDAE3BF60987D71D003250F8 /* herr.h in Headers */,
+				CDAE3BF70987D71D003250F8 /* unicode.h in Headers */,
+				CDAE3BF80987D71D003250F8 /* iodbcinst.h in Headers */,
+				858A029C1B74E80500C8009C /* IODBCadm_DSNmanageController.h in Headers */,
+				CDAE3BF90987D71D003250F8 /* odbcinst.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		CDAE3BE90987D71D003250F8 /* iODBCadm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDAE3C1F0987D71D003250F8 /* Build configuration list for PBXNativeTarget "iODBCadm" */;
+			buildPhases = (
+				CDAE3BEA0987D71D003250F8 /* Headers */,
+				CDAE3BFB0987D71D003250F8 /* Resources */,
+				CDAE3C050987D71D003250F8 /* Sources */,
+				CDAE3C180987D71D003250F8 /* Frameworks */,
+				CDAE3C1D0987D71D003250F8 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iODBCadm;
+			productInstallPath = .;
+			productName = iODBCadm;
+			productReference = CDAE3C240987D71D003250F8 /* iODBCadm.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = CDAE3C250987D71E003250F8 /* Build configuration list for PBXProject "iODBCadm" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* iODBCadm */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CDAE3BE90987D71D003250F8 /* iODBCadm */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CDAE3BFB0987D71D003250F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85A390A51B790E3500AC8862 /* IODBCadm_DrvRemoveController.xib in Resources */,
+				85A3909C1B790E1700AC8862 /* IODBCadm_PoolConfigController.xib in Resources */,
+				85A390A81B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib in Resources */,
+				85A390AB1B790E4000AC8862 /* IODBCadm_SetupController.xib in Resources */,
+				85A3909F1B790E2000AC8862 /* IODBCadm_DSNmanageController.xib in Resources */,
+				85A390AE1B790E4900AC8862 /* IODBCadm_DSNchooserController.xib in Resources */,
+				85A390B41B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib in Resources */,
+				85A390B71B790E5C00AC8862 /* IODBCadm_KeyValController.xib in Resources */,
+				85A390A21B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib in Resources */,
+				8568A5F41978D55500738ECF /* odbc.png in Resources */,
+				8568A5F21978D54600738ECF /* drvchoose.png in Resources */,
+				8568A5A4196E8B1D00738ECF /* confirm.png in Resources */,
+				85A3909B1B790E0A00AC8862 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		CDAE3C1D0987D71D003250F8 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CDAE3C050987D71D003250F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				858A02A31B74E81C00C8009C /* IODBCadm_PoolConfigController.m in Sources */,
+				CDAE3C060987D71D003250F8 /* drvconn.c in Sources */,
+				CDAE3C070987D71D003250F8 /* error.c in Sources */,
+				CDAE3C080987D71D003250F8 /* Info.c in Sources */,
+				858A02971B74E7F000C8009C /* IODBCadm_DrvRemoveController.m in Sources */,
+				CDAE3C090987D71D003250F8 /* iodbcadm.exp in Sources */,
+				85D41909197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m in Sources */,
+				8568A605197907C100738ECF /* IODBCadm_DriverChooseDSNController.m in Sources */,
+				8568A5E21977BCE100738ECF /* Helpers.m in Sources */,
+				8568A5ED1977BF6400738ECF /* IODBCadm_SetupController.m in Sources */,
+				CDAE3C130987D71D003250F8 /* translatorchooser.c in Sources */,
+				8568A5A9196E8B1D00738ECF /* utils.m in Sources */,
+				85D4190F197B824300C2C443 /* IODBCadm_KeyValController.m in Sources */,
+				CDAE3C140987D71D003250F8 /* dlproc.c in Sources */,
+				CDAE3C150987D71D003250F8 /* dlf.c in Sources */,
+				CDAE3C160987D71D003250F8 /* unicode.c in Sources */,
+				858A02941B74E7F000C8009C /* IODBCadm_DrvConfigController.m in Sources */,
+				858A029D1B74E80500C8009C /* IODBCadm_DSNmanageController.m in Sources */,
+				8568A5E71977BCFB00738ECF /* IODBCadm_DSNchooserController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		85A390991B790E0A00AC8862 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A3909A1B790E0A00AC8862 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		85A3909E1B790E1700AC8862 /* IODBCadm_PoolConfigController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A3909D1B790E1700AC8862 /* en */,
+			);
+			name = IODBCadm_PoolConfigController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390A11B790E2000AC8862 /* IODBCadm_DSNmanageController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390A01B790E2000AC8862 /* en */,
+			);
+			name = IODBCadm_DSNmanageController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390A41B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390A31B790E2D00AC8862 /* en */,
+			);
+			name = IODBCadm_DrvConfigController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390A71B790E3500AC8862 /* IODBCadm_DrvRemoveController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390A61B790E3500AC8862 /* en */,
+			);
+			name = IODBCadm_DrvRemoveController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390AA1B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390A91B790E3A00AC8862 /* en */,
+			);
+			name = IODBCadm_DriverChooseDSNController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390AD1B790E4000AC8862 /* IODBCadm_SetupController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390AC1B790E4000AC8862 /* en */,
+			);
+			name = IODBCadm_SetupController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390B01B790E4900AC8862 /* IODBCadm_DSNchooserController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390AF1B790E4900AC8862 /* en */,
+			);
+			name = IODBCadm_DSNchooserController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390B61B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390B51B790E5700AC8862 /* en */,
+			);
+			name = IODBCadm_DriverChooseFDSNController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+		85A390B91B790E5C00AC8862 /* IODBCadm_KeyValController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				85A390B81B790E5C00AC8862 /* en */,
+			);
+			name = IODBCadm_KeyValController.xib;
+			path = ../../iodbcadm/mac_cocoa;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CDAE3C200987D71D003250F8 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 3.52.12;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
+				DYLIB_CURRENT_VERSION = 3.52.12;
+				EXPORTED_SYMBOLS_FILE = ../../mac_cocoa/iodbcadm.exp;
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBCinst/build/Development,
+					../../mac_cocoa/iODBCinst/build,
+					../../mac_cocoa/iODBC/build/Development,
+					../../mac_cocoa/iODBC/build,
+				);
+				FRAMEWORK_VERSION = 3.52;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"ODBCVER=0x351",
+					_MACX,
+					DLDAPI_MACX,
+					IODBC_COCOA,
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = "Info-iODBCadm.plist";
+				INSTALL_PATH = /;
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = BUNDLE;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				OTHER_CFLAGS = "-fno-constant-cfstrings";
+				OTHER_LDFLAGS = (
+					"-multiply_defined",
+					suppress,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = iODBCadm;
+				SDKROOT = macosx10.8;
+				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
+				STRIPFLAGS = "-u -r -s ../../mac_cocoa/iodbcadm.exp";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		CDAE3C210987D71D003250F8 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac_cocoa/iODBCinst/build/Deployment,
+					../../mac_cocoa/iODBCinst/build,
+					../../mac_cocoa/iODBC/build/Deployment,
+					../../mac_cocoa/iODBC/build,
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"ODBCVER=0x351",
+					_MACX,
+					DLDAPI_MACX,
+					IODBC_COCOA,
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = "Info-iODBCadm.plist";
+				INSTALL_PATH = /;
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = Bundle;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				OTHER_CFLAGS = "-fno-constant-cfstrings";
+				OTHER_LDFLAGS = (
+					"-multiply_defined",
+					suppress,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = iODBCadm;
+				SDKROOT = $IODBC_SDK;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CDAE3C260987D71E003250F8 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				SDKROOT = $IODBC_SDK;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = Development;
+		};
+		CDAE3C270987D71E003250F8 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				SDKROOT = $IODBC_SDK;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = Deployment;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CDAE3C1F0987D71D003250F8 /* Build configuration list for PBXNativeTarget "iODBCadm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDAE3C200987D71D003250F8 /* Development */,
+				CDAE3C210987D71D003250F8 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+		CDAE3C250987D71E003250F8 /* Build configuration list for PBXProject "iODBCadm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDAE3C260987D71E003250F8 /* Development */,
+				CDAE3C270987D71E003250F8 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

@@ -79,7 +79,7 @@
 #include <odbcinst.h>
 #include <unicode.h>
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
 #  include <Carbon/Carbon.h>
 #endif
 
@@ -88,8 +88,132 @@
 #include "misc.h"
 #include "iodbc_error.h"
 
+
 #ifndef WIN32
 #include <unistd.h>
+
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+
+#define CALL_CONFIG_DSN(path) \
+    if (path) \
+    { \
+       char *tmp_path = strdup(path); \
+       if (tmp_path) { \
+         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(tmp_path); \
+       CALL_CONFIG_DSN_BUNDLE(); \
+    }
+
+#define CALL_CONFIG_DSNW(path) \
+    if (path) \
+    { \
+       char *tmp_path = strdup(path); \
+       if (tmp_path) { \
+         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
+         if (ptr) \
+           *ptr = 0; \
+         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
+		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
+		 if (arr) \
+           bundle_dll = CFBundleCreate (NULL, liburl); \
+         if (arr) \
+           CFRelease(arr); \
+         if (liburl) \
+           CFRelease(liburl); \
+       } \
+       MEM_FREE(tmp_path); \
+       CALL_CONFIG_DSNW_BUNDLE(); \
+    }
+
+#define CALL_CONFIG_DSN_BUNDLE() \
+	if (bundle_dll != NULL) \
+	{ \
+          if ((pConfigDSN = (pConfigDSNFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSN"))) != NULL) \
+          { \
+            if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
+            { \
+              retcode = TRUE; \
+              goto done; \
+            } \
+            else \
+            { \
+              PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+              retcode = FALSE; \
+              goto done; \
+            } \
+          } \
+	}
+
+#define CALL_CONFIG_DSNW_BUNDLE() \
+	if (bundle_dll != NULL) \
+	{ \
+		if ((pConfigDSNW = (pConfigDSNWFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSNW"))) != NULL) \
+		{ \
+	  	  if (pConfigDSNW(hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszAttributes)) \
+	  	  { \
+	    	 retcode = TRUE; \
+	    	 goto done; \
+	  	  } \
+		  else \
+		  { \
+		     PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	 retcode = FALSE; \
+	    	 goto done; \
+		  } \
+		} \
+        else if ((pConfigDSN = (pConfigDSNFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSN"))) != NULL) \
+        { \
+          char *_attrs_u8, *ptr_u8; \
+          wchar_t *ptr; \
+          int length; \
+          for(length = 0, ptr = lpszAttributes ; *ptr ; length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1); \
+          if (length > 0) \
+          { \
+            if ((_attrs_u8 = malloc (length * UTF8_MAX_CHAR_LEN + 1)) != NULL) \
+            { \
+              for(ptr = lpszAttributes, ptr_u8 = _attrs_u8 ; *ptr ; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1) \
+                dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) *  UTF8_MAX_CHAR_LEN, NULL); \
+              *ptr_u8 = '\0'; \
+            } \
+          } \
+          else \
+            _attrs_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszAttributes, SQL_NTS); \
+          if (_attrs_u8 == NULL && lpszAttributes) \
+          { \
+            PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+            retcode = FALSE; \
+            goto done; \
+           } \
+	  	  if (pConfigDSN(hwndParent, fRequest, _drv_u8, _attrs_u8)) \
+	  	  { \
+              MEM_FREE (_attrs_u8); \
+	    	  retcode = TRUE; \
+	    	  goto done; \
+	  	  } \
+		  else \
+		  { \
+             MEM_FREE (_attrs_u8); \
+ 		     PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
+	    	 retcode = FALSE; \
+	    	 goto done; \
+		  } \
+        } \
+	}
+
+#else
+
+
 #define CALL_CONFIG_DSN(path) \
 	if ((handle = DLL_OPEN(path)) != NULL) \
 	{ \
@@ -174,7 +298,10 @@
 	}
 #endif
 
+#endif
+
 extern BOOL RemoveDSNFromIni (LPCSTR lpszDSN, SQLCHAR waMode);
+
 
 BOOL
 RemoveDefaultDataSource (void)
@@ -238,11 +365,10 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
   void *handle;
   pConfigDSNFunc pConfigDSN;
   pConfigDSNWFunc pConfigDSNW;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  CFStringRef libname = NULL;
-  CFBundleRef bundle;
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+  CFBundleRef bundle = NULL;
+  CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
-  char name[1024] = { 0 };
 #endif
   char *_drv_u8 = NULL;
 
@@ -291,6 +417,7 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
       PUSH_ERROR (ODBC_ERROR_INVALID_NAME);
       goto resetdsnmode;
     }
+
 
   /* Get it from the user odbcinst file */
   wSystemDSN = USERDSN_ONLY;
@@ -359,6 +486,7 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
       _iodbcdm_cfg_done (pCfg);
       pCfg = NULL;
     }
+
   wSystemDSN = SYSTEMDSN_ONLY;
   if (!_iodbcdm_cfg_search_init (&pCfg, "odbcinst.ini", TRUE))
     {
@@ -419,37 +547,66 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
 	}
     }
 
-  /* The last ressort, a proxy driver */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
+/* The last ressort, a proxy driver */
+#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+# if defined(IODBC_COCOA)
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (bundle)
     {
       /* Search for the drvproxy library */
       liburl =
-	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
-	  NULL, NULL);
-      if (liburl
-	  && (libname =
-	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-	{
-	  CFStringGetCString (libname, name, sizeof (name),
-	      kCFStringEncodingASCII);
-	  strcat (name, "/Contents/MacOS/iODBCdrvproxy");
-	  if (waMode == 'A')
-	    {
-	      CALL_CONFIG_DSN (name);
-	    }
-	  else
-	    {
-	      CALL_CONFIG_DSNW (name);
-	    }
-	}
-      if (liburl)
-	CFRelease (liburl);
-      if (libname)
-	CFRelease (libname);
+  	CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+  	NULL, NULL);
+      if (liburl) 
+        {
+          bundle_dll = CFBundleCreate (NULL, liburl);
+          CFRelease (liburl);
+
+          if (waMode == 'A')
+            {
+              CALL_CONFIG_DSN_BUNDLE ();
+            }
+          else
+            {
+              CALL_CONFIG_DSNW_BUNDLE ();
+            }
+        }
     }
+# else
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
+  if (bundle)
+    {
+      CFStringRef libname = NULL;
+      char name[1024] = { '\0' };
+      /* Search for the drvproxy library */
+      liburl =
+          CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
+          NULL, NULL);
+      if (liburl
+          && (libname =
+              CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+        {
+          CFStringGetCString (libname, name, sizeof (name),
+              kCFStringEncodingASCII);
+          strcat (name, "/Contents/MacOS/iODBCdrvproxy");
+          CFRelease (libname); 
+          CFRelease (liburl); 
+          liburl = NULL;
+          if (waMode == 'A')
+            {
+              CALL_CONFIG_DSN (name);
+            }
+          else
+            {
+              CALL_CONFIG_DSNW (name);
+            }
+        }
+      if (liburl)
+        CFRelease (liburl);
+    }
+# endif
 #else
+
   if (waMode == 'A')
     {
       CALL_CONFIG_DSN ("libdrvproxy.so.2");
