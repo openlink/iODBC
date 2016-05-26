@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -271,6 +271,10 @@ iodbcdm_drvconn_dialboxw (
 
   if (!szDSN && !szDriver)
     {
+      /* Initialize members in case of early create_dsnchooser return */
+      choose_t.dsn = NULL;
+      choose_t.fdsn = NULL;
+
       /* Display the DSN chooser dialog box */
       create_dsnchooser (hwnd, &choose_t);
 

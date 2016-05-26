@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -759,47 +759,48 @@ SQLGetInfo_Internal (
       else
 #endif
 	sprintf ((char*)buf, "%02d.%02d.0000", SQL_SPEC_MAJOR, SQL_SPEC_MINOR);
-      if(waMode == 'W')
+
+      if (waMode != 'W')
         {
-          SQLWCHAR *prov = dm_SQL_U8toW((SQLCHAR *)buf, SQL_NTS);
-          if(prov)
-            {
-              WCSNCPY(buf, prov, sizeof(buf)/sizeof(wchar_t));
-              free(prov);
-            }
-          else 
-            buf[0] = L'\0';
-        }
-
-
-      if (rgbInfoValue != NULL  && cbInfoValueMax > 0)
-	{
-	  len = (waMode != 'W' ? STRLEN (buf) : WCSLEN(buf));
-
-	  if (len > cbInfoValueMax - 1)
+          if (rgbInfoValue != NULL && cbInfoValueMax > 0)
 	    {
-	      len = cbInfoValueMax - 1;
-	      PUSHSQLERR (pdbc->herr, en_01004);
+	      len = STRLEN (buf);
 
-	      retcode = SQL_SUCCESS_WITH_INFO;
-	    }
+	      if (len > cbInfoValueMax - 1)
+	        {
+	          len = cbInfoValueMax - 1;
+                  ret = -1;
+	        }
+              else
+                {
+                  ret = 0;
+                }
 
-	  if (waMode != 'W')
-	    {
 	      STRNCPY (rgbInfoValue, buf, len);
 	      ((char *) rgbInfoValue)[len] = '\0';
 	    }
-	  else
-	    {
-	      WCSNCPY (rgbInfoValue, buf, len);
-	      ((wchar_t *) rgbInfoValue)[len] = L'\0';
-	    }
-	}
 
-      if (pcbInfoValue != NULL)
-	{
-	  *pcbInfoValue = (SWORD) len;
-	}
+          if (pcbInfoValue != NULL)
+            *pcbInfoValue = (SWORD) len;
+        }
+      else
+        {
+          ret = dm_StrCopyOut2_A2W ((SQLCHAR *) buf,  
+		(SQLWCHAR *) rgbInfoValue, 
+    		cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+          if (pcbInfoValue)
+            *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
+        }
+
+       if (ret == -1)
+         {
+           PUSHSQLERR (pdbc->herr, en_01004);
+           retcode = SQL_SUCCESS_WITH_INFO;
+         }
+       else
+         {
+           retcode = SQL_SUCCESS;
+         }
 
       return retcode;
     }

@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		85349760105541030084FC17 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534975F105541030084FC17 /* NSResWindow.m */; };
 		85349761105541030084FC17 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534975F105541030084FC17 /* NSResWindow.m */; };
+		854FB8A21B58009C0041CF2F /* DSNchooserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A01B58009C0041CF2F /* DSNchooserController.m */; };
+		854FB8A31B58009C0041CF2F /* DSNchooserController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 854FB8A11B58009C0041CF2F /* DSNchooserController.xib */; };
+		854FB8A61B5800AF0041CF2F /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A51B5800AF0041CF2F /* Helpers.m */; };
+		854FB8A71B58D0A70041CF2F /* DSNchooserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A01B58009C0041CF2F /* DSNchooserController.m */; };
+		854FB8A81B58D0A70041CF2F /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 854FB8A51B5800AF0041CF2F /* Helpers.m */; };
 		855F56811A67B6240046BE46 /* LinkTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56801A67B6240046BE46 /* LinkTextFieldCell.m */; };
 		855F56821A67B6240046BE46 /* LinkTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56801A67B6240046BE46 /* LinkTextFieldCell.m */; };
 		855F56851A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F56841A67B6330046BE46 /* NSAttributedStringAdditions.m */; };
@@ -46,8 +51,13 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* iodbcdemo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iodbcdemo_Prefix.pch; sourceTree = "<group>"; };
-		8534975E105541030084FC17 /* NSResWindow.h */ = {isa = PBXFileReference; fileEncoding = 18446744071562067975; lastKnownFileType = sourcecode.c.h; path = NSResWindow.h; sourceTree = "<group>"; };
-		8534975F105541030084FC17 /* NSResWindow.m */ = {isa = PBXFileReference; fileEncoding = 18446744071562067975; lastKnownFileType = sourcecode.c.objc; path = NSResWindow.m; sourceTree = "<group>"; };
+		8534975E105541030084FC17 /* NSResWindow.h */ = {isa = PBXFileReference; fileEncoding = 18446744071562067968; lastKnownFileType = sourcecode.c.h; path = NSResWindow.h; sourceTree = "<group>"; };
+		8534975F105541030084FC17 /* NSResWindow.m */ = {isa = PBXFileReference; fileEncoding = 18446744071562067968; lastKnownFileType = sourcecode.c.objc; path = NSResWindow.m; sourceTree = "<group>"; };
+		854FB89F1B58009C0041CF2F /* DSNchooserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSNchooserController.h; sourceTree = "<group>"; };
+		854FB8A01B58009C0041CF2F /* DSNchooserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSNchooserController.m; sourceTree = "<group>"; };
+		854FB8A11B58009C0041CF2F /* DSNchooserController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DSNchooserController.xib; sourceTree = "<group>"; };
+		854FB8A41B5800AF0041CF2F /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
+		854FB8A51B5800AF0041CF2F /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helpers.m; sourceTree = "<group>"; };
 		855F567F1A67B6240046BE46 /* LinkTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkTextFieldCell.h; sourceTree = "<group>"; };
 		855F56801A67B6240046BE46 /* LinkTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkTextFieldCell.m; sourceTree = "<group>"; };
 		855F56831A67B6330046BE46 /* NSAttributedStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAttributedStringAdditions.h; sourceTree = "<group>"; };
@@ -142,6 +152,11 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				854FB8A41B5800AF0041CF2F /* Helpers.h */,
+				854FB8A51B5800AF0041CF2F /* Helpers.m */,
+				854FB89F1B58009C0041CF2F /* DSNchooserController.h */,
+				854FB8A01B58009C0041CF2F /* DSNchooserController.m */,
+				854FB8A11B58009C0041CF2F /* DSNchooserController.xib */,
 				855F56831A67B6330046BE46 /* NSAttributedStringAdditions.h */,
 				855F56841A67B6330046BE46 /* NSAttributedStringAdditions.m */,
 				855F567F1A67B6240046BE46 /* LinkTextFieldCell.h */,
@@ -168,6 +183,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.xib */,
 				CD7C37B90A063F41001A43B7 /* InfoAnsi.plist */,
+				854FB8A11B58009C0041CF2F /* DSNchooserController.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -252,6 +268,7 @@
 				8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				85F079A809FDD9D70007FC8F /* ExecSQL.xib in Resources */,
+				854FB8A31B58009C0041CF2F /* DSNchooserController.xib in Resources */,
 				CD6EAFC40A12036B003E7EC1 /* iODBCdemo.icns in Resources */,
 				CD6EAFEF0A1213FA003E7EC1 /* Credits.rtf in Resources */,
 			);
@@ -264,6 +281,7 @@
 				CD7C37A90A063F40001A43B7 /* MainMenu.xib in Resources */,
 				CD7C37AA0A063F40001A43B7 /* InfoPlist.strings in Resources */,
 				CD7C37AB0A063F40001A43B7 /* ExecSQL.xib in Resources */,
+				854FB8A31B58009C0041CF2F /* DSNchooserController.xib in Resources */,
 				CD6EAFC50A12036B003E7EC1 /* iODBCdemo.icns in Resources */,
 				CD6EAFF00A1213FA003E7EC1 /* Credits.rtf in Resources */,
 			);
@@ -281,7 +299,9 @@
 				85F0775709F871F60007FC8F /* TestController.m in Sources */,
 				855F56851A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */,
 				85F0799D09FDC35E0007FC8F /* ExecController.m in Sources */,
+				854FB8A21B58009C0041CF2F /* DSNchooserController.m in Sources */,
 				85349760105541030084FC17 /* NSResWindow.m in Sources */,
+				854FB8A61B5800AF0041CF2F /* Helpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +315,8 @@
 				855F56861A67B6330046BE46 /* NSAttributedStringAdditions.m in Sources */,
 				CD7C37AF0A063F40001A43B7 /* ExecController.m in Sources */,
 				85349761105541030084FC17 /* NSResWindow.m in Sources */,
+				854FB8A71B58D0A70041CF2F /* DSNchooserController.m in Sources */,
+				854FB8A81B58D0A70041CF2F /* Helpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,7 +372,15 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac/iODBC/build/Deployment,
+					../../mac/iODBC/build,
+					../../mac/iODBCinst/build/Deployment,
+					../../mac/iODBCinst/build,
+				);
+				HEADER_SEARCH_PATHS = ../../include;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -371,6 +401,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Deployment,
@@ -378,6 +409,7 @@
 					../../mac/iODBCinst/build/Deployment,
 					../../mac/iODBCinst/build,
 				);
+				HEADER_SEARCH_PATHS = ../../include;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = ../../include;
@@ -395,7 +427,15 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac/iODBC/build/Deployment,
+					../../mac/iODBC/build,
+					../../mac/iODBCinst/build/Deployment,
+					../../mac/iODBCinst/build,
+				);
+				HEADER_SEARCH_PATHS = ../../include;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
@@ -410,7 +450,15 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac/iODBC/build/Deployment,
+					../../mac/iODBC/build,
+					../../mac/iODBCinst/build/Deployment,
+					../../mac/iODBCinst/build,
+				);
+				HEADER_SEARCH_PATHS = ../../include;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
@@ -425,7 +473,15 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					../../mac/iODBC/build/Deployment,
+					../../mac/iODBC/build,
+					../../mac/iODBCinst/build/Deployment,
+					../../mac/iODBCinst/build,
+				);
+				HEADER_SEARCH_PATHS = ../../include;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -445,6 +501,7 @@
 				ARCHS = (
 					ppc,
 					i386,
+					x86_64,
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Deployment,

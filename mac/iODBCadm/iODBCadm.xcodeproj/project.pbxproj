@@ -69,12 +69,12 @@
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
 				DEBUGGING_SYMBOLS = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.10;
-				EXPORTED_SYMBOLS_FILE = ../../macosx/iodbcadm.exp;
+				DYLIB_CURRENT_VERSION = 3.52.11;
+				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcadm.exp;
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -88,7 +88,7 @@
 					"-DDLDAPI_MACX",
 				);
 				SKIP_INSTALL = YES;
-				STRIPFLAGS = "-u -r -s ../../macosx/iodbcadm.exp";
+				STRIPFLAGS = "-u -r -s ../../mac/iodbcadm.exp";
 				ZERO_LINK = NO;
 			};
 			name = Development;
@@ -113,7 +113,7 @@
 		85983C5A07D2B7000022E958 /* error.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../iodbcadm/error.c; sourceTree = SOURCE_ROOT; };
 		85983C5D07D2B7260022E958 /* gui.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gui.h; path = ../../iodbcadm/gui.h; sourceTree = SOURCE_ROOT; };
 		85983C5E07D2B7260022E958 /* Info.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = Info.c; path = ../../iodbcadm/Info.c; sourceTree = SOURCE_ROOT; };
-		85983C5F07D2B7260022E958 /* iodbcadm.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = iodbcadm.exp; path = ../../macosx/iodbcadm.exp; sourceTree = SOURCE_ROOT; };
+		85983C5F07D2B7260022E958 /* iodbcadm.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = iodbcadm.exp; path = ../../mac/iodbcadm.exp; sourceTree = SOURCE_ROOT; };
 		85983C6007D2B7260022E958 /* iodbcadm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcadm.h; path = ../../iodbcadm/iodbcadm.h; sourceTree = SOURCE_ROOT; };
 		85983C8207D2B7780022E958 /* administrator.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = administrator.c; path = ../../iodbcadm/macosx/administrator.c; sourceTree = SOURCE_ROOT; };
 		85983C8307D2B7780022E958 /* confirm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = confirm.c; path = ../../iodbcadm/macosx/confirm.c; sourceTree = SOURCE_ROOT; };
@@ -582,11 +582,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.10;
+				CURRENT_PROJECT_VERSION = 3.52.11;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.10;
-				EXPORTED_SYMBOLS_FILE = ../../macosx/iodbcadm.exp;
+				DYLIB_CURRENT_VERSION = 3.52.11;
+				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcadm.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Deployment,
 					../../mac/iODBCinst/build,
@@ -620,7 +620,7 @@
 				PRODUCT_NAME = iODBCadm;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
-				STRIPFLAGS = "-u -r -s ../../macosx/iodbcadm.exp";
+				STRIPFLAGS = "-u -r -s ../../mac/iodbcadm.exp";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",

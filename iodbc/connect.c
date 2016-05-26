@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -1090,10 +1090,6 @@ _iodbcdm_driverload (
 
   /* This will either load the driver dll or increase its reference count */
   hdll = _iodbcdm_dllopen ((char *) path);
-  
-  /* Set flag if it is safe to unload the driver after use */
-  if (unload_safe)
-    _iodbcdm_safe_unload (hdll);
 
   if (hdll == SQL_NULL_HDLL)
     {
@@ -1101,6 +1097,11 @@ _iodbcdm_driverload (
       PUSHSQLERR (pdbc->herr, en_IM003);
       return SQL_ERROR;
     }
+
+  /* Set flag if it is safe to unload the driver after use */
+  if (unload_safe)
+    _iodbcdm_safe_unload (hdll);
+
 
   penv = (ENV_t *) (pdbc->henv);
 
@@ -2316,6 +2317,7 @@ SQLDriverConnect_Internal (
   sqlstcode_t sqlstat = en_00000;
   SQLRETURN retcode = SQL_SUCCESS;
   SQLRETURN setopterr = SQL_SUCCESS;
+
 
   /* check arguments */
   if ((cbConnStrIn < 0 && cbConnStrIn != SQL_NTS) ||

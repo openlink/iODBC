@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2015 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -698,5 +698,5 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
 
 error:
   fprintf (stderr, "Can't load Window. Err: %d\n", (int) err);
-  return gensetup_t.connstr;
+  return NULL;
 }
