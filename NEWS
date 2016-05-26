@@ -1,3 +1,20 @@
+May 25 2016, V3.52.11 (internal release):
+    * Added xcodebuild option for Mac OS X 10.11
+    * Added support for x86_64 to iODBC Demo
+    * Fix crash ODBCdemo - error message overwrite stack data
+    * Fix iODBCdemo issue with UID/PWD values
+    * Fixed crash in iODBC DM on push of "Test" button when 64bit ODBC driver is used.
+    * Fixed crash when create_dsnsetup fails to load the window.
+    * Fixed crash when passing an empty connect string with no window handle
+    * Fixed crash when passing an empty connect string with no window handle.
+    * Fixed iODBCadm and iODBCdrvproxy Development build errors on OS X
+    * Fixed iODBCadm and iODBCdrvproxy Development build errors on OS X.
+    * Fixed iODBCdrvproxy XIBs not compiling to NIBs on OS X.
+    * Fixed issue in SQLGetInfo
+    * Fixed issue with Xcode on Mac OS X 10.10 Xcode 7.2.1
+    * Fixed use only major.minor of Mac OS X version to configure flags
+    * Fixed crash when create_dsnsetup fails to load the window
+
 Feb 10 2015, V3.52.10:
      * Fixed issue with ~/Library/ODBC/odbc[inst].ini on Mac OS X
      

@@ -2,5 +2,5 @@
 
 CFBundleName = "iODBCadm";
 CFBundleShortVersionString = "iODBCadm version 3.52.11";
-CFBundleGetInfoString = "iODBCadm version 3.52.11, Copyright 1995-2016, OpenLink Software";
-NSHumanReadableCopyright = "Copyright © 1995-2016, OpenLink Software";
+CFBundleGetInfoString = "iODBCadm version 3.52.11, Copyright © 1995-2016 OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 1995-2016 OpenLink Software";
