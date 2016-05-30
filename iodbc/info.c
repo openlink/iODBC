@@ -943,7 +943,7 @@ SQLGetInfo_Internal (
           if (waMode != 'W')  
             {
             /* ansi=>unicode*/
-              if ((_InfoValue = malloc(cbInfoValueMax * sizeof(wchar_t) + 1)) == NULL)
+              if ((_InfoValue = malloc((cbInfoValueMax + 1) * sizeof(wchar_t))) == NULL)
 	        {
                   PUSHSQLERR (pdbc->herr, en_HY001);
                   return SQL_ERROR;

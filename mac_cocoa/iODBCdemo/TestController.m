@@ -91,6 +91,9 @@
 - (id)init
 {
     [super init];
+    hstmt = nil;
+    hdbc = nil;
+    henv = nil;
     mConnected = NO;
     mExistsResultset = NO;
     mNextResultset = NO;

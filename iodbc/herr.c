@@ -379,7 +379,7 @@ _iodbcdm_sqlerror (
           if (waMode != 'W')
             {
             /* ansi=>unicode*/
-              if ((_ErrorMsg = malloc(cbErrorMsgMax * sizeof(wchar_t) + 1)) == NULL)
+              if ((_ErrorMsg = malloc((cbErrorMsgMax + 1) * sizeof(wchar_t))) == NULL)
                 return SQL_ERROR;
             }
           else
@@ -442,6 +442,7 @@ _iodbcdm_sqlerror (
               MEM_FREE(_ErrorMsg);
               return SQL_NO_DATA_FOUND;
             }
+
            CALL_DRIVER (thdbc, NULL, retcode, hproc2, (
                    dhenv, 
                    dhdbc, 
@@ -452,7 +453,7 @@ _iodbcdm_sqlerror (
                    cbErrorMsgMax, 
                    pcbErrorMsg));
         }
-    
+
       if (szErrorMsg 
           && SQL_SUCCEEDED (retcode)
           && ((unicode_driver && waMode != 'W') 
