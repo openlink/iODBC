@@ -960,7 +960,6 @@ void setdir_file_dsn(NSString *cur_dir)
                           "Error setting default file DSN directory", NULL);
             goto done;
         }
-        free(path);
     }
 done:
     if (path)
