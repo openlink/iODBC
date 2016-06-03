@@ -346,6 +346,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
         
         [dlg.window orderOut:dlg.window];
         [dlg release];
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -535,6 +536,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
         addDSNs_to_list(FALSE, _UserDSN_ArrController);
     }
 done:
+    [self.window makeKeyAndOrderFront:self.window];
     return;
 }
 
@@ -545,6 +547,7 @@ done:
         BOOL rc = remove_dsn(FALSE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(FALSE, _UserDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -555,6 +558,7 @@ done:
         BOOL rc = configure_dsn(FALSE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(FALSE, _UserDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -564,6 +568,7 @@ done:
     if (item!=nil && item.count>0){
         NSDictionary *dict = [item objectAtIndex:0];
         test_dsn(FALSE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -587,6 +592,7 @@ done:
         addDSNs_to_list(TRUE, _SysDSN_ArrController);
     }
 done:
+    [self.window makeKeyAndOrderFront:self.window];
     return;
 }
 
@@ -597,6 +603,7 @@ done:
         BOOL rc = remove_dsn(TRUE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(TRUE, _SysDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -607,6 +614,7 @@ done:
         BOOL rc = configure_dsn(TRUE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(TRUE, _SysDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -615,6 +623,7 @@ done:
     if (item!=nil && item.count>0){
         NSDictionary *dict = [item objectAtIndex:0];
         test_dsn(TRUE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -635,6 +644,7 @@ done:
         fill_dir_menu(cur_path, _popup_dir_btn);
         if (cur_path) free(cur_path);
     }
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 - (IBAction)call_FileDSN_Remove:(id)sender {
@@ -651,6 +661,7 @@ done:
                 if (cur_path) free(cur_path);
             }
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -673,6 +684,7 @@ done:
             fill_dir_menu(path, _popup_dir_btn);
             if (path) free(path);
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -684,11 +696,13 @@ done:
         if (isdir.boolValue==FALSE){
             test_file_dsn(_cur_dir, [dict valueForKey:@"name"]);
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
 - (IBAction)call_FileDSN_SetDir:(id)sender {
     setdir_file_dsn(_cur_dir);
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 
@@ -712,6 +726,7 @@ done:
     
     addDrivers_to_list(_Drv_ArrController);
 done:
+    [self.window makeKeyAndOrderFront:self.window];
     return;
 }
 
@@ -770,6 +785,7 @@ done:
             [dlg.window orderOut:dlg.window];
             [dlg release];
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -835,6 +851,7 @@ done:
             addDrivers_to_list(_Drv_ArrController);
             free(wdrv);
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -908,6 +925,7 @@ done:
     NSInteger rc = [panel runModal];
     if (rc==NSFileHandlingPanelOKButton)
         [_fld_LogFilePath setStringValue:[NSString stringWithFormat:@"%@/%@", panel.directoryURL.path, panel.nameFieldStringValue]];
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 - (IBAction)call_CustomTrace_Browse:(id)sender {
@@ -929,6 +947,7 @@ done:
     NSInteger rc = [panel runModal];
     if (rc==NSFileHandlingPanelOKButton)
         [_fld_CustomTrace setStringValue: ((NSURL*)[panel.URLs objectAtIndex:0]).path];
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 

@@ -173,7 +173,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
     [_FileDSN_list release];
     [_type_dsn release];
     [_cur_dir release];
-	[super dealloc];
+    [super dealloc];
 }
 
 
@@ -287,6 +287,7 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
         addDSNs_to_list(FALSE, _UserDSN_ArrController);
     }
 done:
+    [self.window makeKeyAndOrderFront:self.window];
     return;
 }
 
@@ -297,6 +298,7 @@ done:
         BOOL rc = remove_dsn(FALSE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(FALSE, _UserDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -307,6 +309,7 @@ done:
         BOOL rc = configure_dsn(FALSE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(FALSE, _UserDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -315,6 +318,7 @@ done:
     if (item!=nil && item.count>0){
         NSDictionary *dict = [item objectAtIndex:0];
         test_dsn(FALSE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -338,6 +342,7 @@ done:
         addDSNs_to_list(TRUE, _SysDSN_ArrController);
     }
 done:
+    [self.window makeKeyAndOrderFront:self.window];
     return;
 }
 
@@ -348,6 +353,7 @@ done:
         BOOL rc = remove_dsn(TRUE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(TRUE, _SysDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -358,6 +364,7 @@ done:
         BOOL rc = configure_dsn(TRUE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
         if (rc)
             addDSNs_to_list(TRUE, _SysDSN_ArrController);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -366,6 +373,7 @@ done:
     if (item!=nil && item.count>0){
         NSDictionary *dict = [item objectAtIndex:0];
         test_dsn(TRUE, [dict valueForKey:@"name"], [dict valueForKey:@"drv"]);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -385,6 +393,7 @@ done:
         addFDSNs_to_list(cur_path, FALSE, _FileDSN_ArrController);
         fill_dir_menu(cur_path, _popup_dir_btn);
         if (cur_path) free(cur_path);
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -402,6 +411,7 @@ done:
                 if (cur_path) free(cur_path);
             }
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -424,6 +434,7 @@ done:
             fill_dir_menu(path, _popup_dir_btn);
             if (path) free(path);
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
@@ -435,11 +446,13 @@ done:
         if (isdir.boolValue==FALSE){
             test_file_dsn(_cur_dir, [dict valueForKey:@"name"]);
         }
+        [self.window makeKeyAndOrderFront:self.window];
     }
 }
 
 - (IBAction)call_FileDSN_SetDir:(id)sender {
     setdir_file_dsn(_cur_dir);
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 @end

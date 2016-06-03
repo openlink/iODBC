@@ -75,8 +75,6 @@
 #import <Cocoa/Cocoa.h>
 #import <gui.h>
 
-//??--void create_driverchooser(HWND hwnd, TDRIVERCHOOSER * choose_t);
-
 @interface IODBCadm_DriverChooseDSNController : NSWindowController {
     NSArrayController *_Drv_ArrayController;
 

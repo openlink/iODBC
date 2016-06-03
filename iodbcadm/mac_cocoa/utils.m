@@ -224,11 +224,6 @@ static BOOL showConfirm(const void *title, const void *message, char waMode)
         [alert setInformativeText:(message?conv_to_NSString(message, waMode):@"")];
         [alert setAlertStyle:NSInformationalAlertStyle];
         BOOL rc = ([alert runModal] == NSAlertFirstButtonReturn);
-/**
-        if ([alert runModal] == NSAlertFirstButtonReturn) {
-            // OK clicked, delete the record
-        }
-**/
         return rc;
         
     }

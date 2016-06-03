@@ -78,36 +78,6 @@
 #import "Helpers.h"
 
 
-#if 0
-BOOL show_DSN_DrvChooser(TDRIVERCHOOSER * choose_t)
-{
-	@autoreleasepool {
-        NSApplication *app = [NSApplication sharedApplication];
-        
-        IODBCadm_DriverChooseDSNController *dlg = [[IODBCadm_DriverChooseDSNController alloc] init];
-        
-        NSInteger rc = [app runModalForWindow:dlg.window];
-        if (choose_t) {
-            choose_t->driver = NULL;
-            
-            if (rc == 1) {
-                NSArray *item = [dlg.Drv_ArrayController selectedObjects];
-                if (item!=nil && item.count>0){
-                    NSDictionary *dict = [item objectAtIndex:0];
-                    choose_t->driver = conv_NSString_to_wchar([dict valueForKey:@"name"]);
-                }
-            }
-        }
-        [dlg.window orderOut:dlg.window];
-        [dlg release];
-        
-        return rc==1?TRUE:FALSE;
-    }
-    
-}
-#endif
-
-
 static char* showKeyVal(NSWindow *mainWin, char* attrs, BOOL *verify_conn);
 
 
@@ -159,7 +129,6 @@ create_fdriverchooser (HWND hwnd, TFDRIVERCHOOSER * choose_t)
         [dlg.window orderOut:dlg.window];
         [dlg release];
         
-//??--        return rc==1?TRUE:FALSE;
     }
     
 }
@@ -386,6 +355,7 @@ static char* showKeyVal(NSWindow *mainWin, char* attrs, BOOL *verify_conn)
             free(_attrs);
         _attrs = connstr;
     }
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 - (IBAction)call_Browse:(id)sender {
@@ -399,5 +369,6 @@ static char* showKeyVal(NSWindow *mainWin, char* attrs, BOOL *verify_conn)
         NSURL *dirURL = [panel directoryURL];
         [_fld_FDSN setStringValue:[NSString stringWithFormat:@"%@/%@", dirURL.path, panel.nameFieldStringValue]];
     }
+    [self.window makeKeyAndOrderFront:self.window];
 }
 @end

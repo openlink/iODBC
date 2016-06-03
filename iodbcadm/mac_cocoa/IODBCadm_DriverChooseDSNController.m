@@ -101,8 +101,6 @@ void create_driverchooser(HWND hwnd, TDRIVERCHOOSER * choose_t)
         }
         [dlg.window orderOut:dlg.window];
         [dlg release];
-        
-//        return rc==1?TRUE:FALSE;
     }
     
 }

@@ -204,6 +204,7 @@
     NSInteger rc = [panel runModal];
     if (rc==NSFileHandlingPanelOKButton)
         self.drv_file = ((NSURL*)[panel.URLs objectAtIndex:0]).path;
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 - (IBAction)call_SetupFile_Browse:(id)sender {
@@ -225,6 +226,7 @@
     NSInteger rc = [panel runModal];
     if (rc==NSFileHandlingPanelOKButton)
         self.setup_file = ((NSURL*)[panel.URLs objectAtIndex:0]).path;
+    [self.window makeKeyAndOrderFront:self.window];
 }
 
 
