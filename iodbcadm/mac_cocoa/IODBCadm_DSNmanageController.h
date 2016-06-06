@@ -122,6 +122,7 @@
 - (IBAction)call_UserDSN_Config:(id)sender;
 - (IBAction)call_UserDSN_Test:(id)sender;
 
+- (IBAction)call_FileDSN_Dir_Browse:(id)sender;
 - (IBAction)call_SysDSN_Add:(id)sender;
 - (IBAction)call_SysDSN_Remove:(id)sender;
 - (IBAction)call_SysDSN_Config:(id)sender;

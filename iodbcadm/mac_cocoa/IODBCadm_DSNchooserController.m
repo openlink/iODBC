@@ -377,6 +377,28 @@ done:
     }
 }
 
+- (IBAction)call_FileDSN_Dir_Browse:(id)sender {
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    
+    [panel setTitle:@"Choose your File DSN directory ..."];
+    if (_cur_dir.length>0)
+        [panel setDirectoryURL:[NSURL fileURLWithPath:_cur_dir isDirectory:TRUE]];
+    panel.allowsMultipleSelection = FALSE;
+    panel.canChooseDirectories = TRUE;
+    panel.canChooseFiles = FALSE;
+    panel.canCreateDirectories = TRUE;
+    
+    NSInteger rc = [panel runModal];
+    if (rc==NSFileHandlingPanelOKButton) {
+        self.cur_dir = ((NSURL*)[panel.URLs objectAtIndex:0]).path;
+        char *path = conv_NSString_to_char(_cur_dir);
+        addFDSNs_to_list(path, FALSE, _FileDSN_ArrController);
+        fill_dir_menu(path, _popup_dir_btn);
+        if (path) free(path);
+    }
+    [self.window makeKeyAndOrderFront:self.window];
+}
+
 
 - (IBAction)call_Dir_PopupBtn:(id)sender {
     self.cur_dir = _popup_dir_btn.titleOfSelectedItem;
