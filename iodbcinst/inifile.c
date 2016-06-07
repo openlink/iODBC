@@ -513,7 +513,7 @@ __iodbcdm_cfg_poolalloc (PCONFIG p, u_int count)
       newMax =
 	  p->maxEntries ? count + p->maxEntries + p->maxEntries / 2 : count +
 	  4096 / sizeof (TCFGENTRY);
-      newBase = (PCFGENTRY) malloc (newMax * sizeof (TCFGENTRY));
+      newBase = (PCFGENTRY) calloc (newMax, sizeof (TCFGENTRY));
       if (newBase == NULL)
 	return NULL;
       if (p->entries)
