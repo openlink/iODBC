@@ -1182,30 +1182,41 @@ _fix_office_access(char *fodbcini, int bIsInst)
 
   if (ptr != NULL && strcasestr(ptr, office_pwd)==NULL)
     {
+      stat_t src_stat;
+      stat_t dst_stat;
       char src[1024];
-      char buf[1024];
+      char dst[1024];
       int j;
 
-      snprintf (buf, sizeof(buf),
+      snprintf (dst, sizeof(dst),
 	      bIsInst ? "%s%s" ODBCINST_INI_APP 
 	              : "%s%s" ODBC_INI_APP, ptr, office_pwd);
 
       j = STRLEN (bIsInst ? "/odbcinst.ini" : "/odbc.ini");
-      buf[STRLEN(buf)-j] = 0;
+      dst[STRLEN(dst)-j] = 0;
 
-      mkdir(buf, 0755);
+      mkdir(dst, 0755);
 
       /* source ini file */
       snprintf (src, sizeof(src),
 	      bIsInst ? "%s" ODBCINST_INI_APP : "%s" ODBC_INI_APP, ptr);
       
       /* destination ini file */
-      snprintf (buf, sizeof(buf),
+      snprintf (dst, sizeof(dst),
               bIsInst ? "%s%s" ODBCINST_INI_APP
                       : "%s%s" ODBC_INI_APP, ptr, office_pwd);
 
-      if (access(buf, R_OK)!=0)
-        link(src, buf); /* create hardlink for use with MSOffice */
+      if (access(src, R_OK)==0 && stat(src, &src_stat)==0) 
+        {
+          if (access(dst, R_OK)==0 && stat(dst, &dst_stat)==0)
+            {
+              if (src_stat.st_ino == dst_stat.st_ino)
+                return; /* link existed & OK */
+              else
+                unlink(dst);
+            }
+          link(src, dst); /* create hardlink for use with MSOffice */
+        }
     }
 }
 #endif
