@@ -1211,7 +1211,7 @@ _fix_office_access(char *fodbcini, int bIsInst)
           if (access(dst, R_OK)==0 && stat(dst, &dst_stat)==0)
             {
               if (src_stat.st_ino == dst_stat.st_ino)
-                return; /* link existed & OK */
+                return 0; /* link existed & OK */
               else
                 unlink(dst);
             }
