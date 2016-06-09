@@ -82,7 +82,7 @@ endif
 #
 #  Determine which version of Mac OS X we are running
 #
-macosx_version	:= $(shell sw_vers -productVersion)
+macosx_version  := $(shell sw_vers -productVersion | cut -d . -f 1-2)
 
 
 #
@@ -162,8 +162,17 @@ endif
 #  Mac OS X 10.10
 #
 ifeq (10.10, $(findstring 10.10, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.10
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.10
     IODBC_TARGET=10.10
+endif
+
+
+#
+#  Mac OS X 10.11
+#
+ifeq (10.11, $(findstring 10.11, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.11
+    IODBC_TARGET=10.11
 endif
 
 
