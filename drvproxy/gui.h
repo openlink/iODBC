@@ -84,7 +84,7 @@
 #elif defined(__QT__)
 #include "qt/gui.h"
 #elif defined(__APPLE__)
-#include "mac_cocoa/gui.h"
+#include "mac/gui.h"
 #endif
 
 
