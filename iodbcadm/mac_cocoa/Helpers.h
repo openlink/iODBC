@@ -85,8 +85,8 @@ void addPools_to_list(NSArrayController* list);
 void addComponents_to_list(NSArrayController* list);
 
 void addDSNs_to_list(BOOL systemDSN, NSArrayController* list);
-void addFDSNs_to_list(char* path, BOOL b_reset, NSArrayController* list);
-void fill_dir_menu(char* path, NSPopUpButton* list);
+void addFDSNs_to_list(NSString* path, BOOL b_reset, NSArrayController* list);
+void fill_dir_menu(wchar_t* path, NSPopUpButton* list);
 BOOL remove_dsn(BOOL systemDSN, NSString *dsn, NSString *driver);
 BOOL configure_dsn(BOOL systemDSN, NSString *dsn, NSString *driver);
 void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver);

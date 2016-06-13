@@ -212,11 +212,12 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
         NSString *cliked_dir = [dict valueForKey:@"name"];
         NSString *new_path = [NSString stringWithFormat:@"%@/%@", _cur_dir, cliked_dir];
         self.cur_dir = new_path;
-        char *path = conv_NSString_to_char(_cur_dir);
-        addFDSNs_to_list(path, FALSE, _FileDSN_ArrController);
+        wchar_t *path = conv_NSString_to_wchar(_cur_dir);
+        addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
         fill_dir_menu(path, _popup_dir_btn);
         if (path) free(path);
-        
+    } else {
+        [self call_Ok:self];
     }
 }
 
@@ -233,8 +234,8 @@ create_dsnchooser (HWND hwnd, TDSNCHOOSER * dsnchoose_t)
         addDSNs_to_list(TRUE, _SysDSN_ArrController);
     }
     else if ([identifier isEqualToString:@"filedsn"]){
-        char *cur_path = conv_NSString_to_char(_cur_dir);
-        addFDSNs_to_list(cur_path, FALSE, _FileDSN_ArrController);
+        wchar_t *cur_path = conv_NSString_to_wchar(_cur_dir);
+        addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
         fill_dir_menu(cur_path, _popup_dir_btn);
         if (cur_path) free(cur_path);
     }
@@ -391,8 +392,8 @@ done:
     NSInteger rc = [panel runModal];
     if (rc==NSFileHandlingPanelOKButton) {
         self.cur_dir = ((NSURL*)[panel.URLs objectAtIndex:0]).path;
-        char *path = conv_NSString_to_char(_cur_dir);
-        addFDSNs_to_list(path, FALSE, _FileDSN_ArrController);
+        wchar_t *path = conv_NSString_to_wchar(_cur_dir);
+        addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
         fill_dir_menu(path, _popup_dir_btn);
         if (path) free(path);
     }
@@ -402,8 +403,8 @@ done:
 
 - (IBAction)call_Dir_PopupBtn:(id)sender {
     self.cur_dir = _popup_dir_btn.titleOfSelectedItem;
-    char *path = conv_NSString_to_char(_cur_dir);
-    addFDSNs_to_list(path, FALSE, _FileDSN_ArrController);
+    wchar_t *path = conv_NSString_to_wchar(_cur_dir);
+    addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
     fill_dir_menu(path, _popup_dir_btn);
     if (path) free(path);
 }
@@ -411,8 +412,8 @@ done:
 - (IBAction)call_FileDSN_Add:(id)sender {
     BOOL rc = add_file_dsn(_cur_dir);
     if (rc) {
-        char *cur_path = conv_NSString_to_char(_cur_dir);
-        addFDSNs_to_list(cur_path, FALSE, _FileDSN_ArrController);
+        wchar_t *cur_path = conv_NSString_to_wchar(_cur_dir);
+        addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
         fill_dir_menu(cur_path, _popup_dir_btn);
         if (cur_path) free(cur_path);
         [self.window makeKeyAndOrderFront:self.window];
@@ -427,8 +428,8 @@ done:
         if (isdir.boolValue==FALSE){
             BOOL rc = remove_file_dsn(_cur_dir, [dict valueForKey:@"name"]);
             if (rc){
-                char *cur_path = conv_NSString_to_char(_cur_dir);
-                addFDSNs_to_list(cur_path, FALSE, _FileDSN_ArrController);
+                wchar_t *cur_path = conv_NSString_to_wchar(_cur_dir);
+                addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
                 fill_dir_menu(cur_path, _popup_dir_btn);
                 if (cur_path) free(cur_path);
             }
@@ -445,14 +446,14 @@ done:
         if (isdir.boolValue==FALSE){
             configure_file_dsn(_cur_dir, [dict valueForKey:@"name"]);
             char *cur_path = conv_NSString_to_char(_cur_dir);
-            addFDSNs_to_list(cur_path, FALSE, _FileDSN_ArrController);
+            addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
             if (cur_path) free(cur_path);
             
         } else {
             
             self.cur_dir = [NSString stringWithFormat:@"%@/%@", _cur_dir, [dict valueForKey:@"name"]];
-            char *path = conv_NSString_to_char(_cur_dir);
-            addFDSNs_to_list(path, FALSE, _FileDSN_ArrController);
+            wchar_t *path = conv_NSString_to_wchar(_cur_dir);
+            addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
             fill_dir_menu(path, _popup_dir_btn);
             if (path) free(path);
         }

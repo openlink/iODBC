@@ -549,93 +549,70 @@ end:
 
 #define MAX_ROWS 1024
 
-void addFDSNs_to_list(char* path, BOOL b_reset, NSArrayController* list)
+void addFDSNs_to_list(NSString* path, BOOL b_reset, NSArrayController* list)
 {
-    int nrows;
-    DIR *dir;
-    char *path_buf;
-    struct dirent *dir_entry;
-    struct stat fstat;
-    int b_added;
+    NSError *err;
     
     [list removeObjects:[list arrangedObjects]];
-    nrows = 0;
-
-    if ((dir = opendir (path)))
-    {
-        while ((dir_entry = readdir (dir)) && nrows < MAX_ROWS)
-        {
-            asprintf (&path_buf, "%s/%s", path, dir_entry->d_name);
-            b_added = 0;
-            
-            if (stat ((const char*) path_buf, &fstat) >= 0 && S_ISDIR (fstat.st_mode))
-            {
-                if (dir_entry->d_name && dir_entry->d_name[0] != '.')
-                {
-                    NSString *name = conv_char_to_NSString(dir_entry->d_name);
-                    NSImage *icon = [NSImage imageNamed:NSImageNameFolder];
-                    [list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name",
-                                     icon, @"icon", [NSNumber numberWithBool:TRUE], @"isdir", nil]];
-                    nrows++;
-                    b_added = 1;
-                }
+    
+    NSFileManager *mgr =[NSFileManager defaultManager];
+    NSArray *arr = [mgr contentsOfDirectoryAtPath:path error:&err];
+    if (err != nil) {
+        create_error (NULL, NULL, "Error during accessing directory information", NULL);
+    }
+    
+    for(int i=0; i < arr.count; i++) {
+        NSString *name = [arr objectAtIndex:i];
+        NSString *full_name = [path stringByAppendingPathComponent:name];
+        NSDictionary *dict = [mgr attributesOfItemAtPath:full_name error:nil];
+        NSString *itype = [dict objectForKey:@"NSFileType"];
+        if ([itype isEqualToString:@"NSFileTypeDirectory"]) {
+            if ([name characterAtIndex:0]!='.') {
+                NSImage *icon = [NSImage imageNamed:NSImageNameFolder];
+                [list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name",
+                                 icon, @"icon", [NSNumber numberWithBool:TRUE], @"isdir", nil]];
             }
-            else if (stat ((const char*) path_buf, &fstat) >= 0 && !S_ISDIR (fstat.st_mode)
-                     && strstr (dir_entry->d_name, ".dsn"))
-            {
-                NSString *name = conv_char_to_NSString(dir_entry->d_name);
+        } else {
+            if ([name hasSuffix:@".dsn"]) {
                 NSImage *icon = [[NSWorkspace sharedWorkspace]
                                  iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
                 [list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name",
                                  icon, @"icon", [NSNumber numberWithBool:FALSE], @"isdir", nil]];
-                nrows++;
-                b_added = 1;
             }
-            
-            if (path_buf)
-                free (path_buf);
         }
-        
-        /* Close the directory entry */
-        closedir (dir);
     }
-    else
-        create_error (NULL, NULL, "Error during accessing directory information",
-                      strerror (errno));
-    
-//??    if (b_reset)
-//??        SetDataBrowserScrollPosition(widget, 0, 0);
 }
 
-void fill_dir_menu(char* path, NSPopUpButton* list)
+
+void fill_dir_menu(wchar_t* path, NSPopUpButton* list)
 {
-    char *curr_dir, *prov, *dir;
+    wchar_t *curr_dir, *prov, *dir;
     
-    if (!path || !(prov = strdup (path)))
+    if (!path || !(prov = WCSDUP(path)))
         return;
     
-    if (prov[strlen(prov) - 1] == '/' && strlen(prov) > 1)
-        prov[strlen(prov) - 1] = 0;
+    if (prov[WCSLEN(prov) - 1] == '/' && WCSLEN(prov) > 1)
+        prov[WCSLEN(prov) - 1] = 0;
     
     [list removeAllItems];
     
     /* Add the root directory */
     [list addItemWithTitle:@"/"];
     
-    if (strlen(prov) > 1)
+    if (WCSLEN(prov) > 1)
         for (curr_dir = prov, dir = NULL; curr_dir;
-             curr_dir = strchr (curr_dir + 1, '/'))
+             curr_dir = wcschr(curr_dir + 1, L'/'))
         {
-            if (strchr (curr_dir + 1, '/'))
+            if (wcschr (curr_dir + 1, '/'))
             {
-                dir = strchr (curr_dir + 1, '/');
+                dir = wcschr (curr_dir + 1, L'/');
                 *dir = 0;
             }
 
-            [list addItemWithTitle:conv_char_to_NSString(prov)];
+            [list addItemWithTitle:conv_wchar_to_NSString(prov)];
             
             if (dir)
-                *dir = '/';
+                *dir = L'/';
         }
     free(prov);
     [list selectItemAtIndex:list.numberOfItems-1];
