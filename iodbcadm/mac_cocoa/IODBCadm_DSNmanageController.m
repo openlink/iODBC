@@ -263,10 +263,12 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
 
 - (void)windowDidLoad
 {
+    void *ptr;
     [super windowDidLoad];
     _dialogCode = 0;
     
     [[self window] center];  // Center the window.
+    self.window.title = (sizeof(ptr)==8) ? @"iODBC Data Source Administrator  (64-Bit Edition)" : @"iODBC Data Source Administrator";
     addDSNs_to_list(FALSE, _UserDSN_ArrController);
     addDSNs_to_list(TRUE, _SysDSN_ArrController);
     [_fdsn_tableView setDoubleAction:@selector(call_FDSN_DoubleClick)];

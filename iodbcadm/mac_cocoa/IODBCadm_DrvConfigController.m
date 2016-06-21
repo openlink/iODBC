@@ -97,6 +97,8 @@
 {
     self = [super initWithWindowNibName:@"IODBCadm_DrvConfigController"];
     if (self) {
+        self.drv_file = @"";
+        self.setup_file = @"";
         self.Attrs_list = [NSMutableArray arrayWithCapacity:16];
         [self parse_attrs:attrs];
     }
