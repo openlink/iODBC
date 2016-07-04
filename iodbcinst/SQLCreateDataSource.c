@@ -83,14 +83,14 @@
 #include "iodbc_error.h"
 #include "dlf.h"
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>
 #endif
 
 extern BOOL ValidDSN (LPCSTR lpszDSN);
 extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 
-#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+#if defined (__APPLE__)
 
 #define CALL_DRVCONN_DIALBOX() \
 	if (bundle_dll != NULL) \
@@ -138,15 +138,15 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
   void *handle;
   pDrvConnFunc pDrvConn = NULL;
   pDrvConnWFunc pDrvConnW = NULL;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
   CFBundleRef bundle = NULL;
   CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
 #endif
 
   /* Load the Admin dialbox function */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
-# if defined(IODBC_COCOA)
+#if defined (__APPLE__)
+# if !defined(NO_FRAMEWORKS)
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (bundle)
     {
@@ -167,38 +167,6 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
 	      CALL_DRVCONN_DIALBOXW ();
 	    }
 	}
-    }
-# else
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
-  if (bundle)
-    {
-      CFStringRef libname = NULL;
-      char name[1024] = { '\0' };
-      /* Search for the iODBCadm library */
-      liburl =
-	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
-	  NULL, NULL);
-      if (liburl
-	  && (libname =
-	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-	{
-	  CFStringGetCString (libname, name, sizeof (name),
-	      kCFStringEncodingASCII);
-	  STRCAT (name, "/Contents/MacOS/iODBCadm");
-          CFRelease (libname); 
-          CFRelease (liburl); 
-          liburl = NULL;
-	  if (waMode == 'A')
-	    {
-	      CALL_DRVCONN_DIALBOX (name);
-	    }
-	  else
-	    {
-	      CALL_DRVCONN_DIALBOXW (name);
-	    }
-	}
-      if (liburl)
-	CFRelease (liburl);
     }
 # endif
 #else

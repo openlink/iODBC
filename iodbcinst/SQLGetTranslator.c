@@ -85,14 +85,14 @@
 #include "misc.h"
 #include "iodbc_error.h"
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>
 #endif
 
 #ifndef WIN32
 #include <unistd.h>
 
-#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+#if defined (__APPLE__)
 
 #define CALL_CONFIG_TRANSLATOR(path) \
     if (path) \
@@ -218,7 +218,7 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   RETCODE ret = SQL_NO_DATA;
   void *handle;
   char translator[1024];
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
   CFBundleRef bundle = NULL;
   CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
@@ -227,8 +227,8 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
   do
     {
       /* Load the Admin dialbox function */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
-# if defined(IODBC_COCOA)
+#if defined (__APPLE__)
+# if !defined(NO_FRAMEWORKS)
       bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
       if (bundle)
 	{
@@ -242,31 +242,6 @@ GetTranslator (HWND hwndParent, LPSTR lpszName, WORD cbNameMax,
               CFRelease (liburl);
       	      CALL_TRSCHOOSE_DIALBOX_BUNDLE ();
 	    }
-	}
-# else
-      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
-      if (bundle)
-	{
-          CFStringRef libname = NULL;
-          char name[1024] = { '\0' };
-	  /* Search for the iODBCadm library */
-	  liburl =
-	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
-	      NULL, NULL);
-	  if (liburl
-	      && (libname =
-		  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-	    {
-	      CFStringGetCString (libname, name, sizeof (name),
-		  kCFStringEncodingASCII);
-	      STRCAT (name, "/Contents/MacOS/iODBCadm");
-              CFRelease (libname); 
-              CFRelease (liburl); 
-              liburl = NULL;
-	      CALL_TRSCHOOSE_DIALBOX (name);
-	    }
-	  if (liburl)
-	    CFRelease (liburl);
 	}
 # endif
 #else
