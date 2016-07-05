@@ -2579,7 +2579,7 @@ SQLDriverConnect_Internal (
 
       ODBC_UNLOCK ();
 #if defined (__APPLE__)
-# if defined(NO_FRAMEWORKS)
+# if !defined(NO_FRAMEWORKS)
     bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
     if (bundle)
       {
