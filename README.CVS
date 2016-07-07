@@ -76,7 +76,7 @@ of the following commands:
 
 or use the supplied script in your CVS checkout directory:
 
-    $ ./bootstrap.sh
+    $ ./autogen.sh
 
 If the above commands succeed without any error messages, please use the
 following command to check out all the options you can use:

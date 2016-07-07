@@ -85,7 +85,7 @@ EXTRA_DIST		= \
 	$(srcdir)/README.CVS \
 	$(srcdir)/README.GIT \
 	$(srcdir)/README.MACOSX \
-	$(srcdir)/bootstrap.sh \
+	$(srcdir)/autogen.sh \
 	$(srcdir)/PORT.OpenLink \
 	$(srcdir)/acinclude.m4 \
 	$(srcdir)/drvproxy/*.exp \

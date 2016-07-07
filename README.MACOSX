@@ -66,7 +66,7 @@ not using any frameworks.
 To build the libraries, open up a terminal session and execute the
 following commands:
 
-	$ sh bootstrap.sh
+	$ sh autogen.sh
 	$ ./configure
 	$ make
 
@@ -90,7 +90,7 @@ both Mac OS X 10.5 as well as Mac OS X 10.6:
 	$ CFLAGS="$CFLAGS -mmacosx-version-min=10.5"
 	$ export CFLAGS
 	
-	$ sh bootstrap.sh
+	$ sh autogen.sh
 	$ ./configure \
 		--disable-dependency-tracking \
 		--prefix=/usr/local/iODBC.universal
