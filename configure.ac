@@ -1,7 +1,7 @@
 AC_PREREQ(2.59)
 AC_REVISION($Id$)
 #
-#  configure.in
+#  configure.ac
 #
 #  The iODBC driver manager.
 #
@@ -249,6 +249,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
 AC_PROG_CPP
+AM_PROG_AR
 AC_LANG([C])
 AC_C_CONST
 
