@@ -82,30 +82,29 @@
 #include "iodbc_error.h"
 #include "dlf.h"
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>
 #endif
 
-#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
-
+#if defined (__APPLE__)
 
 #define CALL_ADMIN_DIALBOX() \
-	if (bundle_dll != NULL) \
-	{ \
-		if ((pAdminBox = (pAdminBoxFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_admin_dialbox"))) != NULL) \
-		  if( pAdminBox(hwndParent) == SQL_SUCCESS) \
-		    retcode = TRUE; \
-	}
+    if (bundle_dll != NULL) \
+      { \
+	if ((pAdminBox = (pAdminBoxFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("_iodbcdm_admin_dialbox"))) != NULL) \
+	  if (pAdminBox (hwndParent) == SQL_SUCCESS) \
+	    retcode = TRUE; \
+      }
 #else
 
 #define CALL_ADMIN_DIALBOX(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pAdminBox = (pAdminBoxFunc)DLL_PROC(handle, "_iodbcdm_admin_dialbox")) != NULL) \
-		  if( pAdminBox(hwndParent) == SQL_SUCCESS) \
-		    retcode = TRUE; \
-		DLL_CLOSE(handle); \
-	} 
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pAdminBox = (pAdminBoxFunc) DLL_PROC (handle, "_iodbcdm_admin_dialbox")) != NULL) \
+	  if (pAdminBox (hwndParent) == SQL_SUCCESS) \
+	    retcode = TRUE; \
+	DLL_CLOSE (handle); \
+      }
 #endif
 
 BOOL
@@ -114,15 +113,15 @@ ManageDataSources (HWND hwndParent)
   void *handle;
   pAdminBoxFunc pAdminBox;
   BOOL retcode = FALSE;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
   CFBundleRef bundle = NULL;
   CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
 #endif
 
   /* Load the Admin dialbox function */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
-# if defined(IODBC_COCOA)
+#if defined (__APPLE__)
+# if !defined(NO_FRAMEWORKS)
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (bundle)
     {
@@ -136,28 +135,6 @@ ManageDataSources (HWND hwndParent)
           CFRelease (liburl);
 	  CALL_ADMIN_DIALBOX ();
 	}
-    }
-# else
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
-  if (bundle)
-    {
-      /* Search for the iODBCadm library */
-      liburl =
-	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
-	  NULL, NULL);
-      if (liburl && (libname =
-	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-	{
-	  CFStringGetCString (libname, name, sizeof (name),
-	      kCFStringEncodingASCII);
-	  STRCAT (name, "/Contents/MacOS/iODBCadm");
-          CFRelease (libname); 
-          CFRelease (liburl); 
-          liburl = NULL;
-	  CALL_ADMIN_DIALBOX (name);
-	}
-      if (liburl)
-	CFRelease (liburl);
     }
 # endif
 #else

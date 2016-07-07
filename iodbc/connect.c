@@ -95,7 +95,7 @@
 
 #include <unicode.h>
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>
 #endif
 
@@ -2304,7 +2304,7 @@ SQLDriverConnect_Internal (
   UWORD config;
   PCONFIG pconfig = NULL;
   BOOL bCallDmDlg = FALSE;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
   CFBundleRef bundle = NULL;
   CFBundleRef bundle_dll = NULL;
   CFURLRef liburl = NULL;
@@ -2578,8 +2578,8 @@ SQLDriverConnect_Internal (
 #endif
 
       ODBC_UNLOCK ();
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
-# if defined(IODBC_COCOA)
+#if defined (__APPLE__)
+# if !defined(NO_FRAMEWORKS)
     bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
     if (bundle)
       {
@@ -2602,39 +2602,6 @@ SQLDriverConnect_Internal (
       }
       if (!bundle_dll)
           break;
-# else
-      bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
-      if (bundle)
-        {
-          CFStringRef libname = NULL;
-          char name[1024] = { 0 };
-          /* Search for the drvproxy library */
-          liburl =
-  	      CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
-	      NULL, NULL);
-          if (liburl
-              && (libname =
-                  CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-            {
-              CFStringGetCString (libname, name, sizeof (name),
-                kCFStringEncodingASCII);
-              _iodbcdm_strlcat (name, "/Contents/MacOS/iODBCadm",
-                  sizeof (name));
-              hdll = _iodbcdm_dllopen (name);
-            }
-          if (liburl)
-            CFRelease (liburl);
-          if (libname)
-            CFRelease (libname);
-        }
-      if (!hdll)
-         break;
-            
-      if (waMode != 'W')
-        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialbox");
-      else
-        dialproc = _iodbcdm_dllproc (hdll, "iodbcdm_drvconn_dialboxw");
-
 # endif
 #else
 

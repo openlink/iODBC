@@ -75,7 +75,6 @@
 #import "ExecController.h"
 #import "NSAttributedStringAdditions.h"
 #import "LinkTextFieldCell.h"
-#import "DSNchooserController.h"
 
 
 #define MIN_WIDTH       5
@@ -92,6 +91,9 @@
 - (id)init
 {
     [super init];
+    hstmt = nil;
+    hdbc = nil;
+    henv = nil;
     mConnected = NO;
     mExistsResultset = NO;
     mNextResultset = NO;
@@ -541,95 +543,67 @@ error:
 
 - (IBAction)aOpenConnection:(id)sender
 {
-    DSNchooserController *dlg = [[DSNchooserController alloc] init];
-    NSInteger rc = [NSApp runModalForWindow:dlg.window];
+    SQLTCHAR szDSN[1024];
+    SQLTCHAR dataSource[1024];
+    SQLSMALLINT dsLen;
+    SQLRETURN status;
     
-    NSString *type_dsn = dlg.type_dsn;
-    NSString *selected_dsn = dlg.selected_dsn;
-    NSString *uid = dlg.uid.stringValue;
-    NSString *pwd = dlg.pwd.stringValue;
+#if (ODBCVER < 0x300)
+    if (SQLAllocEnv (&henv) != SQL_SUCCESS)
+#else
+    if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
+#endif
+        {
+            _nativeerrorbox (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
+            return;
+        }
     
-    [dlg.window orderOut:mWindow];
-    [dlg release];
-
-    if (rc)
+#if (ODBCVER < 0x300)
+    if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
+#else
+    SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION,
+                       (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_UINTEGER);
+    if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
+#endif
     {
-        NSMutableString *sconn = [NSMutableString stringWithString:[type_dsn isEqualToString:@"filedsn"]?@"FILEDSN=":@"DSN="];
-        [sconn appendString:selected_dsn];
-        if (uid.length > 0)
+        _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
+        [self disconnect];
+        return;
+    }
+    
+    status = SQLDriverConnect (hdbc, (-1L), TEXT(""), SQL_NTS,
+                               dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_COMPLETE);
+    if (status != SQL_SUCCESS)
+    {
+        _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
+        if (status != SQL_SUCCESS_WITH_INFO)
         {
-            [sconn appendString:@";UID="];
-            [sconn appendString:uid];
-        }
-        if (pwd.length > 0)
-        {
-            [sconn appendString:@";PWD="];
-            [sconn appendString:pwd];
-        }
-        
-        SQLTCHAR szDSN[1024];
-        SQLTCHAR dataSource[1024];
-        SQLSMALLINT dsLen;
-        SQLRETURN status;
-        
-#if (ODBCVER < 0x300)
-        if (SQLAllocEnv (&henv) != SQL_SUCCESS)
-#else
-            if (SQLAllocHandle (SQL_HANDLE_ENV, NULL, &henv) != SQL_SUCCESS)
-#endif
-            {
-                _nativeerrorbox (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
-                return;
-            }
-        
-#if (ODBCVER < 0x300)
-        if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
-#else
-            SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION,
-                           (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_UINTEGER);
-        if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
-#endif
-        {
-            _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
             [self disconnect];
             return;
         }
-        
-        status = SQLDriverConnect (hdbc, [mWindow windowRef], NStoTEXT(sconn), SQL_NTS,
-                                   dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_NOPROMPT);
-        if (status != SQL_SUCCESS)
-        {
-            _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);
-            if (status != SQL_SUCCESS_WITH_INFO)
-            {
-                [self disconnect];
-                return;
-            }
-        }
-        
-        mConnected = YES;
-        SQLGetInfo (hdbc, SQL_DATA_SOURCE_NAME, szDSN, sizeof (szDSN), NULL);
-        
-#ifdef UNICODE
-        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Connected to [%@]", TEXTtoNS(szDSN)]];
-#else
-        [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Connected to [%@]", TEXTtoNS(szDSN)]];
-#endif
-        
-#if (ODBCVER < 0x0300)
-        if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
-#else
-            if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
-#endif
-            {
-                _nativeerrorbox (henv, hdbc, hstmt);
-                [self disconnect];
-                return;
-            }
-        
-        [RSTable reloadData];
-        
     }
+    
+    mConnected = YES;
+    SQLGetInfo (hdbc, SQL_DATA_SOURCE_NAME, szDSN, sizeof (szDSN), NULL);
+    
+#ifdef UNICODE
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Unicode) - Connected to [%@]", TEXTtoNS(szDSN)]];
+#else
+    [mWindow setTitle:[NSString stringWithFormat:@"iODBC Demo (Ansi) - Connected to [%@]", TEXTtoNS(szDSN)]];
+#endif
+    
+#if (ODBCVER < 0x0300)
+    if (SQLAllocStmt (hdbc, &hstmt) != SQL_SUCCESS)
+#else
+    if (SQLAllocHandle (SQL_HANDLE_STMT, hdbc, &hstmt) != SQL_SUCCESS)
+#endif
+        {
+            _nativeerrorbox (henv, hdbc, hstmt);
+            [self disconnect];
+            return;
+        }
+    
+    [RSTable reloadData];
 }
 
 

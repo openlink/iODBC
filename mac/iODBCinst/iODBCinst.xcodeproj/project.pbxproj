@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		85A390E91B79121900AC8862 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 85A390E71B79121900AC8862 /* InfoPlist.strings */; };
 		CDAE3AD30987CDA2003250F8 /* odbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = F535B35C0278023701A801DE /* odbcinst.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDAE3AD40987CDA2003250F8 /* inifile.h in Headers */ = {isa = PBXBuildFile; fileRef = F535B3600278027E01A801DE /* inifile.h */; };
 		CDAE3AD50987CDA2003250F8 /* iodbc_error.h in Headers */ = {isa = PBXBuildFile; fileRef = F535B3620278027E01A801DE /* iodbc_error.h */; };
@@ -23,7 +24,6 @@
 		CDAE3AE00987CDA2003250F8 /* iodbcunix.h in Headers */ = {isa = PBXBuildFile; fileRef = 71DF013606A3E372007AF56B /* iodbcunix.h */; };
 		CDAE3AE10987CDA2003250F8 /* unicode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C530B6007F075D3000BBF8D /* unicode.h */; };
 		CDAE3AE20987CDA2003250F8 /* iodbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2616E108B138FD00D9BE06 /* iodbcinst.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CDAE3AE40987CDA2003250F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		CDAE3AE60987CDA2003250F8 /* SQLRemoveDSNFromIni.c in Sources */ = {isa = PBXBuildFile; fileRef = F535B37B0278027E01A801DE /* SQLRemoveDSNFromIni.c */; };
 		CDAE3AE70987CDA2003250F8 /* Info.c in Sources */ = {isa = PBXBuildFile; fileRef = F535B35E0278027E01A801DE /* Info.c */; };
 		CDAE3AE80987CDA2003250F8 /* inifile.c in Sources */ = {isa = PBXBuildFile; fileRef = F535B35F0278027E01A801DE /* inifile.c */; };
@@ -62,61 +62,13 @@
 		CDAE3B0A0987CDA2003250F8 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54DA8D902795B3501A801DE /* CoreFoundation.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		4F0BB7EC011F40E904CA0E50 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.52.11;
-				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.11;
-				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
-				FRAMEWORK_VERSION = 3.52;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = (
-					"-DODBCVER=0x351",
-					"-D_MACX",
-					"-DDLDAPI_MACX",
-				);
-				RESMERGER_SOURCES_FORK = data;
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		4F0BB7ED011F40E904CA0E50 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.11;
-				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.11;
-				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
-				FRAMEWORK_VERSION = 3.52;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				OTHER_CFLAGS = (
-					"-DODBCVER=0x351",
-					"-D_MACX",
-					"-DDLDAPI_MACX",
-				);
-				RESMERGER_SOURCES_FORK = data;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
-		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		71DF013606A3E372007AF56B /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
 		7C530B5E07F075A7000BBF8D /* unicode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = unicode.c; path = ../../iodbcinst/unicode.c; sourceTree = SOURCE_ROOT; };
 		7C530B6007F075D3000BBF8D /* unicode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = unicode.h; path = ../../iodbcinst/unicode.h; sourceTree = SOURCE_ROOT; };
+		85A390E81B79121900AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		CD2616E108B138FD00D9BE06 /* iodbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcinst.h; path = ../include/iodbcinst.h; sourceTree = SOURCE_ROOT; };
-		CDAE3B100987CDA2003250F8 /* Info-iODBCinst.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-iODBCinst.plist"; sourceTree = "<group>"; };
+		CDAE3B100987CDA2003250F8 /* Info-iODBCinst.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iODBCinst.plist"; sourceTree = "<group>"; };
 		CDAE3B110987CDA2003250F8 /* iODBCinst.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iODBCinst.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F535B35C0278023701A801DE /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
 		F535B35E0278027E01A801DE /* Info.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = Info.c; path = ../../iodbcinst/Info.c; sourceTree = SOURCE_ROOT; };
@@ -211,7 +163,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+				85A390E61B79121900AC8862 /* English.lproj */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -223,6 +175,14 @@
 				F535B3A602780B9C01A801DE /* iODBC */,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		85A390E61B79121900AC8862 /* English.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				85A390E71B79121900AC8862 /* InfoPlist.strings */,
+			);
+			path = English.lproj;
 			sourceTree = "<group>";
 		};
 		F535B35B0278021D01A801DE /* iodbcinst */ = {
@@ -331,39 +291,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				DEBUGGING_SYMBOLS = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../mac/iODBC/build/Deployment,
-					../../mac/iODBC/build,
-				);
-				FRAMEWORK_VERSION = 3.52;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					../../iodbcinst,
-					../../iodbc,
-				);
-				INSTALL_PATH = /Library/Frameworks;
-				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "-O2";
-				OTHER_CFLAGS = (
-					"-DODBCVER=0x351",
-					"-D_MACX",
-					"-DDLDAPI_MACX",
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = iODBCinst;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = framework;
-			};
 			dependencies = (
 			);
 			name = iODBCinst;
@@ -378,16 +305,16 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = CDAE3ACB0987CD92003250F8 /* Build configuration list for PBXProject "iODBCinst" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				4F0BB7EC011F40E904CA0E50 /* Development */,
-				4F0BB7ED011F40E904CA0E50 /* Deployment */,
-			);
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* iODBCinst */;
 			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				CDAE3AD10987CDA2003250F8 /* iODBCinst */,
 			);
@@ -399,7 +326,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDAE3AE40987CDA2003250F8 /* InfoPlist.strings in Resources */,
+				85A390E91B79121900AC8862 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,10 +388,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+		85A390E71B79121900AC8862 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C1667FE841158C02AAC07 /* English */,
+				85A390E81B79121900AC8862 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -502,9 +429,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.52.11;
+				CURRENT_PROJECT_VERSION = 3.52.12;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.11;
+				DYLIB_CURRENT_VERSION = 3.52.12;
 				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Deployment,
@@ -519,6 +446,7 @@
 					"ODBCVER=0x351",
 					_MACX,
 					DLDAPI_MACX,
+					IODBC_COCOA,
 				);
 				HEADER_SEARCH_PATHS = (
 					../../include,
@@ -528,7 +456,8 @@
 				INFOPLIST_FILE = "Info-iODBCinst.plist";
 				INSTALL_PATH = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				PREBINDING = NO;
 				PRODUCT_NAME = iODBCinst;
 				RESMERGER_SOURCES_FORK = data;
@@ -547,9 +476,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.52.11;
+				CURRENT_PROJECT_VERSION = 3.52.12;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
-				DYLIB_CURRENT_VERSION = 3.52.11;
+				DYLIB_CURRENT_VERSION = 3.52.12;
 				EXPORTED_SYMBOLS_FILE = ../../mac/iodbcinst.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Deployment,
@@ -563,6 +492,7 @@
 					"ODBCVER=0x351",
 					_MACX,
 					DLDAPI_MACX,
+					IODBC_COCOA,
 				);
 				HEADER_SEARCH_PATHS = (
 					../../include,
@@ -572,7 +502,8 @@
 				INFOPLIST_FILE = "Info-iODBCinst.plist";
 				INSTALL_PATH = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
+				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				PREBINDING = NO;
 				PRODUCT_NAME = iODBCinst;
 				RESMERGER_SOURCES_FORK = data;

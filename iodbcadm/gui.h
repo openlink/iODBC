@@ -84,11 +84,7 @@
 #  include <gdk/gdkkeysyms.h>
 #  include "gtk/gui.h"
 #elif defined(_MACX)
-# if defined(IODBC_COCOA)
-#  include "mac_cocoa/gui.h"
-# else
-#  include "macosx/gui.h"
-# endif
+#  include "mac/gui.h"
 #else
 #  error GUI for this platform not supported ...
 #endif

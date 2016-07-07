@@ -79,7 +79,7 @@
 #include <odbcinst.h>
 #include <unicode.h>
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #  include <Carbon/Carbon.h>
 #endif
 
@@ -92,210 +92,213 @@
 #ifndef WIN32
 #include <unistd.h>
 
-#if defined (__APPLE__) && !defined (NO_FRAMEWORKS) && defined(IODBC_COCOA)
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 
 #define CALL_CONFIG_DSN(path) \
     if (path) \
-    { \
-       char *tmp_path = strdup(path); \
-       if (tmp_path) { \
-         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
-         if (ptr) \
-           *ptr = 0; \
-         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
-		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
-		 if (arr) \
-           bundle_dll = CFBundleCreate (NULL, liburl); \
-         if (arr) \
-           CFRelease(arr); \
-         if (liburl) \
-           CFRelease(liburl); \
-       } \
-       MEM_FREE(tmp_path); \
-       CALL_CONFIG_DSN_BUNDLE(); \
-    }
+      { \
+	char *tmp_path = strdup (path); \
+	if (tmp_path) \
+	  { \
+	    char *ptr = strstr (tmp_path, "/Contents/MacOS/"); \
+	    if (ptr) \
+	      *ptr = 0; \
+	    liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8 *) tmp_path, strlen (tmp_path), FALSE); \
+	    CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL (liburl); \
+	    if (arr) \
+	      bundle_dll = CFBundleCreate (NULL, liburl); \
+	    if (arr) \
+	      CFRelease (arr); \
+	    if (liburl) \
+	      CFRelease (liburl); \
+	  } \
+	MEM_FREE (tmp_path); \
+	CALL_CONFIG_DSN_BUNDLE (); \
+      }
 
 #define CALL_CONFIG_DSNW(path) \
     if (path) \
-    { \
-       char *tmp_path = strdup(path); \
-       if (tmp_path) { \
-         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
-         if (ptr) \
-           *ptr = 0; \
-         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
-		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
-		 if (arr) \
-           bundle_dll = CFBundleCreate (NULL, liburl); \
-         if (arr) \
-           CFRelease(arr); \
-         if (liburl) \
-           CFRelease(liburl); \
-       } \
-       MEM_FREE(tmp_path); \
-       CALL_CONFIG_DSNW_BUNDLE(); \
-    }
+      { \
+	char *tmp_path = strdup (path); \
+	if (tmp_path) \
+	  { \
+	    char *ptr = strstr (tmp_path, "/Contents/MacOS/"); \
+	    if (ptr) \
+	      *ptr = 0; \
+	    liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8 *) tmp_path, strlen (tmp_path), FALSE); \
+	    CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL (liburl); \
+	    if (arr) \
+	      bundle_dll = CFBundleCreate (NULL, liburl); \
+	    if (arr) \
+	      CFRelease (arr); \
+	    if (liburl) \
+	      CFRelease (liburl); \
+	  } \
+	MEM_FREE (tmp_path); \
+	CALL_CONFIG_DSNW_BUNDLE (); \
+      }
 
 #define CALL_CONFIG_DSN_BUNDLE() \
-	if (bundle_dll != NULL) \
-	{ \
-          if ((pConfigDSN = (pConfigDSNFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSN"))) != NULL) \
-          { \
-            if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
-            { \
-              retcode = TRUE; \
-              goto done; \
-            } \
-            else \
-            { \
-              PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-              retcode = FALSE; \
-              goto done; \
-            } \
-          } \
-	}
+    if (bundle_dll != NULL) \
+      { \
+	if ((pConfigDSN = (pConfigDSNFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDSN"))) != NULL) \
+	  { \
+	    if (pConfigDSN (hwndParent, fRequest, lpszDriver, lpszAttributes)) \
+	      { \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+      }
 
 #define CALL_CONFIG_DSNW_BUNDLE() \
-	if (bundle_dll != NULL) \
-	{ \
-		if ((pConfigDSNW = (pConfigDSNWFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSNW"))) != NULL) \
-		{ \
-	  	  if (pConfigDSNW(hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszAttributes)) \
-	  	  { \
-	    	 retcode = TRUE; \
-	    	 goto done; \
-	  	  } \
-		  else \
+    if (bundle_dll != NULL) \
+      { \
+	if ((pConfigDSNW = (pConfigDSNWFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDSNW"))) != NULL) \
+	  { \
+	    if (pConfigDSNW (hwndParent, fRequest, (SQLWCHAR *) lpszDriver, (SQLWCHAR *) lpszAttributes)) \
+	      { \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	else if ((pConfigDSN = (pConfigDSNFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDSN"))) != NULL) \
+	  { \
+	    char *_attrs_u8, *ptr_u8; \
+	    wchar_t *ptr; \
+	    int length; \
+	    for (length = 0, ptr = lpszAttributes; *ptr; length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1); \
+	    if (length > 0) \
+	      { \
+		if ((_attrs_u8 = malloc (length * UTF8_MAX_CHAR_LEN + 1)) != NULL) \
 		  { \
-		     PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	 retcode = FALSE; \
-	    	 goto done; \
+		    for (ptr = lpszAttributes, ptr_u8 = _attrs_u8; *ptr; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1) \
+		      dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) * UTF8_MAX_CHAR_LEN, NULL); \
+		    *ptr_u8 = '\0'; \
 		  } \
-		} \
-        else if ((pConfigDSN = (pConfigDSNFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDSN"))) != NULL) \
-        { \
-          char *_attrs_u8, *ptr_u8; \
-          wchar_t *ptr; \
-          int length; \
-          for(length = 0, ptr = lpszAttributes ; *ptr ; length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1); \
-          if (length > 0) \
-          { \
-            if ((_attrs_u8 = malloc (length * UTF8_MAX_CHAR_LEN + 1)) != NULL) \
-            { \
-              for(ptr = lpszAttributes, ptr_u8 = _attrs_u8 ; *ptr ; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1) \
-                dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) *  UTF8_MAX_CHAR_LEN, NULL); \
-              *ptr_u8 = '\0'; \
-            } \
-          } \
-          else \
-            _attrs_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszAttributes, SQL_NTS); \
-          if (_attrs_u8 == NULL && lpszAttributes) \
-          { \
-            PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
-            retcode = FALSE; \
-            goto done; \
-           } \
-	  	  if (pConfigDSN(hwndParent, fRequest, _drv_u8, _attrs_u8)) \
-	  	  { \
-              MEM_FREE (_attrs_u8); \
-	    	  retcode = TRUE; \
-	    	  goto done; \
-	  	  } \
-		  else \
-		  { \
-             MEM_FREE (_attrs_u8); \
- 		     PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	 retcode = FALSE; \
-	    	 goto done; \
-		  } \
-        } \
-	}
+	      } \
+	    else \
+	      _attrs_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszAttributes, SQL_NTS); \
+	    if (_attrs_u8 == NULL && lpszAttributes) \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	    if (pConfigDSN (hwndParent, fRequest, _drv_u8, _attrs_u8)) \
+	      { \
+		MEM_FREE (_attrs_u8); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		MEM_FREE (_attrs_u8); \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+      }
 
 #else
 
 
 #define CALL_CONFIG_DSN(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pConfigDSN = (pConfigDSNFunc)DLL_PROC(handle, "ConfigDSN")) != NULL) \
-		{ \
-	  	  if (pConfigDSN(hwndParent, fRequest, lpszDriver, lpszAttributes)) \
-	  	  { \
-	    	  DLL_CLOSE(handle); \
-	    	  retcode = TRUE; \
-	    	  goto done; \
-	  	  } \
-		  else \
-		  { \
-		    PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	 DLL_CLOSE(handle); \
-	    	 retcode = FALSE; \
-	    	 goto done; \
-		  } \
-		} \
-	  DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pConfigDSN = (pConfigDSNFunc) DLL_PROC (handle, "ConfigDSN")) != NULL) \
+	  { \
+	    if (pConfigDSN (hwndParent, fRequest, lpszDriver, lpszAttributes)) \
+	      { \
+		DLL_CLOSE (handle); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	DLL_CLOSE (handle); \
+      }
 
 #define CALL_CONFIG_DSNW(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pConfigDSNW = (pConfigDSNWFunc)DLL_PROC(handle, "ConfigDSNW")) != NULL) \
-		{ \
-	  	  if (pConfigDSNW(hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszAttributes)) \
-	  	  { \
-	    	  DLL_CLOSE(handle); \
-	    	  retcode = TRUE; \
-	    	  goto done; \
-	  	  } \
-		  else \
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pConfigDSNW = (pConfigDSNWFunc) DLL_PROC (handle, "ConfigDSNW")) != NULL) \
+	  { \
+	    if (pConfigDSNW (hwndParent, fRequest, (SQLWCHAR *) lpszDriver, (SQLWCHAR *) lpszAttributes)) \
+	      { \
+		DLL_CLOSE (handle); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	else if ((pConfigDSN = (pConfigDSNFunc) DLL_PROC (handle, "ConfigDSN")) != NULL) \
+	  { \
+	    char *_attrs_u8, *ptr_u8; \
+	    wchar_t *ptr; \
+	    int length; \
+	    for (length = 0, ptr = lpszAttributes; *ptr; length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1); \
+	    if (length > 0) \
+	      { \
+		if ((_attrs_u8 = malloc (length * UTF8_MAX_CHAR_LEN + 1)) != NULL) \
 		  { \
-		    PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	 DLL_CLOSE(handle); \
-	    	 retcode = FALSE; \
-	    	 goto done; \
+		    for (ptr = lpszAttributes, ptr_u8 = _attrs_u8; *ptr; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1) \
+		      dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) * UTF8_MAX_CHAR_LEN, NULL); \
+		    *ptr_u8 = '\0'; \
 		  } \
-		} \
-                else if ((pConfigDSN = (pConfigDSNFunc)DLL_PROC(handle, "ConfigDSN")) != NULL) \
-                { \
-                  char *_attrs_u8, *ptr_u8; \
-                  wchar_t *ptr; \
-                  int length; \
-                  for(length = 0, ptr = lpszAttributes ; *ptr ; length += WCSLEN (ptr) + 1, ptr += WCSLEN (ptr) + 1); \
-                  if (length > 0) \
-                  { \
-                    if ((_attrs_u8 = malloc (length * UTF8_MAX_CHAR_LEN + 1)) != NULL) \
-                    { \
-                      for(ptr = lpszAttributes, ptr_u8 = _attrs_u8 ; *ptr ; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1) \
-                        dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) *  UTF8_MAX_CHAR_LEN, NULL); \
-                      *ptr_u8 = '\0'; \
-                    } \
-                  } \
-                  else _attrs_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszAttributes, SQL_NTS); \
-                  if (_attrs_u8 == NULL && lpszAttributes) \
-                  { \
-                    PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
-                    DLL_CLOSE(handle); \
-                    retcode = FALSE; \
-                    goto done; \
-                  } \
-	  	  if (pConfigDSN(hwndParent, fRequest, _drv_u8, _attrs_u8)) \
-	  	  { \
-                  MEM_FREE (_attrs_u8); \
-	    	  DLL_CLOSE(handle); \
-	    	  retcode = TRUE; \
-	    	  goto done; \
-	  	  } \
-		  else \
-		  { \
-                  MEM_FREE (_attrs_u8); \
-		    PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	 DLL_CLOSE(handle); \
-	    	 retcode = FALSE; \
-	    	 goto done; \
-		  } \
-                } \
-	  DLL_CLOSE(handle); \
-	}
+	      } \
+	    else \
+	      _attrs_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszAttributes, SQL_NTS); \
+	    if (_attrs_u8 == NULL && lpszAttributes) \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	    if (pConfigDSN (hwndParent, fRequest, _drv_u8, _attrs_u8)) \
+	      { \
+		MEM_FREE (_attrs_u8); \
+		DLL_CLOSE (handle); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		MEM_FREE (_attrs_u8); \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	DLL_CLOSE (handle); \
+      }
 #endif
 
 #endif
@@ -365,7 +368,7 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
   void *handle;
   pConfigDSNFunc pConfigDSN;
   pConfigDSNWFunc pConfigDSNW;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
   CFBundleRef bundle = NULL;
   CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
@@ -548,8 +551,8 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
     }
 
 /* The last ressort, a proxy driver */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || (defined (_LP64) && !defined(IODBC_COCOA)))
-# if defined(IODBC_COCOA)
+#if defined (__APPLE__)
+# if !defined(NO_FRAMEWORKS)
   bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (bundle)
     {
@@ -571,38 +574,6 @@ SQLConfigDataSource_Internal (HWND hwndParent, WORD fRequest,
               CALL_CONFIG_DSNW_BUNDLE ();
             }
         }
-    }
-# else
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
-  if (bundle)
-    {
-      CFStringRef libname = NULL;
-      char name[1024] = { '\0' };
-      /* Search for the drvproxy library */
-      liburl =
-          CFBundleCopyResourceURL (bundle, CFSTR ("iODBCdrvproxy.bundle"),
-          NULL, NULL);
-      if (liburl
-          && (libname =
-              CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
-        {
-          CFStringGetCString (libname, name, sizeof (name),
-              kCFStringEncodingASCII);
-          strcat (name, "/Contents/MacOS/iODBCdrvproxy");
-          CFRelease (libname); 
-          CFRelease (liburl); 
-          liburl = NULL;
-          if (waMode == 'A')
-            {
-              CALL_CONFIG_DSN (name);
-            }
-          else
-            {
-              CALL_CONFIG_DSNW (name);
-            }
-        }
-      if (liburl)
-        CFRelease (liburl);
     }
 # endif
 #else

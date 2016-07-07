@@ -130,21 +130,26 @@ noinst_HEADERS		= \
 
 EXTRA_DIST		= \
 	$(srcdir)/iodbcadm.exp \
-	$(srcdir)/macosx/administrator.c \
-	$(srcdir)/macosx/confirm.c \
-	$(srcdir)/macosx/driverchooser.c \
-	$(srcdir)/macosx/driversetup.c \
-	$(srcdir)/macosx/dsnchooser.c \
-	$(srcdir)/macosx/errorbox.c \
-	$(srcdir)/macosx/fdriverchoose.c \
-	$(srcdir)/macosx/filedsn.c \
-	$(srcdir)/macosx/gensetup.c \
-	$(srcdir)/macosx/getfpn.c \
-	$(srcdir)/macosx/getfpn.h \
-	$(srcdir)/macosx/gui.h \
-	$(srcdir)/macosx/iodbcadm.r \
-	$(srcdir)/macosx/keyval.c \
-	$(srcdir)/macosx/main.c \
-	$(srcdir)/macosx/messagebox.c \
-	$(srcdir)/macosx/odbcdriverf.c \
-	$(srcdir)/macosx/translatorchooser.c
+	$(srcdir)/mac/*.c \
+	$(srcdir)/mac/*.h \
+	$(srcdir)/mac/*.png \
+	$(srcdir)/mac/English.lproj/IODBCadm_DriverChooseDSNController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_DriverChooseFDSNController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_DrvConfigController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_DrvRemoveController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_DSNchooserController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_DSNmanageController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_KeyValController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_PoolConfigController.xib \
+	$(srcdir)/mac/English.lproj/IODBCadm_SetupController.xib \
+	$(srcdir)/mac/Helpers.m \
+	$(srcdir)/mac/IODBCadm_DriverChooseDSNController.m \
+	$(srcdir)/mac/IODBCadm_DriverChooseFDSNController.m \
+	$(srcdir)/mac/IODBCadm_DrvConfigController.m \
+	$(srcdir)/mac/IODBCadm_DrvRemoveController.m \
+	$(srcdir)/mac/IODBCadm_DSNchooserController.m \
+	$(srcdir)/mac/IODBCadm_DSNmanageController.m \
+	$(srcdir)/mac/IODBCadm_KeyValController.m \
+	$(srcdir)/mac/IODBCadm_PoolConfigController.m \
+	$(srcdir)/mac/IODBCadm_SetupController.m \
+	$(srcdir)/mac/utils.m
