@@ -92,113 +92,118 @@
 #ifndef WIN32
 #include <unistd.h>
 
-#if defined (__APPLE__)
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 
 #define CALL_CONFIG_TRANSLATOR(path) \
     if (path) \
-    { \
-       char *tmp_path = strdup(path); \
-       if (tmp_path) { \
-         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
-         if (ptr) \
-           *ptr = 0; \
-         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
-		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
-		 if (arr) \
-           bundle_dll = CFBundleCreate (NULL, liburl); \
-         if (arr) \
-           CFRelease(arr); \
-         if (liburl) \
-           CFRelease(liburl); \
-       } \
-       MEM_FREE(tmp_path); \
-       CALL_CONFIG_TRANSLATOR_BUNDLE(); \
-    }
+      { \
+	char *tmp_path = strdup (path); \
+	if (tmp_path) \
+	  { \
+	    char *ptr = strstr (tmp_path, "/Contents/MacOS/"); \
+	    if (ptr) \
+	      *ptr = 0; \
+	    liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8 *) tmp_path, strlen (tmp_path), FALSE); \
+	    CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL (liburl); \
+	    if (arr) \
+	      bundle_dll = CFBundleCreate (NULL, liburl); \
+	    if (arr) \
+	      CFRelease (arr); \
+	    if (liburl) \
+	      CFRelease (liburl); \
+	  } \
+	MEM_FREE (tmp_path); \
+	CALL_CONFIG_TRANSLATOR_BUNDLE (); \
+      }
 
 #define CALL_CONFIG_TRANSLATOR_BUNDLE() \
-	if (bundle_dll != NULL) \
-	{ \
-      if ((pConfigTranslator = (pConfigTranslatorFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigTranslator"))) != NULL) \
+    if (bundle_dll != NULL) \
       { \
-	  	if (pConfigTranslator(hwndParent, pvOption)) \
-	  	{ \
-	    	finish = retcode = TRUE; \
-	    	goto done; \
-	  	} \
-		else \
-		{ \
-			PUSH_ERROR(ODBC_ERROR_GENERAL_ERR); \
-	    	retcode = FALSE; \
-	    	goto done; \
-		} \
-      } \
-	}
+	if ((pConfigTranslator = (pConfigTranslatorFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigTranslator"))) != NULL) \
+	  { \
+	    if (pConfigTranslator (hwndParent, pvOption)) \
+	      { \
+		finish = retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_GENERAL_ERR); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+      }
 
 
 #define CALL_TRSCHOOSE_DIALBOX(path) \
     if (path) \
-    { \
-       char *tmp_path = strdup(path); \
-       if (tmp_path) { \
-         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
-         if (ptr) \
-           *ptr = 0; \
-         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
-		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
-		 if (arr) \
-           bundle_dll = CFBundleCreate (NULL, liburl); \
-         if (arr) \
-           CFRelease(arr); \
-         if (liburl) \
-           CFRelease(liburl); \
-       } \
-       MEM_FREE(tmp_path); \
-       CALL_TRSCHOOSE_DIALBOX_BUNDLE(); \
-    }
+      { \
+	char *tmp_path = strdup (path); \
+	if (tmp_path) \
+	  { \
+	    char *ptr = strstr (tmp_path, "/Contents/MacOS/"); \
+	    if (ptr) \
+	      *ptr = 0; \
+	    liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8 *) tmp_path, strlen (tmp_path), FALSE); \
+	    CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL (liburl); \
+	    if (arr) \
+	      bundle_dll = CFBundleCreate (NULL, liburl); \
+	    if (arr) \
+	      CFRelease (arr); \
+	    if (liburl) \
+	      CFRelease (liburl); \
+	  } \
+	MEM_FREE (tmp_path); \
+	CALL_TRSCHOOSE_DIALBOX_BUNDLE (); \
+      }
 
 #define CALL_TRSCHOOSE_DIALBOX_BUNDLE() \
-	if (bundle_dll != NULL) \
-	{ \
-		if ((pTrsChoose = (pTrsChooseFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_trschoose_dialbox"))) != NULL) \
-		  ret = pTrsChoose(hwndParent, translator, sizeof(translator), NULL); \
-		else \
-          ret = SQL_NO_DATA; \
-	} \
-	else ret = SQL_NO_DATA;
+    if (bundle_dll != NULL) \
+      { \
+	if ((pTrsChoose = (pTrsChooseFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("_iodbcdm_trschoose_dialbox"))) != NULL) \
+	  ret = pTrsChoose (hwndParent, translator, sizeof (translator), NULL); \
+	else \
+	  ret = SQL_NO_DATA; \
+      } \
+    else \
+      ret = SQL_NO_DATA;
 
 #else
 
 #define CALL_CONFIG_TRANSLATOR(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pConfigTranslator = (pConfigTranslatorFunc)DLL_PROC(handle, "ConfigTranslator")) != NULL) \
-		{ \
-	  	if (pConfigTranslator(hwndParent, pvOption)) \
-	  	{ \
-	    	DLL_CLOSE(handle); \
-	    	finish = retcode = TRUE; \
-	    	goto done; \
-	  	} \
-			else \
-			{ \
-				PUSH_ERROR(ODBC_ERROR_GENERAL_ERR); \
-	    	DLL_CLOSE(handle); \
-	    	retcode = FALSE; \
-	    	goto done; \
-			} \
-		} \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pConfigTranslator = (pConfigTranslatorFunc) DLL_PROC (handle, "ConfigTranslator")) != NULL) \
+	  { \
+	    if (pConfigTranslator (hwndParent, pvOption)) \
+	      { \
+		DLL_CLOSE (handle); \
+		finish = retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_GENERAL_ERR); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	DLL_CLOSE (handle); \
+      }
 
 #define CALL_TRSCHOOSE_DIALBOX(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pTrsChoose = (pTrsChooseFunc)DLL_PROC(handle, "_iodbcdm_trschoose_dialbox")) != NULL) \
-		  ret = pTrsChoose(hwndParent, translator, sizeof(translator), NULL); \
-		else ret = SQL_NO_DATA; \
-		DLL_CLOSE(handle); \
-	} \
-	else ret = SQL_NO_DATA;
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pTrsChoose = (pTrsChooseFunc) DLL_PROC (handle, "_iodbcdm_trschoose_dialbox")) != NULL) \
+	  ret = pTrsChoose (hwndParent, translator, sizeof (translator), NULL); \
+	else \
+	  ret = SQL_NO_DATA; \
+	DLL_CLOSE (handle); \
+      } \
+    else \
+      ret = SQL_NO_DATA;
 #endif
 
 #endif

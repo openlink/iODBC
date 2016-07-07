@@ -93,189 +93,190 @@
 #ifndef WIN32
 #include <unistd.h>
 
-#if defined (__APPLE__)
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 
 #define CALL_CONFIG_DRIVER(path) \
     if (path) \
-    { \
-       char *tmp_path = strdup(path); \
-       if (tmp_path) { \
-         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
-         if (ptr) \
-           *ptr = 0; \
-         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
-		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
-		 if (arr) \
-           bundle_dll = CFBundleCreate (NULL, liburl); \
-         if (arr) \
-           CFRelease(arr); \
-         if (liburl) \
-           CFRelease(liburl); \
-       } \
-       MEM_FREE(tmp_path); \
-       CALL_CONFIG_DRIVER_BUNDLE(); \
-    }
+      { \
+	char *tmp_path = strdup (path); \
+	if (tmp_path) \
+	  { \
+	    char *ptr = strstr (tmp_path, "/Contents/MacOS/"); \
+	    if (ptr) \
+	      *ptr = 0; \
+	    liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8 *) tmp_path, strlen (tmp_path), FALSE); \
+	    CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL (liburl); \
+	    if (arr) \
+	      bundle_dll = CFBundleCreate (NULL, liburl); \
+	    if (arr) \
+	      CFRelease (arr); \
+	    if (liburl) \
+	      CFRelease (liburl); \
+	  } \
+	MEM_FREE (tmp_path); \
+	CALL_CONFIG_DRIVER_BUNDLE (); \
+      }
 
 #define CALL_CONFIG_DRIVERW(path) \
     if (path) \
-    { \
-       char *tmp_path = strdup(path); \
-       if (tmp_path) { \
-         char *ptr = strstr(tmp_path, "/Contents/MacOS/"); \
-         if (ptr) \
-           *ptr = 0; \
-         liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8*)tmp_path, strlen(tmp_path), FALSE); \
-		 CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL(liburl); \
-		 if (arr) \
-           bundle_dll = CFBundleCreate (NULL, liburl); \
-         if (arr) \
-           CFRelease(arr); \
-         if (liburl) \
-           CFRelease(liburl); \
-       } \
-       MEM_FREE(tmp_path); \
-       CALL_CONFIG_DRIVERW_BUNDLE(); \
-    }
+      { \
+	char *tmp_path = strdup (path); \
+	if (tmp_path) \
+	  { \
+	    char *ptr = strstr (tmp_path, "/Contents/MacOS/"); \
+	    if (ptr) \
+	      *ptr = 0; \
+	    liburl = CFURLCreateFromFileSystemRepresentation (NULL, (UInt8 *) tmp_path, strlen (tmp_path), FALSE); \
+	    CFArrayRef arr = CFBundleCopyExecutableArchitecturesForURL (liburl); \
+	    if (arr) \
+	      bundle_dll = CFBundleCreate (NULL, liburl); \
+	    if (arr) \
+	      CFRelease (arr); \
+	    if (liburl) \
+	      CFRelease (liburl); \
+	  } \
+	MEM_FREE (tmp_path); \
+	CALL_CONFIG_DRIVERW_BUNDLE (); \
+      }
 
 #define CALL_CONFIG_DRIVER_BUNDLE() \
-  if (bundle_dll != NULL) \
-	{ \
-	  if ((pConfigDriver = (pConfigDriverFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDriver"))) != NULL) \
+    if (bundle_dll != NULL) \
+      { \
+	if ((pConfigDriver = (pConfigDriverFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriver"))) != NULL) \
 	  { \
-        if (pConfigDriver (hwndParent, fRequest, lpszDriver, lpszArgs, lpszMsg, cbMsgMax, pcbMsgOut))  \
-	  	{ \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	} \
-		else \
-		{ \
-			PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	retcode = FALSE; \
-	    	goto done; \
-		} \
+	    if (pConfigDriver (hwndParent, fRequest, lpszDriver, lpszArgs, lpszMsg, cbMsgMax, pcbMsgOut)) \
+	      { \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
 	  } \
-	}
+      }
 
 #define CALL_CONFIG_DRIVERW_BUNDLE(driverpath) \
-  if (bundle_dll != NULL) \
-	{ \
-	  if ((pConfigDriverW = (pConfigDriverFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDriverW"))) != NULL) \
-	  { \
-		if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszArgs, (SQLWCHAR*)lpszMsg, cbMsgMax, pcbMsgOut))  \
-	  	{ \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	} \
-		else \
-		{ \
-		  PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	      retcode = FALSE; \
-	      goto done; \
-		} \
-	  } \
-      else if ((pConfigDriver = (pConfigDriverFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("ConfigDriver"))) != NULL) \
+    if (bundle_dll != NULL) \
       { \
-          char *_args_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszArgs, SQL_NTS); \
-          char *_msg_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszMsg, SQL_NTS); \
-          if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
-          { \
-            PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
-            retcode = FALSE; \
-            goto done; \
-          } \
-		  if (pConfigDriver (hwndParent, fRequest, _drv_u8, _args_u8, _msg_u8, STRLEN(_msg_u8), pcbMsgOut))  \
-	  	  { \
-            MEM_FREE (_args_u8); \
-            MEM_FREE (_msg_u8); \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	  } \
-		  else \
-		  { \
-            MEM_FREE (_args_u8); \
-            MEM_FREE (_msg_u8); \
-			PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	retcode = FALSE; \
-	    	goto done; \
-		  } \
-      } \
-	}
-
+	if ((pConfigDriverW = (pConfigDriverFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriverW"))) != NULL) \
+	  { \
+	    if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR *) lpszDriver, (SQLWCHAR *) lpszArgs, (SQLWCHAR *) lpszMsg, cbMsgMax, pcbMsgOut)) \
+	      { \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	else if ((pConfigDriver = (pConfigDriverFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriver"))) != NULL) \
+	  { \
+	    char *_args_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszArgs, SQL_NTS); \
+	    char *_msg_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszMsg, SQL_NTS); \
+	    if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	    if (pConfigDriver (hwndParent, fRequest, _drv_u8, _args_u8, _msg_u8, STRLEN (_msg_u8), pcbMsgOut)) \
+	      { \
+		MEM_FREE (_args_u8); \
+		MEM_FREE (_msg_u8); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		MEM_FREE (_args_u8); \
+		MEM_FREE (_msg_u8); \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+      }
 
 #else
 
 #define CALL_CONFIG_DRIVER(driverpath) \
-  if ((handle = DLL_OPEN((driverpath))) != NULL) \
-	{ \
-		if ((pConfigDriver = (pConfigDriverFunc)DLL_PROC(handle, "ConfigDriver")) != NULL) \
-		{ \
-			if (pConfigDriver (hwndParent, fRequest, lpszDriver, lpszArgs, lpszMsg, cbMsgMax, pcbMsgOut))  \
-	  	{ \
-	    	DLL_CLOSE(handle); \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	} \
-			else \
-			{ \
-				PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	DLL_CLOSE(handle); \
-	    	retcode = FALSE; \
-	    	goto done; \
-			} \
-		} \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN ((driverpath))) != NULL) \
+      { \
+	if ((pConfigDriver = (pConfigDriverFunc) DLL_PROC (handle, "ConfigDriver")) != NULL) \
+	  { \
+	    if (pConfigDriver (hwndParent, fRequest, lpszDriver, lpszArgs, lpszMsg, cbMsgMax, pcbMsgOut)) \
+	      { \
+		DLL_CLOSE (handle); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	DLL_CLOSE (handle); \
+      }
 
 #define CALL_CONFIG_DRIVERW(driverpath) \
-  if ((handle = DLL_OPEN((driverpath))) != NULL) \
-	{ \
-		if ((pConfigDriverW = (pConfigDriverWFunc)DLL_PROC(handle, "ConfigDriverW")) != NULL) \
-		{ \
-			if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR*)lpszDriver, (SQLWCHAR*)lpszArgs, (SQLWCHAR*)lpszMsg, cbMsgMax, pcbMsgOut))  \
-	  	{ \
-	    	DLL_CLOSE(handle); \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	} \
-			else \
-			{ \
-				PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	DLL_CLOSE(handle); \
-	    	retcode = FALSE; \
-	    	goto done; \
-			} \
-		} \
-                else if ((pConfigDriver = (pConfigDriverFunc)DLL_PROC(handle, "ConfigDriver")) != NULL) \
-                { \
-                  char *_args_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszArgs, SQL_NTS); \
-                  char *_msg_u8 = (char *) dm_SQL_WtoU8((SQLWCHAR*)lpszMsg, SQL_NTS); \
-                  if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
-                  { \
-                    PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
-                    DLL_CLOSE(handle); \
-                    retcode = FALSE; \
-                    goto done; \
-                  } \
-			if (pConfigDriver (hwndParent, fRequest, _drv_u8, _args_u8, _msg_u8, STRLEN(_msg_u8), pcbMsgOut))  \
-	  	{ \
-                MEM_FREE (_args_u8); \
-                MEM_FREE (_msg_u8); \
-	    	DLL_CLOSE(handle); \
-	    	retcode = TRUE; \
-	    	goto done; \
-	  	} \
-			else \
-			{ \
-                MEM_FREE (_args_u8); \
-                MEM_FREE (_msg_u8); \
-				PUSH_ERROR(ODBC_ERROR_REQUEST_FAILED); \
-	    	DLL_CLOSE(handle); \
-	    	retcode = FALSE; \
-	    	goto done; \
-			} \
-                } \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN ((driverpath))) != NULL) \
+      { \
+	if ((pConfigDriverW = (pConfigDriverWFunc) DLL_PROC (handle, "ConfigDriverW")) != NULL) \
+	  { \
+	    if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR *) lpszDriver, (SQLWCHAR *) lpszArgs, (SQLWCHAR *) lpszMsg, cbMsgMax, pcbMsgOut)) \
+	      { \
+		DLL_CLOSE (handle); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	else if ((pConfigDriver = (pConfigDriverFunc) DLL_PROC (handle, "ConfigDriver")) != NULL) \
+	  { \
+	    char *_args_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszArgs, SQL_NTS); \
+	    char *_msg_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszMsg, SQL_NTS); \
+	    if ((_args_u8 == NULL && lpszArgs) || (_msg_u8 == NULL && lpszMsg)) \
+	      { \
+		PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	    if (pConfigDriver (hwndParent, fRequest, _drv_u8, _args_u8, _msg_u8, STRLEN (_msg_u8), pcbMsgOut)) \
+	      { \
+		MEM_FREE (_args_u8); \
+		MEM_FREE (_msg_u8); \
+		DLL_CLOSE (handle); \
+		retcode = TRUE; \
+		goto done; \
+	      } \
+	    else \
+	      { \
+		MEM_FREE (_args_u8); \
+		MEM_FREE (_msg_u8); \
+		PUSH_ERROR (ODBC_ERROR_REQUEST_FAILED); \
+		DLL_CLOSE (handle); \
+		retcode = FALSE; \
+		goto done; \
+	      } \
+	  } \
+	DLL_CLOSE (handle); \
+      }
 #endif
 
 #endif

@@ -93,40 +93,40 @@ extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 #if defined (__APPLE__)
 
 #define CALL_DRVCONN_DIALBOX() \
-	if (bundle_dll != NULL) \
-	{ \
-		if ((pDrvConn = (pDrvConnFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("iodbcdm_drvconn_dialbox"))) != NULL) \
-		  pDrvConn(parent, dsn, sizeof(dsn), NULL, SQL_DRIVER_PROMPT, &config); \
-      retcode = TRUE; \
-	}
+    if (bundle_dll != NULL) \
+      { \
+	if ((pDrvConn = (pDrvConnFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("iodbcdm_drvconn_dialbox"))) != NULL) \
+	  pDrvConn (parent, dsn, sizeof (dsn), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+      }
 
 #define CALL_DRVCONN_DIALBOXW() \
-	if (bundle_dll != NULL) \
-	{ \
-		if ((pDrvConnW = (pDrvConnWFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("iodbcdm_drvconn_dialboxw"))) != NULL) \
-		  pDrvConnW(parent, (LPWSTR)dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
-      retcode = TRUE; \
-	}
+    if (bundle_dll != NULL) \
+      { \
+	if ((pDrvConnW = (pDrvConnWFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("iodbcdm_drvconn_dialboxw"))) != NULL) \
+	  pDrvConnW (parent, (LPWSTR) dsn, sizeof (dsn) / sizeof (wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+      }
 
 #else
 
 #define CALL_DRVCONN_DIALBOX(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pDrvConn = (pDrvConnFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialbox")) != NULL) \
-		  pDrvConn(parent, dsn, sizeof(dsn), NULL, SQL_DRIVER_PROMPT, &config); \
-      retcode = TRUE; \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pDrvConn = (pDrvConnFunc) DLL_PROC (handle, "iodbcdm_drvconn_dialbox")) != NULL) \
+	  pDrvConn (parent, dsn, sizeof (dsn), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+	DLL_CLOSE (handle); \
+      }
 
 #define CALL_DRVCONN_DIALBOXW(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pDrvConnW = (pDrvConnWFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
-		  pDrvConnW(parent, (LPWSTR)dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
-      retcode = TRUE; \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pDrvConnW = (pDrvConnWFunc) DLL_PROC (handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
+	  pDrvConnW (parent, (LPWSTR) dsn, sizeof (dsn) / sizeof (wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+	DLL_CLOSE (handle); \
+      }
 #endif
 
 BOOL

@@ -88,24 +88,23 @@
 
 #if defined (__APPLE__)
 
-
 #define CALL_ADMIN_DIALBOX() \
-	if (bundle_dll != NULL) \
-	{ \
-		if ((pAdminBox = (pAdminBoxFunc)CFBundleGetFunctionPointerForName(bundle_dll, CFSTR("_iodbcdm_admin_dialbox"))) != NULL) \
-		  if( pAdminBox(hwndParent) == SQL_SUCCESS) \
-		    retcode = TRUE; \
-	}
+    if (bundle_dll != NULL) \
+      { \
+	if ((pAdminBox = (pAdminBoxFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("_iodbcdm_admin_dialbox"))) != NULL) \
+	  if (pAdminBox (hwndParent) == SQL_SUCCESS) \
+	    retcode = TRUE; \
+      }
 #else
 
 #define CALL_ADMIN_DIALBOX(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pAdminBox = (pAdminBoxFunc)DLL_PROC(handle, "_iodbcdm_admin_dialbox")) != NULL) \
-		  if( pAdminBox(hwndParent) == SQL_SUCCESS) \
-		    retcode = TRUE; \
-		DLL_CLOSE(handle); \
-	} 
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pAdminBox = (pAdminBoxFunc) DLL_PROC (handle, "_iodbcdm_admin_dialbox")) != NULL) \
+	  if (pAdminBox (hwndParent) == SQL_SUCCESS) \
+	    retcode = TRUE; \
+	DLL_CLOSE (handle); \
+      }
 #endif
 
 BOOL
