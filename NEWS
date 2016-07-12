@@ -1,3 +1,11 @@
+Jul 12 2015, V3.52.12:
+    * Added new Cocoa based dialogs for Mac OS X which will allow 64bit applications to
+      use the standard Login and Setup dialogs from the iODBCinst framework
+    * Added 64bit version of the iODBC Administrator to configure and test DSNs on drivers that are
+      only available in 64bit format
+    * Fixed User DSN support for recent versions of Microsoft Excel and Query on Mac OS X
+    * Documentation fixes
+
 May 25 2016, V3.52.11 (internal release):
     * Added xcodebuild option for Mac OS X 10.11
     * Added support for x86_64 to iODBC Demo
