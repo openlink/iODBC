@@ -1166,7 +1166,7 @@ _fix_home_odbc(PCONFIG pconf, char *lib_odbcini, int bIsInst)
 }
 
 
-static int
+static void
 _fix_office_access(char *fodbcini, int bIsInst)
 {
   char *ptr;
@@ -1211,7 +1211,7 @@ _fix_office_access(char *fodbcini, int bIsInst)
           if (access(dst, R_OK)==0 && stat(dst, &dst_stat)==0)
             {
               if (src_stat.st_ino == dst_stat.st_ino)
-                return 0; /* link existed & OK */
+                return; /* link existed & OK */
               else
                 unlink(dst);
             }
