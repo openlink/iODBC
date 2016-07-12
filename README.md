@@ -130,26 +130,26 @@ our driver further:
 
 The iODBC driver manager has been ported to following Unix platforms:
 
-| os			| version	| processor                 |
-| --------------------- | ------------- | ------------------------- |
-| BSDi BSD/OS 		| 2.x		| x86                       |
-| DEC Unix(OSF/1)	| 3.x - 5.x	| DEC Alpha                 |
-| DG/UX			| 5.x		| Aviion                    |
-| FreeBSD		| 2.x - 9.x	| x86                       |
-| HP/UX			| 9.x - 11.x	| HP9000 s700/s800          |
-| HP/UX			| 9.x 		| HP9000 s300/s400          |
-| IBM AIX		| 3.x - 5.x 	| IBM RS6000, PowerPC       |
-| Linux ELF 		| 1.x,  2.x	| x86, Itanium, PowerPC     |
-| Mac OS X		| 10.x		| PowerPC                   |
-| Max/OS SVR4		| 1.x		| Concurrent Maxion 9200 MP |
-| NCR SVR4 		| 3.x		| NCR 3435                  |
-| OpenVMS		| 6.x		| DEC Alpha                 |
-| SCO OpenServer 	| 5.x 		| x86                       |
-| SGI Irix SVR4		| 5.x, 6.x	| IP12 MIPS, IP22 MIPS      |
-| SunOS			| 4.1.x		| Sun Sparc                 |
-| Sun Solaris		| 2.x		| Sun Sparc, PCx86          |
-| UnixWare SVR4.2 	| 1.x, 2.x	| x86                       |
-| Windows NT		| 4.x		| x86                       |
+    | os              | version       | processor                 |
+    | --------------- | ------------- | ------------------------- |
+    | BSDi BSD/OS     | 2.x           | x86                       |
+    | DEC Unix(OSF/1) | 3.x - 5.x     | DEC Alpha                 |
+    | DG/UX           | 5.x           | Aviion                    |
+    | FreeBSD         | 2.x - 9.x     | x86                       |
+    | HP/UX           | 9.x - 11.x    | HP9000 s700/s800          |
+    | HP/UX           | 9.x           | HP9000 s300/s400          |
+    | IBM AIX         | 3.x - 5.x     | IBM RS6000, PowerPC       |
+    | Linux ELF       | 1.x,  2.x     | x86, Itanium, PowerPC     |
+    | Mac OS X        | 10.x          | PowerPC                   |
+    | Max/OS SVR4     | 1.x           | Concurrent Maxion 9200 MP |
+    | NCR SVR4        | 3.x           | NCR 3435                  |
+    | OpenVMS         | 6.x           | DEC Alpha                 |
+    | SCO OpenServer  | 5.x           | x86                       |
+    | SGI Irix SVR4   | 5.x, 6.x      | IP12 MIPS, IP22 MIPS      |
+    | SunOS           | 4.1.x         | Sun Sparc                 |
+    | Sun Solaris     | 2.x           | Sun Sparc, PCx86          |
+    | UnixWare SVR4.2 | 1.x, 2.x      | x86                       |
+    | Windows NT      | 4.x           | x86                       |
 
 
 As the iODBC driver manager uses autoconf/automake/libtool it should be portable to most modern UNIX platforms out of the

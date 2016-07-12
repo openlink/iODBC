@@ -171,7 +171,7 @@ CHECK_WARN gtk-config
 if test "$DIE" -eq 1
 then
     echo
-    echo "Please read the ${B}README.GIT${N} file for a list of packages you need"
+    echo "Please read the ${B}README_GIT${N} file for a list of packages you need"
     echo "to install on your system before bootstrapping this project."
     echo
     echo "autogen.sh script aborting ..."

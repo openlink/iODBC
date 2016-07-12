@@ -82,9 +82,12 @@ EXTRA_DIST		= \
 	$(srcdir)/LICENSE \
 	$(srcdir)/LICENSE.LGPL \
 	$(srcdir)/LICENSE.BSD \
-	$(srcdir)/README.CVS \
-	$(srcdir)/README.GIT \
-	$(srcdir)/README.MACOSX \
+	$(srcdir)/README \
+	$(srcdir)/README.md \
+	$(srcdir)/README_GIT \
+	$(srcdir)/README_GIT.md \
+	$(srcdir)/README_MACOSX \
+	$(srcdir)/README_MACOSX.md \
 	$(srcdir)/autogen.sh \
 	$(srcdir)/PORT.OpenLink \
 	$(srcdir)/acinclude.m4 \

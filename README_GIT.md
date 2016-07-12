@@ -39,17 +39,17 @@ for completeness will also provides read-only Git Archive access.
 For more information check the [iODBC SourceForge pages](https://sourceforge.net/scm/?type=git&group_id=161622)
 
 
-## Package Dependencies 
+## Package Dependencies
 To generate the configure script and all other build files necessary, please make sure the following packages and recommended
 versions are installed on your system.
 
-| Package  | Version  | From                               |
-| -------- | -------- | ---------------------------------- |
-| autoconf | 2.59     | ftp://ftp.gnu.org/pub/gnu/autoconf |
-| automake | 1.9.6    | ftp://ftp.gnu.org/pub/gnu/automake |
-| libtool  | 1.5.22   | ftp://ftp.gnu.org/pub/gnu/libtool  |
-| make     | 3.79.1   | http://www.gnu.org/software/make   |
-| gtk+     | 1.2.10   | ftp://ftp.gtk.org/pub/gtk/v1.2     |
+    | Package  | Version  | From                               |
+    | -------- | -------- | ---------------------------------- |
+    | autoconf | 2.59     | ftp://ftp.gnu.org/pub/gnu/autoconf |
+    | automake | 1.9.6    | ftp://ftp.gnu.org/pub/gnu/automake |
+    | libtool  | 1.5.22   | ftp://ftp.gnu.org/pub/gnu/libtool  |
+    | make     | 3.79.1   | http://www.gnu.org/software/make   |
+    | gtk+     | 1.2.10   | ftp://ftp.gtk.org/pub/gtk/v1.2     |
 
 and any GNU packages required by these.
 
