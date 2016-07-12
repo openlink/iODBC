@@ -1,3 +1,10 @@
+libiodbc2 (3.52.12) unstable; urgency=low
+  * Added new Cocoa based UI for Mac OS X 10.5 and above so 64bit
+    applications can use 64bit dialog boxes from the iODBCinst framework
+  * Small bugfixes and cleanups
+
+ -- iODBC maintainer <iodbc@openlinksw.com>  Tue, 12 Jul 2016 12:00:00 +0200
+
 libiodbc2 (3.52.4-3) unstable; urgency=low
 
   * New maintainer.  Closes: #230646.
