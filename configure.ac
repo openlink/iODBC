@@ -103,7 +103,7 @@ AM_MAINTAINER_MODE
 #  Version information for SQLGetInfo(SQL_DM_VER) call
 #
 BUILD_MAJOR="12"		# last digit of version number
-BUILD_MINOR="160526"		# year/month/day of release
+BUILD_MINOR="160712"		# year/month/day of release
 BUILD_VER="${BUILD_MAJOR}${BUILD_MINOR}"
 
 #
