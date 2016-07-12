@@ -54,10 +54,13 @@ build-*
 #
 # Mac OS X Xcode build trees
 #
-mac/iODBC/build/
 mac/iODBCadm/build/
+mac/iODBCadministrator64/build/
 mac/iODBCadministrator/build/
+mac/iODBC/build/
 mac/iODBCdemo/build/
+mac/iODBCdemo/DemoAnsi/build/
+mac/iODBCdemo/DemoUnicode/build/
 mac/iODBCdrvproxy/build/
 mac/iODBCinst/build/
 mac/iODBCtest/build/

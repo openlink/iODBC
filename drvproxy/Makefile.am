@@ -123,5 +123,11 @@ EXTRA_DIST		= \
 	$(srcdir)/*.h \
 	$(srcdir)/gtk/*.c \
 	$(srcdir)/gtk/*.h \
-	$(srcdir)/macosx/*.c \
-	$(srcdir)/macosx/*.h
+	$(srcdir)/mac/*.c \
+	$(srcdir)/mac/*.h \
+	$(srcdir)/mac/*.png \
+	$(srcdir)/mac/English.lproj/IODBCProxy_LoginController.xib \
+	$(srcdir)/mac/English.lproj/IODBCProxy_SetupController.xib \
+	$(srcdir)/mac/IODBCProxy_LoginController.m \
+	$(srcdir)/mac/IODBCProxy_SetupController.m \
+	$(srcdir)/mac/utils.m

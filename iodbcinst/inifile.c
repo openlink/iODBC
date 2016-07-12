@@ -513,7 +513,7 @@ __iodbcdm_cfg_poolalloc (PCONFIG p, u_int count)
       newMax =
 	  p->maxEntries ? count + p->maxEntries + p->maxEntries / 2 : count +
 	  4096 / sizeof (TCFGENTRY);
-      newBase = (PCFGENTRY) malloc (newMax * sizeof (TCFGENTRY));
+      newBase = (PCFGENTRY) calloc (newMax, sizeof (TCFGENTRY));
       if (newBase == NULL)
 	return NULL;
       if (p->entries)
@@ -1028,6 +1028,7 @@ _getinifilename (char *buf, int size, int bIsInst, int bHome)
 }
 
 
+
 static int
 _fix_home_odbc(PCONFIG pconf, char *lib_odbcini, int bIsInst)
 {
@@ -1163,6 +1164,61 @@ _fix_home_odbc(PCONFIG pconf, char *lib_odbcini, int bIsInst)
     }
   return 0;
 }
+
+
+static void
+_fix_office_access(char *fodbcini, int bIsInst)
+{
+  char *ptr;
+  char *office_pwd = {"/Library/Containers/com.microsoft.Excel/Data"};
+
+  if ((ptr = getenv ("HOME")) == NULL)
+    {
+      ptr = (char *) getpwuid (getuid ());
+
+      if (ptr != NULL)
+        ptr = ((struct passwd *) ptr)->pw_dir;
+    }
+
+  if (ptr != NULL && strcasestr(ptr, office_pwd)==NULL)
+    {
+      stat_t src_stat;
+      stat_t dst_stat;
+      char src[1024];
+      char dst[1024];
+      int j;
+
+      snprintf (dst, sizeof(dst),
+	      bIsInst ? "%s%s" ODBCINST_INI_APP 
+	              : "%s%s" ODBC_INI_APP, ptr, office_pwd);
+
+      j = STRLEN (bIsInst ? "/odbcinst.ini" : "/odbc.ini");
+      dst[STRLEN(dst)-j] = 0;
+
+      mkdir(dst, 0755);
+
+      /* source ini file */
+      snprintf (src, sizeof(src),
+	      bIsInst ? "%s" ODBCINST_INI_APP : "%s" ODBC_INI_APP, ptr);
+      
+      /* destination ini file */
+      snprintf (dst, sizeof(dst),
+              bIsInst ? "%s%s" ODBCINST_INI_APP
+                      : "%s%s" ODBC_INI_APP, ptr, office_pwd);
+
+      if (access(src, R_OK)==0 && stat(src, &src_stat)==0) 
+        {
+          if (access(dst, R_OK)==0 && stat(dst, &dst_stat)==0)
+            {
+              if (src_stat.st_ino == dst_stat.st_ino)
+                return; /* link existed & OK */
+              else
+                unlink(dst);
+            }
+          link(src, dst); /* create hardlink for use with MSOffice */
+        }
+    }
+}
 #endif
 
 
@@ -1176,6 +1232,10 @@ _iodbcdm_cfg_search_init(PCONFIG *ppconf, const char *filename, int doCreate)
     {
       char *fname_odbcini = _iodbcadm_getinifile (pathbuf,
 	    sizeof (pathbuf), FALSE, doCreate);
+#if defined(__APPLE__)
+      if (fname_odbcini && wSystemDSN == USERDSN_ONLY)
+        _fix_office_access(fname_odbcini, FALSE);
+#endif
       rc = _iodbcdm_cfg_init (ppconf, fname_odbcini, doCreate);
 #if defined(__APPLE__)
       if (!rc && fname_odbcini && wSystemDSN == USERDSN_ONLY) 
@@ -1195,6 +1255,10 @@ _iodbcdm_cfg_search_init(PCONFIG *ppconf, const char *filename, int doCreate)
     {
       char *fname_odbcinst = _iodbcadm_getinifile (pathbuf,
 	    sizeof (pathbuf), TRUE, doCreate);
+#if defined(__APPLE__)
+      if (fname_odbcinst && wSystemDSN == USERDSN_ONLY)
+        _fix_office_access(fname_odbcinst, TRUE);
+#endif
       rc = _iodbcdm_cfg_init (ppconf, fname_odbcinst, doCreate);
 #if defined(__APPLE__)
       if (!rc && fname_odbcinst && wSystemDSN == USERDSN_ONLY) 

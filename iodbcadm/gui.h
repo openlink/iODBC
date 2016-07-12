@@ -72,7 +72,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #include <iodbc.h>
 #include <odbcinst.h>
 #include "iodbcadm.h"
@@ -85,10 +84,13 @@
 #  include <gdk/gdkkeysyms.h>
 #  include "gtk/gui.h"
 #elif defined(_MACX)
-#  include "macosx/gui.h"
+#  include "mac/gui.h"
 #else
 #  error GUI for this platform not supported ...
 #endif
+
+
+
 
 #ifndef	_GUI_H
 #define _GUI_H

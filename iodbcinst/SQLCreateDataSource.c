@@ -83,30 +83,51 @@
 #include "iodbc_error.h"
 #include "dlf.h"
 
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>
 #endif
 
 extern BOOL ValidDSN (LPCSTR lpszDSN);
 extern BOOL ValidDSNW (LPCWSTR lpszDSN);
 
+#if defined (__APPLE__)
+
+#define CALL_DRVCONN_DIALBOX() \
+    if (bundle_dll != NULL) \
+      { \
+	if ((pDrvConn = (pDrvConnFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("iodbcdm_drvconn_dialbox"))) != NULL) \
+	  pDrvConn (parent, dsn, sizeof (dsn), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+      }
+
+#define CALL_DRVCONN_DIALBOXW() \
+    if (bundle_dll != NULL) \
+      { \
+	if ((pDrvConnW = (pDrvConnWFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("iodbcdm_drvconn_dialboxw"))) != NULL) \
+	  pDrvConnW (parent, (LPWSTR) dsn, sizeof (dsn) / sizeof (wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+      }
+
+#else
+
 #define CALL_DRVCONN_DIALBOX(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pDrvConn = (pDrvConnFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialbox")) != NULL) \
-		  pDrvConn(parent, dsn, sizeof(dsn), NULL, SQL_DRIVER_PROMPT, &config); \
-      retcode = TRUE; \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pDrvConn = (pDrvConnFunc) DLL_PROC (handle, "iodbcdm_drvconn_dialbox")) != NULL) \
+	  pDrvConn (parent, dsn, sizeof (dsn), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+	DLL_CLOSE (handle); \
+      }
 
 #define CALL_DRVCONN_DIALBOXW(path) \
-	if ((handle = DLL_OPEN(path)) != NULL) \
-	{ \
-		if ((pDrvConnW = (pDrvConnWFunc)DLL_PROC(handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
-		  pDrvConnW(parent, (LPWSTR)dsn, sizeof(dsn) / sizeof(wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
-      retcode = TRUE; \
-		DLL_CLOSE(handle); \
-	}
+    if ((handle = DLL_OPEN (path)) != NULL) \
+      { \
+	if ((pDrvConnW = (pDrvConnWFunc) DLL_PROC (handle, "iodbcdm_drvconn_dialboxw")) != NULL) \
+	  pDrvConnW (parent, (LPWSTR) dsn, sizeof (dsn) / sizeof (wchar_t), NULL, SQL_DRIVER_PROMPT, &config); \
+	retcode = TRUE; \
+	DLL_CLOSE (handle); \
+      }
+#endif
 
 BOOL
 CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
@@ -117,43 +138,37 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
   void *handle;
   pDrvConnFunc pDrvConn = NULL;
   pDrvConnWFunc pDrvConnW = NULL;
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  CFStringRef libname = NULL;
-  CFBundleRef bundle;
+#if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
+  CFBundleRef bundle = NULL;
+  CFBundleRef bundle_dll = NULL;
   CFURLRef liburl;
-  char name[1024] = { 0 };
 #endif
 
   /* Load the Admin dialbox function */
-#if defined (__APPLE__) && !(defined (NO_FRAMEWORKS) || defined (_LP64))
-  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.inst"));
+#if defined (__APPLE__)
+# if !defined(NO_FRAMEWORKS)
+  bundle = CFBundleGetBundleWithIdentifier (CFSTR ("org.iodbc.core"));
   if (bundle)
     {
       /* Search for the iODBCadm library */
       liburl =
 	  CFBundleCopyResourceURL (bundle, CFSTR ("iODBCadm.bundle"),
 	  NULL, NULL);
-      if (liburl
-	  && (libname =
-	      CFURLCopyFileSystemPath (liburl, kCFURLPOSIXPathStyle)))
+      if (liburl)
 	{
-	  CFStringGetCString (libname, name, sizeof (name),
-	      kCFStringEncodingASCII);
-	  STRCAT (name, "/Contents/MacOS/iODBCadm");
+      	  bundle_dll = CFBundleCreate (NULL, liburl);
+          CFRelease (liburl);
 	  if (waMode == 'A')
 	    {
-	      CALL_DRVCONN_DIALBOX (name);
+	      CALL_DRVCONN_DIALBOX ();
 	    }
 	  else
 	    {
-	      CALL_DRVCONN_DIALBOXW (name);
+	      CALL_DRVCONN_DIALBOXW ();
 	    }
 	}
-      if (liburl)
-	CFRelease (liburl);
-      if (libname)
-	CFRelease (libname);
     }
+# endif
 #else
   if (waMode == 'A')
     {
@@ -164,6 +179,7 @@ CreateDataSource (HWND parent, LPCSTR lpszDSN, SQLCHAR waMode)
       CALL_DRVCONN_DIALBOXW ("libiodbcadm.so.2");
     }
 #endif
+
 
   return retcode;
 }

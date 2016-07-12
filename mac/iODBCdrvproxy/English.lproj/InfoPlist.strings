@@ -1,6 +1,6 @@
 /* Localized versions of Info.plist keys */
 
 CFBundleName = "iODBCdrvproxy";
-CFBundleShortVersionString = "iODBCdrvproxy version 3.52.11";
-CFBundleGetInfoString = "iODBCdrvproxy version 3.52.11, Copyright 1995-2016 OpenLink Software";
-NSHumanReadableCopyright = "Copyright © 1995-2016 OpenLink Software";
+CFBundleShortVersionString = "iODBCdrvproxy version 3.52.12";
+CFBundleGetInfoString = "iODBCdrvproxy version 3.52.12, Copyright 1995-2016, OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 1995-2016, OpenLink Software";

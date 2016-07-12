@@ -84,8 +84,9 @@
 #elif defined(__QT__)
 #include "qt/gui.h"
 #elif defined(__APPLE__)
-#include "macosx/gui.h"
+#include "mac/gui.h"
 #endif
+
 
 #ifdef __cplusplus
 extern "C" {
