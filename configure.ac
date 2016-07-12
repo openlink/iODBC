@@ -81,7 +81,7 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT([iODBC Driver Manager],
-        [3.52.12-dev],
+        [3.52.12],
 	[iodbc@openlinksw.com],
 	[libiodbc])
 AC_CONFIG_SRCDIR([include/isql.h])
@@ -109,7 +109,7 @@ BUILD_VER="${BUILD_MAJOR}${BUILD_MINOR}"
 #
 #  Library version numbers
 #
-lib3_version=3:24:1		# ODBC 3.x mode
+lib3_version=3:25:1		# ODBC 3.x mode
 lib2_version=2:55:0		# ODBC 2.x mode (do not change)
 
 
