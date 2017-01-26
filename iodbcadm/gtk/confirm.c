@@ -266,4 +266,6 @@ create_confirmw (HWND hwnd, LPCWSTR dsn, LPCWSTR text)
     free(_dsn);
   if (_text)
     free(_text);
+
+  return TRUE;
 }
