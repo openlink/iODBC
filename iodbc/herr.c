@@ -1370,7 +1370,7 @@ SQLGetDiagField_Internal (
 	    {
 	      (*(SQLINTEGER *) pDiagInfoPtr) = 0;
 	      /* get the number from the driver */
-	      if (con)
+	      if (con && con->henv != SQL_NULL_HENV)
 		{
                   CALL_UDRIVER(con, Handle, retcode, hproc, unicode_driver, en_GetDiagField,
                     (nHandleType, dhandle, 0, nDiagIdentifier, 
