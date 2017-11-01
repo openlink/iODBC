@@ -105,7 +105,7 @@ _trace_colattr2_type (SQLUSMALLINT type)
       _S (SQL_COLUMN_LABEL);
     }
 
-  trace_emit ("\t\t%-15.15s   %ld (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
+  trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
 }
 
 

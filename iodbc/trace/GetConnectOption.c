@@ -113,7 +113,7 @@ _trace_connopt_type (SQLUSMALLINT type)
       _S (SQL_USE_BOOKMARKS);
     }
 
-  trace_emit ("\t\t%-15.15s   %ld (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
+  trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
 }
 
 
