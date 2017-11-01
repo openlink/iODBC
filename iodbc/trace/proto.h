@@ -629,7 +629,11 @@ void trace_set_filename (char *fname);
 void trace_start (void);
 void trace_stop (void);
 void trace_emitc (char c);
-void trace_emit (char *fmt, ...);
+void trace_emit (char *fmt, ...)
+#ifdef __GNUC__
+    __attribute__ ((format (printf, 1, 2)))
+#endif
+;
 void trace_emit_string (SQLCHAR * str, ssize_t len, int is_utf8);
 void trace_emit_binary (unsigned char *str, ssize_t len);
 void _trace_print_function (int func, int trace_leave, int retcode);
