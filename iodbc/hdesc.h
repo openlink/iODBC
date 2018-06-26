@@ -135,9 +135,9 @@ typedef struct DESC_s {
 
 #define LEAVE_DESC(hdesc, trace) \
 	ODBC_LOCK (); \
+	pdesc->desc_cip = 0; \
     done: \
     	TRACE(trace); \
-	pdesc->desc_cip = 0; \
 	ODBC_UNLOCK (); \
 	return (retcode)
 
