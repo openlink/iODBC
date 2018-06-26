@@ -93,6 +93,8 @@
 #include <wchar.h>
 #endif
 
+#include <sys/types.h>
+
 
 /*
  *  Max length of a UTF-8 encoded character sequence
