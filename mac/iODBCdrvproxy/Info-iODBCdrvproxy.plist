@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBCdrvproxy</string>
 	<key>CFBundleGetInfoString</key>
-	<string>iODBCdrvproxy version 3.52.12, Copyright 1995-2018, OpenLink Software</string>
+	<string>iODBCdrvproxy version 3.52.12, Copyright 1995-2019, OpenLink Software</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
