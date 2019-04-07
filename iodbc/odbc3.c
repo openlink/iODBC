@@ -1486,7 +1486,7 @@ SQLSetStmtAttr_Internal (
 
           if (SQL_SUCCEEDED (retcode))
             {
-              stmt->rowset_size = Attribute;
+              stmt->rowset_size = (SQLINTEGER)(SQLULEN)ValuePtr;
               if (retcode == SQL_SUCCESS_WITH_INFO)
                 {
                   SQLUINTEGER data;
@@ -1531,7 +1531,7 @@ SQLSetStmtAttr_Internal (
 
               if (SQL_SUCCEEDED (retcode))
                 {
-                  stmt->rowset_size = Attribute;;
+                  stmt->rowset_size = (SQLINTEGER)(SQLULEN)ValuePtr;
                   if (retcode == SQL_SUCCESS_WITH_INFO)
                     {
                       SQLUINTEGER data;
@@ -1551,7 +1551,7 @@ SQLSetStmtAttr_Internal (
 
               if (SQL_SUCCEEDED (retcode))
                 {
-                  stmt->rowset_size = Attribute;;
+                  stmt->rowset_size = (SQLINTEGER)(SQLULEN)ValuePtr;
                   if (retcode == SQL_SUCCESS_WITH_INFO)
                     {
                       SQLUINTEGER data;
@@ -1625,7 +1625,7 @@ SQLSetStmtAttr_Internal (
             }
 
           if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
-            stmt->bind_type = Attribute;
+            stmt->bind_type = (SQLINTEGER)(SQLULEN)ValuePtr;
 
           return retcode;
 	}
@@ -1637,7 +1637,7 @@ SQLSetStmtAttr_Internal (
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, Attribute, ValuePtr));
               if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
-                stmt->bind_type = Attribute;
+                stmt->bind_type = (SQLINTEGER)(SQLULEN)ValuePtr;
 	      return retcode;
 	    }
 	  else
@@ -1647,7 +1647,7 @@ SQLSetStmtAttr_Internal (
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, Attribute, ValuePtr));
               if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
-                stmt->bind_type = Attribute;
+                stmt->bind_type = (SQLINTEGER)(SQLULEN)ValuePtr;
 	      return retcode;
 	    }
 	  else
