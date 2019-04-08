@@ -496,6 +496,9 @@ void addDSNs_to_list(BOOL systemDSN, NSArrayController* list)
     SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
                    SQL_IS_UINTEGER);
     
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+        (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
     /* Get the list of datasources */
     ret = SQLDataSourcesW (henv,
                            systemDSN ? SQL_FETCH_FIRST_SYSTEM : SQL_FETCH_FIRST_USER,

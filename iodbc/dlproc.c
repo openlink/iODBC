@@ -83,6 +83,7 @@
 
 #include <dlproc.h>
 
+#include <unicode.h>
 #include <herr.h>
 #include <henv.h>
 #include <hdbc.h>

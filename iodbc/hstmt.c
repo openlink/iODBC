@@ -105,6 +105,7 @@ static const SQLINTEGER desc_attrs[4] =
 };
 #endif
 
+#define XFREE(V)  if (V) { free(V); V = NULL; }
 
 SQLRETURN
 SQLAllocStmt_Internal (
@@ -176,11 +177,19 @@ SQLAllocStmt_Internal (
 
   /* call driver's function */
   pstmt->rowset_size = 1;
-  pstmt->bind_type = SQL_BIND_BY_COLUMN;
+  pstmt->row_bind_type = SQL_BIND_BY_COLUMN;
+  pstmt->row_bind_offset = 0;
+  pstmt->param_bind_type = SQL_PARAM_BIND_BY_COLUMN;
+  pstmt->param_bind_offset = 0;
   pstmt->st_pbinding = NULL;
 
   pstmt->st_pparam = NULL;
   pstmt->st_nparam = 0;
+
+  pstmt->params_buf = NULL;
+  pstmt->rows_buf = NULL;
+  pstmt->conv_param_bind_type = SQL_PARAM_BIND_BY_COLUMN;
+  pstmt->conv_row_bind_type = SQL_BIND_BY_COLUMN;
 
 #if (ODBCVER >= 0x0300)
   pstmt->row_array_size = 1;
@@ -487,6 +496,9 @@ _iodbcdm_dropstmt (HSTMT hstmt)
 	}
     }
 #endif   
+
+  MEM_FREE(pstmt->params_buf);
+  MEM_FREE(pstmt->rows_buf);
 
   if (pstmt->vars_inserted > 0)
     _iodbcdm_FreeStmtVars(pstmt);
@@ -831,7 +843,7 @@ SQLSetStmtOption_Internal (
             }
         }
       if (fOption == SQL_BIND_TYPE)
-        pstmt->bind_type = vParam;
+        pstmt->row_bind_type = vParam;
     }
   return retcode;
 }
@@ -1176,11 +1188,25 @@ void
 _iodbcdm_FreeStmtParams(STMT_t *pstmt)
 {
   PPARM pparm;
-  int i;
+  int i, maxpar;
 
-  pparm = pstmt->st_pparam;
   if (pstmt->st_pparam)
     {
+      maxpar = pstmt->st_nparam;
+      pparm = pstmt->st_pparam;
+      for (i = 0; i < maxpar; i++, pparm++)
+        {
+          if (pparm->pm_tmp)
+            {
+              free(pparm->pm_tmp);
+              pparm->pm_tmp = NULL;
+            }
+          if (pparm->pm_tmp_Ind)
+            {
+              free(pparm->pm_tmp_Ind);
+              pparm->pm_tmp_Ind = NULL;
+            }
+        }
       free (pstmt->st_pparam);
       pstmt->st_pparam = NULL;
     }
@@ -1220,14 +1246,21 @@ _iodbcdm_alloc_var(STMT_t *pstmt, int i, int size)
 }
 
 
-wchar_t *
-_iodbcdm_conv_var_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength)
+/** DM => DRV**/
+void *
+_iodbcdm_conv_var(STMT_t *pstmt, int i, void *pData, int pDataLength,
+	CONV_DIRECT direct)
 {
   VAR_t *var;
-  size_t size = 0;
+  size_t size;
   int count_alloc = 0;
+  CONN (pdbc, pstmt->hdbc);
+  ENVR (penv, pdbc->henv);
+  DM_CONV *conv = penv->conv;
+  IODBC_CHARSET m_charset = (conv) ? conv->dm_cp : CP_DEF;
+  IODBC_CHARSET d_charset = (conv) ? conv->drv_cp : CP_DEF;
 
-  if (i > STMT_VARS_MAX - 1)
+  if (i > STMT_VARS_MAX - 1 || direct == CD_NONE)
     return NULL;
 
   var = &pstmt->vars[i];
@@ -1241,84 +1274,57 @@ _iodbcdm_conv_var_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength)
       return NULL;
     }
 
+
   if (pDataLength == SQL_NTS)
-    size = strlen((char *) pData);
+    {
+      if (direct == CD_W2A || direct == CD_W2W)
+        size = DM_WCSLEN(conv, pData);
+      else
+        size = strlen((char *) pData);
+    }
   else
     size = pDataLength;
 
-  count_alloc = (size + 1) * sizeof(wchar_t);
-
-  if (var->data != NULL && var->length >= count_alloc)
-    {
-      if (size > 0)
-	OPL_A2W(pData, var->data, size);
-      ((wchar_t*)var->data)[size] = L'\0';
-    }
+  if (direct == CD_W2A )
+    count_alloc = size + 1;
   else
+    count_alloc = (size + 1) * DRV_WCHARSIZE_ALLOC(conv);
+
+  if (var->data == NULL || var->length < count_alloc)
     {
       MEM_FREE(var->data);
       var->length = 0;
       if ((var->data = MEM_ALLOC(count_alloc)) != NULL)
-        {
-          var->length = count_alloc;
-	  if (size > 0)
-	    OPL_A2W(pData, var->data, size);
-          ((wchar_t*)var->data)[size] = L'\0';
-        }      
+        var->length = count_alloc;
     }
 
-  return (wchar_t *) var->data;
-}
-
-
-char *
-_iodbcdm_conv_var_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength)
-{
-  VAR_t *var;
-  size_t size = 0;
-  int count_alloc = 0;
-
-  if (i > STMT_VARS_MAX - 1)
-    return NULL;
-
-  var = &pstmt->vars[i];
-  pstmt->vars_inserted = 1;
-
-  if (pData == NULL)
+  if (direct == CD_A2W)
     {
-      MEM_FREE(var->data);
-      var->data = NULL;
-      var->length = 0;
-      return NULL;
+      size = dm_conv_A2W((char *)pData, pDataLength, var->data, 
+      		count_alloc - DRV_WCHARSIZE_ALLOC(conv), d_charset);
+      if (d_charset == CP_UTF8)
+        *(char*)(var->data + size) = 0;
+      else
+        DRV_SetWCharAt(conv, var->data, size/DRV_WCHARSIZE_ALLOC(conv), 0);
     }
-
-  if (pDataLength == SQL_NTS)
-    size = WCSLEN(pData);
-  else
-    size = pDataLength;
-
-  count_alloc = size + 1;
-
-  if (var->data != NULL && var->length >= count_alloc)
+  else if (direct == CD_W2A)
     {
-      if (size > 0)
-	OPL_W2A(pData, var->data, size);
+      size = dm_conv_W2A(pData, pDataLength, (char *)var->data, count_alloc - 1,
+      		m_charset);
       ((char*)var->data)[size] = '\0';
     }
-  else
+  else /* CD_W2W*/
     {
-      MEM_FREE(var->data);
-      var->length = 0;
-      if ((var->data = MEM_ALLOC(count_alloc)) != NULL)
-        {
-          var->length = count_alloc;
-	  if (size > 0)
-	    OPL_W2A(pData, var->data, size);
-          ((char*)var->data)[size] = '\0';
-        }      
+      size = dm_conv_W2W(pData, pDataLength, (char *)var->data, 
+      		count_alloc - DRV_WCHARSIZE_ALLOC(conv), m_charset, d_charset);
+      if (d_charset == CP_UTF8)
+        *(char*)(var->data + size) = 0;
+      else
+        DRV_SetWCharAt(conv, var->data, size/DRV_WCHARSIZE_ALLOC(conv), 0);
     }
 
-  return (char *) var->data;
+  return (void *) var->data;
+
 }
 
 
@@ -1405,12 +1411,18 @@ _iodbcdm_UnBindColumn (STMT_t *pstmt, BIND_t *pbind)
 void
 _iodbcdm_RemoveBind (STMT_t *pstmt)
 {
+  BIND_t *col;
   PBLST pblst, pnext;
 
   if (pstmt->st_pbinding)
     {
       for (pblst = pstmt->st_pbinding; pblst; pblst = pnext)
 	{
+          col = &(pblst->bl_bind);
+
+          MEM_FREE(col->bn_tmp);
+          MEM_FREE(col->bn_tmp_Ind);
+
 	  pnext = pblst->bl_nextBind;
 	  free (pblst);
 	}
@@ -1419,36 +1431,124 @@ _iodbcdm_RemoveBind (STMT_t *pstmt)
 }
 
 
+
 static void 
-_iodbcdm_bindConv_A2W(char *data, SQLLEN *pInd, UDWORD size)
+_iodbcdm_bindConv_A2W_d2m(char *data, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
 {
-  wchar_t *wdata = (wchar_t *) data;
-
-  size=size; /*UNUSED TODO*/
-
   if (*pInd != SQL_NULL_DATA)
     {
-      wchar_t *buf = dm_SQL_A2W ((SQLCHAR *) data, SQL_NTS);
+      int count = 0;
+      char *buf = calloc(size + 1, sizeof(char));
 
       if (buf != NULL)
-	WCSCPY (wdata, buf);
-
-      MEM_FREE (buf);
+        {
+          memcpy(buf, data, size);
+          dm_StrCopyOut2_A2W_d2m (conv, buf, data, size, NULL, &count);
+          MEM_FREE(buf);
+        }
 
       if (pInd && *pInd != SQL_NTS)
-	*pInd *= sizeof (wchar_t);
+        *pInd =(SQLLEN)count;
+    }
+}
+
+static void 
+_iodbcdm_bindConv_W2A_m2d(char *data, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
+{
+  if (*pInd != SQL_NULL_DATA)
+    {
+      int count = 0;
+      char *buf = calloc(size + 1, sizeof(char));
+
+      if (buf != NULL)
+        {
+          memcpy(buf, data, size);
+          dm_StrCopyOut2_W2A_m2d (conv, buf, data, size, NULL, &count);
+          MEM_FREE(buf);
+        }
+
+      if (pInd && *pInd != SQL_NTS)
+        *pInd =(SQLLEN)count;
     }
 }
 
 
+static void 
+_iodbcdm_bindConv_W2W_d2m(char *data, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
+{
+  if (*pInd != SQL_NULL_DATA)
+    {
+      int count = 0;
+      char *buf = calloc(size + WCHAR_MAXSIZE, sizeof(char));
+
+      if (buf != NULL)
+        {
+          memcpy(buf, data, size);
+          dm_StrCopyOut2_W2W_d2m (conv, buf, data, size, NULL, &count);
+          MEM_FREE(buf);
+        }
+
+      if (pInd && *pInd != SQL_NTS)
+        *pInd =(SQLLEN)count;
+    }
+}
+
+static void 
+_iodbcdm_bindConv_W2W_m2d(char *data, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
+{
+  if (*pInd != SQL_NULL_DATA)
+    {
+      int count = 0;
+      char *buf = calloc(size + WCHAR_MAXSIZE, sizeof(char));
+
+      if (buf != NULL)
+        {
+          memcpy(buf, data, size);
+          dm_StrCopyOut2_W2W_m2d (conv, buf, data, size, NULL, &count);
+          MEM_FREE(buf);
+        }
+
+      if (pInd && *pInd != SQL_NTS)
+        *pInd =(SQLLEN)count;
+    }
+}
+
+
+static SQLLEN
+GetColSize (BIND_t *col)
+{
+  SQLLEN elementSize;
+
+
+  if (col->bn_type == SQL_C_CHAR 
+      || col->bn_type == SQL_C_BINARY 
+      || col->bn_type == SQL_C_WCHAR)
+    {
+      elementSize = col->bn_size;
+    }	
+  else				/* fixed length types */
+    {
+      elementSize = _iodbcdm_OdbcCTypeSize(col->bn_type);
+    }
+    
+  return elementSize;
+}
+
+
+/** drv => dm **/
 void
 _iodbcdm_ConvBindData (STMT_t *pstmt)
 {
   PBLST ptr;
   BIND_t *col;
   UDWORD i, size, row_size;
-  SQLLEN *pInd;
-  char *data;
+  CONN (pdbc, pstmt->hdbc);
+  ENVR (penv, pdbc->henv);
+  DM_CONV *conv = penv->conv;
+  IODBC_CHARSET m_charset = CP_DEF;
+  IODBC_CHARSET d_charset = CP_DEF;
+  SQLULEN cRows = pstmt->rowset_size;
+  SQLUINTEGER bindOffset = pstmt->row_bind_offset;
 
   /*
    *  Anything on the list? No? Nothing to do.
@@ -1456,34 +1556,458 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
   if (pstmt->st_pbinding == NULL)
     return ;
 
+  if (cRows == 0)
+    cRows = 1;
+
+  if (conv)
+    {
+      m_charset = conv ? conv->dm_cp: CP_DEF;
+      d_charset = conv ? conv->drv_cp: CP_DEF;
+    }
+
   for (ptr = pstmt->st_pbinding; ptr; ptr = ptr->bl_nextBind)
     {
       col = &(ptr->bl_bind);
 
-      if (pstmt->bind_type == SQL_BIND_BY_COLUMN)
+      for (i = 0; i < cRows; i++)
         {
-          size = col->bn_size;
-          data = (char *) col->bn_data;
-          pInd = col->bn_pInd;
-          for (i = 0; i < pstmt->rowset_size; i++)
+          void *val_dm = NULL;
+          void *val_drv = NULL;
+          SQLLEN *pInd_dm = NULL;
+          SQLLEN *pInd_drv = NULL;
+          SQLLEN len;
+          size = GetColSize(col);
+
+          if (pstmt->row_bind_type == SQL_BIND_BY_COLUMN)
             {
-              _iodbcdm_bindConv_A2W(data, pInd, size);
-              data += size;
-              pInd++;
+              if (col->bn_pInd)
+                pInd_dm = &((SQLLEN*)((char*)col->bn_pInd + bindOffset))[i];
+              val_dm = (char *) col->bn_data + i * size + bindOffset;
+
+              if (col->rebinded)
+                {
+                  pInd_drv = &((SQLLEN*)col->bn_conv_pInd)[i];
+                  val_drv = (char *) col->bn_conv_data + i * col->bn_conv_size;
+                }
             }
-        }
-      else /* Row Binding*/
-        {
-          row_size = pstmt->bind_type;
-          size = col->bn_size;
-          data = (char *) col->bn_data;
-          pInd = col->bn_pInd;
-          for (i = 0; i < pstmt->rowset_size; i++)
+          else  /* row-wise binding */
             {
-              _iodbcdm_bindConv_A2W(data, pInd, size);
-              data += row_size;
-              pInd += row_size;
+              row_size = pstmt->row_bind_type;
+              if (col->bn_pInd)
+                pInd_dm = (SQLLEN *) ((char *) col->bn_pInd
+	            + i * row_size + bindOffset);
+
+              val_dm = (char *) col->bn_data + i * row_size + bindOffset;
+
+              if (col->rebinded)
+                {
+                  pInd_drv = (SQLLEN *) ((char *) col->bn_conv_pInd
+	              + i * pstmt->conv_row_bind_type);
+                  val_drv = (char *) col->bn_conv_data 
+                      + i * pstmt->conv_row_bind_type;
+                }
+            }
+
+
+          if (col->rebinded)
+            {
+              if (*pInd_drv != SQL_NULL_DATA)
+                {
+                  if (col->bn_type==SQL_C_WCHAR)
+                    {
+                      len = (SQLLEN)*pInd_drv;
+
+                      len = dm_conv_W2W(val_drv, len, val_dm, size, 
+                      		d_charset, m_charset);
+                      if (m_charset == CP_UTF8)
+                        *(char*)(val_dm + len) = 0;
+                      else
+                        DM_SetWCharAt(conv, val_dm, len/DM_WCHARSIZE(conv), 0);
+
+                      if (pInd_dm)
+                        *pInd_dm = (*pInd_drv != SQL_NTS)? len: SQL_NTS;
+                    }
+                  else
+                    {
+                      memcpy(val_dm, val_drv, size);
+                      if (pInd_dm)
+                        *pInd_dm = *pInd_drv;
+                    }
+                }
+              else
+                {
+                  if (pInd_dm)
+                    *pInd_dm = *pInd_drv;
+                }
+            }
+          else
+            {
+              if (col->direct == CD_A2W)
+                _iodbcdm_bindConv_A2W_d2m(val_dm, pInd_dm, size, conv);
+              else if (col->direct == CD_W2W)
+                _iodbcdm_bindConv_W2W_d2m(val_dm, pInd_dm, size, conv);
             }
         }
     }
 }
+
+
+
+/** dm => drv **/
+void
+_iodbcdm_ConvBindData_m2d (STMT_t *pstmt)
+{
+  PBLST ptr;
+  BIND_t *col;
+  UDWORD i, size, row_size;
+  CONN (pdbc, pstmt->hdbc);
+  ENVR (penv, pdbc->henv);
+  DM_CONV *conv = penv->conv;
+  IODBC_CHARSET m_charset = CP_DEF;
+  IODBC_CHARSET d_charset = CP_DEF;
+  SQLULEN cRows = pstmt->rowset_size;
+  SQLUINTEGER bindOffset = pstmt->row_bind_offset;
+
+  /*
+   *  Anything on the list? No? Nothing to do.
+   */
+  if (pstmt->st_pbinding == NULL)
+    return ;
+
+  if (cRows == 0)
+    cRows = 1;
+
+  if (conv)
+    {
+      m_charset = conv ? conv->dm_cp: CP_DEF;
+      d_charset = conv ? conv->drv_cp: CP_DEF;
+    }
+
+  for (ptr = pstmt->st_pbinding; ptr; ptr = ptr->bl_nextBind)
+    {
+      col = &(ptr->bl_bind);
+
+      for (i = 0; i < cRows; i++)
+        {
+          void *val_dm = NULL;
+          void *val_drv = NULL;
+          SQLLEN *pInd_dm = NULL;
+          SQLLEN *pInd_drv = NULL;
+          SQLLEN len;
+          size = GetColSize(col);
+
+          if (pstmt->row_bind_type == SQL_BIND_BY_COLUMN)
+            {
+              if (col->bn_pInd)
+                pInd_dm = &((SQLLEN*)((char*)col->bn_pInd + bindOffset))[i];
+              val_dm = (char *) col->bn_data + i * size + bindOffset;
+
+              if (col->rebinded)
+                {
+                  pInd_drv = &((SQLLEN*)col->bn_conv_pInd)[i];
+                  val_drv = (char *) col->bn_conv_data + i * col->bn_conv_size;
+                }
+            }
+          else  /* row-wise binding */
+            {
+              row_size = pstmt->row_bind_type;
+              if (col->bn_pInd)
+                pInd_dm = (SQLLEN *) ((char *) col->bn_pInd
+	            + i * row_size + bindOffset);
+
+              val_dm = (char *) col->bn_data + i * row_size + bindOffset;
+
+              if (col->rebinded)
+                {
+                  pInd_drv = (SQLLEN *) ((char *) col->bn_conv_pInd
+	              + i * pstmt->conv_row_bind_type);
+                  val_drv = (char *) col->bn_conv_data 
+                      + i * pstmt->conv_row_bind_type;
+                }
+            }
+
+
+          if (col->rebinded)
+            {
+              if (*pInd_dm != SQL_NULL_DATA)
+                {
+                  if (col->bn_type==SQL_C_WCHAR)
+                    {
+                      len = (SQLLEN)*pInd_dm;
+                      size = size/DM_WCHARSIZE(conv)*DRV_WCHARSIZE(conv);
+
+                      len = dm_conv_W2W(val_dm, len, val_drv, size, 
+                      		m_charset, d_charset);
+                      if (d_charset == CP_UTF8)
+                        *(char*)(val_dm + len) = 0;
+                      else
+                        DRV_SetWCharAt(conv, val_drv, len/DRV_WCHARSIZE(conv), 0);
+
+                      if (pInd_dm)
+                        *pInd_drv = (*pInd_dm != SQL_NTS)? len: SQL_NTS;
+                    }
+                  else
+                    {
+                      memcpy(val_drv, val_dm, size);
+                      if (pInd_dm)
+                        *pInd_drv = *pInd_dm;
+                    }
+                }
+              else
+                {
+                  if (pInd_dm)
+                    *pInd_drv = *pInd_dm;
+                }
+            }
+          else /* convert on place */
+            {
+              if (col->direct == CD_A2W)
+                _iodbcdm_bindConv_W2A_m2d(val_dm, pInd_dm, size, conv);
+              else if (col->direct == CD_W2W)
+                _iodbcdm_bindConv_W2W_m2d(val_dm, pInd_dm, size, conv);
+            }
+        }
+    }
+}
+
+
+
+static SQLRETURN
+_ReBindCol (STMT_t *pstmt, BIND_t *col)
+{
+  HPROC hproc = SQL_NULL_HPROC;
+  SQLRETURN retcode = SQL_SUCCESS;
+
+  hproc = _iodbcdm_getproc (pstmt->hdbc, en_BindCol);
+  if (hproc == SQL_NULL_HPROC)
+    {
+      PUSHSQLERR (pstmt->herr, en_IM001);
+      return SQL_ERROR;
+    }
+
+  CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc,
+      (pstmt->dhstmt, col->bn_col, col->bn_type, col->bn_conv_data, 
+       col->bn_conv_size, col->bn_conv_pInd));
+
+  return retcode;
+}
+
+
+SQLRETURN
+_iodbcdm_FixColBindData (STMT_t *pstmt)
+{
+  PBLST ptr;
+  BIND_t *col;
+  UDWORD i, size, row_size;
+  CONN (pdbc, pstmt->hdbc);
+  ENVR (penv, pdbc->henv);
+  SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
+  DM_CONV *conv = penv->conv;
+  IODBC_CHARSET m_charset = CP_DEF;
+  IODBC_CHARSET d_charset = CP_DEF;
+  BOOL needRebind = FALSE;
+  SQLLEN sz_mult = 1;
+  SQLULEN cRows = pstmt->rowset_size;
+  HPROC hproc2 = SQL_NULL_HPROC;
+  HPROC hproc3 = SQL_NULL_HPROC;
+  SQLRETURN retcode = SQL_SUCCESS;
+
+
+  /*
+   *  Anything on the list? No? Nothing to do.
+   */
+  if (pstmt->st_pbinding == NULL)
+    return SQL_SUCCESS;
+
+  if (cRows == 0)
+    cRows = 1;
+
+  if (conv)
+    {
+      m_charset = conv ? conv->dm_cp: CP_DEF;
+      d_charset = conv ? conv->drv_cp: CP_DEF;
+
+      if (m_charset==CP_UTF16 && d_charset==CP_UCS4)
+        sz_mult = 2;
+      else if (m_charset==CP_UTF8 && d_charset==CP_UCS4)
+        sz_mult = 4;
+      else if (m_charset==CP_UTF8 && d_charset==CP_UTF16)
+        sz_mult = 2;
+      else
+        sz_mult = 1;
+    }
+
+  if (penv->unicode_driver)
+    {
+      if (conv==NULL || (conv && conv->dm_cp == conv->drv_cp))
+        {
+          needRebind = FALSE;
+        }
+      else if ((m_charset==CP_UTF16 && d_charset==CP_UCS4)
+             ||(m_charset==CP_UTF8 && d_charset==CP_UTF16)
+             ||(m_charset==CP_UTF8 && d_charset==CP_UCS4))
+        {
+          /* check if we need rebind columns */
+          for (ptr = pstmt->st_pbinding; ptr; ptr = ptr->bl_nextBind)
+            {
+              col = &(ptr->bl_bind);
+              if (col->bn_type==SQL_C_WCHAR && col->direct==CD_W2W)
+                {
+                  needRebind = TRUE;
+                  break;
+                }
+            }
+        }
+    }
+
+  if (needRebind)
+    {
+      SQLULEN new_size = 0;
+      void *buf = NULL;
+
+      if (pstmt->row_bind_type == SQL_BIND_BY_COLUMN)
+        {
+          for (ptr = pstmt->st_pbinding; ptr; ptr = ptr->bl_nextBind)
+            {
+              col = &(ptr->bl_bind);
+
+              XFREE(col->bn_tmp);
+              XFREE(col->bn_tmp_Ind);
+
+              col->bn_conv_size = GetColSize(col);
+              if (col->bn_type==SQL_C_WCHAR)
+                col->bn_conv_size *= sz_mult;
+
+              new_size = cRows * col->bn_conv_size;
+              buf = calloc(new_size, sizeof(char));
+              if (!buf)
+                {
+                  PUSHSQLERR (pstmt->herr, en_HY001);
+                  return SQL_ERROR;
+                }
+              col->bn_tmp = col->bn_conv_data = buf;
+
+              buf = calloc(cRows, sizeof(SQLLEN));
+              if (!buf)
+                {
+                  PUSHSQLERR (pstmt->herr, en_HY001);
+                  return SQL_ERROR;
+                }
+              col->bn_tmp_Ind = col->bn_conv_pInd = (SQLLEN*)buf;
+
+              retcode = _ReBindCol(pstmt, col);
+              if (!SQL_SUCCEEDED (retcode))
+                return retcode;
+              col->rebinded = TRUE;
+
+            }
+
+        }
+      else  /* row-wise bind*/
+        {
+
+          /* calc new_size */
+          for (ptr = pstmt->st_pbinding; ptr; ptr = ptr->bl_nextBind)
+            {
+              col = &(ptr->bl_bind);
+              new_size += sizeof(SQLLEN);
+
+              col->bn_conv_size = GetColSize(col);
+              if (col->bn_type==SQL_C_WCHAR)
+                col->bn_conv_size *= sz_mult;
+
+              new_size += col->bn_conv_size;
+            }
+
+          if (pstmt->rows_buf)
+            {
+              free(pstmt->rows_buf);
+              pstmt->rows_buf = NULL;
+            }
+          
+          buf = calloc((new_size*cRows), sizeof(char));
+          if (!buf)
+            {
+              PUSHSQLERR (pstmt->herr, en_HY001);
+              return SQL_ERROR;
+            }
+          pstmt->rows_buf = buf;
+          pstmt->conv_row_bind_type = new_size;
+
+          /***** Set Bind_type in driver to new size *****/
+          if (dodbc_ver == SQL_OV_ODBC3)
+            {
+              CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc3, 
+                penv->unicode_driver, en_SetStmtAttr, (pstmt->dhstmt, 
+		(SQLINTEGER)SQL_ATTR_ROW_BIND_TYPE, 
+                (SQLPOINTER)new_size, 0));
+              if (hproc3 == SQL_NULL_HPROC)
+                {
+	          PUSHSQLERR (pstmt->herr, en_IM001);
+	          return SQL_ERROR;
+                }
+            }
+          else
+            {
+              hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtOption);
+              if (hproc2 == SQL_NULL_HPROC)
+                hproc2 = _iodbcdm_getproc (pstmt->hdbc, en_SetStmtOptionA);
+
+              if (hproc2 == SQL_NULL_HPROC)
+                {
+	          PUSHSQLERR (pstmt->herr, en_IM001);
+	          return SQL_ERROR;
+                }
+
+              CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc2,
+	          (pstmt->dhstmt, 
+	           (SQLUSMALLINT)SQL_BIND_TYPE, 
+	           (SQLUINTEGER)new_size));
+
+            }
+          if (!SQL_SUCCEEDED (retcode))
+            return retcode;
+
+          /* rebind parameters */
+          buf = pstmt->rows_buf;
+          for (ptr = pstmt->st_pbinding; ptr; ptr = ptr->bl_nextBind)
+            {
+              col = &(ptr->bl_bind);
+
+              col->bn_conv_data = buf;
+              buf += col->bn_conv_size;
+
+              col->bn_conv_pInd = (SQLLEN*)buf;
+              buf += sizeof(SQLLEN);
+
+              retcode = _ReBindCol(pstmt, col);
+              if (!SQL_SUCCEEDED (retcode))
+                return retcode;
+              col->rebinded = TRUE;
+            }
+        }
+
+
+      /***** Set ColSet offset *****/
+      if (dodbc_ver == SQL_OV_ODBC3)
+        {
+          CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc3, 
+            penv->unicode_driver, en_SetStmtAttr, (pstmt->dhstmt, 
+	    (SQLINTEGER)SQL_ATTR_ROW_BIND_OFFSET_PTR, 
+            (SQLPOINTER)0, 0));
+          if (hproc3 == SQL_NULL_HPROC)
+            {
+	      PUSHSQLERR (pstmt->herr, en_IM001);
+	      return SQL_ERROR;
+            }
+        }
+#if 0
+      if (!SQL_SUCCEEDED (retcode))
+        return retcode;
+#endif
+    }
+
+  return SQL_SUCCESS;
+}
+
