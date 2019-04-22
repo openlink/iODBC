@@ -1443,7 +1443,7 @@ _iodbcdm_bindConv_A2W_d2m(char *data, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
       if (buf != NULL)
         {
           memcpy(buf, data, size);
-          dm_StrCopyOut2_A2W_d2m (conv, buf, data, size, NULL, &count);
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)buf, data, size, NULL, &count);
           MEM_FREE(buf);
         }
 
@@ -1463,7 +1463,7 @@ _iodbcdm_bindConv_W2A_m2d(char *data, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
       if (buf != NULL)
         {
           memcpy(buf, data, size);
-          dm_StrCopyOut2_W2A_m2d (conv, buf, data, size, NULL, &count);
+          dm_StrCopyOut2_W2A_m2d (conv, buf, (SQLCHAR *)data, size, NULL, &count);
           MEM_FREE(buf);
         }
 
@@ -1798,7 +1798,6 @@ _iodbcdm_FixColBindData (STMT_t *pstmt)
 {
   PBLST ptr;
   BIND_t *col;
-  UDWORD i, size, row_size;
   CONN (pdbc, pstmt->hdbc);
   ENVR (penv, pdbc->henv);
   SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;

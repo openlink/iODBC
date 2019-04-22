@@ -416,7 +416,7 @@ _trace_data (
     case SQL_C_WCHAR:
       {
 	SQLCHAR *wstr;
-        ssize_t len;
+        ssize_t len = 0;
 	if (pcbValue)
 	  len = (ssize_t) *pcbValue;
         if (len > cbValueMax)

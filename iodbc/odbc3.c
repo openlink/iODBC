@@ -694,6 +694,7 @@ SQLSetEnvAttr (
 	    EnvironmentHandle,
 	    Attribute,
 	    ValuePtr, StringLength));
+      return retcode;
    }
 }
 

@@ -160,11 +160,11 @@ SQLWCHAR *dm_SQL_U8toW (SQLCHAR * inStr, int size);
 SQLWCHAR *dm_strcpy_A2W (SQLWCHAR * destStr, SQLCHAR * sourStr);
 
 int dm_StrCopyOut2_A2W (SQLCHAR * inStr, SQLWCHAR * outStr, SQLSMALLINT size,
-    SQLSMALLINT * result);
+    WORD * result);
 int dm_StrCopyOut2_U8toW (SQLCHAR * inStr, SQLWCHAR * outStr, int size,
-    u_short * result);
+    WORD * result);
 int dm_StrCopyOut2_W2A (SQLWCHAR * inStr, SQLCHAR * outStr, SQLSMALLINT size,
-    SQLSMALLINT * result);
+    WORD * result);
 
 
 # ifdef WIN32
@@ -213,18 +213,18 @@ SQLCHAR *DRV_WtoU8(DM_CONV *conv, void *inStr, int size);
 void *DM_U8toW(DM_CONV *conv, SQLCHAR *inStr, int size);
 
 int dm_StrCopyOut2_A2W_d2m (DM_CONV *conv, SQLCHAR *inStr,  
-		void *outStr, int size, u_short *result, int *copied);
+		void *outStr, int size, SQLSMALLINT *result, int *copied);
 int dm_StrCopyOut2_W2A_d2m (DM_CONV *conv, void *inStr, 
-		SQLCHAR *outStr, int size, u_short *result, int *copied);
+		SQLCHAR *outStr, int size, SQLSMALLINT *result, int *copied);
 int dm_StrCopyOut2_U8toW_d2m (DM_CONV *conv, SQLCHAR *inStr, 
-		void *outStr, int size, u_short *result, int *copied);
+		void *outStr, int size, SQLSMALLINT *result, int *copied);
 int dm_StrCopyOut2_W2W_d2m (DM_CONV *conv, void *inStr, 
-		void *outStr, int size, u_short *result, int *copied);
+		void *outStr, int size, SQLSMALLINT *result, int *copied);
 
 int dm_StrCopyOut2_W2A_m2d (DM_CONV *conv, void *inStr, 
-		SQLCHAR *outStr, int size, u_short *result, int *copied);
+		SQLCHAR *outStr, int size, SQLSMALLINT *result, int *copied);
 int dm_StrCopyOut2_W2W_m2d (DM_CONV *conv, void *inStr, 
-		void *outStr, int size, u_short *result, int *copied);
+		void *outStr, int size, SQLSMALLINT *result, int *copied);
 
 
 void *conv_text_d2m(DM_CONV *conv, void *inStr, int size, 

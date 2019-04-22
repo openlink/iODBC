@@ -356,7 +356,7 @@ SQLInstallDriverW (LPCWSTR lpszInfFile, LPCWSTR lpszDriver, LPWSTR lpszPath,
 
   if (retcode == TRUE)
     {
-      dm_StrCopyOut2_U8toW (_path_u8, lpszPath, cbPathMax, pcbPathOut);
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_path_u8, lpszPath, cbPathMax, pcbPathOut);
     }
 
 done:

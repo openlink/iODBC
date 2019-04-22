@@ -235,7 +235,7 @@ SQLGetAvailableDriversW (LPCWSTR lpszInfFile, LPWSTR lpszBuf, WORD cbBufMax,
     {
       length = 0;
 
-      for (ptr = _buffer_u8, ptrW = lpszBuf; *ptr;
+      for (ptr = (SQLCHAR *)_buffer_u8, ptrW = lpszBuf; *ptr;
 	  ptr += STRLEN (ptr) + 1, ptrW += WCSLEN (ptrW) + 1)
 	{
 	  dm_StrCopyOut2_U8toW (ptr, ptrW, cbBufMax - 1, &len);

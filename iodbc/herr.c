@@ -1757,7 +1757,7 @@ SQLGetDiagField_Internal (
                       }
 		    else
                       {
-                        char *tmp = DRV_WtoU8(conv, szState, SQL_NTS);
+                        char *tmp = (char *)DRV_WtoU8(conv, szState, SQL_NTS);
                         if (tmp && tmp[0] != 'I' && tmp[1] != 'M')
 		          szval = (char *) "ODBC 3.0";
                         else

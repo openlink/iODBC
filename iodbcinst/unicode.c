@@ -433,7 +433,7 @@ SQLCHAR *
 dm_SQL_W2A (SQLWCHAR * inStr, int size)
 {
   SQLCHAR *outStr = NULL;
-  size_t len;
+  ssize_t len;
 
   if (inStr == NULL)
     return NULL;
@@ -461,7 +461,7 @@ SQLWCHAR *
 dm_SQL_A2W (SQLCHAR * inStr, int size)
 {
   SQLWCHAR *outStr = NULL;
-  size_t len;
+  ssize_t len;
 
   if (inStr == NULL)
     return NULL;
@@ -490,7 +490,7 @@ dm_StrCopyOut2_A2W (
   SQLCHAR	* inStr,
   SQLWCHAR	* outStr,
   SQLSMALLINT	  size,
-  SQLSMALLINT	* result)
+  WORD		* result)
 {
   size_t length;
 
@@ -526,7 +526,7 @@ dm_StrCopyOut2_W2A (
   SQLWCHAR	* inStr,
   SQLCHAR	* outStr,
   SQLSMALLINT	  size,
-  SQLSMALLINT	* result)
+  WORD		* result)
 {
   size_t length;
 
@@ -896,7 +896,7 @@ _wcxntoutf8 (
 
   if (charset == CP_UTF8)
     {
-      char *u8str = (char*)wstr;
+      unsigned char *u8str = (unsigned char*)wstr;
       int mask;
 
       while (_converted < wlen && count < size_bytes)
@@ -1126,7 +1126,7 @@ _utf8ntowcx (
   int  i;
   int  mask = 0;
   int  len;
-  char c;
+  unsigned char c;
   ucs4_t wc;
   int  count = 0;
   int  _converted = 0;
@@ -1141,7 +1141,7 @@ _utf8ntowcx (
 
   while ((_converted < ulen) && (count < size))
     {
-      c = *ustr;
+      c = (unsigned char)*ustr;
       UTF8_COMPUTE (c, mask, len);
 
       if ((len == -1) || (_converted + len > ulen))
@@ -1276,7 +1276,7 @@ strdup_U8toW (SQLCHAR * str)
   if ((ret = (SQLWCHAR *) malloc ((len + 1) * sizeof (SQLWCHAR))) == NULL)
     return NULL;
 
-  len = utf8towcs (str, ret, len);
+  len = utf8towcs ((char *)str, ret, len);
   ret[len] = L'\0';
 
   return ret;
@@ -1301,7 +1301,7 @@ dm_SQL_WtoU8 (SQLWCHAR * inStr, int size)
       len = calc_len_for_utf8 (inStr, size);
       if ((outStr = (SQLCHAR *) malloc (len + 1)) != NULL)
 	{
-	  len = wcsntoutf8 (inStr, outStr, size, len, NULL);
+	  len = wcsntoutf8 (inStr, (char*)outStr, size, len, NULL);
 	  outStr[len] = '\0';
 	}
     }
@@ -1339,7 +1339,7 @@ dm_StrCopyOut2_U8toW (
   SQLCHAR	* inStr,
   SQLWCHAR	* outStr,
   int		  size,
-  u_short	* result)
+  WORD		* result)
 {
   int length;
 
@@ -1349,20 +1349,20 @@ dm_StrCopyOut2_U8toW (
   length = utf8_len (inStr, SQL_NTS);
 
   if (result)
-    *result = (u_short) length;
+    *result = (SQLSMALLINT) length;
 
   if (!outStr)
     return 0;
 
   if (size >= length + 1)
     {
-      length = utf8towcs (inStr, outStr, size);
+      length = utf8towcs ((char *)inStr, outStr, size);
       outStr[length] = L'\0';
       return 0;
     }
   if (size > 0)
     {
-      length = utf8towcs (inStr, outStr, size - 1);
+      length = utf8towcs ((char *)inStr, outStr, size - 1);
       outStr[length] = L'\0';
     }
   return -1;
@@ -1382,7 +1382,7 @@ _WCSLEN(IODBC_CHARSET charset, void *str)
   switch(charset)
     {
     case CP_UTF8:
-      return utf8_len((char*)str, SQL_NTS);
+      return utf8_len((SQLCHAR *)str, SQL_NTS);
     case CP_UTF16:
       while (*u2str++ != 0)
         len++;
@@ -1630,11 +1630,6 @@ int
 dm_conv_W2W(void *inStr, int len, void *outStr, int size, 
 	IODBC_CHARSET icharset, IODBC_CHARSET ocharset)
 {
-  ucs4_t *u4i = (ucs4_t *) inStr;
-  ucs2_t *u2i = (ucs2_t *) inStr;
-  ucs4_t *u4o = (ucs4_t *) outStr;
-  ucs2_t *u2o = (ucs2_t *) outStr;
-  ucs4_t wc;
   int count = 0;
   int o_wchar_size = _WCHARSIZE(ocharset);
 
@@ -1865,10 +1860,10 @@ DM_strcpy_U8toW (DM_CONV *conv, void *dest, SQLCHAR *sour)
   if (charset == CP_UTF16 || charset == CP_UCS4)
     {
       len = utf8_len(sour, SQL_NTS) * _WCHARSIZE(charset);
-      _utf8towcx(charset, sour, dest, len);
+      _utf8towcx(charset, (char *)sour, dest, len);
     }
   else
-    strcpy(dest, sour);
+    strcpy(dest, (char *)sour);
 }
 
 
@@ -1908,7 +1903,7 @@ DM_A2W(DM_CONV *conv, SQLCHAR * inStr, int size)
 {
   IODBC_CHARSET charset = (conv) ? conv->dm_cp : CP_DEF;
   SQLWCHAR *outStr = NULL;
-  size_t len;
+  ssize_t len;
 
   if (size == SQL_NTS)
     len = strlen((char *) inStr);
@@ -1922,7 +1917,7 @@ DM_A2W(DM_CONV *conv, SQLCHAR * inStr, int size)
   if (!outStr)
     return NULL;
 
-  dm_conv_A2W(inStr, size, outStr, len*DM_WCHARSIZE_ALLOC(conv), charset);  
+  dm_conv_A2W((char *)inStr, size, outStr, len*DM_WCHARSIZE_ALLOC(conv), charset);  
   return outStr;
 }
 
@@ -1931,7 +1926,7 @@ static SQLCHAR *
 __W2A(IODBC_CHARSET charset, void * inStr, int size)
 {
   SQLCHAR *outStr = NULL;
-  size_t len;
+  ssize_t len;
 
   if (size == SQL_NTS)
     len = _WCSLEN(charset, inStr);
@@ -1945,7 +1940,7 @@ __W2A(IODBC_CHARSET charset, void * inStr, int size)
   if (!outStr)
     return NULL;
 
-  dm_conv_W2A(inStr, size, outStr, len, charset);  
+  dm_conv_W2A(inStr, size, (char *)outStr, len, charset);  
   return outStr;
 }
 
@@ -2011,7 +2006,7 @@ DM_GetWCharAt(DM_CONV *conv, void *str, int pos)
             if ((u8str[i] & 0xC0) != 0x80)
               return 0;
             wc <<= 6;
-            wc != (u8str[i] & 0x3F);
+            wc |= (u8str[i] & 0x3F);
           }
         return wc;
       }
@@ -2134,12 +2129,12 @@ __WtoU8(IODBC_CHARSET charset, void *inStr, int size)
     return NULL;
 
   if (size == SQL_NTS)
-    _wcxtoutf8 (charset, inStr, outStr, len);
+    _wcxtoutf8 (charset, inStr, (char *)outStr, len);
   else
     {
       if (charset != CP_UTF8)
         size /= _WCHARSIZE(charset);
-      _wcxntoutf8 (charset, inStr, outStr, size, len, NULL);
+      _wcxntoutf8 (charset, inStr, (char *)outStr, size, len, NULL);
     }
 
   return outStr;
@@ -2176,9 +2171,9 @@ DM_U8toW(DM_CONV *conv, SQLCHAR *inStr, int size)
   outStr = (void *) calloc (len + 1, _WCHARSIZE_ALLOC(charset));
 
   if (size == SQL_NTS)
-    _utf8towcx(charset, inStr, outStr, len);
+    _utf8towcx(charset, (char *)inStr, outStr, len);
   else
-    _utf8ntowcx(charset, inStr, outStr, size, len, NULL);
+    _utf8ntowcx(charset, (char *)inStr, outStr, size, len, NULL);
 
   return outStr;
 }
@@ -2192,7 +2187,7 @@ DM_U8toW(DM_CONV *conv, SQLCHAR *inStr, int size)
  */
 int 
 dm_StrCopyOut2_A2W_d2m (DM_CONV *conv, SQLCHAR *inStr,  
-		void *outStr, int size, u_short *result, int *copied)
+		void *outStr, int size, SQLSMALLINT *result, int *copied)
 {
   IODBC_CHARSET o_charset = (conv) ? conv->dm_cp : CP_DEF;
   int length, count;
@@ -2214,7 +2209,7 @@ dm_StrCopyOut2_A2W_d2m (DM_CONV *conv, SQLCHAR *inStr,
   if (size <= 0)
     return -1;
 
-  count = dm_conv_A2W(inStr, SQL_NTS, outStr, size, o_charset);
+  count = dm_conv_A2W((char *)inStr, SQL_NTS, outStr, size, o_charset);
 
   if (o_charset == CP_UTF16 || o_charset == CP_UCS4)
     _SetWCharAt(o_charset, outStr, count/_WCHARSIZE(o_charset), 0);
@@ -2234,11 +2229,10 @@ dm_StrCopyOut2_A2W_d2m (DM_CONV *conv, SQLCHAR *inStr,
 /* drv => dm */
 int 
 dm_StrCopyOut2_W2A_d2m (DM_CONV *conv, void *inStr, 
-		SQLCHAR *outStr, int size, u_short *result, int *copied)
+		SQLCHAR *outStr, int size, SQLSMALLINT *result, int *copied)
 {
   IODBC_CHARSET i_charset = (conv) ? conv->drv_cp : CP_DEF;
   int length, count;
-  int slen;
   int ret = 0;
 
   if (!inStr)
@@ -2257,7 +2251,7 @@ dm_StrCopyOut2_W2A_d2m (DM_CONV *conv, void *inStr,
   if (size < 0)
     return -1;
 
-  count = dm_conv_W2A(inStr, SQL_NTS, outStr, size, i_charset);
+  count = dm_conv_W2A(inStr, SQL_NTS, (char *)outStr, size, i_charset);
   outStr[count] = '\0';
 
   if (count < length)
@@ -2273,11 +2267,10 @@ dm_StrCopyOut2_W2A_d2m (DM_CONV *conv, void *inStr,
 /* dm => drv */
 int 
 dm_StrCopyOut2_W2A_m2d (DM_CONV *conv, void *inStr, 
-		SQLCHAR *outStr, int size, u_short *result, int *copied)
+		SQLCHAR *outStr, int size, SQLSMALLINT *result, int *copied)
 {
   IODBC_CHARSET i_charset = (conv) ? conv->dm_cp : CP_DEF;
   int length, count;
-  int slen;
   int ret = 0;
 
   if (!inStr)
@@ -2296,7 +2289,7 @@ dm_StrCopyOut2_W2A_m2d (DM_CONV *conv, void *inStr,
   if (size < 0)
     return -1;
 
-  count = dm_conv_W2A(inStr, SQL_NTS, outStr, size, i_charset);
+  count = dm_conv_W2A(inStr, SQL_NTS, (char *)outStr, size, i_charset);
   outStr[count] = '\0';
 
   if (count < length)
@@ -2317,7 +2310,7 @@ dm_StrCopyOut2_W2A_m2d (DM_CONV *conv, void *inStr,
 */
 int 
 dm_StrCopyOut2_U8toW_d2m (DM_CONV *conv, SQLCHAR *inStr, 
-		void *outStr, int size, u_short *result, int *copied)
+		void *outStr, int size, SQLSMALLINT *result, int *copied)
 {
   IODBC_CHARSET o_charset = (conv) ? conv->dm_cp : CP_DEF;
   int length;
@@ -2327,7 +2320,7 @@ dm_StrCopyOut2_U8toW_d2m (DM_CONV *conv, SQLCHAR *inStr,
   if (!inStr)
     return -1;
 
-  length = utf8_len ((char *) inStr, SQL_NTS);
+  length = utf8_len ((SQLCHAR *) inStr, SQL_NTS);
 
   if (result)
     *result = (SQLSMALLINT) length;
@@ -2366,7 +2359,7 @@ dm_StrCopyOut2_U8toW_d2m (DM_CONV *conv, SQLCHAR *inStr,
 */
 int 
 dm_StrCopyOut2_W2W_d2m (DM_CONV *conv, void *inStr, 
-		void *outStr, int size, u_short *result, int *copied)
+		void *outStr, int size, SQLSMALLINT *result, int *copied)
 {
   IODBC_CHARSET o_charset = (conv) ? conv->dm_cp : CP_DEF;
   IODBC_CHARSET i_charset = (conv) ? conv->drv_cp : CP_DEF;
@@ -2415,7 +2408,7 @@ dm_StrCopyOut2_W2W_d2m (DM_CONV *conv, void *inStr,
 */
 int 
 dm_StrCopyOut2_W2W_m2d (DM_CONV *conv, void *inStr, 
-		void *outStr, int size, u_short *result, int *copied)
+		void *outStr, int size, SQLSMALLINT *result, int *copied)
 {
   IODBC_CHARSET o_charset = (conv) ? conv->drv_cp : CP_DEF;
   IODBC_CHARSET i_charset = (conv) ? conv->dm_cp : CP_DEF;

@@ -774,7 +774,7 @@ SQLGetInfo_Internal (
 	sprintf ((char*)buf, "%02d.%02d.0000", SQL_SPEC_MAJOR, SQL_SPEC_MINOR);
       if(waMode == 'W')
         {
-          void *prov = DM_U8toW(conv, (char *)buf, SQL_NTS);
+          void *prov = DM_U8toW(conv, (SQLCHAR *)buf, SQL_NTS);
           if(prov)
             {
               DM_WCSNCPY(conv, buf, prov, sizeof(buf)/DM_WCHARSIZE(conv));

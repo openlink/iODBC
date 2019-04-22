@@ -741,7 +741,6 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
   if (needRebind && !bOutput)  /* mode this flag to PSTMT */
     {
       SQLULEN new_size = 0;
-      void *ptr = NULL;
       void *buf = NULL;
 
       if (pstmt->param_bind_type) /* row-wise binding */
@@ -1587,7 +1586,6 @@ SQLPutData_Internal (
   if (pstmt->st_need_param != NULL && m_charset != d_charset
      &&  pstmt->st_need_param->pm_c_type_orig == SQL_C_WCHAR)
     {
-      PPARM parm = pstmt->st_need_param;
       SQLLEN drv_cbValue;
       SQLPOINTER drv_rgbValue = conv_text_m2d_W2W(conv, rgbValue, cbValue,
                                   &drv_cbValue); 

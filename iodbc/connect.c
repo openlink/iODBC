@@ -213,11 +213,6 @@ quit:
     goto end;								\
   } while (0)
 
-#if 0
-#define DPRINTF(a)	fprintf a
-#else
-#define DPRINTF(a)
-#endif
 
 
 static SQLRETURN
@@ -1912,7 +1907,7 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
 
   if (wide)
     {
-      SQLWCHAR *_in = DM_U8toW (conv, buf, SQL_NTS);
+      SQLWCHAR *_in = DM_U8toW (conv, (SQLCHAR *)buf, SQL_NTS);
       if (_in == NULL)
         {
           rc = -1;
@@ -2097,7 +2092,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 	  _pwd = _szAuthStr;
         }
 
-      retcode = _iodbcdm_pool_get_conn (pdbc, _dsn, _uid, _pwd, NULL);
+      retcode = _iodbcdm_pool_get_conn (pdbc, (char *)_dsn, _uid, _pwd, NULL);
       if (SQL_SUCCEEDED (retcode))
         {
 	  /*
@@ -2166,7 +2161,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 	    }
 	  else
 	    {
-	      pdbc->cp_dsn = strdup (_dsn);
+	      pdbc->cp_dsn = strdup ((char *)_dsn);
 	      if (pdbc->cp_dsn == NULL)
 	        {
 		  PUSHSQLERR (pdbc->herr, en_S1001);
@@ -2238,7 +2233,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
   MEM_FREE(_szDSN);
   _szDSN = NULL;
 
-  retcode = _iodbcdm_driverload (_dsn, (char *)driver, pdbc, thread_safe, 
+  retcode = _iodbcdm_driverload ((char *)_dsn, (char *)driver, pdbc, thread_safe, 
   		unload_safe, drv_cp, waMode);
 
   switch (retcode)
@@ -2532,7 +2527,7 @@ SQLDriverConnect_Internal (
   /* lookup and save original SAVEFILE value */
   if (_iodbcdm_cfg_find (pconfig, "ODBC", "SAVEFILE") == 0)
     {
-      savefile = strdup (pconfig->value);
+      savefile = (SQLCHAR *)strdup (pconfig->value);
       if (savefile == NULL)
         {
           PUSHSQLERR (pdbc->herr, en_HY001);
@@ -2585,7 +2580,7 @@ SQLDriverConnect_Internal (
 
 		  if (conv && conv->dm_cp == CP_UTF8)
                     *(SQLSMALLINT *) pcbConnStrOut = 
-                        strlen((SQLCHAR*)szConnStrOut);
+                        strlen((char*)szConnStrOut);
 		  else
                     *(SQLSMALLINT *) pcbConnStrOut =
 		        DM_WCSLEN (conv, szConnStrOut);
@@ -2679,7 +2674,7 @@ SQLDriverConnect_Internal (
       else if (!strcasecmp(pconfig->id, "FILEDSN"))
         {
           /* file dsn */
-          filedsn = strdup (pconfig->value);
+          filedsn = (SQLCHAR *)strdup (pconfig->value);
 	  if (filedsn == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_HY001);
@@ -2694,7 +2689,7 @@ SQLDriverConnect_Internal (
   if (filedsn != NULL)
     {
       /* merge params from .dsn file */
-      if (_iodbcdm_cfg_merge_filedsn (pconfig, filedsn,
+      if (_iodbcdm_cfg_merge_filedsn (pconfig, (char *)filedsn,
 	      (char *) connStrIn_buf, sizeof (connStrIn_buf),
 	      waMode == 'W', conv) == -1)
         {
@@ -2840,7 +2835,7 @@ SQLDriverConnect_Internal (
             if (size == SQL_NTS)
               {
                 if (m_charset == CP_UTF8)
-	          size = strlen((SQLCHAR*) connStrIn);
+	          size = strlen((char*) connStrIn);
                 else
 	          size = DM_WCSLEN (conv, connStrIn);
 	      }
@@ -2900,7 +2895,7 @@ SQLDriverConnect_Internal (
           RETURN (SQL_ERROR);
         }
       if (_iodbcdm_cfg_find (pconfig, "ODBC", "DSN") == 0)
-        dsn = pconfig->value;
+        dsn = (SQLCHAR *)pconfig->value;
       if (_iodbcdm_cfg_find (pconfig, "ODBC", "DRIVER") == 0)
         {
           /* copy because pconfig can be reinitialized later */
@@ -2951,7 +2946,7 @@ SQLDriverConnect_Internal (
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (SQLGetPrivateProfileString ((char *) dsn, "ThreadManager", "", 
-	buf, sizeof (buf), "odbc.ini")
+	(LPSTR)buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       thread_safe = 0;		/* Driver needs a thread manager */
@@ -2964,7 +2959,7 @@ SQLDriverConnect_Internal (
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (SQLGetPrivateProfileString ((char *) dsn, "UnloadSafe", "", 
-	buf, sizeof (buf), "odbc.ini")
+	(LPSTR)buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       unload_safe = 1;
@@ -2990,7 +2985,7 @@ SQLDriverConnect_Internal (
     }
 
   retcode = 
-      _iodbcdm_driverload (dsn, (char *) drv, pdbc, thread_safe, unload_safe, 
+      _iodbcdm_driverload ((char *)dsn, (char *) drv, pdbc, thread_safe, unload_safe, 
       drv_cp, waMode);
 
   switch (retcode)
@@ -3100,15 +3095,15 @@ SQLDriverConnect_Internal (
               out += outSize * DM_WCHARSIZE(conv);
 
               _iodbcdm_strlcat (tmp, ";FILEDSN=", sizeof(tmp));
-              _iodbcdm_strlcat (tmp, filedsn, sizeof(tmp));
-              dm_StrCopyOut2_U8toW_d2m(conv, tmp, out, 
+              _iodbcdm_strlcat (tmp, (char *)filedsn, sizeof(tmp));
+              dm_StrCopyOut2_U8toW_d2m(conv, (SQLCHAR *)tmp, out, 
               		(cbConnStrOutMax - outSize) * DM_WCHARSIZE(conv), 
               		NULL, NULL);
 	    }
           else
             {
               _iodbcdm_strlcat (szConnStrOut, ";FILEDSN=", cbConnStrOutMax);
-              _iodbcdm_strlcat (szConnStrOut, filedsn, cbConnStrOutMax);
+              _iodbcdm_strlcat (szConnStrOut, (char *)filedsn, cbConnStrOutMax);
             }
         }
       if (savefile != NULL)
@@ -3123,15 +3118,15 @@ SQLDriverConnect_Internal (
               out += outSize * DM_WCHARSIZE(conv);
 
               _iodbcdm_strlcat (tmp, ";SAVEFILE=", sizeof(tmp));
-              _iodbcdm_strlcat (tmp, savefile, sizeof(tmp));
-              dm_StrCopyOut2_U8toW_d2m(conv, tmp, out, 
+              _iodbcdm_strlcat (tmp, (char *)savefile, sizeof(tmp));
+              dm_StrCopyOut2_U8toW_d2m(conv, (SQLCHAR *)tmp, out, 
               		(cbConnStrOutMax - outSize) * DM_WCHARSIZE(conv), 
               		NULL, NULL);
 	    }
           else
             {
               _iodbcdm_strlcat (szConnStrOut, ";SAVEFILE=", cbConnStrOutMax);
-              _iodbcdm_strlcat (szConnStrOut, savefile, cbConnStrOutMax);
+              _iodbcdm_strlcat (szConnStrOut, (char *)savefile, cbConnStrOutMax);
             }
         }
 
@@ -3167,7 +3162,7 @@ SQLDriverConnect_Internal (
     {
       assert (connStrOut != NULL);
 
-      if (_iodbcdm_cfg_savefile (savefile, connStrOut,
+      if (_iodbcdm_cfg_savefile ((char *)savefile, connStrOut,
 				 penv->unicode_driver, conv) == -1)
         {
 	  PUSHSQLERR (pdbc->herr, en_01S08);

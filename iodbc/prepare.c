@@ -467,7 +467,7 @@ SQLBindParameter_Internal (
   SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
   PPARM newparam;
   TPARM parm;
-  int size;
+  int size = 0;
 
 #if (ODBCVER >= 0x0300)
   if (0)

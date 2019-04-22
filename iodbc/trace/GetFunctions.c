@@ -179,7 +179,7 @@ _trace_func_name (SQLUSMALLINT fFunc, int format)
   if (format)
     trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT", (int) fFunc, ptr);
   else
-    trace_emit_string (ptr, SQL_NTS, 0);
+    trace_emit_string ((SQLCHAR *)ptr, SQL_NTS, 0);
 }
 
 

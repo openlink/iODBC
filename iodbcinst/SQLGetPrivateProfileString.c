@@ -271,8 +271,9 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
   char *_filename_u8 = NULL;
   SQLCHAR *ptr;
   SQLWCHAR *ptrW;
-  SQLSMALLINT length, len;
+  WORD length, len;
 
+  length = 0;
   _section_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszSection, SQL_NTS);
   if (_section_u8 == NULL && lpszSection)
     {
@@ -320,7 +321,7 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
 	{
 	  length = 0;
 
-	  for (ptr = _buffer_u8, ptrW = lpszRetBuffer; *ptr;
+	  for (ptr = (SQLCHAR *)_buffer_u8, ptrW = lpszRetBuffer; *ptr;
 	      ptr += STRLEN (ptr) + 1, ptrW += WCSLEN (ptrW) + 1)
 	    {
 	      dm_StrCopyOut2_U8toW (ptr, ptrW, cbRetBuffer - length - 1,
@@ -333,13 +334,13 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
 	}
       else
 	{
-	  dm_StrCopyOut2_U8toW (_buffer_u8, lpszRetBuffer, cbRetBuffer,
+	  dm_StrCopyOut2_U8toW ((SQLCHAR *)_buffer_u8, lpszRetBuffer, cbRetBuffer,
 	      &length);
 	}
     }
   else
     {
-      dm_StrCopyOut2_U8toW (_buffer_u8, lpszRetBuffer, cbRetBuffer, &length);
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_buffer_u8, lpszRetBuffer, cbRetBuffer, &length);
     }
 
 done:

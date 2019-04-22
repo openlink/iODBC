@@ -683,8 +683,8 @@ ODBC_Test ()
   SQLTCHAR request[4096];
   SQLTCHAR fetchBuffer[1024];
   char buf[4096];
-  size_t displayWidths[MAXCOLS];
-  size_t displayWidth;
+  int displayWidths[MAXCOLS];
+  int displayWidth;
   short numCols;
   short colNum;
   SQLTCHAR colName[50];

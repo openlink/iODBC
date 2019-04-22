@@ -161,7 +161,7 @@
 #define CALL_CONFIG_DRIVERW_BUNDLE(driverpath) \
     if (bundle_dll != NULL) \
       { \
-	if ((pConfigDriverW = (pConfigDriverFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriverW"))) != NULL) \
+	if ((pConfigDriverW = (pConfigDriverWFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriverW"))) != NULL) \
 	  { \
 	    if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR *) lpszDriver, (SQLWCHAR *) lpszArgs, (SQLWCHAR *) lpszMsg, cbMsgMax, pcbMsgOut)) \
 	      { \
