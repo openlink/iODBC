@@ -123,6 +123,9 @@ adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
       goto end;
     }
 
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+      (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
   /* Set the version ODBC API to use */
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
       SQL_IS_INTEGER);
