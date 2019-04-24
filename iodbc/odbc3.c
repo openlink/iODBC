@@ -1866,7 +1866,7 @@ SQLSetConnectAttr_Internal (
         en_SetConnectAttr, (con->dhdbc, Attribute, ValuePtr, StringLength));
       if (hproc != SQL_NULL_HPROC)
         {
-          if (retcode == SQL_SUCCESS && Attribute == SQL_ATTR_APP_WCHAR_ID)
+          if (retcode == SQL_SUCCESS && Attribute == SQL_ATTR_APP_WCHAR_TYPE)
             {
               switch((SQLINTEGER)ValuePtr)
                 {

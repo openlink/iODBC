@@ -210,7 +210,7 @@
 #define SQL_RE_DEFAULT	SQL_RE_OFF
 
 
-#define SQL_ATTR_APP_WCHAR_ID		      1061
+#define SQL_ATTR_APP_WCHAR_TYPE		      1061
 
 #define SQL_ATTR_APP_UNICODE_TYPE             1064
 #define SQL_ATTR_DRIVER_UNICODE_TYPE          1065

@@ -1504,7 +1504,7 @@ _iodbcdm_driverload (
     {
       SQLINTEGER wchar_id = penv->conv->dm_cp;
 
-      retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_ID,
+      retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_TYPE,
 	wchar_id);
 
       if (retcode == SQL_SUCCESS)
@@ -1512,7 +1512,7 @@ _iodbcdm_driverload (
 	  penv->conv->drv_cp = wchar_id;
 
           DPRINTF ((stderr,
-            "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_ID=%d) %s\n",
+            "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) %s\n",
                penv->conv->drv_cp,
                penv->conv->drv_cp==CP_UCS4
                           ?"UCS4"
