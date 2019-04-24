@@ -73,6 +73,7 @@
  */
 
 #include <iodbc.h>
+#include <iodbcext.h>
 
 #include <stdio.h>
 #include <sys/types.h>
