@@ -6,6 +6,7 @@
 #include "sql.h"
 #include "sqlext.h"
 #include "sqlucode.h"
+#include "iodbcext.h"
 #define TRUE 1
 #define FALSE 0
 
@@ -220,6 +221,14 @@ ODBC_Connect (char *connStr)
 
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
       SQL_IS_UINTEGER);
+      
+#ifdef WIDE_UCS2
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE, (SQLPOINTER) SQL_DM_CP_UTF16,
+      SQL_IS_UINTEGER);
+#else      
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE, (SQLPOINTER) SQL_DM_CP_UCS4,
+      SQL_IS_UINTEGER);
+#endif      
 
   if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
     return -1;
