@@ -1301,11 +1301,11 @@ _iodbcdm_conv_var(STMT_t *pstmt, int i, void *pData, int pDataLength,
   if (direct == CD_A2W)
     {
       size = dm_conv_A2W((char *)pData, pDataLength, var->data, 
-      		count_alloc - DRV_WCHARSIZE_ALLOC(conv), d_charset);
+      		count_alloc - DRV_WCHARSIZE(conv), d_charset);
       if (d_charset == CP_UTF8)
         *(char*)(var->data + size) = 0;
       else
-        DRV_SetWCharAt(conv, var->data, size/DRV_WCHARSIZE_ALLOC(conv), 0);
+        DRV_SetWCharAt(conv, var->data, size/DRV_WCHARSIZE(conv), 0);
     }
   else if (direct == CD_W2A)
     {
@@ -1316,11 +1316,11 @@ _iodbcdm_conv_var(STMT_t *pstmt, int i, void *pData, int pDataLength,
   else /* CD_W2W*/
     {
       size = dm_conv_W2W(pData, pDataLength, (char *)var->data, 
-      		count_alloc - DRV_WCHARSIZE_ALLOC(conv), m_charset, d_charset);
+      		count_alloc - DRV_WCHARSIZE(conv), m_charset, d_charset);
       if (d_charset == CP_UTF8)
         *(char*)(var->data + size) = 0;
       else
-        DRV_SetWCharAt(conv, var->data, size/DRV_WCHARSIZE_ALLOC(conv), 0);
+        DRV_SetWCharAt(conv, var->data, size/DRV_WCHARSIZE(conv), 0);
     }
 
   return (void *) var->data;

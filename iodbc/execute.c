@@ -297,7 +297,7 @@ _ExecConv_W2A(wchar_t *wdata, SQLLEN *pInd, UDWORD size, DM_CONV *conv)
           if (conv->drv_cp == CP_UTF8)
 	    *pInd = strlen((char*)wdata);
           else
-	    *pInd /= DRV_WCHARSIZE_ALLOC(conv);
+	    *pInd /= DRV_WCHARSIZE(conv);
 	}
     }
 }
