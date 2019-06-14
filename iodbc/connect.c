@@ -1377,6 +1377,7 @@ _iodbcdm_driverload (
 	  if (sqlstat != en_00000)
 	    {
 	      _iodbcdm_dllclose (hdll);
+              MEM_FREE (penv->conv);	
 	      MEM_FREE (penv);
 	      PUSHSQLERR (pdbc->herr, en_IM004);
 
@@ -1636,6 +1637,7 @@ _iodbcdm_driverunload (HDBC hdbc, int ver)
 	    }
 	}
 
+      MEM_FREE (penv->conv);	
       MEM_FREE (penv);
     }
 
