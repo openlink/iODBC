@@ -136,9 +136,6 @@
             [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:key!=nil?key:@"", @"key",
                                 val!=nil?val:@"", @"val", nil]];
         }
-        else{
-            [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"", @"key", @"", @"val", nil]];
-        }
     }
 }
 

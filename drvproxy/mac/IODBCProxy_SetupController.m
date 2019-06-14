@@ -230,9 +230,6 @@ char* showSetup(char* dsn, char* attrs, BOOL addEnable)
                                     val!=nil?val:@"", @"val", nil]];
 
         }
-        else{
-            [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"", @"key", @"", @"val", nil]];
-        }
     }
 }
 
