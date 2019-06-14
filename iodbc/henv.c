@@ -270,6 +270,7 @@ SQLFreeEnv_Internal (SQLHENV henv)
     _iodbcdm_pool_drop_conn (genv->pdbc_pool, NULL);
 #endif
 
+  MEM_FREE(genv->conv);
   /*
    *  Invalidate this handle
    */
