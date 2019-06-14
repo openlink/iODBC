@@ -318,7 +318,8 @@ ODBC_Connect (char *connStr)
   strcpy_A2W (wdataSource, (char *) dataSource);
 #endif
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
-      (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
+      (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_NOPROMPT);
+/*      (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);*/
   if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     ODBC_Errors ("SQLDriverConnectW", SQL_NULL_HANDLE);
 
