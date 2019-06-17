@@ -141,6 +141,7 @@ typedef struct DBC
 
     DRVOPT *drvopt;			/* Driver specific connect options */
     SQLSMALLINT err_rec;
+    DM_CONV conv;
   }
 DBC_t;
 

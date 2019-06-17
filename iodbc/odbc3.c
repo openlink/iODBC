@@ -624,13 +624,13 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
       switch ((SQLINTEGER)(SQLULEN) ValuePtr)
         {
         case SQL_DM_CP_UTF16:
-          genv->conv->dm_cp = CP_UTF16;
+          genv->conv.dm_cp = CP_UTF16;
           break;
         case SQL_DM_CP_UCS4:
-          genv->conv->dm_cp = CP_UCS4;
+          genv->conv.dm_cp = CP_UCS4;
           break;
         case SQL_DM_CP_UTF8:
-          genv->conv->dm_cp = CP_UTF8;
+          genv->conv.dm_cp = CP_UTF8;
           break;
         default:
 	  PUSHSQLERR (genv->herr, en_HY024);
@@ -638,7 +638,7 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
         }
       DPRINTF ((stderr,
       "DEBUG: SQLSetEnvAttr DiverManager AppUnicodeType=%s\n",
-        genv->conv->dm_cp==CP_UCS4?"UCS4":(genv->conv->dm_cp==CP_UTF16?"UTF16":"UTF8")));
+        genv->conv.dm_cp==CP_UCS4?"UCS4":(genv->conv.dm_cp==CP_UTF16?"UTF16":"UTF8")));
 
       break;
 
@@ -1820,7 +1820,7 @@ SQLSetConnectAttr_Internal (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = (penv!=SQL_NULL_HENV ? penv->conv : ((GENV_t *) con->genv)->conv);
+  DM_CONV *conv = &con->conv;
 
   odbc_ver = ((GENV_t *) con->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
@@ -1871,15 +1871,15 @@ SQLSetConnectAttr_Internal (
               switch((SQLINTEGER)ValuePtr)
                 {
                 case CP_UTF16:
-                  penv->conv->drv_cp = (IODBC_CHARSET)ValuePtr;
+                  penv->conv.drv_cp = (IODBC_CHARSET)ValuePtr;
                   break;
 
                 case CP_UTF8:
-                  penv->conv->drv_cp = (IODBC_CHARSET)ValuePtr;
+                  penv->conv.drv_cp = (IODBC_CHARSET)ValuePtr;
                   break;
 
                 case CP_UCS4:
-                  penv->conv->drv_cp = (IODBC_CHARSET)ValuePtr;
+                  penv->conv.drv_cp = (IODBC_CHARSET)ValuePtr;
                   break;
                 }
             }
@@ -2003,12 +2003,11 @@ SQLGetConnectAttr_Internal (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = (penv ? penv->conv : NULL);
+  DM_CONV *conv = &con->conv;
   SQLINTEGER _StringLength = StringLength;
 
   odbc_ver = ((GENV_t *) con->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
-  conv = (penv != SQL_NULL_HENV ? penv->conv : ((GENV_t *) con->genv)->conv);
 
   if (con->state == en_dbc_needdata)
     {
@@ -2236,7 +2235,7 @@ SQLGetDescField_Internal (
   void * valueOut = ValuePtr;
   void * _ValuePtr = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   SQLINTEGER _BufferLength = BufferLength;
 
   if (penv->unicode_driver && waMode != 'W')
@@ -2463,7 +2462,7 @@ SQLSetDescField_Internal (
   SQLRETURN retcode = SQL_SUCCESS;
   void * _ValuePtr = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   if (penv->unicode_driver && waMode != 'W')
     conv_direct = CD_A2W;
@@ -2605,7 +2604,7 @@ SQLGetDescRec_Internal (
   void * _Name = NULL;
 
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   if (penv->unicode_driver && waMode != 'W')
     conv_direct = CD_A2W;
@@ -2966,7 +2965,7 @@ SQLColAttribute_Internal (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   SQLSMALLINT _BufferLength = BufferLength;
 
   odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;

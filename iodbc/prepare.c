@@ -108,7 +108,7 @@ SQLPrepare_Internal (
   sqlstcode_t sqlstat = en_00000;
   void * _SqlStr = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -302,7 +302,7 @@ SQLSetCursorName_Internal (
   sqlstcode_t sqlstat = en_00000;
   void * _Cursor = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   if (szCursor == NULL)
     {

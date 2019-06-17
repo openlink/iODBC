@@ -376,7 +376,7 @@ _iodbcdm_sqlerror (
         }
 
       if (thdbc && ((DBC_t *)thdbc)->henv)
-        conv = ((ENV_t *) ((DBC_t *)thdbc)->henv)->conv;
+        conv = &((DBC_t *)thdbc)->conv;
 
       /* call driver */
       if (unicode_driver && waMode != 'W')
@@ -818,7 +818,7 @@ SQLGetDiagRec_Internal (
 	  return SQL_INVALID_HANDLE;
 	}
       err = ((GENV_t *) Handle)->herr;
-      conv = ((GENV_t *) Handle)->conv;
+      conv = &(((GENV_t *) Handle)->conv);
       break;
 
     case SQL_HANDLE_DBC:
@@ -829,8 +829,8 @@ SQLGetDiagRec_Internal (
       err = ((DBC_t *) Handle)->herr;
       dhandle = ((DBC_t *) Handle)->dhdbc;
       hdbc = Handle;
-      if (hdbc && ((DBC_t *)hdbc)->henv)
-        conv = ((ENV_t *) ((DBC_t *)hdbc)->henv)->conv;
+      if (hdbc)
+        conv = &(((DBC_t *)hdbc)->conv);
       break;
 
     case SQL_HANDLE_STMT:
@@ -841,8 +841,8 @@ SQLGetDiagRec_Internal (
       err = ((STMT_t *) Handle)->herr;
       dhandle = ((STMT_t *) Handle)->dhstmt;
       hdbc = ((STMT_t *) Handle)->hdbc;
-      if (hdbc && ((DBC_t *)hdbc)->henv)
-        conv = ((ENV_t *) ((DBC_t *)hdbc)->henv)->conv;
+      if (hdbc)
+        conv = &(((DBC_t *)hdbc)->conv);
       break;
 
     case SQL_HANDLE_DESC:
@@ -853,8 +853,8 @@ SQLGetDiagRec_Internal (
       err = ((DESC_t *) Handle)->herr;
       dhandle = ((DESC_t *) Handle)->dhdesc;
       hdbc = ((DESC_t *) Handle)->hdbc;
-      if (hdbc && ((DBC_t *)hdbc)->henv)
-        conv = ((ENV_t *) ((DBC_t *)hdbc)->henv)->conv;
+      if (hdbc)
+        conv = &(((DBC_t *)hdbc)->conv);
       break;
 
     default:
@@ -1329,7 +1329,7 @@ SQLGetDiagField_Internal (
   if (con != NULL && con->henv != SQL_NULL_HENV)
     {
       unicode_driver = ((ENV_t *) con->henv)->unicode_driver;
-      conv = ((ENV_t *) con->henv)->conv;
+      conv = &(con->conv);
     }
 
   switch (nRecNumber)

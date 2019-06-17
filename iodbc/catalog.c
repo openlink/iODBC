@@ -325,7 +325,7 @@ SQLSpecialColumns_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -581,7 +581,7 @@ SQLStatistics_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -818,7 +818,7 @@ SQLTables_Internal (
   void * _TableName = NULL;
   void * _TableType = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1037,7 +1037,7 @@ SQLColumnPrivileges_Internal (
   void * _TableName = NULL;
   void * _ColumnName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1254,7 +1254,7 @@ SQLColumns_Internal (
   void * _TableName = NULL;
   void * _ColumnName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1479,7 +1479,7 @@ SQLForeignKeys_Internal (
   void * _FkTableOwner = NULL;
   void * _FkTableName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1737,7 +1737,7 @@ SQLPrimaryKeys_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1935,7 +1935,7 @@ SQLProcedureColumns_Internal (
   void * _ProcName = NULL;
   void * _ColumnName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -2151,7 +2151,7 @@ SQLProcedures_Internal (
   void * _ProcOwner = NULL;
   void * _ProcName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -2346,7 +2346,7 @@ SQLTablePrivileges_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {

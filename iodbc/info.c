@@ -370,7 +370,7 @@ SQLDataSourcesW (
   SQLCHAR *_DSN = NULL;  
   SQLCHAR *_Desc = NULL;
   GENV (glenv, henv);
-  DM_CONV *conv = glenv->conv;
+  DM_CONV *conv = &glenv->conv;
 
   ENTER_HENV (henv,
     trace_SQLDataSourcesW (TRACE_ENTER,
@@ -662,7 +662,7 @@ SQLDriversW (SQLHENV henv,
   SQLCHAR *_Driver = NULL;  
   SQLCHAR *_Attrs = NULL;
   GENV (glenv, henv);
-  DM_CONV *conv = glenv->conv;
+  DM_CONV *conv = &glenv->conv;
 
   ENTER_HENV (henv,
     trace_SQLDriversW (TRACE_ENTER,
@@ -737,9 +737,7 @@ SQLGetInfo_Internal (
   SQLPOINTER ptr = 0;
   SQLSMALLINT _cbInfoValueMax = cbInfoValueMax;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = NULL;
-
-  conv = (penv != SQL_NULL_HENV) ? penv->conv : ((GENV_t *) pdbc->genv)->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   int size = 0, len = 0, ret = 0;
   wchar_t buf[20] = {'\0'};

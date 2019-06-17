@@ -402,7 +402,7 @@ SQLGetData_Internal (
   void * _Value = NULL;
   void * valueOut = rgbValue;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   IODBC_CHARSET dm_charset = (conv) ? conv->dm_cp : CP_DEF;
 
   /* check argument */

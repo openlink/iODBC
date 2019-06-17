@@ -206,6 +206,7 @@ SQLAllocConnect_Internal (
   pdbc->cp_connstr = NULL;
 #endif
   pdbc->genv = genv;
+  pdbc->conv = genv->conv;
 
   pdbc->henv = SQL_NULL_HENV;
   pdbc->hstmt = SQL_NULL_HSTMT;
@@ -336,11 +337,10 @@ _iodbcdm_SetConnectOption (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = NULL;
+  DM_CONV *conv = &pdbc->conv;
 
   odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
-  conv = (penv != SQL_NULL_HENV) ? penv->conv : ((GENV_t *) pdbc->genv)->conv;
 
 #if (ODBCVER < 0x0300)
   /* check option */
@@ -764,11 +764,10 @@ _iodbcdm_GetConnectOption (
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = NULL;
+  DM_CONV *conv = &pdbc->conv;
 
   odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
-  conv = (penv != SQL_NULL_HENV) ? penv->conv : ((GENV_t *) pdbc->genv)->conv;
 
 #if (ODBCVER < 0x0300)
   /* check option */

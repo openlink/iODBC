@@ -1256,7 +1256,7 @@ _iodbcdm_conv_var(STMT_t *pstmt, int i, void *pData, int pDataLength,
   int count_alloc = 0;
   CONN (pdbc, pstmt->hdbc);
   ENVR (penv, pdbc->henv);
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   IODBC_CHARSET m_charset = (conv) ? conv->dm_cp : CP_DEF;
   IODBC_CHARSET d_charset = (conv) ? conv->drv_cp : CP_DEF;
 
@@ -1544,7 +1544,7 @@ _iodbcdm_ConvBindData (STMT_t *pstmt)
   UDWORD i, size, row_size;
   CONN (pdbc, pstmt->hdbc);
   ENVR (penv, pdbc->henv);
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   IODBC_CHARSET m_charset = CP_DEF;
   IODBC_CHARSET d_charset = CP_DEF;
   SQLULEN cRows = pstmt->rowset_size;
@@ -1662,7 +1662,7 @@ _iodbcdm_ConvBindData_m2d (STMT_t *pstmt)
   UDWORD i, size, row_size;
   CONN (pdbc, pstmt->hdbc);
   ENVR (penv, pdbc->henv);
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   IODBC_CHARSET m_charset = CP_DEF;
   IODBC_CHARSET d_charset = CP_DEF;
   SQLULEN cRows = pstmt->rowset_size;
@@ -1802,7 +1802,7 @@ _iodbcdm_FixColBindData (STMT_t *pstmt)
   ENVR (penv, pdbc->henv);
   SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   IODBC_CHARSET m_charset = CP_DEF;
   IODBC_CHARSET d_charset = CP_DEF;
   BOOL needRebind = FALSE;

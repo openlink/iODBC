@@ -266,7 +266,7 @@ SQLGetCursorName_Internal (
   void * cursorOut = szCursor;
   void * _Cursor = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   /* check argument */
   if (cbCursorMax < (SWORD) 0)
@@ -652,7 +652,7 @@ SQLDescribeCol_Internal (
   void * colNameOut = szColName;
   sqlstcode_t sqlstat = en_00000;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   /* check arguments */
   if (icol == 0)
@@ -968,7 +968,7 @@ SQLColAttributes_Internal (
   SQLUINTEGER odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   SQLSMALLINT _cbDescMax = cbDescMax;
 
   /* check arguments */

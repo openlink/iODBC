@@ -681,7 +681,7 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
   int i;
   SQLULEN j;
   SQLULEN cRows = pstmt->paramset_size;
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   SQLRETURN retcode = SQL_SUCCESS;
   IODBC_CHARSET m_charset = CP_DEF;
   IODBC_CHARSET d_charset = CP_DEF;
@@ -1182,7 +1182,7 @@ SQLExecDirect_Internal (SQLHSTMT hstmt,
   sqlstcode_t sqlstat = en_00000;
   void * _SqlStr = NULL;
   CONV_DIRECT conv_direct = CD_NONE; 
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
 
   /* check arguments */
   if (szSqlStr == NULL)
@@ -1537,7 +1537,7 @@ SQLPutData_Internal (
   ENVR (penv, pdbc->henv);
   HPROC hproc;
   SQLRETURN retcode;
-  DM_CONV *conv = penv->conv;
+  DM_CONV *conv = &pdbc->conv;
   IODBC_CHARSET m_charset = CP_DEF;
   IODBC_CHARSET d_charset = CP_DEF;
 
