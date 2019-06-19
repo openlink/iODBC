@@ -75,7 +75,11 @@
  */
 
 #ifndef _UNICODE_H
+
+#include <iodbcext.h>
+
 #define _UNICODE_H
+
 
 
 #if defined (__APPLE__) && !defined (MACOSX102) && !defined (HAVE_CONFIG_H)
@@ -99,9 +103,9 @@ typedef unsigned int   ucs4_t;
 
 typedef enum
   {
-    CP_UCS4    = 0,
-    CP_UTF16   = 1,
-    CP_UTF8    = 2
+    CP_UCS4    = SQL_DM_CP_UCS4,
+    CP_UTF16   = SQL_DM_CP_UTF16,
+    CP_UTF8    = SQL_DM_CP_UTF8
   } 
 IODBC_CHARSET;  
 

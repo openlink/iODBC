@@ -1045,7 +1045,7 @@ _iodbcdm_driverload (
     HDBC hdbc,
     SWORD thread_safe,
     SWORD unload_safe,
-    IODBC_CHARSET drv_cp,
+    IODBC_CHARSET iodbcinst_drv_cp,
     UCHAR waMode)
 {
   CONN (pdbc, hdbc);
@@ -1061,6 +1061,7 @@ _iodbcdm_driverload (
   char cp_probe[1024] = {""};
   int cp_timeout = 0;
   void *pfaux;
+  int driver_unicode_cp = -1;
 
   if (drv == NULL || ((char*)drv)[0] == '\0')
     {
@@ -1117,15 +1118,15 @@ _iodbcdm_driverload (
           "DriverUnicodeType", "0", buf, sizeof (buf), "odbcinst.ini"))
         {
           if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
-            drv_cp = CP_UTF16;
+            iodbcinst_drv_cp = CP_UTF16;
           else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
-            drv_cp = CP_UTF8;
+            iodbcinst_drv_cp = CP_UTF8;
           else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
-            drv_cp = CP_UCS4;
+            iodbcinst_drv_cp = CP_UCS4;
 
           DPRINTF ((stderr,
             "DEBUG: _iodbcdm_driverload(odbcinst.ini) DriverUnicodeType=%s\n",
-              drv_cp==CP_UCS4?"UCS4":(drv_cp==CP_UTF16?"UTF16":"UTF8")));
+              iodbcinst_drv_cp==CP_UCS4?"UCS4":(iodbcinst_drv_cp==CP_UTF16?"UTF16":"UTF8")));
         }
       
       if (tmp_drv)
@@ -1156,15 +1157,15 @@ _iodbcdm_driverload (
               "DriverUnicodeType", "0", buf, sizeof (buf), "odbcinst.ini"))
             {
               if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
-                drv_cp = CP_UTF16;
+                iodbcinst_drv_cp = CP_UTF16;
               else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
-                drv_cp = CP_UTF8;
+                iodbcinst_drv_cp = CP_UTF8;
               else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
-                drv_cp = CP_UCS4;
+                iodbcinst_drv_cp = CP_UCS4;
 
               DPRINTF ((stderr,
                 "DEBUG: _iodbcdm_driverload(odbcinst.ini) DriverUnicodeType=%s\n",
-                  drv_cp==CP_UCS4?"UCS4":(drv_cp==CP_UTF16?"UTF16":"UTF8")));
+                  iodbcinst_drv_cp==CP_UCS4?"UCS4":(iodbcinst_drv_cp==CP_UTF16?"UTF16":"UTF8")));
             }
   	}
     }
@@ -1243,7 +1244,7 @@ _iodbcdm_driverload (
 	    }
 
 	  penv->conv.dm_cp    = genv->conv.dm_cp;
-	  penv->conv.drv_cp   = drv_cp;
+	  penv->conv.drv_cp   = iodbcinst_drv_cp;
 	  /*
 	   *  Initialize array of ODBC functions
 	   */
@@ -1315,6 +1316,9 @@ _iodbcdm_driverload (
 	      		(penv->dhenv, SQL_ATTR_DRIVER_UNICODE_TYPE, &val, 0, 0));
                       if (retcode == SQL_SUCCESS && val !=-1)
                         {
+                          DPRINTF ((stderr,
+                           "DEBUG: _iodbcdm_driverload(ODBC Driver return=%d)\n", val));
+
                           if (val == SQL_DM_CP_UCS4 || val == SQL_DM_CP_UTF16 || val == SQL_DM_CP_UTF8)
                             {
                               switch(val)
@@ -1322,31 +1326,34 @@ _iodbcdm_driverload (
                                 case SQL_DM_CP_UTF16:
                                   penv->conv.drv_cp = CP_UTF16;
                                   pdbc->conv.drv_cp = CP_UTF16;
+                                  driver_unicode_cp = CP_UTF16;
                                   break;
                                 case SQL_DM_CP_UTF8:
                                   penv->conv.drv_cp = CP_UTF8;
                                   pdbc->conv.drv_cp = CP_UTF8;
+                                  driver_unicode_cp = CP_UTF8;
                                   break;
                                 default:
                                 case SQL_DM_CP_UCS4:
                                   penv->conv.drv_cp = CP_UCS4;
                                   pdbc->conv.drv_cp = CP_UCS4;
+                                  driver_unicode_cp = CP_UCS4;
                                   break;
                                 }
+                              DPRINTF ((stderr,
+                               "DEBUG: _iodbcdm_driverload(ODBC Driver return DriverUnicodeType=%s)\n",
+                                penv->conv.drv_cp==CP_UCS4
+                                  ?"UCS4"
+                                  :(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
                             }
                           else
                             {
-                              penv->conv.drv_cp = drv_cp;
-                              pdbc->conv.drv_cp = drv_cp;
+                              penv->conv.drv_cp = iodbcinst_drv_cp;
+                              pdbc->conv.drv_cp = iodbcinst_drv_cp;
+
+                              DPRINTF ((stderr,
+                               "DEBUG: _iodbcdm_driverload(ODBC Driver use DriverUnicodeType=UCS4 (default))\n"));
                             }
-
-                          DPRINTF ((stderr,
-                           "DEBUG: _iodbcdm_driverload(ODBC Driver return=%d) DriverUnicodeType=%s\n",
-                            penv->conv.drv_cp,
-                            penv->conv.drv_cp==CP_UCS4
-                              ?"UCS4"
-                              :(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
-
                         }
                     }
 
@@ -1369,8 +1376,8 @@ _iodbcdm_driverload (
 #endif
 		  CALL_DRIVER (hdbc, genv, retcode, hproc, (&(penv->dhenv)));
 		}
-	      penv->conv.drv_cp = drv_cp;
-	      pdbc->conv.drv_cp = drv_cp;
+	      penv->conv.drv_cp = iodbcinst_drv_cp;
+	      pdbc->conv.drv_cp = iodbcinst_drv_cp;
 	    }
 
 	  if (retcode == SQL_ERROR)
@@ -1387,7 +1394,9 @@ _iodbcdm_driverload (
 	      return SQL_ERROR;
 	    }
 
-          if (penv->unicode_driver && dsn != NULL && *dsn != '\0')
+          if (driver_unicode_cp == -1 
+              && penv->unicode_driver 
+              && dsn != NULL && *dsn != '\0')
             {
               SQLSetConfigMode (ODBC_BOTH_DSN);
               
@@ -1513,13 +1522,14 @@ _iodbcdm_driverload (
         }
     }
 
-    if (penv->conv.dm_cp != penv->conv.drv_cp)
+    if (driver_unicode_cp != -1)
     {
-      SQLINTEGER wchar_id = penv->conv.dm_cp;
+      SQLINTEGER wchar_id = driver_unicode_cp;
 
       retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_TYPE,
 	wchar_id);
 
+      DPRINTF ((stderr, "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) retcode=%d\n", wchar_id, retcode));
       if (retcode == SQL_SUCCESS)
         {
 	  penv->conv.drv_cp = wchar_id;
