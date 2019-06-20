@@ -692,13 +692,6 @@ _WCHARSIZE_ALLOC(IODBC_CHARSET charset)
 }
 
 
-size_t
-calc_len_for_utf8 (wchar_t *str, int size)
-{
-  return _calc_len_for_utf8 (CP_DEF, (void *)str, size);
-}
-
-
 static size_t
 _utf16_calc_len_for_utf8 (ucs2_t *str, int size)
 {
@@ -1013,7 +1006,7 @@ strdup_WtoU8 (SQLWCHAR * str)
   if (!str)
     return NULL;
 
-  len = calc_len_for_utf8 (str, SQL_NTS);
+  len = _calc_len_for_utf8 (CP_DEF, str, SQL_NTS);
   if ((ret = (SQLCHAR *) malloc (len + 1)) == NULL)
     return NULL;
 
@@ -1298,7 +1291,7 @@ dm_SQL_WtoU8 (SQLWCHAR * inStr, int size)
     }
   else
     {
-      len = calc_len_for_utf8 (inStr, size);
+      len = _calc_len_for_utf8 (CP_DEF, inStr, size);
       if ((outStr = (SQLCHAR *) malloc (len + 1)) != NULL)
 	{
 	  len = wcsntoutf8 (inStr, (char*)outStr, size, len, NULL);
