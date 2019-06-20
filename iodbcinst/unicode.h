@@ -75,11 +75,10 @@
  */
 
 #ifndef _UNICODE_H
-
-#include <iodbcext.h>
-
 #define _UNICODE_H
 
+#include <iodbc.h>
+#include <iodbcext.h>
 
 
 #if defined (__APPLE__) && !defined (MACOSX102) && !defined (HAVE_CONFIG_H)
