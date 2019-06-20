@@ -2254,11 +2254,11 @@ SQLConnect_Internal (SQLHDBC hdbc,
       RETURN (SQL_ERROR);
     }
 
-  MEM_FREE(_szDSN);
-  _szDSN = NULL;
-
   retcode = _iodbcdm_driverload ((char *)_dsn, (char *)driver, pdbc, thread_safe, 
   		unload_safe, drv_cp, waMode);
+
+  MEM_FREE(_szDSN);
+  _szDSN = NULL;
 
   switch (retcode)
     {
