@@ -123,6 +123,7 @@ typedef struct
 #endif    
 
     SQLSMALLINT err_rec;
+    DM_CONV conv;
   }
 GENV_t;
 
@@ -142,6 +143,7 @@ typedef struct
 #if (ODBCVER >= 0x300)
     SQLUINTEGER dodbc_ver;	/* driver's ODBC version */
 #endif    
+    DM_CONV conv;
   }
 ENV_t;
 

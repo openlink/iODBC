@@ -73,6 +73,7 @@
  */
 
 #include <iodbc.h>
+#include <iodbcext.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -122,6 +123,9 @@ adddrivers_to_list (GtkWidget *widget, GtkWidget *dlg)
       _iodbcdm_nativeerrorbox (dlg, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
       goto end;
     }
+
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+      (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
 
   /* Set the version ODBC API to use */
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,

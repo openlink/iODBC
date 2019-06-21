@@ -76,6 +76,7 @@
 #import <iODBC/sqlext.h>
 #import <iODBC/sqltypes.h>
 #import <iODBC/sqlucode.h>
+#import <iODBC/iodbcext.h>
 
 @interface TestController : NSObject <NSTableViewDelegate, NSTableViewDataSource>
 {

@@ -152,6 +152,7 @@ _iodbcdm_pushsqlerr (
     {
       perr->code = code;
       perr->msg = msg?strdup((char *) msg): NULL;
+
       return herr;
     }
 
@@ -283,6 +284,8 @@ _iodbcdm_sqlerror (
   void *SqlstateOut = szSqlstate;
   void *_ErrorMsg = NULL;
   void *errorMsgOut = szErrorMsg;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = NULL;
 
   void *errmsg = NULL;
   void *ststr = NULL;
@@ -372,22 +375,30 @@ _iodbcdm_sqlerror (
           dodbc_ver = ((ENV_t *) ((DBC_t *)thdbc)->henv)->dodbc_ver;
         }
 
+      if (thdbc && ((DBC_t *)thdbc)->henv)
+        conv = &((DBC_t *)thdbc)->conv;
+
       /* call driver */
-      if ((unicode_driver && waMode != 'W') 
-          || (!unicode_driver && waMode == 'W'))
+      if (unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp != conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct == CD_A2W || conv_direct == CD_W2W)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              if ((_ErrorMsg = malloc((cbErrorMsgMax + 1) * sizeof(wchar_t))) == NULL)
-                return SQL_ERROR;
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              if ((_ErrorMsg = malloc(cbErrorMsgMax + 1)) == NULL)
-                return SQL_ERROR;
-            }
+          /* ansi<=unicode*/
+          if ((_ErrorMsg = malloc((cbErrorMsgMax + 1 ) * DRV_WCHARSIZE_ALLOC(conv))) == NULL)
+            return SQL_ERROR;
+          errorMsgOut = _ErrorMsg;
+          SqlstateOut = _sqlState;
+        }
+      else if (conv_direct == CD_W2A)
+        {
+          /* unicode<=ansi*/
+          if ((_ErrorMsg = malloc(cbErrorMsgMax + 1)) == NULL)
+            return SQL_ERROR;
           errorMsgOut = _ErrorMsg;
           SqlstateOut = _sqlState;
         }
@@ -442,7 +453,6 @@ _iodbcdm_sqlerror (
               MEM_FREE(_ErrorMsg);
               return SQL_NO_DATA_FOUND;
             }
-
            CALL_DRIVER (thdbc, NULL, retcode, hproc2, (
                    dhenv, 
                    dhdbc, 
@@ -453,23 +463,32 @@ _iodbcdm_sqlerror (
                    cbErrorMsgMax, 
                    pcbErrorMsg));
         }
-
-      if (szErrorMsg 
-          && SQL_SUCCEEDED (retcode)
-          && ((unicode_driver && waMode != 'W') 
-              || (!unicode_driver && waMode == 'W')))
+    
+      if (szErrorMsg && conv_direct != CD_NONE && SQL_SUCCEEDED (retcode))
         {
-          if (waMode != 'W')
+          if (conv_direct == CD_A2W)
             {
-            /* ansi<=unicode*/
-              dm_StrCopyOut2_W2A ((SQLWCHAR *)errorMsgOut, (SQLCHAR *)szErrorMsg, cbErrorMsgMax, NULL);
-              dm_StrCopyOut2_W2A ((SQLWCHAR *)SqlstateOut, (SQLCHAR *)szSqlstate, 6, NULL);
+            /*ansi<=unicode*/
+              dm_StrCopyOut2_W2A_d2m (conv, errorMsgOut, (SQLCHAR *)szErrorMsg, 
+              	  cbErrorMsgMax, NULL, NULL);
+              dm_StrCopyOut2_W2A_d2m (conv, SqlstateOut, (SQLCHAR *)szSqlstate, 
+                  6, NULL, NULL);
             }
-          else
+          else if (conv_direct == CD_W2A)
             {
-            /* unicode<=ansi*/
-              dm_StrCopyOut2_A2W ((SQLCHAR *)errorMsgOut, (SQLWCHAR *)szErrorMsg, cbErrorMsgMax, NULL);
-              dm_StrCopyOut2_A2W ((SQLCHAR *)SqlstateOut, (SQLWCHAR *)szSqlstate, 6, NULL);
+            /*unicode<=ansi*/
+              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)errorMsgOut, szErrorMsg, 
+                  cbErrorMsgMax * DM_WCHARSIZE(conv), NULL, NULL);
+              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)SqlstateOut, szSqlstate, 
+                  6*DM_WCHARSIZE(conv), NULL, NULL);
+            }
+          else if (conv_direct == CD_W2W)
+            {
+            /*unicode<=unicode*/
+              dm_StrCopyOut2_W2W_d2m (conv, errorMsgOut, szErrorMsg, 
+                  cbErrorMsgMax * DM_WCHARSIZE(conv), NULL, NULL);
+              dm_StrCopyOut2_W2W_d2m (conv, SqlstateOut, szSqlstate, 
+                  6*DM_WCHARSIZE(conv), NULL, NULL);
             }
         }
     
@@ -506,8 +525,9 @@ _iodbcdm_sqlerror (
         }
       else
         {
-          dm_StrCopyOut2_A2W ((SQLCHAR *)ststr, (SQLWCHAR *)szSqlstate, 6, NULL);
-          ((wchar_t*)szSqlstate)[len] = 0;
+          memset(szSqlstate, 0, DM_WCHARSIZE(conv) * (len + 1));
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)ststr, szSqlstate, 
+              6*DM_WCHARSIZE(conv), NULL, NULL);
         }
     }
 
@@ -527,7 +547,7 @@ _iodbcdm_sqlerror (
   else
     {
       int len;
-      char msgbuf[4096] = {'\0'};
+      char msgbuf[256] = {'\0'};
 
       /* get sql state message */
       errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
@@ -540,7 +560,7 @@ _iodbcdm_sqlerror (
 #if defined(HAVE_SNPRINTF)
       snprintf (msgbuf, sizeof(msgbuf), "%s%s", sqlerrhd, (char*)errmsg);
 #else
-      sprintf (msgbuf, "%s%.*s", sqlerrhd, sizeof(msgbuf)-8, (char*)errmsg);
+      sprintf (msgbuf, "%s%s", sqlerrhd, (char*)errmsg);
 #endif
 
       len = STRLEN (msgbuf);
@@ -565,8 +585,9 @@ _iodbcdm_sqlerror (
         }
       else
         {
-          dm_StrCopyOut2_A2W ((SQLCHAR *) msgbuf, 
-	  	(SQLWCHAR *) szErrorMsg, cbErrorMsgMax, pcbErrorMsg);
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) msgbuf, 
+	  	szErrorMsg, cbErrorMsgMax * DM_WCHARSIZE(conv), 
+	  	pcbErrorMsg, NULL);
         }
     }
 
@@ -779,6 +800,8 @@ SQLGetDiagRec_Internal (
   void *_MessageText = NULL;
   void *messageTextOut = MessageText;
   void *SqlstateOut = Sqlstate;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = NULL;
 
 
   if (RecNumber < 1)
@@ -795,6 +818,7 @@ SQLGetDiagRec_Internal (
 	  return SQL_INVALID_HANDLE;
 	}
       err = ((GENV_t *) Handle)->herr;
+      conv = &(((GENV_t *) Handle)->conv);
       break;
 
     case SQL_HANDLE_DBC:
@@ -805,6 +829,8 @@ SQLGetDiagRec_Internal (
       err = ((DBC_t *) Handle)->herr;
       dhandle = ((DBC_t *) Handle)->dhdbc;
       hdbc = Handle;
+      if (hdbc)
+        conv = &(((DBC_t *)hdbc)->conv);
       break;
 
     case SQL_HANDLE_STMT:
@@ -815,6 +841,8 @@ SQLGetDiagRec_Internal (
       err = ((STMT_t *) Handle)->herr;
       dhandle = ((STMT_t *) Handle)->dhstmt;
       hdbc = ((STMT_t *) Handle)->hdbc;
+      if (hdbc)
+        conv = &(((DBC_t *)hdbc)->conv);
       break;
 
     case SQL_HANDLE_DESC:
@@ -825,6 +853,8 @@ SQLGetDiagRec_Internal (
       err = ((DESC_t *) Handle)->herr;
       dhandle = ((DESC_t *) Handle)->dhdesc;
       hdbc = ((DESC_t *) Handle)->hdbc;
+      if (hdbc)
+        conv = &(((DBC_t *)hdbc)->conv);
       break;
 
     default:
@@ -870,9 +900,9 @@ SQLGetDiagRec_Internal (
             }
           else
             {
-              dm_StrCopyOut2_A2W ((SQLCHAR *) ststr, 
-			(SQLWCHAR *) Sqlstate, 6, NULL);
-              ((wchar_t*)Sqlstate)[len] = 0;
+              memset(Sqlstate, 0, DM_WCHARSIZE(conv) * (len + 1));
+              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) ststr, 
+			Sqlstate, 6*DM_WCHARSIZE(conv), NULL, NULL);
             }
 	}
 
@@ -926,8 +956,8 @@ SQLGetDiagRec_Internal (
             }
           else
             {
-              dm_StrCopyOut2_A2W ((SQLCHAR *) msgbuf, 
-		    (SQLWCHAR *) MessageText, BufferLength, TextLengthPtr);
+              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) msgbuf, 
+		    MessageText, BufferLength, TextLengthPtr, NULL);
             }
 	}
       return retcode;
@@ -949,24 +979,29 @@ SQLGetDiagRec_Internal (
       if (hdbc && ((DBC_t *)hdbc)->genv)
         odbc_ver = ((GENV_t *) ((DBC_t *)hdbc)->genv)->odbc_ver;
 
-      if ((unicode_driver && waMode != 'W') 
-          || (!unicode_driver && waMode == 'W'))
+      if (unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp != conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct == CD_A2W || conv_direct == CD_W2W)
         {
-          if (waMode != 'W')
+          /* ansi<=unicode*/
+          if ((_MessageText = malloc((BufferLength + 1) * DRV_WCHARSIZE_ALLOC(conv))) == NULL)
             {
-            /* ansi=>unicode*/
-              if ((_MessageText = malloc((BufferLength + 1) * sizeof(wchar_t))) == NULL)
-                {
-                  return SQL_ERROR;
-                }
+              return SQL_ERROR;
             }
-          else
+          messageTextOut = _MessageText;
+          SqlstateOut = _sqlState;
+        }
+      else if (conv_direct == CD_W2A)
+        {
+          /* unicode<=ansi*/
+          if ((_MessageText = malloc(BufferLength + 1)) == NULL)
             {
-            /* unicode=>ansi*/
-              if ((_MessageText = malloc(BufferLength + 1)) == NULL)
-                {
-                  return SQL_ERROR;
-                }
+              return SQL_ERROR;
             }
           messageTextOut = _MessageText;
           SqlstateOut = _sqlState;
@@ -1038,22 +1073,31 @@ SQLGetDiagRec_Internal (
                   TextLengthPtr));
         }
     
-      if (MessageText 
-          && SQL_SUCCEEDED (retcode)
-          && ((unicode_driver && waMode != 'W') 
-              || (!unicode_driver && waMode == 'W')))
+      if (MessageText && conv_direct != CD_NONE && SQL_SUCCEEDED (retcode))
         {
-          if (waMode != 'W')
+          if (conv_direct == CD_A2W)
             {
             /* ansi<=unicode*/
-              dm_StrCopyOut2_W2A ((SQLWCHAR *)messageTextOut, (SQLCHAR *)MessageText, BufferLength, NULL);
-              dm_StrCopyOut2_W2A ((SQLWCHAR *)SqlstateOut, (SQLCHAR *)Sqlstate, 6, NULL);
+              dm_StrCopyOut2_W2A_d2m (conv, messageTextOut, 
+                  (SQLCHAR *)MessageText, BufferLength, NULL, NULL);
+              dm_StrCopyOut2_W2A_d2m (conv, SqlstateOut, (SQLCHAR *)Sqlstate, 
+                  6, NULL, NULL);
             }
-          else
+          else if (conv_direct == CD_W2A)
             {
             /* unicode<=ansi*/
-              dm_StrCopyOut2_A2W ((SQLCHAR *) messageTextOut, (SQLWCHAR *) MessageText, BufferLength, NULL);
-              dm_StrCopyOut2_A2W ((SQLCHAR *) SqlstateOut, (SQLWCHAR *) Sqlstate, 6, NULL);
+              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) messageTextOut, 
+                  MessageText, BufferLength, NULL, NULL);
+              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) SqlstateOut, 
+                  Sqlstate, 6*DM_WCHARSIZE(conv), NULL, NULL);
+            }
+          else if (conv_direct == CD_W2W)
+            {
+            /* unicode<=unicode*/
+              dm_StrCopyOut2_W2W_d2m (conv, messageTextOut, MessageText, 
+                  BufferLength, NULL, NULL);
+              dm_StrCopyOut2_W2W_d2m (conv, SqlstateOut, Sqlstate, 
+                  6*DM_WCHARSIZE(conv), NULL, NULL);
             }
         }
     
@@ -1224,6 +1268,9 @@ SQLGetDiagField_Internal (
   SWORD unicode_driver = 0;
   void *_DiagInfoPtr = NULL;
   void *diagInfoPtr = pDiagInfoPtr;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  SQLSMALLINT _nBufferLength = nBufferLength;
+  DM_CONV *conv = NULL;
 
 
   switch (nHandleType)
@@ -1280,7 +1327,10 @@ SQLGetDiagField_Internal (
     }
 
   if (con != NULL && con->henv != SQL_NULL_HENV)
-    unicode_driver = ((ENV_t *) con->henv)->unicode_driver;
+    {
+      unicode_driver = ((ENV_t *) con->henv)->unicode_driver;
+      conv = &(con->conv);
+    }
 
   switch (nRecNumber)
     {
@@ -1539,11 +1589,11 @@ SQLGetDiagField_Internal (
 		  }
 		else
 		  {
-		    dm_StrCopyOut2_A2W((SQLCHAR *) szval, 
-		    	(SQLWCHAR *) pDiagInfoPtr, 
-		    	nBufferLength / sizeof(wchar_t), pnStringLengthPtr);
-                    if (pnStringLengthPtr)
-                      *pnStringLengthPtr *= sizeof(wchar_t);
+		    int count;
+		    dm_StrCopyOut2_A2W_d2m(conv, (SQLCHAR *) szval, 
+		    	pDiagInfoPtr, nBufferLength, NULL, &count);
+		    if (pnStringLengthPtr)
+		      *pnStringLengthPtr = (SQLSMALLINT)count;
 		  }
 	      
 	      }
@@ -1558,51 +1608,65 @@ SQLGetDiagField_Internal (
 		return SQL_NO_DATA_FOUND;
 	      }
 
-            if ((unicode_driver && waMode != 'W') 
-                || (!unicode_driver && waMode == 'W'))
+            if (unicode_driver && waMode != 'W')
+              conv_direct = CD_A2W;
+            else if (!unicode_driver && waMode == 'W')
+              conv_direct = CD_W2A;
+            else if (waMode == 'W' && conv && conv->dm_cp != conv->drv_cp)
+              conv_direct = CD_W2W;
+
+            switch(nDiagIdentifier)
               {
-                switch(nDiagIdentifier)
+              case SQL_DIAG_DYNAMIC_FUNCTION:
+              case SQL_DIAG_CLASS_ORIGIN:
+              case SQL_DIAG_CONNECTION_NAME:
+              case SQL_DIAG_MESSAGE_TEXT:
+              case SQL_DIAG_SERVER_NAME:
+              case SQL_DIAG_SQLSTATE:
+              case SQL_DIAG_SUBCLASS_ORIGIN:
+                if (conv_direct == CD_A2W)
                   {
-                  case SQL_DIAG_DYNAMIC_FUNCTION:
-                  case SQL_DIAG_CLASS_ORIGIN:
-                  case SQL_DIAG_CONNECTION_NAME:
-                  case SQL_DIAG_MESSAGE_TEXT:
-                  case SQL_DIAG_SERVER_NAME:
-                  case SQL_DIAG_SQLSTATE:
-                  case SQL_DIAG_SUBCLASS_ORIGIN:
-                    if (waMode != 'W')
+                  /*ansi<=unicode*/
+                    _nBufferLength *= DRV_WCHARSIZE_ALLOC(conv);
+                    if ((_DiagInfoPtr = malloc(_nBufferLength + DRV_WCHARSIZE_ALLOC(conv))) == NULL)
                       {
-                      /* ansi=>unicode*/
-                        nBufferLength *= sizeof(wchar_t);
-                        if ((_DiagInfoPtr = malloc(nBufferLength + sizeof(wchar_t))) == NULL)
-                          {
-                            return SQL_ERROR;
-                          }
-                      }
-                    else
-                      {
-                      /* unicode=>ansi*/
-                        nBufferLength /= sizeof(wchar_t); 
-                        if ((_DiagInfoPtr = malloc(nBufferLength + 1)) == NULL)
-                          {
-                            return SQL_ERROR;
-                          }
+                        return SQL_ERROR;
                       }
                     diagInfoPtr = _DiagInfoPtr;
-                    break;
                   }
+                else if (conv_direct == CD_W2A)
+                  {
+                  /*unicode<=ansi*/
+                    _nBufferLength /= DM_WCHARSIZE(conv);
+                    if ((_DiagInfoPtr = malloc(_nBufferLength + 1)) == NULL)
+                      {
+                        return SQL_ERROR;
+                      }
+                    diagInfoPtr = _DiagInfoPtr;
+                  }
+                else if (conv_direct == CD_W2W)
+                  {
+                  /*unicode<=unicode*/
+                    _nBufferLength /= DM_WCHARSIZE(conv);
+                    _nBufferLength *= DRV_WCHARSIZE_ALLOC(conv);
+                    if ((_DiagInfoPtr = malloc(_nBufferLength + DRV_WCHARSIZE_ALLOC(conv))) == NULL)
+                      {
+                        return SQL_ERROR;
+                      }
+                    diagInfoPtr = _DiagInfoPtr;
+                  }
+                break;
               }
 
             CALL_UDRIVER(con, Handle, retcode, hproc, unicode_driver, en_GetDiagField,
               (nHandleType, dhandle, nRecNumber, nDiagIdentifier, 
-               diagInfoPtr, nBufferLength, pnStringLengthPtr ));
+               diagInfoPtr, _nBufferLength, pnStringLengthPtr ));
             if (hproc != SQL_NULL_HPROC)
               {
-                if (pDiagInfoPtr
-                    && SQL_SUCCEEDED (retcode)
-                    && ((unicode_driver && waMode != 'W')
-                        || (!unicode_driver && waMode == 'W')))
+                if (pDiagInfoPtr && conv_direct != CD_NONE
+                    && SQL_SUCCEEDED (retcode))
                   {
+                    int count;
                     switch(nDiagIdentifier)
                       {
                       case SQL_DIAG_DYNAMIC_FUNCTION:
@@ -1612,21 +1676,35 @@ SQLGetDiagField_Internal (
                       case SQL_DIAG_SERVER_NAME:
                       case SQL_DIAG_SQLSTATE:
                       case SQL_DIAG_SUBCLASS_ORIGIN:
-                        if (waMode != 'W')
+                        if (conv_direct == CD_A2W)
                           {
                           /* ansi<=unicode*/
-                            dm_StrCopyOut2_W2A ((SQLWCHAR *) diagInfoPtr, 
+                            dm_StrCopyOut2_W2A_d2m (conv, diagInfoPtr, 
 				(SQLCHAR *) pDiagInfoPtr, 
-				nBufferLength/sizeof(wchar_t), pnStringLengthPtr);
+				nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
-                        else
+                        else if (conv_direct == CD_W2A)
                           {
                           /* unicode<=ansi*/
-                            dm_StrCopyOut2_A2W ((SQLCHAR *)diagInfoPtr, 
-			    	(SQLWCHAR *) pDiagInfoPtr, 
-				nBufferLength, pnStringLengthPtr);
-                            if (pnStringLengthPtr)
-                              *pnStringLengthPtr *= sizeof(wchar_t);
+                            dm_StrCopyOut2_A2W_d2m (conv, 
+                                (SQLCHAR *)diagInfoPtr, 
+			    	pDiagInfoPtr, 
+			    	nBufferLength, 
+			    	NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
+                          }
+                        else if (conv_direct == CD_W2W)
+                          {
+                          /* unicode<=unicode*/
+                            dm_StrCopyOut2_W2W_d2m (conv, diagInfoPtr, 
+			    	pDiagInfoPtr, 
+			    	nBufferLength, 
+			    	NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
                       }
                   }
@@ -1679,10 +1757,13 @@ SQLGetDiagField_Internal (
                       }
 		    else
                       {
-                        if (szState[0] != L'I' && szState[1] != L'M')
+                        char *tmp = (char *)DRV_WtoU8(conv, szState, SQL_NTS);
+                        if (tmp && tmp[0] != 'I' && tmp[1] != 'M')
 		          szval = (char *) "ODBC 3.0";
                         else
 		          szval = (char *) "ISO 9075";
+
+		        MEM_FREE(tmp);
                       }
 		    break;
 
@@ -1708,25 +1789,6 @@ SQLGetDiagField_Internal (
 		    break;
 
 		  case SQL_DIAG_MESSAGE_TEXT:
-                    if (unicode_driver && waMode != 'W') 
-                      {
-                        /* ansi=>unicode*/
-                        if ((_DiagInfoPtr = malloc((nBufferLength + 1)*sizeof(wchar_t))) == NULL)
-                          return SQL_ERROR;
-                        diagInfoPtr = _DiagInfoPtr;
-                      }
-                    else if (!unicode_driver && waMode == 'W')
-                      {
-                        /* unicode=>ansi*/
-                        nBufferLength /= sizeof(wchar_t); 
-                        if ((_DiagInfoPtr = malloc(nBufferLength + 1)) == NULL)
-                          return SQL_ERROR;
-                        diagInfoPtr = _DiagInfoPtr;
-                      }
-                    else if (unicode_driver && waMode == 'W')
-                      {
-                        nBufferLength /= sizeof(wchar_t); 
-                      }
 		    CALL_UDRIVER (con, Handle, retcode, hproc, unicode_driver,
 		      en_Error, (SQL_NULL_HENV,
 		      nHandleType == SQL_HANDLE_DBC ? dhandle : SQL_NULL_HDBC,
@@ -1738,28 +1800,34 @@ SQLGetDiagField_Internal (
                         MEM_FREE(_DiagInfoPtr);
 		        return SQL_INVALID_HANDLE;
                       }
-                    if (pDiagInfoPtr && SQL_SUCCEEDED (retcode))
+                    if (pDiagInfoPtr && conv_direct != CD_NONE
+                        && SQL_SUCCEEDED (retcode))
                       {
-                        if (unicode_driver && waMode != 'W')
+                        int count;
+                        if (conv_direct == CD_A2W)
                           {
                           /* ansi<=unicode*/
-                            dm_StrCopyOut2_W2A ((SQLWCHAR *) diagInfoPtr, 
+                            dm_StrCopyOut2_W2A_d2m (conv, diagInfoPtr, 
 				(SQLCHAR *) pDiagInfoPtr, 
-		      		nBufferLength, pnStringLengthPtr);
+				nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
-                        else if (!unicode_driver && waMode == 'W')
+                        else if (conv_direct == CD_W2A)
                           {
                           /* unicode<=ansi*/
-                            dm_StrCopyOut2_A2W ((SQLCHAR *)diagInfoPtr, 
-			    	(SQLWCHAR *) pDiagInfoPtr, 
-				nBufferLength, pnStringLengthPtr);
-                            if (pnStringLengthPtr)
-                              *pnStringLengthPtr *= sizeof(wchar_t);
+                            dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)diagInfoPtr, 
+			    	pDiagInfoPtr, nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
-                        else if (unicode_driver && waMode == 'W')
+                        else if (conv_direct == CD_W2W)
                           {
-                            if (pnStringLengthPtr)
-                              *pnStringLengthPtr *= sizeof(wchar_t);
+                          /* unicode<=unicode*/
+                            dm_StrCopyOut2_W2W_d2m (conv, diagInfoPtr, 
+			    	pDiagInfoPtr, nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
                       }
 
@@ -1790,26 +1858,34 @@ SQLGetDiagField_Internal (
                       {
 		        return SQL_INVALID_HANDLE;
                       }
-                    if (pDiagInfoPtr
-                        && SQL_SUCCEEDED (retcode)
-                        && ((unicode_driver && waMode != 'W')
-                            || (!unicode_driver && waMode == 'W')))
+                    if (pDiagInfoPtr && conv_direct != CD_NONE
+                        && SQL_SUCCEEDED (retcode))
                       {
-                        if (waMode != 'W')
+                        int count;
+                        if (conv_direct == CD_A2W)
                           {
                           /* ansi<=unicode*/
-                            dm_StrCopyOut2_W2A ((SQLWCHAR *) szState, 
+                            dm_StrCopyOut2_W2A_d2m (conv, szState, 
 				(SQLCHAR *) pDiagInfoPtr, 
-		      		nBufferLength, pnStringLengthPtr);
+				nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
-                        else
+                        else if (conv_direct == CD_W2A)
                           {
                           /* unicode<=ansi*/
-                            dm_StrCopyOut2_A2W ((SQLCHAR *)szState, 
-			    	(SQLWCHAR *) pDiagInfoPtr, 
-				nBufferLength / sizeof(wchar_t), pnStringLengthPtr);
-                            if (pnStringLengthPtr)
-                              *pnStringLengthPtr *= sizeof(wchar_t);
+                            dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)szState, 
+			    	pDiagInfoPtr, nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
+                          }
+                        else if (conv_direct == CD_W2W)
+                          {
+                          /* unicode<=unicode*/
+                            dm_StrCopyOut2_W2W_d2m (conv, szState, 
+			    	pDiagInfoPtr, nBufferLength, NULL, &count);
+			    if (pnStringLengthPtr)	
+			      *pnStringLengthPtr = (SQLSMALLINT)count;
                           }
                       }
 
@@ -1834,11 +1910,11 @@ SQLGetDiagField_Internal (
 		  }
 		else
 		  {
-		    dm_StrCopyOut2_A2W((SQLCHAR *) szval, 
-		    	(SQLWCHAR *) pDiagInfoPtr, 
-			nBufferLength / sizeof(wchar_t), pnStringLengthPtr);
-                    if (pnStringLengthPtr)
-                      *pnStringLengthPtr *= sizeof(wchar_t);
+		    int count;
+		    dm_StrCopyOut2_A2W_d2m(conv, (SQLCHAR *) szval, 
+		    	pDiagInfoPtr, nBufferLength, NULL, &count);
+		    if (pnStringLengthPtr)
+		      *pnStringLengthPtr = (SQLSMALLINT)count;
 		  }
 	      }			/* ODBC3->ODBC2 */
 	  }			/* driver's errors */

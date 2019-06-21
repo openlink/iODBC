@@ -107,6 +107,8 @@ SQLPrepare_Internal (
   SQLRETURN retcode = SQL_SUCCESS;
   sqlstcode_t sqlstat = en_00000;
   void * _SqlStr = NULL;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = &pdbc->conv;
 
   /* check state */
   if (pstmt->asyn_on == en_NullProc)
@@ -156,19 +158,17 @@ SQLPrepare_Internal (
       return SQL_ERROR;
     }
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
-        {
-        /* ansi=>unicode*/
-          _SqlStr = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *) szSqlStr, cbSqlStr);
-        }
-      else
-        {
-        /* unicode=>ansi*/
-          _SqlStr = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *) szSqlStr, cbSqlStr);
-        }
+      /* sql text is stored as param with id=0 */
+      _SqlStr = _iodbcdm_conv_var(pstmt, 0, szSqlStr, cbSqlStr, conv_direct);
       szSqlStr = _SqlStr;
       cbSqlStr = SQL_NTS;
     }
@@ -301,6 +301,8 @@ SQLSetCursorName_Internal (
   SQLRETURN retcode = SQL_SUCCESS;
   sqlstcode_t sqlstat = en_00000;
   void * _Cursor = NULL;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = &pdbc->conv;
 
   if (szCursor == NULL)
     {
@@ -351,19 +353,16 @@ SQLSetCursorName_Internal (
       return SQL_ERROR;
     }
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
-        {
-        /* ansi=>unicode*/
-          _Cursor = dm_SQL_A2W ((SQLCHAR *) szCursor, cbCursor);
-        }
-      else
-        {
-        /* unicode=>ansi*/
-          _Cursor = dm_SQL_W2A ((SQLWCHAR *) szCursor, cbCursor);
-        }
+      _Cursor = conv_text_m2d (conv, szCursor, cbCursor, conv_direct);
       szCursor = _Cursor;
       cbCursor = SQL_NTS;
     }
@@ -468,7 +467,7 @@ SQLBindParameter_Internal (
   SQLUINTEGER dodbc_ver = ((ENV_t *) pdbc->henv)->dodbc_ver;
   PPARM newparam;
   TPARM parm;
-  int size;
+  int size = 0;
 
 #if (ODBCVER >= 0x0300)
   if (0)
@@ -602,6 +601,12 @@ SQLBindParameter_Internal (
   parm.pm_size = size;
   parm.pm_usage = fParamType;
   parm.pm_cbValueMax = cbValueMax;
+  parm.pm_tmp = NULL;
+  parm.pm_tmp_Ind = NULL;
+  parm.pm_conv_data = NULL;
+  parm.pm_conv_pInd = NULL;
+  parm.pm_conv_el_size = 0;
+  parm.rebinded = FALSE;
 
 #if (ODBCVER >=0x0300)
   if (fCType == SQL_C_WCHAR && !penv->unicode_driver 
@@ -643,7 +648,8 @@ SQLBindParameter_Internal (
     hproc3 = SQL_NULL_HPROC;
 
 #if (ODBCVER >=0x0300)
-  if (fParamType == SQL_PARAM_INPUT && hproc3 != SQL_NULL_HPROC)
+  if (fParamType == SQL_PARAM_INPUT && hproc2 == SQL_NULL_HPROC 
+      && hproc3 != SQL_NULL_HPROC)
     {
       CALL_DRIVER (pstmt->hdbc, pstmt, retcode, hproc3,
 	      (pstmt->dhstmt, ipar, nCType, nSqlType, cbColDef,

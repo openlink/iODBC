@@ -187,7 +187,7 @@ SQLReadFileDSNW (LPCWSTR lpszFileName, LPCWSTR lpszAppName,
 
   if (retcode == TRUE)
     {
-      dm_StrCopyOut2_U8toW (_string_u8, lpszString, cbString, pcbString);
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_string_u8, lpszString, cbString, pcbString);
     }
 
 done:

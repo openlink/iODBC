@@ -174,7 +174,7 @@ SQLInstallerErrorW (WORD iError, DWORD * pfErrorCode, LPWSTR lpszErrorMsg,
 
   if (retcode != SQL_ERROR)
     {
-      dm_StrCopyOut2_U8toW (_errormsg_u8, lpszErrorMsg, cbErrorMsgMax,
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_errormsg_u8, lpszErrorMsg, cbErrorMsgMax,
 	  pcbErrorMsg);
     }
 

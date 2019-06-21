@@ -398,8 +398,8 @@ SQLGetTranslatorW (HWND hwnd,
 
   if (retcode == TRUE)
     {
-      dm_StrCopyOut2_U8toW (_name_u8, lpszName, cbNameMax, pcbNameOut);
-      dm_StrCopyOut2_U8toW (_path_u8, lpszPath, cbPathMax, pcbPathOut);
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_name_u8, lpszName, cbNameMax, pcbNameOut);
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_path_u8, lpszPath, cbPathMax, pcbPathOut);
     }
 
 done:

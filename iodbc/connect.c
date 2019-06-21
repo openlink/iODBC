@@ -86,6 +86,7 @@
 
 #include <dlproc.h>
 
+#include <unicode.h>
 #include <herr.h>
 #include <henv.h>
 #include <hdbc.h>
@@ -212,11 +213,6 @@ quit:
     goto end;								\
   } while (0)
 
-#if 0
-#define DPRINTF(a)	fprintf a
-#else
-#define DPRINTF(a)
-#endif
 
 
 static SQLRETURN
@@ -231,6 +227,8 @@ _iodbcdm_SetConnectOption_init (
   HPROC hproc = SQL_NULL_HPROC;
   SQLRETURN retcode = SQL_SUCCESS;
   int retinfo = 0;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = &pdbc->conv;
 
   SQLINTEGER strLength = 0;
   void *ptr = (void *) vParam;
@@ -241,33 +239,30 @@ _iodbcdm_SetConnectOption_init (
       retinfo = 1;		/* Change SQL_ERROR -> SQL_SUCCESS_WITH_INFO */
     }
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  switch (fOption)
     {
-      switch (fOption)
-        {
-          case SQL_ATTR_TRACEFILE:
-          case SQL_CURRENT_QUALIFIER:
-          case SQL_TRANSLATE_DLL:
-          case SQL_APPLICATION_NAME:
-          case SQL_COPT_SS_ENLIST_IN_DTC:
-          case SQL_COPT_SS_PERF_QUERY_LOG:
-          case SQL_COPT_SS_PERF_DATA_LOG:
-          case SQL_CURRENT_SCHEMA:
-            if (waMode != 'W')
-              {
-              /* ansi=>unicode*/
-                _vParam = dm_SQL_A2W((SQLCHAR *)vParam, SQL_NTS);
-              }
-            else
-              {
-              /* unicode=>ansi*/
-                _vParam = dm_SQL_W2A((SQLWCHAR *)vParam, SQL_NTS);
-              }
+      case SQL_ATTR_TRACEFILE:
+      case SQL_CURRENT_QUALIFIER:
+      case SQL_TRANSLATE_DLL:
+      case SQL_APPLICATION_NAME:
+      case SQL_COPT_SS_ENLIST_IN_DTC:
+      case SQL_COPT_SS_PERF_QUERY_LOG:
+      case SQL_COPT_SS_PERF_DATA_LOG:
+      case SQL_CURRENT_SCHEMA:
+        if (conv_direct != CD_NONE)
+          {
+            _vParam = conv_text_m2d(conv, (void *)vParam, SQL_NTS, conv_direct);
             ptr = _vParam;
             strLength = SQL_NTS;
-            break;
-        }
+          }
+        break;
     }
 
   if (penv->unicode_driver)
@@ -332,6 +327,54 @@ _iodbcdm_SetConnectOption_init (
 
   return retcode;
 }
+
+
+static SQLRETURN
+_iodbcdm_SetConnectAttr_init (
+    SQLHDBC		  hdbc,
+    SQLUSMALLINT	  fOption,
+    SQLULEN		  vParam)
+{
+  CONN (pdbc, hdbc);
+  ENVR (penv, pdbc->henv);
+  HPROC hproc = SQL_NULL_HPROC;
+  SQLRETURN retcode = SQL_ERROR;
+  SQLINTEGER strLength = 0;
+  void *ptr = (void *) vParam;
+
+
+  if (penv->unicode_driver)
+    {
+#if (ODBCVER >= 0x300)
+      if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrW))
+          != SQL_NULL_HPROC)
+        {
+          CALL_DRIVER (hdbc, pdbc, retcode, hproc,
+	      (pdbc->dhdbc, fOption, ptr, strLength));
+        }
+#endif
+    }
+  else
+    {
+#if (ODBCVER >= 0x300)
+      if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttr))
+          != SQL_NULL_HPROC)
+        {
+          CALL_DRIVER (hdbc, pdbc, retcode, hproc,
+	      (pdbc->dhdbc, fOption, vParam, strLength));
+        }
+      else if ((hproc = _iodbcdm_getproc (pdbc, en_SetConnectAttrA))
+          != SQL_NULL_HPROC)
+        {
+          CALL_DRIVER (hdbc, pdbc, retcode, hproc,
+	      (pdbc->dhdbc, fOption, vParam, strLength));
+        }
+#endif
+    }
+
+  return retcode;
+}
+
 
 
 static SQLRETURN
@@ -551,6 +594,13 @@ _iodbcdm_pool_check_attr_match (HDBC hdbc, HDBC cp_hdbc)
     {
       DPRINTF ((stderr, "DEBUG: odbc_cursors does not match (conn %p, cp_conn %p, strict_match %d)",
         hdbc, cp_hdbc, strict_match));
+      return FALSE;
+    }
+
+  if (pdbc->conv.dm_cp != cp_pdbc->conv.dm_cp || pdbc->conv.drv_cp != cp_pdbc->conv.drv_cp)
+    {
+      DPRINTF ((stderr, "DEBUG: unicode mode does not match (conn %p, cp_conn %p)",
+        hdbc, cp_hdbc));
       return FALSE;
     }
 
@@ -995,6 +1045,7 @@ _iodbcdm_driverload (
     HDBC hdbc,
     SWORD thread_safe,
     SWORD unload_safe,
+    IODBC_CHARSET iodbcinst_drv_cp,
     UCHAR waMode)
 {
   CONN (pdbc, hdbc);
@@ -1010,6 +1061,7 @@ _iodbcdm_driverload (
   char cp_probe[1024] = {""};
   int cp_timeout = 0;
   void *pfaux;
+  int driver_unicode_cp = -1;
 
   if (drv == NULL || ((char*)drv)[0] == '\0')
     {
@@ -1062,6 +1114,21 @@ _iodbcdm_driverload (
       SQLGetPrivateProfileString (drv, "CPProbe", "",
    	    cp_probe, sizeof(cp_probe), "odbcinst.ini");
 
+      if (SQLGetPrivateProfileString ((char *) drv, 
+          "DriverUnicodeType", "0", buf, sizeof (buf), "odbcinst.ini"))
+        {
+          if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
+            iodbcinst_drv_cp = CP_UTF16;
+          else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
+            iodbcinst_drv_cp = CP_UTF8;
+          else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+            iodbcinst_drv_cp = CP_UCS4;
+
+          DPRINTF ((stderr,
+            "DEBUG: _iodbcdm_driverload(odbcinst.ini) DriverUnicodeType=%s\n",
+              iodbcinst_drv_cp==CP_UCS4?"UCS4":(iodbcinst_drv_cp==CP_UTF16?"UTF16":"UTF8")));
+        }
+      
       if (tmp_drv)
 	free (tmp_drv);
     }
@@ -1085,6 +1152,21 @@ _iodbcdm_driverload (
            */
           SQLGetPrivateProfileString (tmp_drv, "CPProbe", "",
   	      cp_probe, sizeof(cp_probe), "odbcinst.ini");
+
+          if (SQLGetPrivateProfileString ((char *) tmp_drv, 
+              "DriverUnicodeType", "0", buf, sizeof (buf), "odbcinst.ini"))
+            {
+              if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
+                iodbcinst_drv_cp = CP_UTF16;
+              else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
+                iodbcinst_drv_cp = CP_UTF8;
+              else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+                iodbcinst_drv_cp = CP_UCS4;
+
+              DPRINTF ((stderr,
+                "DEBUG: _iodbcdm_driverload(odbcinst.ini) DriverUnicodeType=%s\n",
+                  iodbcinst_drv_cp==CP_UCS4?"UCS4":(iodbcinst_drv_cp==CP_UTF16?"UTF16":"UTF8")));
+            }
   	}
     }
 
@@ -1161,6 +1243,8 @@ _iodbcdm_driverload (
 	      return SQL_ERROR;
 	    }
 
+	  penv->conv.dm_cp    = genv->conv.dm_cp;
+	  penv->conv.drv_cp   = iodbcinst_drv_cp;
 	  /*
 	   *  Initialize array of ODBC functions
 	   */
@@ -1174,6 +1258,7 @@ _iodbcdm_driverload (
 	    }
 
 	  pdbc->henv = penv;
+	  pdbc->conv = penv->conv;
 	  penv->hdll = hdll;
 
           /*
@@ -1220,6 +1305,58 @@ _iodbcdm_driverload (
 		      if (retcode == SQL_SUCCESS)
 			penv->dodbc_ver = SQL_OV_ODBC3;
 		    }
+
+		  hproc = _iodbcdm_getproc (pdbc, en_GetEnvAttr);
+		  if (hproc != SQL_NULL_HPROC)
+                    {
+                      SQLINTEGER val, len;
+
+                      val = -1;
+                      CALL_DRIVER (hdbc, penv, retcode, hproc,
+	      		(penv->dhenv, SQL_ATTR_DRIVER_UNICODE_TYPE, &val, 0, 0));
+                      if (retcode == SQL_SUCCESS && val !=-1)
+                        {
+                          DPRINTF ((stderr,
+                           "DEBUG: _iodbcdm_driverload(ODBC Driver return=%d)\n", val));
+
+                          if (val == SQL_DM_CP_UCS4 || val == SQL_DM_CP_UTF16 || val == SQL_DM_CP_UTF8)
+                            {
+                              switch(val)
+                                {
+                                case SQL_DM_CP_UTF16:
+                                  penv->conv.drv_cp = CP_UTF16;
+                                  pdbc->conv.drv_cp = CP_UTF16;
+                                  driver_unicode_cp = CP_UTF16;
+                                  break;
+                                case SQL_DM_CP_UTF8:
+                                  penv->conv.drv_cp = CP_UTF8;
+                                  pdbc->conv.drv_cp = CP_UTF8;
+                                  driver_unicode_cp = CP_UTF8;
+                                  break;
+                                default:
+                                case SQL_DM_CP_UCS4:
+                                  penv->conv.drv_cp = CP_UCS4;
+                                  pdbc->conv.drv_cp = CP_UCS4;
+                                  driver_unicode_cp = CP_UCS4;
+                                  break;
+                                }
+                              DPRINTF ((stderr,
+                               "DEBUG: _iodbcdm_driverload(ODBC Driver return DriverUnicodeType=%s)\n",
+                                penv->conv.drv_cp==CP_UCS4
+                                  ?"UCS4"
+                                  :(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
+                            }
+                          else
+                            {
+                              penv->conv.drv_cp = iodbcinst_drv_cp;
+                              pdbc->conv.drv_cp = iodbcinst_drv_cp;
+
+                              DPRINTF ((stderr,
+                               "DEBUG: _iodbcdm_driverload(ODBC Driver use DriverUnicodeType=UCS4 (default))\n"));
+                            }
+                        }
+                    }
+
 		  retcode = save_retcode;
 		}
 	    }
@@ -1239,6 +1376,8 @@ _iodbcdm_driverload (
 #endif
 		  CALL_DRIVER (hdbc, genv, retcode, hproc, (&(penv->dhenv)));
 		}
+	      penv->conv.drv_cp = iodbcinst_drv_cp;
+	      pdbc->conv.drv_cp = iodbcinst_drv_cp;
 	    }
 
 	  if (retcode == SQL_ERROR)
@@ -1254,6 +1393,39 @@ _iodbcdm_driverload (
 
 	      return SQL_ERROR;
 	    }
+
+          if (driver_unicode_cp == -1 
+              && penv->unicode_driver 
+              && dsn != NULL && *dsn != '\0')
+            {
+              SQLSetConfigMode (ODBC_BOTH_DSN);
+              
+              if ( SQLGetPrivateProfileString ((char *) dsn, 
+                    "DriverUnicodeType", "0", buf, sizeof(buf), "odbc.ini"))
+                {
+                  if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
+                    {
+                      penv->conv.drv_cp = CP_UTF16;
+                      pdbc->conv.drv_cp = CP_UTF16;
+                    }
+                  else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
+                    {
+                      penv->conv.drv_cp = CP_UTF8;
+                      pdbc->conv.drv_cp = CP_UTF8;
+                    }
+                  else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+                    {
+                      penv->conv.drv_cp = CP_UCS4;
+                      pdbc->conv.drv_cp = CP_UCS4;
+                    }
+
+                  DPRINTF ((stderr,
+                   "DEBUG: _iodbcdm_driverload(DSN attribute) DriverUnicodeType=%s\n",
+                    penv->conv.drv_cp==CP_UCS4
+                      ?"UCS4":(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
+
+                }
+            }
 
 	  /* insert into dll env list */
 	  penv->next = (ENV_t *) genv->henv;
@@ -1347,6 +1519,28 @@ _iodbcdm_driverload (
 	      PUSHSQLERR (pdbc->herr, en_IM006);
 	      return SQL_SUCCESS_WITH_INFO;
 	    }
+        }
+    }
+
+    if (driver_unicode_cp != -1)
+    {
+      SQLINTEGER wchar_id = driver_unicode_cp;
+
+      retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_TYPE,
+	wchar_id);
+
+      DPRINTF ((stderr, "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) retcode=%d\n", wchar_id, retcode));
+      if (retcode == SQL_SUCCESS)
+        {
+	  penv->conv.drv_cp = wchar_id;
+	  pdbc->conv.drv_cp = wchar_id;
+
+          DPRINTF ((stderr,
+            "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) %s\n",
+               penv->conv.drv_cp,
+               penv->conv.drv_cp==CP_UCS4
+                          ?"UCS4"
+                          :(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
         }
     }
 
@@ -1660,7 +1854,8 @@ _iodbcdm_con_settracing (HDBC hdbc, SQLCHAR *dsn, int dsnlen, UCHAR waMode)
  */
 static int
 _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
-			    char *buf, size_t buf_sz, int wide)
+			    char *buf, size_t buf_sz, int wide,
+			    DM_CONV *conv)
 {
   BOOL override;	/* TRUE if params from conn str
 			   override params from .dsn file */
@@ -1736,13 +1931,13 @@ _iodbcdm_cfg_merge_filedsn (PCONFIG pconfig, const char *filedsn,
 
   if (wide)
     {
-      SQLWCHAR *_in = dm_SQL_U8toW (buf, SQL_NTS);
+      SQLWCHAR *_in = DM_U8toW (conv, (SQLCHAR *)buf, SQL_NTS);
       if (_in == NULL)
         {
           rc = -1;
           goto done;
         }
-      WCSNCPY (buf, _in, buf_sz / sizeof (SQLWCHAR));
+      DM_WCSNCPY (conv, buf, _in, buf_sz / DM_WCHARSIZE(conv));
       MEM_FREE (_in);
     }
 
@@ -1760,14 +1955,15 @@ done:
  * Save connection string into the file
  */
 static int
-_iodbcdm_cfg_savefile (const char *savefile, void *conn_str, int wide)
+_iodbcdm_cfg_savefile (const char *savefile, void *conn_str, int wide,
+	DM_CONV *conv)
 {
   int ret = 0;
   PCONFIG pconfig;
   BOOL atsection = FALSE;
 
   /* parse connection string into pconfig */
-  if (_iodbcdm_cfg_init_str (&pconfig, conn_str, SQL_NTS, wide) == -1)
+  if (_iodbcdm_cfg_init_str (&pconfig, conn_str, SQL_NTS, wide, conv) == -1)
     return -1;
 
   /* don't save PWD, FILEDSN and SAVEFILE */
@@ -1837,6 +2033,9 @@ SQLConnect_Internal (SQLHDBC hdbc,
   void * _szAuthStr = NULL;
   SQLCHAR *_dsn = (SQLCHAR *) szDSN;
   SQLSMALLINT _dsn_len = cbDSN;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = NULL;
+  IODBC_CHARSET drv_cp = CP_DEF;
 
   /* check arguments */
   if ((cbDSN < 0 && cbDSN != SQL_NTS)
@@ -1862,9 +2061,11 @@ SQLConnect_Internal (SQLHDBC hdbc,
     }
 
 
+  conv = (penv != SQL_NULL_HENV) ? &penv->conv : &((GENV_t *) pdbc->genv)->conv;
+
   if (waMode == 'W')
     {
-      _szDSN = (void *) dm_SQL_WtoU8((SQLWCHAR *)szDSN, cbDSN);
+      _szDSN = (void *) DM_WtoU8(conv, szDSN, cbDSN);
       _dsn = (SQLCHAR *) _szDSN;
       _dsn_len = SQL_NTS;
       if (_dsn == NULL)
@@ -1894,7 +2095,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
         {
           if (szUID != NULL)
 	    {
-              _szUID = (void *) dm_SQL_WtoU8((SQLWCHAR *) szUID, cbUID);
+              _szUID = (void *) DM_WtoU8(conv, (SQLWCHAR *) szUID, cbUID);
 	      if (_szUID == NULL)
 	        {
 		  PUSHSQLERR (pdbc->herr, en_S1001);
@@ -1903,7 +2104,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 	    }
           if (szAuthStr != NULL)
 	    {
-              _szAuthStr = (void *) dm_SQL_WtoU8(
+              _szAuthStr = (void *) DM_WtoU8(conv,
 	          (SQLWCHAR *) szAuthStr, cbAuthStr);
 	      if (_szAuthStr == NULL)
 	        {
@@ -1915,7 +2116,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 	  _pwd = _szAuthStr;
         }
 
-      retcode = _iodbcdm_pool_get_conn (pdbc, _dsn, _uid, _pwd, NULL);
+      retcode = _iodbcdm_pool_get_conn (pdbc, (char *)_dsn, _uid, _pwd, NULL);
       if (SQL_SUCCEEDED (retcode))
         {
 	  /*
@@ -1984,7 +2185,7 @@ SQLConnect_Internal (SQLHDBC hdbc,
 	    }
 	  else
 	    {
-	      pdbc->cp_dsn = strdup (_dsn);
+	      pdbc->cp_dsn = strdup ((char *)_dsn);
 	      if (pdbc->cp_dsn == NULL)
 	        {
 		  PUSHSQLERR (pdbc->herr, en_S1001);
@@ -2053,10 +2254,11 @@ SQLConnect_Internal (SQLHDBC hdbc,
       RETURN (SQL_ERROR);
     }
 
+  retcode = _iodbcdm_driverload ((char *)_dsn, (char *)driver, pdbc, thread_safe, 
+  		unload_safe, drv_cp, waMode);
+
   MEM_FREE(_szDSN);
   _szDSN = NULL;
-
-  retcode = _iodbcdm_driverload (_dsn, (char *)driver, pdbc, thread_safe, unload_safe, waMode);
 
   switch (retcode)
     {
@@ -2078,24 +2280,20 @@ SQLConnect_Internal (SQLHDBC hdbc,
     }
 
   penv = (ENV_t *) pdbc->henv;
+  conv = &penv->conv;
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
-        {
-        /* ansi=>unicode*/
-          _szDSN = dm_SQL_A2W((SQLCHAR *)szDSN, cbDSN);
-          _szUID = dm_SQL_A2W((SQLCHAR *)szUID, cbUID);
-          _szAuthStr = dm_SQL_A2W((SQLCHAR *)szAuthStr, cbAuthStr);
-        }
-      else
-        {
-        /* unicode=>ansi*/
-          _szDSN = dm_SQL_W2A((SQLWCHAR *)szDSN, cbDSN);
-          _szUID = dm_SQL_W2A((SQLWCHAR *)szUID, cbUID);
-          _szAuthStr = dm_SQL_W2A((SQLWCHAR *)szAuthStr, cbAuthStr);
-        }
+      _szDSN = conv_text_m2d (conv, szDSN, cbDSN, conv_direct);
+      _szUID = conv_text_m2d (conv, szUID, cbUID, conv_direct);
+      _szAuthStr = conv_text_m2d (conv, szAuthStr, cbAuthStr, conv_direct);
       cbDSN = SQL_NTS;
       cbUID = SQL_NTS;
       cbAuthStr = SQL_NTS;
@@ -2290,6 +2488,7 @@ SQLDriverConnect_Internal (
   SQLCHAR *dsn = NULL;
   SQLCHAR dsnbuf[SQL_MAX_DSN_LENGTH + 1];
   SQLWCHAR prov[2048];
+  SQLWCHAR StrInTmp[2048];
   SWORD thread_safe;
   SWORD unload_safe;
   SQLCHAR buf[1024];
@@ -2311,6 +2510,9 @@ SQLDriverConnect_Internal (
 #endif
   SQLCHAR *filedsn = NULL;
   SQLCHAR *savefile = NULL;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = NULL;
+  IODBC_CHARSET drv_cp = CP_DEF;
 
   HPROC dialproc = SQL_NULL_HPROC;
 
@@ -2336,8 +2538,10 @@ SQLDriverConnect_Internal (
   /* Save config mode */
   SQLGetConfigMode (&config);
 
+  conv = (penv != SQL_NULL_HENV) ? &penv->conv : &((GENV_t *) pdbc->genv)->conv;
+
   if (_iodbcdm_cfg_init_str (&pconfig, connStrIn, cbConnStrIn,
-			     waMode == 'W') == -1)
+			     waMode == 'W', conv) == -1)
     {
       PUSHSQLERR (pdbc->herr, en_HY001);
       RETURN (SQL_ERROR);
@@ -2347,7 +2551,7 @@ SQLDriverConnect_Internal (
   /* lookup and save original SAVEFILE value */
   if (_iodbcdm_cfg_find (pconfig, "ODBC", "SAVEFILE") == 0)
     {
-      savefile = strdup (pconfig->value);
+      savefile = (SQLCHAR *)strdup (pconfig->value);
       if (savefile == NULL)
         {
           PUSHSQLERR (pdbc->herr, en_HY001);
@@ -2375,7 +2579,7 @@ SQLDriverConnect_Internal (
 
       if (waMode == 'W')
         {
-          _ConnStrIn = dm_SQL_WtoU8((SQLWCHAR *) connStrIn, cbConnStrIn);
+          _ConnStrIn = DM_WtoU8(conv, (SQLWCHAR *) connStrIn, cbConnStrIn);
 	  if (_ConnStrIn == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_HY001);
@@ -2396,9 +2600,14 @@ SQLDriverConnect_Internal (
 	    {
 	      if (waMode == 'W')
 	        {
-		  WCSNCPY (szConnStrOut, szConnStrIn, cbConnStrOutMax);
-                  *(SQLSMALLINT *) pcbConnStrOut =
-		      WCSLEN (szConnStrOut) * sizeof (SQLWCHAR);
+		  DM_WCSNCPY (conv, szConnStrOut, szConnStrIn, cbConnStrOutMax);
+
+		  if (conv && conv->dm_cp == CP_UTF8)
+                    *(SQLSMALLINT *) pcbConnStrOut = 
+                        strlen((char*)szConnStrOut);
+		  else
+                    *(SQLSMALLINT *) pcbConnStrOut =
+		        DM_WCSLEN (conv, szConnStrOut);
 		}
 	      else
 	        {
@@ -2489,7 +2698,7 @@ SQLDriverConnect_Internal (
       else if (!strcasecmp(pconfig->id, "FILEDSN"))
         {
           /* file dsn */
-          filedsn = strdup (pconfig->value);
+          filedsn = (SQLCHAR *)strdup (pconfig->value);
 	  if (filedsn == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_HY001);
@@ -2504,9 +2713,9 @@ SQLDriverConnect_Internal (
   if (filedsn != NULL)
     {
       /* merge params from .dsn file */
-      if (_iodbcdm_cfg_merge_filedsn (pconfig, filedsn,
+      if (_iodbcdm_cfg_merge_filedsn (pconfig, (char *)filedsn,
 	      (char *) connStrIn_buf, sizeof (connStrIn_buf),
-	      waMode == 'W') == -1)
+	      waMode == 'W', conv) == -1)
         {
           PUSHSQLERR (pdbc->herr, en_IM015);
           RETURN (SQL_ERROR);
@@ -2519,7 +2728,7 @@ SQLDriverConnect_Internal (
 	  if (waMode != 'W')
 	    cbConnStrIn = STRLEN (connStrIn);
 	  else
-	    cbConnStrIn = WCSLEN (connStrIn);
+	    cbConnStrIn = DM_WCSLEN (conv, connStrIn);
 	}
     }
 
@@ -2534,6 +2743,20 @@ SQLDriverConnect_Internal (
       /* copy because pconfig can be reinitialized later */
       _iodbcdm_strlcpy ((char *) dsnbuf, pconfig->value, sizeof (dsnbuf));
       dsn = dsnbuf;
+    }
+
+  if (_iodbcdm_cfg_find (pconfig, "ODBC", "DriverUnicodeType") == 0)
+    {
+      if (STRCASEEQ(pconfig->value, "1") || STRCASEEQ(pconfig->value, "utf16"))
+        drv_cp = CP_UTF16;
+      else if (STRCASEEQ(pconfig->value, "2") || STRCASEEQ(pconfig->value, "utf8"))
+        drv_cp = CP_UTF8;
+      else if (STRCASEEQ(pconfig->value, "0") || STRCASEEQ(pconfig->value, "ucs4"))
+        drv_cp = CP_UCS4;
+
+      DPRINTF ((stderr,
+       "DEBUG: SQLDriverConnect DriverUnicodeType=%s\n",
+          drv_cp==CP_UCS4?"UCS4":(drv_cp==CP_UTF16?"UTF16":"UTF8")));
     }
 
   switch (fDriverCompletion)
@@ -2560,8 +2783,10 @@ SQLDriverConnect_Internal (
       /* Not really sure here, but should load that from the iodbcadm */
       if (waMode == 'A') 
 	_iodbcdm_strlcpy ((char *) prov, connStrIn, sizeof (prov));
+      else if (conv && conv->dm_cp == CP_UTF8)
+	_iodbcdm_strlcpy ((char *) prov, connStrIn, sizeof (prov));
       else 
-        wcsncpy (prov, connStrIn, sizeof (prov) / sizeof (wchar_t));
+        DM_WCSNCPY (conv, prov, connStrIn, sizeof (prov) / DM_WCHARSIZE(conv));
 
 #if 0
         if (!dsn && !drv)
@@ -2622,6 +2847,34 @@ SQLDriverConnect_Internal (
           break;
         }
 
+      {
+        IODBC_CHARSET m_charset = (conv) ? conv->dm_cp : CP_DEF;
+        ssize_t size = cbConnStrIn;
+
+        /*** convert DM_WCHAR => SYS_WCHAR ***/
+        if (waMode == 'A') 
+	  _iodbcdm_strlcpy ((char *) prov, connStrIn, sizeof (prov));
+        else 
+          {
+            if (size == SQL_NTS)
+              {
+                if (m_charset == CP_UTF8)
+	          size = strlen((char*) connStrIn);
+                else
+	          size = DM_WCSLEN (conv, connStrIn);
+	      }
+
+	    if (m_charset != CP_UTF8)
+	      size *= DM_WCHARSIZE(conv);
+
+	    if (size >= sizeof(prov))
+	      size = sizeof(prov) - DM_WCHARSIZE(conv);
+
+            size = dm_conv_W2W(connStrIn, cbConnStrIn, prov, 
+            	sizeof(prov)-sizeof(SQLWCHAR), m_charset, CP_DEF);
+            prov[size/sizeof(SQLWCHAR)] = L'\0';
+          }
+
       retcode = dialproc (hwnd,	/* window or display handle */
           prov,		        /* input/output dsn buf */
           sizeof (prov) / (waMode == 'A' ? 1 : sizeof (SQLWCHAR)), /* buf size */
@@ -2640,7 +2893,12 @@ SQLDriverConnect_Internal (
 	  goto end;
         }
 
-      connStrIn = prov;
+        /*** convert SYS_WCHAR => DM_WCHAR ***/
+        size = dm_conv_W2W(prov, SQL_NTS, StrInTmp, sizeof(StrInTmp)-sizeof(SQLWCHAR), 
+        	CP_DEF, m_charset);
+        StrInTmp[size/sizeof(SQLWCHAR)] = L'\0';
+        connStrIn = StrInTmp;
+      }
 
       /*
        * Recalculate length of connStrIn if needed, as it may have been
@@ -2651,22 +2909,35 @@ SQLDriverConnect_Internal (
 	  if (waMode != 'W')
 	    cbConnStrIn = STRLEN (connStrIn);
 	  else
-	    cbConnStrIn = WCSLEN (connStrIn);
+	    cbConnStrIn = DM_WCSLEN (conv, connStrIn);
 	}
 
       if (_iodbcdm_cfg_parse_str (pconfig, connStrIn, cbConnStrIn,
-				  waMode == 'W') == -1)
+				  waMode == 'W', conv) == -1)
         {
           PUSHSQLERR (pdbc->herr, en_HY001);
           RETURN (SQL_ERROR);
         }
       if (_iodbcdm_cfg_find (pconfig, "ODBC", "DSN") == 0)
-        dsn = pconfig->value;
+        dsn = (SQLCHAR *)pconfig->value;
       if (_iodbcdm_cfg_find (pconfig, "ODBC", "DRIVER") == 0)
         {
           /* copy because pconfig can be reinitialized later */
           _iodbcdm_strlcpy ((char *) drvbuf, pconfig->value, sizeof (drvbuf));
           drv = drvbuf;
+        }
+      if (_iodbcdm_cfg_find (pconfig, "ODBC", "DriverUnicodeType") == 0)
+        {
+          if (STRCASEEQ(pconfig->value, "1") || STRCASEEQ(pconfig->value, "utf16"))
+            drv_cp = CP_UTF16;
+          else if (STRCASEEQ(pconfig->value, "2") || STRCASEEQ(pconfig->value, "utf8"))
+            drv_cp = CP_UTF8;
+          else if (STRCASEEQ(pconfig->value, "0") || STRCASEEQ(pconfig->value, "ucs4"))
+            drv_cp = CP_UCS4;
+
+          DPRINTF ((stderr,
+           "DEBUG: SQLDriverConnect DriverUnicodeType=%s\n",
+              drv_cp==CP_UCS4?"UCS4":(drv_cp==CP_UTF16?"UTF16":"UTF8")));
         }
       break;
 
@@ -2699,7 +2970,7 @@ SQLDriverConnect_Internal (
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (SQLGetPrivateProfileString ((char *) dsn, "ThreadManager", "", 
-	buf, sizeof (buf), "odbc.ini")
+	(LPSTR)buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       thread_safe = 0;		/* Driver needs a thread manager */
@@ -2712,7 +2983,7 @@ SQLDriverConnect_Internal (
 
   SQLSetConfigMode (ODBC_BOTH_DSN);
   if (SQLGetPrivateProfileString ((char *) dsn, "UnloadSafe", "", 
-	buf, sizeof (buf), "odbc.ini")
+	(LPSTR)buf, sizeof (buf), "odbc.ini")
       && (STRCASEEQ (buf, "on") || STRCASEEQ (buf, "1")))
     {
       unload_safe = 1;
@@ -2738,8 +3009,8 @@ SQLDriverConnect_Internal (
     }
 
   retcode = 
-      _iodbcdm_driverload (dsn, (char *) drv, pdbc, thread_safe, unload_safe, 
-      waMode);
+      _iodbcdm_driverload ((char *)dsn, (char *) drv, pdbc, thread_safe, unload_safe, 
+      drv_cp, waMode);
 
   switch (retcode)
     {
@@ -2769,36 +3040,29 @@ SQLDriverConnect_Internal (
 #endif
 
   penv = (ENV_t *) pdbc->henv;
+  conv = &penv->conv;
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
+      if ((_ConnStrOut =
+ 	      malloc ((connStrOutMax + 1) * WCHAR_MAXSIZE)) == NULL)
 	{
-	  /* ansi=>unicode */
-	  if ((_ConnStrOut =
-		  malloc (connStrOutMax * sizeof (SQLWCHAR) + 1)) == NULL)
-	    {
-	      PUSHSQLERR (pdbc->herr, en_HY001);
-	      RETURN (SQL_ERROR);
-	    }
-	  _ConnStrIn = dm_SQL_A2W ((SQLCHAR *) connStrIn, cbConnStrIn);
+	  PUSHSQLERR (pdbc->herr, en_HY001);
+	  RETURN (SQL_ERROR);
 	}
-      else
-	{
-	  /* unicode=>ansi */
-	  if ((_ConnStrOut = malloc (connStrOutMax + 1)) == NULL)
-	    {
-	      PUSHSQLERR (pdbc->herr, en_HY001);
-	      RETURN (SQL_ERROR);
-	    }
-	  _ConnStrIn = dm_SQL_W2A ((SQLWCHAR *) connStrIn, cbConnStrIn);
-	}
+      _ConnStrIn = conv_text_m2d (conv, connStrIn, cbConnStrIn, conv_direct);
+
       connStrOut = _ConnStrOut;
       connStrIn = _ConnStrIn;
       cbConnStrIn = SQL_NTS;
     }
-
 
   /* Restore config mode */
   SQLSetConfigMode (config);
@@ -2819,23 +3083,26 @@ SQLDriverConnect_Internal (
       RETURN (SQL_ERROR);
     }
 
-  if (szConnStrOut
-      && SQL_SUCCEEDED (retcode)
-      && ((penv->unicode_driver && waMode != 'W')
-	  || (!penv->unicode_driver && waMode == 'W')))
+  if (szConnStrOut && SQL_SUCCEEDED (retcode) && conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
-	{
+      if (conv_direct == CD_A2W)
+        {
 	  /* ansi<=unicode */
-          dm_StrCopyOut2_W2A ((SQLWCHAR *) connStrOut, 
-              (SQLCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
-	}
-      else
-	{
+          dm_StrCopyOut2_W2A_d2m (conv, connStrOut, 
+              (SQLCHAR *) szConnStrOut, cbConnStrOutMax, NULL, NULL);
+        }
+      else if (conv_direct == CD_W2A)
+        {
 	  /* unicode<=ansi */
-          dm_StrCopyOut2_A2W ((SQLCHAR *) connStrOut, 
-              (SQLWCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
-	}
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) connStrOut, 
+              szConnStrOut, cbConnStrOutMax * DM_WCHARSIZE(conv), NULL, NULL);
+        }
+      else if (conv_direct == CD_W2W)
+        {
+	  /* unicode<=unicode */
+          dm_StrCopyOut2_W2W_d2m (conv, connStrOut, 
+              szConnStrOut, cbConnStrOutMax * DM_WCHARSIZE(conv), NULL, NULL);
+        }
     }
 
   if (szConnStrOut != NULL)
@@ -2845,20 +3112,22 @@ SQLDriverConnect_Internal (
           /* append FILEDSN to the out connection string */
           if (waMode == 'W')
             {
-              SQLWCHAR *_tmp = dm_SQL_U8toW (filedsn, SQL_NTS);
-	      if (_tmp == NULL)
-	        {
-                  PUSHSQLERR (pdbc->herr, en_HY001);
-                  RETURN (SQL_ERROR);
-	        }
-	      WCSNCAT (szConnStrOut, L";FILEDSN=", cbConnStrOutMax);
-	      WCSNCAT (szConnStrOut, _tmp, cbConnStrOutMax);
-              MEM_FREE (_tmp);
+              char tmp[4096] = {""};
+              size_t outSize = DM_WCSLEN(conv, szConnStrOut);
+              char *out = szConnStrOut;
+
+              out += outSize * DM_WCHARSIZE(conv);
+
+              _iodbcdm_strlcat (tmp, ";FILEDSN=", sizeof(tmp));
+              _iodbcdm_strlcat (tmp, (char *)filedsn, sizeof(tmp));
+              dm_StrCopyOut2_U8toW_d2m(conv, (SQLCHAR *)tmp, out, 
+              		(cbConnStrOutMax - outSize) * DM_WCHARSIZE(conv), 
+              		NULL, NULL);
 	    }
           else
             {
               _iodbcdm_strlcat (szConnStrOut, ";FILEDSN=", cbConnStrOutMax);
-              _iodbcdm_strlcat (szConnStrOut, filedsn, cbConnStrOutMax);
+              _iodbcdm_strlcat (szConnStrOut, (char *)filedsn, cbConnStrOutMax);
             }
         }
       if (savefile != NULL)
@@ -2866,29 +3135,28 @@ SQLDriverConnect_Internal (
           /* append SAVEFILE to the out connection string */
           if (waMode == 'W')
             {
-              SQLWCHAR *_tmp = dm_SQL_U8toW (savefile, SQL_NTS);
-	      if (_tmp == NULL)
-	        {
-                  PUSHSQLERR (pdbc->herr, en_HY001);
-                  RETURN (SQL_ERROR);
-	        }
-	      WCSNCAT (szConnStrOut, L";SAVEFILE=", cbConnStrOutMax);
-	      WCSNCAT (szConnStrOut, _tmp, cbConnStrOutMax);
-              MEM_FREE (_tmp);
+              char tmp[4096] = {""};
+              size_t outSize = DM_WCSLEN(conv, szConnStrOut);
+              char *out = szConnStrOut;
+
+              out += outSize * DM_WCHARSIZE(conv);
+
+              _iodbcdm_strlcat (tmp, ";SAVEFILE=", sizeof(tmp));
+              _iodbcdm_strlcat (tmp, (char *)savefile, sizeof(tmp));
+              dm_StrCopyOut2_U8toW_d2m(conv, (SQLCHAR *)tmp, out, 
+              		(cbConnStrOutMax - outSize) * DM_WCHARSIZE(conv), 
+              		NULL, NULL);
 	    }
           else
             {
               _iodbcdm_strlcat (szConnStrOut, ";SAVEFILE=", cbConnStrOutMax);
-              _iodbcdm_strlcat (szConnStrOut, savefile, cbConnStrOutMax);
+              _iodbcdm_strlcat (szConnStrOut, (char *)savefile, cbConnStrOutMax);
             }
         }
 
       /* fixup pcbConnStrOut */
       if (waMode == 'W')
-        {
-          *(SQLSMALLINT *) pcbConnStrOut =
-	      WCSLEN (szConnStrOut) * sizeof (SQLWCHAR);
-	}
+        *(SQLSMALLINT *) pcbConnStrOut = DM_WCSLEN (conv, szConnStrOut);
       else
         *(SQLSMALLINT *) pcbConnStrOut = strlen (szConnStrOut);
     }
@@ -2918,8 +3186,8 @@ SQLDriverConnect_Internal (
     {
       assert (connStrOut != NULL);
 
-      if (_iodbcdm_cfg_savefile (savefile, connStrOut,
-				 penv->unicode_driver) == -1)
+      if (_iodbcdm_cfg_savefile ((char *)savefile, connStrOut,
+				 penv->unicode_driver, conv) == -1)
         {
 	  PUSHSQLERR (pdbc->herr, en_01S08);
 	  retcode = SQL_SUCCESS_WITH_INFO;
@@ -3083,6 +3351,9 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
   void * _ConnStrOut = NULL;
   void * connStrOut = szConnStrOut;
   void * connStrIn = szConnStrIn;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = NULL;
+  IODBC_CHARSET drv_cp = CP_DEF;
 
   SQLRETURN retcode = SQL_SUCCESS;
   SQLRETURN setopterr = SQL_SUCCESS;
@@ -3094,13 +3365,15 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
       return SQL_ERROR;
     }
 
+  conv = (penv != SQL_NULL_HENV) ? &penv->conv : &((GENV_t *) pdbc->genv)->conv;
+
   if (pdbc->state == en_dbc_allocated)
     {
         PCONFIG pconfig;
         void *drv = NULL, *dsn = NULL;
 
         if (_iodbcdm_cfg_init_str (&pconfig, szConnStrIn, cbConnStrIn,
-			     waMode == 'W') == -1)
+			     waMode == 'W', conv) == -1)
           {
             PUSHSQLERR (pdbc->herr, en_HY001);
             return SQL_ERROR;
@@ -3109,6 +3382,20 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
           drv = pconfig->value;
         if (_iodbcdm_cfg_find (pconfig, "ODBC", "DSN") == 0)
           dsn = pconfig->value;
+
+        if (_iodbcdm_cfg_find (pconfig, "ODBC", "DriverUnicodeType") == 0)
+          {
+            if (STRCASEEQ(pconfig->value, "1") || STRCASEEQ(pconfig->value, "utf16"))
+              drv_cp = CP_UTF16;
+            else if (STRCASEEQ(pconfig->value, "2") || STRCASEEQ(pconfig->value, "utf8"))
+              drv_cp = CP_UTF8;
+            else if (STRCASEEQ(pconfig->value, "0") || STRCASEEQ(pconfig->value, "ucs4"))
+              drv_cp = CP_UCS4;
+
+            DPRINTF ((stderr,
+             "DEBUG: SQLBrowseConnect DriverUnicodeType=%s\n",
+                drv_cp==CP_UCS4?"UCS4":(drv_cp==CP_UTF16?"UTF16":"UTF8")));
+          }
 
         if (dsn == NULL || ((char*)dsn)[0] == '\0')
           dsn = (void *) "default";
@@ -3168,7 +3455,8 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
 	  return SQL_ERROR;
 	}
 
-      retcode = _iodbcdm_driverload (dsn, (char *) drv, pdbc, thread_safe, unload_safe, waMode);
+      retcode = _iodbcdm_driverload (dsn, (char *) drv, pdbc, thread_safe, 
+      		unload_safe, drv_cp, waMode);
       _iodbcdm_cfg_done (pconfig);
 
       switch (retcode)
@@ -3197,30 +3485,24 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
     }
 
   penv = (ENV_t *) pdbc->henv;
+  conv = &penv->conv;
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
-        {
-        /* ansi=>unicode*/
-          if ((_ConnStrOut = malloc((cbConnStrOutMax + 1) * sizeof(SQLWCHAR))) == NULL)
-	    {
-              PUSHSQLERR (pdbc->herr, en_HY001);
-	      return SQL_ERROR;
-            }
-          _ConnStrIn = dm_SQL_A2W((SQLCHAR *)szConnStrIn, SQL_NTS);
+      if ((_ConnStrOut = malloc((cbConnStrOutMax + 1)* WCHAR_MAXSIZE)) == NULL)
+	{
+          PUSHSQLERR (pdbc->herr, en_HY001);
+	  return SQL_ERROR;
         }
-      else
-        {
-        /* unicode=>ansi*/
-          if ((_ConnStrOut = malloc(cbConnStrOutMax + 1)) == NULL)
-	    {
-              PUSHSQLERR (pdbc->herr, en_HY001);
-	      return SQL_ERROR;
-            }
-          _ConnStrIn = dm_SQL_W2A((SQLWCHAR *)szConnStrIn, SQL_NTS);
-        }
+      _ConnStrIn = conv_text_m2d (conv, szConnStrIn, SQL_NTS, conv_direct);
+
       connStrIn = _ConnStrIn;
       cbConnStrIn = SQL_NTS;
       connStrOut = _ConnStrOut;
@@ -3248,20 +3530,25 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
       return SQL_ERROR;
     }
 
-  if (szConnStrOut
-      && SQL_SUCCEEDED (retcode)
-      && ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W')))
+  if (szConnStrOut && SQL_SUCCEEDED (retcode) && conv_direct == CD_NONE)
     {
-      if (waMode != 'W')
+      if (conv_direct == CD_A2W)
         {
         /* ansi<=unicode*/
-          dm_StrCopyOut2_W2A ((SQLWCHAR *) connStrOut, (SQLCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
+          dm_StrCopyOut2_W2A_d2m (conv, connStrOut, (SQLCHAR *) szConnStrOut, 
+          	cbConnStrOutMax, NULL, NULL);
         }
-      else
+      else if (conv_direct == CD_W2A)
         {
         /* unicode<=ansi*/
-          dm_StrCopyOut2_A2W ((SQLCHAR *) connStrOut, (SQLWCHAR *) szConnStrOut, cbConnStrOutMax, NULL);
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) connStrOut, szConnStrOut, 
+          	cbConnStrOutMax * DM_WCHARSIZE(conv), NULL, NULL);
+        }
+      else if (conv_direct == CD_W2W)
+        {
+        /* unicode<=unicode*/
+          dm_StrCopyOut2_W2W_d2m (conv, connStrOut, szConnStrOut, 
+          	cbConnStrOutMax * DM_WCHARSIZE(conv), NULL, NULL);
         }
     }
 
@@ -3466,6 +3753,8 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
   void * _SqlStrIn = NULL;
   void * _SqlStr = NULL;
   void * sqlStr = szSqlStr;
+  CONV_DIRECT conv_direct = CD_NONE; 
+  DM_CONV *conv = &pdbc->conv;
 
   /* check argument */
   if (szSqlStrIn == NULL)
@@ -3490,31 +3779,22 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
       return SQL_ERROR;
     }
 
-  if ((penv->unicode_driver && waMode != 'W')
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
-      if (waMode != 'W')
+      if ((_SqlStr = malloc((cbSqlStrMax + 1) * WCHAR_MAXSIZE)) == NULL)
         {
-        /* ansi=>unicode*/
-          if ((_SqlStr = malloc(cbSqlStrMax * sizeof(SQLWCHAR) + 1)) == NULL)
-	    {
-              PUSHSQLERR (pdbc->herr, en_HY001);
-
-	      return SQL_ERROR;
-            }
-          _SqlStrIn = dm_SQL_A2W((SQLCHAR *)szSqlStrIn, SQL_NTS);
+          PUSHSQLERR (pdbc->herr, en_HY001);
+	  return SQL_ERROR;
         }
-      else
-        {
-        /* unicode=>ansi*/
-          if ((_SqlStr = malloc(cbSqlStrMax + 1)) == NULL)
-	    {
-              PUSHSQLERR (pdbc->herr, en_HY001);
+      _SqlStrIn = conv_text_m2d (conv, szSqlStrIn, SQL_NTS, conv_direct);
 
-	      return SQL_ERROR;
-            }
-          _SqlStrIn = dm_SQL_W2A((SQLWCHAR *)szSqlStrIn, SQL_NTS);
-        }
       szSqlStrIn = _SqlStrIn;
       cbSqlStrIn = SQL_NTS;
       sqlStr = _SqlStr;
@@ -3540,20 +3820,26 @@ SQLNativeSql_Internal (SQLHDBC hdbc,
       return SQL_ERROR;
     }
 
-  if (szSqlStr
-      && SQL_SUCCEEDED (retcode)
-      && ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W')))
+  if (szSqlStr && conv_direct != CD_NONE
+      && SQL_SUCCEEDED (retcode))
     {
-      if (waMode != 'W')
+      if (conv_direct == CD_A2W)
         {
         /* ansi<=unicode*/
-          dm_StrCopyOut2_W2A ((SQLWCHAR *) sqlStr, (SQLCHAR *) szSqlStr, cbSqlStrMax, NULL);
+          dm_StrCopyOut2_W2A_d2m (conv, sqlStr, (SQLCHAR *) szSqlStr, 
+          	cbSqlStrMax, NULL, NULL);
         }
-      else
+      else if (conv_direct == CD_W2A)
         {
         /* unicode<=ansi*/
-          dm_StrCopyOut2_A2W ((SQLCHAR *) sqlStr, (SQLWCHAR *) szSqlStr, cbSqlStrMax, NULL);
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) sqlStr, szSqlStr, 
+          	cbSqlStrMax * DM_WCHARSIZE(conv), NULL, NULL);
+        }
+      else if (conv_direct == CD_W2W)
+        {
+        /* unicode<=unicode*/
+          dm_StrCopyOut2_W2W_d2m (conv, sqlStr, szSqlStr, 
+          	cbSqlStrMax * DM_WCHARSIZE(conv), NULL, NULL);
         }
     }
 

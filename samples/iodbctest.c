@@ -198,6 +198,11 @@ ODBC_Connect (char *connStr)
   if (SQLAllocEnv (&henv) != SQL_SUCCESS)
     return -1;
 
+# ifdef UNICODE
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+      (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+#endif
+
   if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
     return -1;
 #else
@@ -206,6 +211,11 @@ ODBC_Connect (char *connStr)
 
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
       SQL_IS_UINTEGER);
+
+# ifdef UNICODE
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+      (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+#endif
 
   if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
     return -1;
@@ -305,12 +315,12 @@ ODBC_Connect (char *connStr)
   strcpy_A2W (wdataSource, (char *) dataSource);
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
       (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
-  if (status != SQL_SUCCESS)
+  if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     ODBC_Errors ("SQLDriverConnectW");
 #else
   status = SQLDriverConnect (hdbc, 0, (SQLCHAR *) dataSource, SQL_NTS,
       (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
-  if (status != SQL_SUCCESS)
+  if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     ODBC_Errors ("SQLDriverConnect");
 #endif
 
@@ -673,8 +683,8 @@ ODBC_Test ()
   SQLTCHAR request[4096];
   SQLTCHAR fetchBuffer[1024];
   char buf[4096];
-  size_t displayWidths[MAXCOLS];
-  size_t displayWidth;
+  int displayWidths[MAXCOLS];
+  int displayWidth;
   short numCols;
   short colNum;
   SQLTCHAR colName[50];
