@@ -221,13 +221,19 @@ ODBC_Connect (char *connStr)
 
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
       SQL_IS_UINTEGER);
-      
-#ifdef WIDE_UCS2
+
+#ifdef SQL_ATTR_APP_UNICODE_TYPE
+# ifdef WIDE_UCS2
+#  ifdef SQL_DM_CP_UTF16
   SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE, (SQLPOINTER) SQL_DM_CP_UTF16,
       SQL_IS_UINTEGER);
-#else      
+#  endif
+# else      
+#  ifdef SQL_DM_CP_UCS4
   SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE, (SQLPOINTER) SQL_DM_CP_UCS4,
       SQL_IS_UINTEGER);
+#  endif
+# endif
 #endif      
 
   if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
@@ -318,8 +324,7 @@ ODBC_Connect (char *connStr)
   strcpy_A2W (wdataSource, (char *) dataSource);
 #endif
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
-      (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_NOPROMPT);
-/*      (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);*/
+      (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
   if (status != SQL_SUCCESS && status!=SQL_SUCCESS_WITH_INFO)
     ODBC_Errors ("SQLDriverConnectW", SQL_NULL_HANDLE);
 

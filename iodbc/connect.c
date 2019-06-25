@@ -1115,17 +1115,17 @@ _iodbcdm_driverload (
    	    cp_probe, sizeof(cp_probe), "odbcinst.ini");
 
       if (SQLGetPrivateProfileString ((char *) drv, 
-          "DriverUnicodeType", "0", buf, sizeof (buf), "odbcinst.ini"))
+          "DriverUnicodeType", "3", buf, sizeof (buf), "odbcinst.ini"))
         {
-          if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
+          if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16") || STRCASEEQ (buf, "ucs2"))
             iodbcinst_drv_cp = CP_UTF16;
           else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
             iodbcinst_drv_cp = CP_UTF8;
-          else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+          else
             iodbcinst_drv_cp = CP_UCS4;
 
           DPRINTF ((stderr,
-            "DEBUG: _iodbcdm_driverload(odbcinst.ini) DriverUnicodeType=%s\n",
+            "DEBUG: _iodbcdm_driverload-0(odbcinst.ini) DriverUnicodeType=%s\n",
               iodbcinst_drv_cp==CP_UCS4?"UCS4":(iodbcinst_drv_cp==CP_UTF16?"UTF16":"UTF8")));
         }
       
@@ -1154,17 +1154,17 @@ _iodbcdm_driverload (
   	      cp_probe, sizeof(cp_probe), "odbcinst.ini");
 
           if (SQLGetPrivateProfileString ((char *) tmp_drv, 
-              "DriverUnicodeType", "0", buf, sizeof (buf), "odbcinst.ini"))
+              "DriverUnicodeType", "3", buf, sizeof (buf), "odbcinst.ini"))
             {
-              if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
+              if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16") || STRCASEEQ (buf, "ucs2"))
                 iodbcinst_drv_cp = CP_UTF16;
               else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
                 iodbcinst_drv_cp = CP_UTF8;
-              else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+              else
                 iodbcinst_drv_cp = CP_UCS4;
 
               DPRINTF ((stderr,
-                "DEBUG: _iodbcdm_driverload(odbcinst.ini) DriverUnicodeType=%s\n",
+                "DEBUG: _iodbcdm_driverload-1(odbcinst.ini) DriverUnicodeType=%s\n",
                   iodbcinst_drv_cp==CP_UCS4?"UCS4":(iodbcinst_drv_cp==CP_UTF16?"UTF16":"UTF8")));
             }
   	}
@@ -1401,7 +1401,7 @@ _iodbcdm_driverload (
               SQLSetConfigMode (ODBC_BOTH_DSN);
               
               if ( SQLGetPrivateProfileString ((char *) dsn, 
-                    "DriverUnicodeType", "0", buf, sizeof(buf), "odbc.ini"))
+                    "DriverUnicodeType", "", buf, sizeof(buf), "odbc.ini"))
                 {
                   if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
                     {
@@ -1413,7 +1413,7 @@ _iodbcdm_driverload (
                       penv->conv.drv_cp = CP_UTF8;
                       pdbc->conv.drv_cp = CP_UTF8;
                     }
-                  else if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+                  else if (STRCASEEQ (buf, "3") || STRCASEEQ (buf, "ucs4"))
                     {
                       penv->conv.drv_cp = CP_UCS4;
                       pdbc->conv.drv_cp = CP_UCS4;
