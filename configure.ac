@@ -73,20 +73,35 @@ AC_REVISION($Id$)
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+
+##########################################################################
+##									##
+##  Version info							##
+##									##
+##########################################################################
+m4_define(V_iodbc_major,       [3])            # ODBC Major version
+m4_define(V_iodbc_minor,       [52])           # ODBC Minor version
+m4_define(V_iodbc_patch,       [13])           # Increase every release
+m4_define(V_iodbc_devel,       [-rc1])         # -dev, -rc1 or empty for stable
+
+m4_define(V_iodbc_date,        [190625])       # YYMMDD of release
+m4_define(V_iodbc_shlib,       [26])           # Increase every change
+
+
 ##########################################################################
 ##									##
 ##  Initialization							##
 ##									##
 ##########################################################################
 AC_INIT([iODBC Driver Manager],
-        [3.52.12],
+        V_iodbc_major.V_iodbc_minor.V_iodbc_patch[]V_iodbc_devel,
 	[iodbc@openlinksw.com],
 	[libiodbc])
 AC_CONFIG_SRCDIR([include/isql.h])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_MACRO_DIR(admin)
 AC_CONFIG_HEADERS(include/config.h)
-AM_INIT_AUTOMAKE(AC_PACKAGE_TARNAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
@@ -100,14 +115,14 @@ AM_MAINTAINER_MODE
 #
 #  Version information for SQLGetInfo(SQL_DM_VER) call
 #
-BUILD_MAJOR="12"		# last digit of version number
-BUILD_MINOR="171101"		# year/month/day of release
+BUILD_MAJOR="V_iodbc_patch"		# last digit of version number
+BUILD_MINOR="V_iodbc_date"		# year/month/day of release
 BUILD_VER="${BUILD_MAJOR}${BUILD_MINOR}"
 
 #
 #  Library version numbers
 #
-lib3_version=3:25:1		# ODBC 3.x mode
+lib3_version=3:V_iodbc_shlib:1	# ODBC 3.x mode
 lib2_version=2:55:0		# ODBC 2.x mode (do not change)
 
 
