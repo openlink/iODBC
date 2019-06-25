@@ -73,8 +73,6 @@ AC_REVISION($Id$)
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-
-
 ##########################################################################
 ##									##
 ##  Initialization							##
@@ -137,22 +135,8 @@ fi
 ##  Save configuration for later reuse					##
 ##									##
 ##########################################################################
-echo creating config.nice
-rm -f config.nice 
-cat >config.nice<<CONFIG_NICE_EOF
-#! /bin/sh
-#
-# Created by configure for $PACKAGE_STRING
-#
 
-CONFIG_NICE_EOF
-echo ${SHELL} "\"$0\" \\" >> config.nice
-for arg in $ac_configure_args
-do
-    echo "$arg \\" >> config.nice
-done
-echo '"$@"' >> config.nice
-chmod +x config.nice
+OPL_CONFIG_NICE([config.nice])
 
 
 ##########################################################################

@@ -71,10 +71,11 @@
 #
 
 EXTRA_DIST = \
-	$(srcdir)/gtk.m4 \
 	$(srcdir)/gtk-2.0.m4 \
+	$(srcdir)/gtk.m4 \
+	$(srcdir)/libiodbc.pc.in \
 	$(srcdir)/libiodbc.spec.in \
-	$(srcdir)/libiodbc.pc.in
+	$(srcdir)/openlink.m4
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libiodbc.pc
