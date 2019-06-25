@@ -1315,7 +1315,8 @@ _iodbcdm_list_entries (PCONFIG pCfg, LPCSTR lpszSection, LPSTR lpszRetBuffer, in
 
   if (!_iodbcdm_cfg_find (pCfg, (char*)lpszSection, NULL))
     {
-      while (curr < cbRetBuffer && 0 == _iodbcdm_cfg_nextentry (pCfg))
+      while (curr < cbRetBuffer && 0 == _iodbcdm_cfg_nextentry (pCfg)
+             && pCfg->section)
 	{
 	  if (_iodbcdm_cfg_section (pCfg))
 	    break;
