@@ -252,23 +252,20 @@ ConfigDSN (
       if (connstr == (LPSTR) - 1L)
 	goto done;
 
-      /* Compare if the DSN changed */
-      if (strcmp (connstr + STRLEN ("DSN="), dsn))
-	{
-	  /* Remove the previous DSN */
-	  SQLSetConfigMode (confMode);
-	  if (!SQLRemoveDSNFromIni (dsn))
-	    goto done;
-	  /* Add the new DSN section */
-	  SQLSetConfigMode (confMode);
-	  if (!SQLWriteDSNToIni (dsn = connstr + STRLEN ("DSN="), lpszDriver))
-	    goto done;
-	}
+
+      /* Remove the previous DSN */
+      SQLSetConfigMode (confMode);
+      if (!SQLRemoveDSNFromIni (dsn))
+        goto done;
+
+      /* Add the new DSN section */
+      SQLSetConfigMode (confMode);
+      if (!SQLWriteDSNToIni (dsn = connstr + STRLEN ("DSN="), lpszDriver))
+        goto done;
 
       /* Add each keyword and values */
       for (curr = connstr; *curr; curr += (STRLEN (curr) + 1))
 	{
-
 	  if (strncmp (curr, "DSN=", STRLEN ("DSN=")))
 	    {
 	      STRCPY (dsnread, curr);

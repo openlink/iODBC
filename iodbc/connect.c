@@ -2053,10 +2053,10 @@ SQLConnect_Internal (SQLHDBC hdbc,
       RETURN (SQL_ERROR);
     }
 
+  retcode = _iodbcdm_driverload (_dsn, (char *)driver, pdbc, thread_safe, unload_safe, waMode);
+
   MEM_FREE(_szDSN);
   _szDSN = NULL;
-
-  retcode = _iodbcdm_driverload (_dsn, (char *)driver, pdbc, thread_safe, unload_safe, waMode);
 
   switch (retcode)
     {
