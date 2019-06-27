@@ -508,8 +508,8 @@ fprintf(stderr, "Error [%s]\n", where);
    */
   while (stmt)
     {
-      sts = SQLErrorW (henv, hdbc, stmt, sqlstate, &native_error,
-	  buf, NUMU2CHAR (buf), NULL);
+      sts = SQLErrorW (henv, hdbc, stmt, (SQLWCHAR*)sqlstate, &native_error,
+	  (SQLWCHAR*)buf, NUMU2CHAR (buf), NULL);
       if (!SQL_SUCCEEDED (sts))
 	break;
 
@@ -529,8 +529,8 @@ fprintf(stderr, "Error [%s]\n", where);
    */
   while (hdbc)
     {
-      sts = SQLErrorW (henv, hdbc, SQL_NULL_HSTMT, sqlstate, &native_error,
-	  buf, NUMU2CHAR (buf), NULL);
+      sts = SQLErrorW (henv, hdbc, SQL_NULL_HSTMT, (SQLWCHAR*)sqlstate, &native_error,
+	  (SQLWCHAR*)buf, NUMU2CHAR (buf), NULL);
       if (!SQL_SUCCEEDED (sts))
 	break;
 
@@ -550,8 +550,8 @@ fprintf(stderr, "Error [%s]\n", where);
    */
   while (henv)
     {
-      sts = SQLErrorW (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, sqlstate,
-	  &native_error, buf, NUMU2CHAR (buf), NULL);
+      sts = SQLErrorW (henv, SQL_NULL_HDBC, SQL_NULL_HSTMT, (SQLWCHAR*)sqlstate,
+	  &native_error, (SQLWCHAR*)buf, NUMU2CHAR (buf), NULL);
       if (!SQL_SUCCEEDED (sts))
 	break;
 
