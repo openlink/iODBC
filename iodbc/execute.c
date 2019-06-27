@@ -716,10 +716,13 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
         {
           needRebind = FALSE;
         }
+/**
       else if ((m_charset==CP_UCS4 && d_charset==CP_UTF16)
              ||(m_charset==CP_UTF16 && d_charset==CP_UCS4)
              ||(m_charset==CP_UTF8 && d_charset==CP_UTF16)
              ||(m_charset==CP_UTF8 && d_charset==CP_UCS4))
+***/
+      else
         {
           /* check if we need rebind params */
           pparm = pstmt->st_pparam;
