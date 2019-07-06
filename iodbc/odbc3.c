@@ -486,7 +486,9 @@ _SQLFreeHandle_DESC (
 	    (handleType, pdesc->dhdesc));
     }
 
+  ERR_LOCK();
   _iodbcdm_freesqlerrlist (pdesc->herr);
+  ERR_UNLOCK();
 
   /* invalidate the handle */
   pdesc->type = 0;

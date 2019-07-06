@@ -177,11 +177,16 @@ ENV_t;
  */
 #if defined (IODBC_THREADING)
 extern SPINLOCK_DECLARE(iodbcdm_global_lock);
+extern SPINLOCK_DECLARE(iodbcdm_err_lock);
 #define ODBC_LOCK()	SPINLOCK_LOCK(iodbcdm_global_lock)
 #define ODBC_UNLOCK()	SPINLOCK_UNLOCK(iodbcdm_global_lock)
+#define ERR_LOCK()	SPINLOCK_LOCK(iodbcdm_err_lock)
+#define ERR_UNLOCK()	SPINLOCK_UNLOCK(iodbcdm_err_lock)
 #else
 #define ODBC_LOCK()
 #define ODBC_UNLOCK()
+#define ERR_LOCK()
+#define ERR_UNLOCK()
 #endif
 
 /*
