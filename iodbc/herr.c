@@ -626,35 +626,73 @@ SQLError (
   SQLSMALLINT 		* pcbErrorMsg)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, henv);
+  CONN (pdbc, hdbc);
+  STMT (pstmt, hstmt);
+  SQLSMALLINT HandleType;
+  int holdlock = 0;
 
   ODBC_LOCK ();
-  TRACE (trace_SQLError (TRACE_ENTER,
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
-  retcode = _iodbcdm_sqlerror (
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 
-	1, 
-	'A');
+  TRACE (trace_SQLError (TRACE_ENTER, henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
-  TRACE (trace_SQLError (TRACE_LEAVE,
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
+  if (IS_VALID_HSTMT (pstmt))
+    {
+      HandleType = SQL_HANDLE_STMT;
+      if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+    }
+  else if (IS_VALID_HDBC (hdbc))
+    {
+      HandleType = SQL_HANDLE_DBC;
+      if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+    }
+  else if (IS_VALID_HENV (genv))
+    {
+      HandleType = SQL_HANDLE_ENV;
+      holdlock = 1;
+    }
+  else
+    {
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = _iodbcdm_sqlerror (henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 1, 'A');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLError (TRACE_LEAVE, henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
   ODBC_UNLOCK ();
+
   return retcode;
 }
 
@@ -672,35 +710,73 @@ SQLErrorA (
   SQLSMALLINT 		* pcbErrorMsg)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, henv);
+  CONN (pdbc, hdbc);
+  STMT (pstmt, hstmt);
+  SQLSMALLINT HandleType;
+  int holdlock = 0;
 
   ODBC_LOCK ();
-  TRACE (trace_SQLError (TRACE_ENTER,
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
-  retcode = _iodbcdm_sqlerror (
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 
-	1, 
-	'A');
+  TRACE (trace_SQLError (TRACE_ENTER, henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
-  TRACE (trace_SQLError (TRACE_LEAVE,
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
+  if (IS_VALID_HSTMT (pstmt))
+    {
+      HandleType = SQL_HANDLE_STMT;
+      if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+    }
+  else if (IS_VALID_HDBC (hdbc))
+    {
+      HandleType = SQL_HANDLE_DBC;
+      if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+    }
+  else if (IS_VALID_HENV (genv))
+    {
+      HandleType = SQL_HANDLE_ENV;
+      holdlock = 1;
+    }
+  else
+    {
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = _iodbcdm_sqlerror (henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 1, 'A');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLError (TRACE_LEAVE, henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
   ODBC_UNLOCK ();
+
   return retcode;
 }
 
@@ -717,35 +793,73 @@ SQLErrorW (
   SQLSMALLINT 		* pcbErrorMsg)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, henv);
+  CONN (pdbc, hdbc);
+  STMT (pstmt, hstmt);
+  SQLSMALLINT HandleType;
+  int holdlock = 0;
 
   ODBC_LOCK ();
-  TRACE (trace_SQLErrorW (TRACE_ENTER,
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
-  retcode = _iodbcdm_sqlerror (
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-	szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 
-	1, 
-	'W');
+  TRACE (trace_SQLErrorW (TRACE_ENTER, henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
-  TRACE (trace_SQLErrorW (TRACE_LEAVE,
-  	henv, 
-	hdbc, 
-	hstmt, 
-	szSqlstate, 
-	pfNativeError,
-        szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
+  if (IS_VALID_HSTMT (pstmt))
+    {
+      HandleType = SQL_HANDLE_STMT;
+      if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+    }
+  else if (IS_VALID_HDBC (hdbc))
+    {
+      HandleType = SQL_HANDLE_DBC;
+      if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+    }
+  else if (IS_VALID_HENV (genv))
+    {
+      HandleType = SQL_HANDLE_ENV;
+      holdlock = 1;
+    }
+  else
+    {
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = _iodbcdm_sqlerror (henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 1, 'W');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLErrorW (TRACE_LEAVE, henv, hdbc, hstmt, szSqlstate, pfNativeError, szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
   ODBC_UNLOCK ();
+
   return retcode;
 }
 #endif
@@ -813,19 +927,11 @@ SQLGetDiagRec_Internal (
   switch (HandleType)
     {
     case SQL_HANDLE_ENV:
-      if (!IS_VALID_HENV (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = ((GENV_t *) Handle)->herr;
       conv = &(((GENV_t *) Handle)->conv);
       break;
 
     case SQL_HANDLE_DBC:
-      if (!IS_VALID_HDBC (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = ((DBC_t *) Handle)->herr;
       dhandle = ((DBC_t *) Handle)->dhdbc;
       hdbc = Handle;
@@ -834,10 +940,6 @@ SQLGetDiagRec_Internal (
       break;
 
     case SQL_HANDLE_STMT:
-      if (!IS_VALID_HSTMT (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = ((STMT_t *) Handle)->herr;
       dhandle = ((STMT_t *) Handle)->dhstmt;
       hdbc = ((STMT_t *) Handle)->hdbc;
@@ -846,10 +948,6 @@ SQLGetDiagRec_Internal (
       break;
 
     case SQL_HANDLE_DESC:
-      if (!IS_VALID_HDESC (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = ((DESC_t *) Handle)->herr;
       dhandle = ((DESC_t *) Handle)->dhdesc;
       hdbc = ((DESC_t *) Handle)->hdbc;
@@ -1120,33 +1218,105 @@ SQLGetDiagRec (
   SQLSMALLINT		* TextLengthPtr)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, Handle);
+  CONN (pdbc, Handle);
+  STMT (pstmt, Handle);
+  DESC (pdesc, Handle);
+  int holdlock = 0;
 
   ODBC_LOCK ();
 
-  TRACE (trace_SQLGetDiagRec (TRACE_ENTER,
-  	HandleType,
-	Handle,
-	RecNumber,
-	Sqlstate,
-	NativeErrorPtr,
-	MessageText, BufferLength, TextLengthPtr));
+  TRACE (trace_SQLGetDiagRec (TRACE_ENTER, HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
 
-  retcode = SQLGetDiagRec_Internal (
-  	HandleType, 
-	Handle, 
-	RecNumber,
-	Sqlstate, 
-	NativeErrorPtr, 
-	MessageText, BufferLength, TextLengthPtr, 
-	'A');
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      if (!IS_VALID_HENV (genv))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      holdlock = 1;
+      break;
 
-  TRACE (trace_SQLGetDiagRec (TRACE_LEAVE,
-  	HandleType,
-	Handle,
-	RecNumber,
-	Sqlstate,
-	NativeErrorPtr,
-	MessageText, BufferLength, TextLengthPtr));
+    case SQL_HANDLE_DBC:
+      if (!IS_VALID_HDBC (pdbc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+      break;
+
+    case SQL_HANDLE_STMT:
+      if (!IS_VALID_HSTMT (pstmt))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+      break;
+
+    case SQL_HANDLE_DESC:
+      if (!IS_VALID_HDESC (pdesc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdesc->desc_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdesc->desc_cip = 1;
+      break;
+
+    default:
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = SQLGetDiagRec_Internal (HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr, 'A');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      break;
+
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+
+    case SQL_HANDLE_DESC:
+      pdesc->desc_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLGetDiagRec (TRACE_LEAVE, HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
 
   ODBC_UNLOCK ();
 
@@ -1166,33 +1336,105 @@ SQLGetDiagRecA (
   SQLSMALLINT		* TextLengthPtr)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, Handle);
+  CONN (pdbc, Handle);
+  STMT (pstmt, Handle);
+  DESC (pdesc, Handle);
+  int holdlock = 0;
 
   ODBC_LOCK ();
 
-  TRACE (trace_SQLGetDiagRec (TRACE_ENTER,
-  	HandleType,
-	Handle,
-	RecNumber,
-	Sqlstate,
-	NativeErrorPtr,
-	MessageText, BufferLength, TextLengthPtr));
+  TRACE (trace_SQLGetDiagRec (TRACE_ENTER, HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
 
-  retcode = SQLGetDiagRec_Internal (
-  	HandleType, 
-	Handle, 
-	RecNumber,
-	Sqlstate, 
-	NativeErrorPtr, 
-	MessageText, BufferLength, TextLengthPtr, 
-	'A');
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      if (!IS_VALID_HENV (genv))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      holdlock = 1;
+      break;
 
-  TRACE (trace_SQLGetDiagRec (TRACE_LEAVE,
-  	HandleType,
-	Handle,
-	RecNumber,
-	Sqlstate,
-	NativeErrorPtr,
-	MessageText, BufferLength, TextLengthPtr));
+    case SQL_HANDLE_DBC:
+      if (!IS_VALID_HDBC (pdbc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+      break;
+
+    case SQL_HANDLE_STMT:
+      if (!IS_VALID_HSTMT (pstmt))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+      break;
+
+    case SQL_HANDLE_DESC:
+      if (!IS_VALID_HDESC (pdesc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdesc->desc_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdesc->desc_cip = 1;
+      break;
+
+    default:
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = SQLGetDiagRec_Internal (HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr, 'A');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      break;
+
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+
+    case SQL_HANDLE_DESC:
+      pdesc->desc_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLGetDiagRec (TRACE_LEAVE, HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
 
   ODBC_UNLOCK ();
 
@@ -1212,33 +1454,105 @@ SQLGetDiagRecW (
   SQLSMALLINT		* TextLengthPtr)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, Handle);
+  CONN (pdbc, Handle);
+  STMT (pstmt, Handle);
+  DESC (pdesc, Handle);
+  int holdlock = 0;
 
   ODBC_LOCK ();
 
-  TRACE (trace_SQLGetDiagRecW (TRACE_ENTER,
-  	HandleType,
-	Handle,
-	RecNumber,
-	Sqlstate,
-	NativeErrorPtr,
-	MessageText, BufferLength, TextLengthPtr));
+  TRACE (trace_SQLGetDiagRecW (TRACE_ENTER, HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
 
-  retcode = SQLGetDiagRec_Internal (
-  	HandleType, 
-	Handle, 
-	RecNumber,
-	Sqlstate, 
-	NativeErrorPtr, 
-	MessageText, BufferLength, TextLengthPtr, 
-	'W');
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      if (!IS_VALID_HENV (genv))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      holdlock = 1;
+      break;
 
-  TRACE (trace_SQLGetDiagRecW (TRACE_LEAVE,
-  	HandleType,
-	Handle,
-	RecNumber,
-	Sqlstate,
-	NativeErrorPtr,
-	MessageText, BufferLength, TextLengthPtr));
+    case SQL_HANDLE_DBC:
+      if (!IS_VALID_HDBC (pdbc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+      break;
+
+    case SQL_HANDLE_STMT:
+      if (!IS_VALID_HSTMT (pstmt))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+      break;
+
+    case SQL_HANDLE_DESC:
+      if (!IS_VALID_HDESC (pdesc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdesc->desc_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdesc->desc_cip = 1;
+      break;
+
+    default:
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = SQLGetDiagRec_Internal (HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr, 'W');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      break;
+
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+
+    case SQL_HANDLE_DESC:
+      pdesc->desc_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLGetDiagRecW (TRACE_LEAVE, HandleType, Handle, RecNumber, Sqlstate, NativeErrorPtr, MessageText, BufferLength, TextLengthPtr));
 
   ODBC_UNLOCK ();
 
@@ -1276,10 +1590,6 @@ SQLGetDiagField_Internal (
   switch (nHandleType)
     {
     case SQL_HANDLE_ENV:
-      if (!IS_VALID_HENV (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = genv->herr;
       con = NULL;
       stmt = NULL;
@@ -1287,10 +1597,6 @@ SQLGetDiagField_Internal (
       break;
 
     case SQL_HANDLE_DBC:
-      if (!IS_VALID_HDBC (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = con->herr;
       genv = (GENV_t *) con->genv;
       stmt = NULL;
@@ -1299,10 +1605,6 @@ SQLGetDiagField_Internal (
       break;
 
     case SQL_HANDLE_STMT:
-      if (!IS_VALID_HSTMT (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = stmt->herr;
       con = (DBC_t *) stmt->hdbc;
       genv = (GENV_t *) con->genv;
@@ -1311,10 +1613,6 @@ SQLGetDiagField_Internal (
       break;
 
     case SQL_HANDLE_DESC:
-      if (!IS_VALID_HDESC (Handle))
-	{
-	  return SQL_INVALID_HANDLE;
-	}
       err = desc->herr;
       stmt = (STMT_t *) desc->hstmt;
       con = (DBC_t *) desc->hdbc;
@@ -1935,30 +2233,105 @@ SQLGetDiagField (
   SQLSMALLINT		* StringLengthPtr)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, Handle);
+  CONN (pdbc, Handle);
+  STMT (pstmt, Handle);
+  DESC (pdesc, Handle);
+  int holdlock = 0;
 
   ODBC_LOCK ();
 
-  TRACE (trace_SQLGetDiagField (TRACE_ENTER,
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr));
+  TRACE (trace_SQLGetDiagField (TRACE_ENTER, HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr));
 
-  retcode = SQLGetDiagField_Internal (
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr, 
-	'A');
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      if (!IS_VALID_HENV (genv))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      holdlock = 1;
+      break;
 
-  TRACE (trace_SQLGetDiagField (TRACE_LEAVE,
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr));
+    case SQL_HANDLE_DBC:
+      if (!IS_VALID_HDBC (pdbc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+      break;
+
+    case SQL_HANDLE_STMT:
+      if (!IS_VALID_HSTMT (pstmt))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+      break;
+
+    case SQL_HANDLE_DESC:
+      if (!IS_VALID_HDESC (pdesc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdesc->desc_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdesc->desc_cip = 1;
+      break;
+
+    default:
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = SQLGetDiagField_Internal (HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr, 'A');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      break;
+
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+
+    case SQL_HANDLE_DESC:
+      pdesc->desc_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLGetDiagField (TRACE_LEAVE, HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr));
 
   ODBC_UNLOCK ();
 
@@ -1977,30 +2350,105 @@ SQLGetDiagFieldA (
   SQLSMALLINT		* StringLengthPtr)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, Handle);
+  CONN (pdbc, Handle);
+  STMT (pstmt, Handle);
+  DESC (pdesc, Handle);
+  int holdlock = 0;
 
   ODBC_LOCK ();
 
-  TRACE (trace_SQLGetDiagField (TRACE_ENTER,
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr));
+  TRACE (trace_SQLGetDiagField (TRACE_ENTER, HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr));
 
-  retcode = SQLGetDiagField_Internal (
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr, 
-	'A');
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      if (!IS_VALID_HENV (genv))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      holdlock = 1;
+      break;
 
-  TRACE (trace_SQLGetDiagField (TRACE_LEAVE,
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr));
+    case SQL_HANDLE_DBC:
+      if (!IS_VALID_HDBC (pdbc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+      break;
+
+    case SQL_HANDLE_STMT:
+      if (!IS_VALID_HSTMT (pstmt))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+      break;
+
+    case SQL_HANDLE_DESC:
+      if (!IS_VALID_HDESC (pdesc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdesc->desc_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdesc->desc_cip = 1;
+      break;
+
+    default:
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = SQLGetDiagField_Internal (HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr, 'A');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      break;
+
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+
+    case SQL_HANDLE_DESC:
+      pdesc->desc_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLGetDiagField (TRACE_LEAVE, HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr));
 
   ODBC_UNLOCK ();
 
@@ -2019,30 +2467,105 @@ SQLGetDiagFieldW (
   SQLSMALLINT		* StringLengthPtr)
 {
   SQLRETURN retcode = SQL_SUCCESS;
+  GENV (genv, Handle);
+  CONN (pdbc, Handle);
+  STMT (pstmt, Handle);
+  DESC (pdesc, Handle);
+  int holdlock = 0;
 
   ODBC_LOCK ();
 
-  TRACE (trace_SQLGetDiagFieldW (TRACE_ENTER,
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr));
+  TRACE (trace_SQLGetDiagFieldW (TRACE_ENTER, HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr));
 
-  retcode = SQLGetDiagField_Internal (
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr, 
-	'W');
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      if (!IS_VALID_HENV (genv))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      holdlock = 1;
+      break;
 
-  TRACE (trace_SQLGetDiagFieldW (TRACE_LEAVE,
-  	HandleType, 
-	Handle, 
-	RecNumber, 
-	DiagIdentifier,
-	DiagInfoPtr, BufferLength, StringLengthPtr));
+    case SQL_HANDLE_DBC:
+      if (!IS_VALID_HDBC (pdbc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdbc->dbc_cip)
+	{
+	  PUSHSQLERR (pdbc->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdbc->dbc_cip = 1;
+      break;
+
+    case SQL_HANDLE_STMT:
+      if (!IS_VALID_HSTMT (pstmt))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pstmt->stmt_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pstmt->stmt_cip = 1;
+      break;
+
+    case SQL_HANDLE_DESC:
+      if (!IS_VALID_HDESC (pdesc))
+	{
+	  retcode = SQL_INVALID_HANDLE;
+	  goto done;
+	}
+      else if (pdesc->desc_cip)
+	{
+	  PUSHSQLERR (pstmt->herr, en_S1010);
+	  retcode = SQL_ERROR;
+	  goto done;
+	}
+      pdesc->desc_cip = 1;
+      break;
+
+    default:
+      retcode = SQL_INVALID_HANDLE;
+      goto done;
+    }
+
+  if (!holdlock)
+    ODBC_UNLOCK ();
+
+  retcode = SQLGetDiagField_Internal (HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr, 'W');
+
+  if (!holdlock)
+    ODBC_LOCK ();
+
+  switch (HandleType)
+    {
+    case SQL_HANDLE_ENV:
+      break;
+
+    case SQL_HANDLE_DBC:
+      pdbc->dbc_cip = 0;
+      break;
+
+    case SQL_HANDLE_STMT:
+      pstmt->stmt_cip = 0;
+      break;
+
+    case SQL_HANDLE_DESC:
+      pdesc->desc_cip = 0;
+      break;
+    }
+
+done:
+  TRACE (trace_SQLGetDiagFieldW (TRACE_LEAVE, HandleType, Handle, RecNumber, DiagIdentifier, DiagInfoPtr, BufferLength, StringLengthPtr));
 
   ODBC_UNLOCK ();
 
