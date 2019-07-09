@@ -310,6 +310,7 @@ Init_iODBC (void)
   SPINLOCK_INIT (iodbcdm_global_lock);
 #endif
 
+#if 0
   SPINLOCK_LOCK (iodbcdm_global_lock);
   if (!_iodbcdm_initialized)
     {
@@ -323,6 +324,7 @@ Init_iODBC (void)
        */
     }
   SPINLOCK_UNLOCK (iodbcdm_global_lock);
+#endif
 
   return;
 }
