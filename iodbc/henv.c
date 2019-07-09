@@ -98,10 +98,8 @@
 
 #if defined (PTHREAD_MUTEX_INITIALIZER)
 SPINLOCK_DECLARE (iodbcdm_global_lock) = PTHREAD_MUTEX_INITIALIZER;
-SPINLOCK_DECLARE (iodbcdm_err_lock) = PTHREAD_MUTEX_INITIALIZER;
 #else
 SPINLOCK_DECLARE (iodbcdm_global_lock);
-SPINLOCK_DECLARE (iodbcdm_err_lock);
 #endif
 
 static int _iodbcdm_initialized = 0;

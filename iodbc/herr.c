@@ -293,7 +293,6 @@ _iodbcdm_sqlerror (
   int handle = 0;
   SQLRETURN retcode = SQL_SUCCESS;
 
-  ERR_LOCK();
   if (IS_VALID_HSTMT (hstmt))	/* retrieve stmt err */
     {
       herr = pstmt->herr;
@@ -301,7 +300,6 @@ _iodbcdm_sqlerror (
 
       if (thdbc == SQL_NULL_HDBC)
 	{
-          ERR_UNLOCK();
 	  return SQL_INVALID_HANDLE;
 	}
 
@@ -320,7 +318,6 @@ _iodbcdm_sqlerror (
       thdbc = pdbc;
       if (thdbc == SQL_NULL_HDBC)
 	{
-	  ERR_UNLOCK();
 	  return SQL_INVALID_HANDLE;
 	}
 
@@ -336,7 +333,6 @@ _iodbcdm_sqlerror (
       if (herr == SQL_NULL_HERR
 	  && pdbc->henv == SQL_NULL_HENV)
 	{
-	  ERR_UNLOCK();
 	  return SQL_NO_DATA_FOUND;
 	}
     }
@@ -349,7 +345,6 @@ _iodbcdm_sqlerror (
 
       if (herr == SQL_NULL_HERR)
 	{
-	  ERR_UNLOCK();
 	  return SQL_NO_DATA_FOUND;
 	}
 
@@ -357,7 +352,6 @@ _iodbcdm_sqlerror (
     }
   else
     {
-      ERR_UNLOCK();
       return SQL_INVALID_HANDLE;
     }
 
@@ -365,7 +359,6 @@ _iodbcdm_sqlerror (
     {
       if (cbErrorMsgMax < 0)
 	{
-          ERR_UNLOCK();
 	  return SQL_ERROR;
 	  /* SQLError() doesn't post error for itself */
 	}
@@ -373,8 +366,6 @@ _iodbcdm_sqlerror (
 
   if (herr == SQL_NULL_HERR)	/* no err on drv mng */
     {
-      ERR_UNLOCK();
-
       if (thdbc && ((DBC_t *)thdbc)->genv)
         odbc_ver = ((GENV_t *) ((DBC_t *)thdbc)->genv)->odbc_ver;
 
@@ -505,124 +496,121 @@ _iodbcdm_sqlerror (
 
       return retcode;
     }
-  else   /* drv mng error*/
+
+  if (szSqlstate != NULL)
     {
-      if (szSqlstate != NULL)
-        {
-          int len;
+      int len;
 
-          /* get sql state  string */
-          ststr = (char *) _iodbcdm_getsqlstate (herr,
-	      (void *) sqlerrmsg_tab);
+      /* get sql state  string */
+      ststr = (char *) _iodbcdm_getsqlstate (herr,
+	  (void *) sqlerrmsg_tab);
 
-          if (ststr == NULL)
-	    {
-	      len = 0;
-	    }
-          else
-	    {
-	      len = (int) STRLEN (ststr);
-	    }
+      if (ststr == NULL)
+	{
+	  len = 0;
+	}
+      else
+	{
+	  len = (int) STRLEN (ststr);
+	}
 
-          /* buffer size of szSqlstate is not checked. Applications
-           * suppose provide enough ( not less than 6 bytes ) buffer
-           * or NULL for it.
-           */
-          if (waMode != 'W')
-            {	
-              STRNCPY (szSqlstate, ststr, len);
-              ((char*)szSqlstate)[len] = 0;
-            }
-          else
-            {
-              memset(szSqlstate, 0, DM_WCHARSIZE(conv) * (len + 1));
-              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)ststr, szSqlstate, 
-                  6*DM_WCHARSIZE(conv), NULL, NULL);
-            }
-        }
-
-      if (pfNativeError != NULL)
-        {
-          /* native error code is specific to data source */
-          *pfNativeError = (SDWORD) 0L;
-        }
-
-      if (szErrorMsg == NULL || cbErrorMsgMax == 0)
-        {
-          if (pcbErrorMsg != NULL)
-	    {
-	      *pcbErrorMsg = (SWORD) 0;
-	    }
+      /* buffer size of szSqlstate is not checked. Applications
+       * suppose provide enough ( not less than 6 bytes ) buffer
+       * or NULL for it.
+       */
+      if (waMode != 'W')
+        {	
+          STRNCPY (szSqlstate, ststr, len);
+          ((char*)szSqlstate)[len] = 0;
         }
       else
         {
-          int len;
-          char msgbuf[256] = {'\0'};
+          memset(szSqlstate, 0, DM_WCHARSIZE(conv) * (len + 1));
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)ststr, szSqlstate, 
+              6*DM_WCHARSIZE(conv), NULL, NULL);
+        }
+    }
 
-          /* get sql state message */
-          errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
+  if (pfNativeError != NULL)
+    {
+      /* native error code is specific to data source */
+      *pfNativeError = (SDWORD) 0L;
+    }
 
-          if (errmsg == NULL)
-	    {
-	      errmsg = (char *) "";
-	    }
+  if (szErrorMsg == NULL || cbErrorMsgMax == 0)
+    {
+      if (pcbErrorMsg != NULL)
+	{
+	  *pcbErrorMsg = (SWORD) 0;
+	}
+    }
+  else
+    {
+      int len;
+      char msgbuf[256] = {'\0'};
+
+      /* get sql state message */
+      errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
+
+      if (errmsg == NULL)
+	{
+	  errmsg = (char *) "";
+	}
 
 #if defined(HAVE_SNPRINTF)
-          snprintf (msgbuf, sizeof(msgbuf), "%s%s", sqlerrhd, (char*)errmsg);
+      snprintf (msgbuf, sizeof(msgbuf), "%s%s", sqlerrhd, (char*)errmsg);
 #else
-          sprintf (msgbuf, "%s%s", sqlerrhd, (char*)errmsg);
+      sprintf (msgbuf, "%s%s", sqlerrhd, (char*)errmsg);
 #endif
 
-          len = STRLEN (msgbuf);
+      len = STRLEN (msgbuf);
 
-          if (len < cbErrorMsgMax - 1)
-	    {
-	      retcode = SQL_SUCCESS;
-	    }
-          else
-	    {
-	      len = cbErrorMsgMax - 1;
-	      retcode = SQL_SUCCESS_WITH_INFO;
-	      /* and not posts error for itself */
-	    }
+      if (len < cbErrorMsgMax - 1)
+	{
+	  retcode = SQL_SUCCESS;
+	}
+      else
+	{
+	  len = cbErrorMsgMax - 1;
+	  retcode = SQL_SUCCESS_WITH_INFO;
+	  /* and not posts error for itself */
+	}
 
-          if (waMode != 'W')
-            {
-              STRNCPY ((char *) szErrorMsg, msgbuf, len);
-              ((char*)szErrorMsg)[len] = 0;
-              if (pcbErrorMsg != NULL)
-	        *pcbErrorMsg = (SWORD) len;
-            }
-          else
-            {
-              dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) msgbuf, 
+      if (waMode != 'W')
+        {
+          STRNCPY ((char *) szErrorMsg, msgbuf, len);
+          ((char*)szErrorMsg)[len] = 0;
+          if (pcbErrorMsg != NULL)
+	    *pcbErrorMsg = (SWORD) len;
+        }
+      else
+        {
+          dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) msgbuf, 
 	  	szErrorMsg, cbErrorMsgMax * DM_WCHARSIZE(conv), 
 	  	pcbErrorMsg, NULL);
-            }
         }
-
-      if (bDelete)
-        switch (handle)		/* free this err */
-          {
-	    case 1:
-	        genv->herr = _iodbcdm_popsqlerr (genv->herr);
-	        break;
-
-	    case 2:
-	        pdbc->herr = _iodbcdm_popsqlerr (pdbc->herr);
-	        break;
-
-	    case 3:
-	        pstmt->herr = _iodbcdm_popsqlerr (pstmt->herr);
-	        break;
-
-	    default:
-	        break;
-          }
-  
-      ERR_UNLOCK();
-      return retcode;
     }
+
+  if (bDelete)
+    switch (handle)		/* free this err */
+      {
+	case 1:
+	    genv->herr = _iodbcdm_popsqlerr (genv->herr);
+	    break;
+
+	case 2:
+	    pdbc->herr = _iodbcdm_popsqlerr (pdbc->herr);
+	    break;
+
+	case 3:
+	    pstmt->herr = _iodbcdm_popsqlerr (pstmt->herr);
+	    break;
+
+	default:
+	    break;
+      }
+
+  return retcode;
 }
 
 
@@ -640,7 +628,6 @@ SQLError (
   SQLRETURN retcode = SQL_SUCCESS;
 
   ODBC_LOCK ();
-
   TRACE (trace_SQLError (TRACE_ENTER,
   	henv, 
 	hdbc, 
@@ -648,8 +635,6 @@ SQLError (
 	szSqlstate, 
 	pfNativeError,
         szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
-
-  ODBC_UNLOCK();
 
   retcode = _iodbcdm_sqlerror (
   	henv, 
@@ -661,8 +646,6 @@ SQLError (
 	1, 
 	'A');
 
-  ODBC_LOCK();	
-
   TRACE (trace_SQLError (TRACE_LEAVE,
   	henv, 
 	hdbc, 
@@ -672,7 +655,6 @@ SQLError (
         szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
 
   ODBC_UNLOCK ();
-
   return retcode;
 }
 
@@ -692,7 +674,6 @@ SQLErrorA (
   SQLRETURN retcode = SQL_SUCCESS;
 
   ODBC_LOCK ();
-
   TRACE (trace_SQLError (TRACE_ENTER,
   	henv, 
 	hdbc, 
@@ -700,8 +681,6 @@ SQLErrorA (
 	szSqlstate, 
 	pfNativeError,
         szErrorMsg, cbErrorMsgMax, pcbErrorMsg));
-
-  ODBC_UNLOCK();
 
   retcode = _iodbcdm_sqlerror (
   	henv, 
@@ -712,8 +691,6 @@ SQLErrorA (
         szErrorMsg, cbErrorMsgMax, pcbErrorMsg, 
 	1, 
 	'A');
-
-  ODBC_LOCK();	
 
   TRACE (trace_SQLError (TRACE_LEAVE,
   	henv, 
@@ -833,13 +810,11 @@ SQLGetDiagRec_Internal (
   if (BufferLength < 0)
     return SQL_ERROR;
 
-  ERR_LOCK();
   switch (HandleType)
     {
     case SQL_HANDLE_ENV:
       if (!IS_VALID_HENV (Handle))
 	{
-	  ERR_UNLOCK();
 	  return SQL_INVALID_HANDLE;
 	}
       err = ((GENV_t *) Handle)->herr;
@@ -849,7 +824,6 @@ SQLGetDiagRec_Internal (
     case SQL_HANDLE_DBC:
       if (!IS_VALID_HDBC (Handle))
 	{
-	  ERR_UNLOCK();
 	  return SQL_INVALID_HANDLE;
 	}
       err = ((DBC_t *) Handle)->herr;
@@ -862,7 +836,6 @@ SQLGetDiagRec_Internal (
     case SQL_HANDLE_STMT:
       if (!IS_VALID_HSTMT (Handle))
 	{
-	  ERR_UNLOCK();
 	  return SQL_INVALID_HANDLE;
 	}
       err = ((STMT_t *) Handle)->herr;
@@ -875,7 +848,6 @@ SQLGetDiagRec_Internal (
     case SQL_HANDLE_DESC:
       if (!IS_VALID_HDESC (Handle))
 	{
-	  ERR_UNLOCK();
 	  return SQL_INVALID_HANDLE;
 	}
       err = ((DESC_t *) Handle)->herr;
@@ -886,7 +858,6 @@ SQLGetDiagRec_Internal (
       break;
 
     default:
-      ERR_UNLOCK();
       return SQL_INVALID_HANDLE;
     }
 
@@ -898,7 +869,6 @@ SQLGetDiagRec_Internal (
 
       if (!curr_err)
 	{
-	  ERR_UNLOCK();
 	  return (SQL_NO_DATA_FOUND);
 	}
 
@@ -990,13 +960,10 @@ SQLGetDiagRec_Internal (
 		    MessageText, BufferLength, TextLengthPtr, NULL);
             }
 	}
-      ERR_UNLOCK();
       return retcode;
     }
   else
     {				/* Driver errors */
-      ERR_UNLOCK();
-
       if (hdbc == SQL_NULL_HDBC)
 	{
 	  return SQL_NO_DATA_FOUND;
@@ -1164,8 +1131,6 @@ SQLGetDiagRec (
 	NativeErrorPtr,
 	MessageText, BufferLength, TextLengthPtr));
 
-  ODBC_UNLOCK();
-
   retcode = SQLGetDiagRec_Internal (
   	HandleType, 
 	Handle, 
@@ -1174,8 +1139,6 @@ SQLGetDiagRec (
 	NativeErrorPtr, 
 	MessageText, BufferLength, TextLengthPtr, 
 	'A');
-
-  ODBC_LOCK();
 
   TRACE (trace_SQLGetDiagRec (TRACE_LEAVE,
   	HandleType,
@@ -1214,8 +1177,6 @@ SQLGetDiagRecA (
 	NativeErrorPtr,
 	MessageText, BufferLength, TextLengthPtr));
 
-  ODBC_UNLOCK ();
-
   retcode = SQLGetDiagRec_Internal (
   	HandleType, 
 	Handle, 
@@ -1224,8 +1185,6 @@ SQLGetDiagRecA (
 	NativeErrorPtr, 
 	MessageText, BufferLength, TextLengthPtr, 
 	'A');
-
-  ODBC_LOCK ();
 
   TRACE (trace_SQLGetDiagRec (TRACE_LEAVE,
   	HandleType,
@@ -1264,8 +1223,6 @@ SQLGetDiagRecW (
 	NativeErrorPtr,
 	MessageText, BufferLength, TextLengthPtr));
 
-  ODBC_UNLOCK ();
-
   retcode = SQLGetDiagRec_Internal (
   	HandleType, 
 	Handle, 
@@ -1274,8 +1231,6 @@ SQLGetDiagRecW (
 	NativeErrorPtr, 
 	MessageText, BufferLength, TextLengthPtr, 
 	'W');
-
-  ODBC_LOCK ();
 
   TRACE (trace_SQLGetDiagRecW (TRACE_LEAVE,
   	HandleType,

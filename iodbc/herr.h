@@ -210,23 +210,17 @@ extern void _iodbcdm_freesqlerrlist (HERR herr);
 extern HERR _iodbcdm_pushsqlerr (HERR list, sqlstcode_t code, void *sysmsg);
 
 #define	PUSHSYSERR(list, msg)	\
-        ERR_LOCK(); \
-	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), en_00000, msg); \
-	ERR_UNLOCK()
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), en_00000, msg)
 
 #define	PUSHSQLERR(list, code)	\
-        ERR_LOCK(); \
-	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (code), NULL); \
-	ERR_UNLOCK()
+	list = (HERR) _iodbcdm_pushsqlerr ((HERR)(list), (code), NULL)
 
 #define CLEAR_ERRORS(_handle) \
     { \
-        ERR_LOCK(); \
 	_iodbcdm_freesqlerrlist ((_handle)->herr); \
 	 (_handle)->herr = SQL_NULL_HERR; \
 	 (_handle)->rc = SQL_SUCCESS; \
          (_handle)->err_rec = 0; \
-        ERR_UNLOCK(); \
     }
 	
 #endif /* _SQLERR_H */
