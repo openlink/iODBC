@@ -1376,8 +1376,6 @@ _iodbcdm_driverload (
 #endif
 		  CALL_DRIVER (hdbc, genv, retcode, hproc, (&(penv->dhenv)));
 		}
-	      penv->conv.drv_cp = iodbcinst_drv_cp;
-	      pdbc->conv.drv_cp = iodbcinst_drv_cp;
 	    }
 
 	  if (retcode == SQL_ERROR)
@@ -1437,6 +1435,40 @@ _iodbcdm_driverload (
 				 * success
 				 */
 	}
+      else /* penv != NULL */
+        {
+          pdbc->conv.drv_cp = penv->conv.drv_cp;
+#if (ODBCVER >= 0x0300)
+	  hproc = _iodbcdm_getproc (pdbc, en_GetEnvAttr);
+	  if (hproc != SQL_NULL_HPROC)
+            {
+              SQLINTEGER val;
+
+              val = -1;
+              CALL_DRIVER (hdbc, penv, retcode, hproc,
+	  	    (penv->dhenv, SQL_ATTR_DRIVER_UNICODE_TYPE, &val, 0, 0));
+              if (retcode == SQL_SUCCESS && val !=-1)
+                {
+                  if (val == SQL_DM_CP_UCS4 || val == SQL_DM_CP_UTF16 || val == SQL_DM_CP_UTF8)
+                    {
+                      switch(val)
+                        {
+                        case SQL_DM_CP_UTF16:
+                          driver_unicode_cp = CP_UTF16;
+                          break;
+                        case SQL_DM_CP_UTF8:
+                          driver_unicode_cp = CP_UTF8;
+                          break;
+                        default:
+                        case SQL_DM_CP_UCS4:
+                          driver_unicode_cp = CP_UCS4;
+                          break;
+                        }
+                    }
+                }
+            }
+#endif
+        }
 
       pdbc->henv = penv;
 
@@ -1486,6 +1518,40 @@ _iodbcdm_driverload (
 
       pdbc->henv = penv;
       penv->refcount++;		/* bookkeeping reference count on this driver */
+    }
+  else  /*penv != NULL */
+    {
+      pdbc->conv.drv_cp = penv->conv.drv_cp;
+#if (ODBCVER >= 0x0300)
+      hproc = _iodbcdm_getproc (pdbc, en_GetEnvAttr);
+      if (hproc != SQL_NULL_HPROC)
+        {
+          SQLINTEGER val;
+
+          val = -1;
+          CALL_DRIVER (hdbc, penv, retcode, hproc,
+              (penv->dhenv, SQL_ATTR_DRIVER_UNICODE_TYPE, &val, 0, 0));
+          if (retcode == SQL_SUCCESS && val !=-1)
+            {
+              if (val == SQL_DM_CP_UCS4 || val == SQL_DM_CP_UTF16 || val == SQL_DM_CP_UTF8)
+                {
+                  switch(val)
+                    {
+                    case SQL_DM_CP_UTF16:
+                      driver_unicode_cp = CP_UTF16;
+                      break;
+                    case SQL_DM_CP_UTF8:
+                      driver_unicode_cp = CP_UTF8;
+                      break;
+                    default:
+                    case SQL_DM_CP_UCS4:
+                      driver_unicode_cp = CP_UCS4;
+                      break;
+                    }
+                }
+            }
+        }
+#endif
     }
 
   /* driver's login timeout option must been set before
@@ -2751,7 +2817,7 @@ SQLDriverConnect_Internal (
         drv_cp = CP_UTF16;
       else if (STRCASEEQ(pconfig->value, "2") || STRCASEEQ(pconfig->value, "utf8"))
         drv_cp = CP_UTF8;
-      else if (STRCASEEQ(pconfig->value, "0") || STRCASEEQ(pconfig->value, "ucs4"))
+      else if (STRCASEEQ(pconfig->value, "3") || STRCASEEQ(pconfig->value, "ucs4"))
         drv_cp = CP_UCS4;
 
       DPRINTF ((stderr,
@@ -2932,7 +2998,7 @@ SQLDriverConnect_Internal (
             drv_cp = CP_UTF16;
           else if (STRCASEEQ(pconfig->value, "2") || STRCASEEQ(pconfig->value, "utf8"))
             drv_cp = CP_UTF8;
-          else if (STRCASEEQ(pconfig->value, "0") || STRCASEEQ(pconfig->value, "ucs4"))
+          else if (STRCASEEQ(pconfig->value, "3") || STRCASEEQ(pconfig->value, "ucs4"))
             drv_cp = CP_UCS4;
 
           DPRINTF ((stderr,
