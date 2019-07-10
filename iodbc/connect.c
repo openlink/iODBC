@@ -1249,8 +1249,11 @@ _iodbcdm_driverload (
 	  if (sqlstat != en_00000)
 	    {
 	      _iodbcdm_dllclose (hdll);
-	      MEM_FREE (penv);
 	      PUSHSQLERR (pdbc->herr, en_IM004);
+
+	      /* free internal env */
+	      MEM_FREE (penv);
+	      pdbc->henv = NULL;
 
 	      return SQL_ERROR;
 	    }
@@ -1466,7 +1469,9 @@ _iodbcdm_driverunload (HDBC hdbc, int ver)
 	    }
 	}
 
+      /* free internal env */
       MEM_FREE (penv);
+      pdbc->henv = NULL;
     }
 
   /* pdbc->henv = SQL_NULL_HENV; */

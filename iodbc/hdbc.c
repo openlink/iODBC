@@ -294,7 +294,7 @@ SQLFreeConnect_Internal (SQLHDBC hdbc, int ver)
 
   /* free driver connect options */
   _iodbcdm_drvopt_free (pdbc);
-   
+
   /*
    *  Invalidate this handle
    */
