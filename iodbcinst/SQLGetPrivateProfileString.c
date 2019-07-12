@@ -282,6 +282,7 @@ detectCharset(void *str)
   else
     cp = CP_UTF8;
 #endif
+  return cp; 
 }
 
 
@@ -302,8 +303,8 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
 
   if (lpszFilename)
     conv.dm_cp = detectCharset((void *)lpszFilename);
-  else if (lpszSection)
-    conv.dm_cp = detectCharset((void *)lpszSection);
+  else if (lpszEntry)
+    conv.dm_cp = detectCharset((void *)lpszEntry);
     
   length = 0;
   _section_u8 = (char *) DM_WtoU8(&conv, (void *)lpszSection, SQL_NTS);
