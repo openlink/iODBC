@@ -325,7 +325,7 @@ ODBC_Connect (char *connStr)
 #endif
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
       (SQLWCHAR *) outdsn, NUMU2CHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
-  if (status != SQL_SUCCESS && status!=SQL_SUCCESS_WITH_INFO)
+  if (status != SQL_SUCCESS)
     ODBC_Errors ("SQLDriverConnectW", SQL_NULL_HANDLE);
 
   if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
