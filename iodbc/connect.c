@@ -1354,6 +1354,7 @@ _iodbcdm_driverload (
     }
 
   pdbc->cp_timeout = cp_timeout;
+  MEM_FREE (pdbc->cp_probe);
   pdbc->cp_probe = strdup (cp_probe);
 
   return SQL_SUCCESS;
