@@ -120,9 +120,10 @@ typedef struct
 				      time of env creation */
     SQLINTEGER cp_match;	/* connection pool matching method */
     struct DBC *pdbc_pool;	/* connection pool */
-#endif    
+#endif
 
     SQLSMALLINT err_rec;
+    DM_CONV conv;
   }
 GENV_t;
 
@@ -141,7 +142,8 @@ typedef struct
 
 #if (ODBCVER >= 0x300)
     SQLUINTEGER dodbc_ver;	/* driver's ODBC version */
-#endif    
+#endif
+    DM_CONV conv;
   }
 ENV_t;
 

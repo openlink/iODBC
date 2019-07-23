@@ -198,7 +198,7 @@ SQLWriteDSNToIni_Internal (SQLPOINTER lpszDSN, SQLPOINTER lpszDriver,
 	}
     }
   else
-    _dsn_u8 = (SQLCHAR *) lpszDSN;
+    _dsn_u8 = (char *) lpszDSN;
 
   if (waMode == 'W')
     {
@@ -210,7 +210,7 @@ SQLWriteDSNToIni_Internal (SQLPOINTER lpszDSN, SQLPOINTER lpszDriver,
 	}
     }
   else
-    _driver_u8 = (SQLCHAR *) lpszDriver;
+    _driver_u8 = (char *) lpszDriver;
 
   if (!_driver_u8 || !STRLEN (_driver_u8))
     {

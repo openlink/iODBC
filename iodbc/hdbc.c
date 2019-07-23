@@ -206,6 +206,7 @@ SQLAllocConnect_Internal (
   pdbc->cp_connstr = NULL;
 #endif
   pdbc->genv = genv;
+  pdbc->conv = genv->conv;
 
   pdbc->henv = SQL_NULL_HENV;
   pdbc->hstmt = SQL_NULL_HSTMT;
@@ -339,6 +340,8 @@ _iodbcdm_SetConnectOption (
   SQLRETURN retcode = SQL_SUCCESS;
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
@@ -458,9 +461,9 @@ _iodbcdm_SetConnectOption (
       SQLCHAR *_vParam;
       SQLCHAR *tmp = NULL;
 
-      if (((char *)vParam) == NULL 
+      if (((char *)vParam) == NULL
           || (waMode != 'W' && ((char *) vParam)[0] == '\0')
-          || (waMode == 'W' && ((wchar_t *) vParam)[0] == L'\0'))
+          || (waMode == 'W' && DM_GetWCharAt(conv, (void *)vParam, 0) == L'\0' ))
 	{
 	  PUSHSQLERR (pdbc->herr, en_S1009);
 	  return SQL_ERROR;
@@ -469,7 +472,7 @@ _iodbcdm_SetConnectOption (
       _vParam = (SQLCHAR *)vParam;
       if (waMode == 'W')
         {
-          if ((_vParam = tmp = dm_SQL_WtoU8((wchar_t *)vParam, SQL_NTS)) == NULL)
+          if ((_vParam = tmp = DM_WtoU8(conv, (void *)vParam, SQL_NTS)) == NULL)
 	    {
               PUSHSQLERR (pdbc->herr, en_S1001);
               return SQL_ERROR;
@@ -496,33 +499,30 @@ _iodbcdm_SetConnectOption (
        */
      void * _vParam = NULL;
 
-     if ((penv->unicode_driver && waMode != 'W') 
-        || (!penv->unicode_driver && waMode == 'W'))
-      {
-        switch (fOption)
-          {
-          case SQL_ATTR_TRACEFILE:
-          case SQL_CURRENT_QUALIFIER:
-          case SQL_TRANSLATE_DLL:
-          case SQL_APPLICATION_NAME:
-          case SQL_COPT_SS_ENLIST_IN_DTC:
-          case SQL_COPT_SS_PERF_QUERY_LOG:
-          case SQL_COPT_SS_PERF_DATA_LOG:
-          case SQL_CURRENT_SCHEMA:
-            if (waMode != 'W')
-              {
-              /* ansi=>unicode*/
-                _vParam = dm_SQL_A2W((SQLCHAR *)vParam, SQL_NTS);
-              }
-            else
-              {
-              /* unicode=>ansi*/
-                _vParam = dm_SQL_W2A((SQLWCHAR *)vParam, SQL_NTS);
-              }
-            vParam = (SQLULEN)_vParam;
-            break;
-          }
-      }
+     if (penv->unicode_driver && waMode != 'W')
+       conv_direct = CD_A2W;
+     else if (!penv->unicode_driver && waMode == 'W')
+       conv_direct = CD_W2A;
+     else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+       conv_direct = CD_W2W;
+
+     switch (fOption)
+       {
+       case SQL_ATTR_TRACEFILE:
+       case SQL_CURRENT_QUALIFIER:
+       case SQL_TRANSLATE_DLL:
+       case SQL_APPLICATION_NAME:
+       case SQL_COPT_SS_ENLIST_IN_DTC:
+       case SQL_COPT_SS_PERF_QUERY_LOG:
+       case SQL_COPT_SS_PERF_DATA_LOG:
+       case SQL_CURRENT_SCHEMA:
+         if (conv_direct != CD_NONE)
+           {
+             _vParam = conv_text_m2d (conv, (void *)vParam, SQL_NTS, conv_direct);
+             vParam = (SQLULEN)_vParam;
+           }
+         break;
+       }
 
      if (penv->unicode_driver)
        {
@@ -654,8 +654,8 @@ _iodbcdm_SetConnectOption (
       if (waMode != 'W')
         pdbc->current_qualifier = (wchar_t *) MEM_ALLOC (STRLEN (vParam) + 1);
       else
-        pdbc->current_qualifier = (wchar_t *) MEM_ALLOC((WCSLEN (vParam) + 1) 
-        	* sizeof(wchar_t));
+        pdbc->current_qualifier = (wchar_t *) MEM_ALLOC((DM_WCSLEN (conv, (void *)vParam) + 1)
+		* DM_WCHARSIZE(conv));
 
       if (pdbc->current_qualifier == NULL)
 	{
@@ -666,7 +666,7 @@ _iodbcdm_SetConnectOption (
       if (waMode != 'W')
         STRCPY ((char *)pdbc->current_qualifier, vParam);
       else
-        WCSCPY ((wchar_t *)pdbc->current_qualifier, vParam);
+        DM_WCSCPY (conv, pdbc->current_qualifier, (void *)vParam);
 
       pdbc->current_qualifier_WA = waMode;
       break;
@@ -767,6 +767,8 @@ _iodbcdm_GetConnectOption (
   SQLRETURN retcode = SQL_SUCCESS;
   SQLUINTEGER odbc_ver;
   SQLUINTEGER dodbc_ver;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
   dodbc_ver = (penv != SQL_NULL_HENV) ? penv->dodbc_ver : odbc_ver;
@@ -781,6 +783,16 @@ _iodbcdm_GetConnectOption (
       return SQL_ERROR;
     }
 #endif
+
+  if (penv != SQL_NULL_HENV)
+    {
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp != conv->drv_cp)
+        conv_direct = CD_W2W;
+    }
 
   /* check state */
   switch (pdbc->state)
@@ -851,7 +863,7 @@ _iodbcdm_GetConnectOption (
         }
       else
         {
-           dm_strcpy_A2W ((SQLWCHAR *)pvParam, (SQLCHAR *)fname);
+           DM_strcpy_U8toW (conv, pvParam, (SQLCHAR *)fname);
         }
 
       free (fname);
@@ -871,26 +883,12 @@ _iodbcdm_GetConnectOption (
         case SQL_CURRENT_QUALIFIER:
         case SQL_TRANSLATE_DLL:
 
-          if ((penv->unicode_driver && waMode != 'W') 
-              || (!penv->unicode_driver && waMode == 'W'))
+          if (conv_direct == CD_NONE)
             {
-              if (waMode != 'W')
-                {
-                /* ansi=>unicode*/
-                  if ((_Param = malloc(SQL_MAX_OPTION_STRING_LENGTH * sizeof(wchar_t))) == NULL)
-	            {
-                      PUSHSQLERR (pdbc->herr, en_HY001);
-                      return SQL_ERROR;
-                    }
-                }
-              else
-                {
-                /* unicode=>ansi*/
-                  if ((_Param = malloc(SQL_MAX_OPTION_STRING_LENGTH)) == NULL)
-    	            {
-                      PUSHSQLERR (pdbc->herr, en_HY001);
-                      return SQL_ERROR;
-                    }
+              if ((_Param = malloc(SQL_MAX_OPTION_STRING_LENGTH * WCHAR_MAXSIZE)) == NULL)
+	        {
+                  PUSHSQLERR (pdbc->herr, en_HY001);
+                  return SQL_ERROR;
                 }
               paramOut = _Param;
             }
@@ -974,25 +972,34 @@ _iodbcdm_GetConnectOption (
 	}
 
 
-      if (pvParam
-          && SQL_SUCCEEDED (retcode)
-          && ((penv->unicode_driver && waMode != 'W') 
-              || (!penv->unicode_driver && waMode == 'W')))
+      if (pvParam && conv_direct != CD_NONE && SQL_SUCCEEDED (retcode))
         {
+          size_t sizeMax = SQL_MAX_OPTION_STRING_LENGTH;
+          if (conv->dm_cp != CP_UTF8)
+            sizeMax *= DM_WCHARSIZE(conv);
+
           switch (fOption)
             {
             case SQL_ATTR_TRACEFILE:
             case SQL_CURRENT_QUALIFIER:
             case SQL_TRANSLATE_DLL:
-              if (waMode != 'W')
+              if (conv_direct == CD_A2W)
                 {
-                 /* ansi<=unicode*/
-                  dm_StrCopyOut2_W2A ((SQLWCHAR *)paramOut, (SQLCHAR *)pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
+                /* ansi<=unicode*/
+                  dm_StrCopyOut2_W2A_d2m (conv, paramOut, (SQLCHAR *)pvParam,
+			SQL_MAX_OPTION_STRING_LENGTH, NULL, NULL);
                 }
-              else
+              else if (conv_direct == CD_W2A)
                 {
-                 /* unicode<=ansi*/
-                  dm_StrCopyOut2_A2W ((SQLCHAR *)paramOut, (SQLWCHAR *)pvParam, SQL_MAX_OPTION_STRING_LENGTH, NULL);
+                /* unicode<=ansi*/
+                  dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *)paramOut, pvParam,
+			sizeMax, NULL, NULL);
+                }
+              else if (conv_direct == CD_W2W)
+                {
+                /* unicode<=unicode*/
+                  dm_StrCopyOut2_W2W_d2m (conv, paramOut, pvParam,
+			sizeMax, NULL, NULL);
                 }
               break;
             }

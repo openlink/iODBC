@@ -89,10 +89,10 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
+#include "unicode.h"
 #include "herr.h"
 #include "henv.h"
 #include "ithread.h"
-#include "unicode.h"
 
 #ifdef __cplusplus
 extern "C" {

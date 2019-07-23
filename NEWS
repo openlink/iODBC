@@ -1,3 +1,6 @@
+Jul 23 2019, V3.52.14 (DRAFT):
+    * Added support for transparent conversion between UCS4, UTF-8 and UTF-16 codepages
+
 Jul 23 2019, V3.52.13:
     * Added extra validation for SQLAllocHandle (SQL_HANDLE_DESC, ...)
     * Added GCC __attribute__ for checking format string

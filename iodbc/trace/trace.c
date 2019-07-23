@@ -96,11 +96,11 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
+#include "unicode.h"
 #include "herr.h"
 #include "henv.h"
 #include "ithread.h"
 #include "trace.h"
-#include "unicode.h"
 
 #define NO_CARBON 1
 #if defined(macintosh)

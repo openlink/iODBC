@@ -85,6 +85,11 @@
 
 extern int ODBCSharedTraceFlag;
 
+#if 0
+#define DPRINTF(a)	fprintf a
+#else
+#define DPRINTF(a)
+#endif
 
 /*
  *  Useful macros

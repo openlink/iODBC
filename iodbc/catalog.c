@@ -324,6 +324,8 @@ SQLSpecialColumns_Internal (
   void * _TableQualifier = NULL;
   void * _TableOwner = NULL;
   void * _TableName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -362,29 +364,25 @@ SQLSpecialColumns_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *) szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *) szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *) szTableName, cbTableName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-            }
+          _TableQualifier = _iodbcdm_conv_var (pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
+
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -582,6 +580,8 @@ SQLStatistics_Internal (
   void * _TableQualifier = NULL;
   void * _TableOwner = NULL;
   void * _TableName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -613,29 +613,24 @@ SQLStatistics_Internal (
 	}
 
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-            }
+          _TableQualifier = _iodbcdm_conv_var (pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -822,6 +817,8 @@ SQLTables_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   void * _TableType = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -841,33 +838,27 @@ SQLTables_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-              _TableType = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szTableType, cbTableType);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-              _TableType = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szTableType, cbTableType);
-            }
+          _TableQualifier = _iodbcdm_conv_var (pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
+          _TableType = _iodbcdm_conv_var (pstmt, 3, szTableType, cbTableType, conv_direct);
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
           szTableType = _TableType;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
-          cbTableType = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
+          cbTableType = (cbTableType > 0) ? SQL_NTS : cbTableType;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -1045,6 +1036,8 @@ SQLColumnPrivileges_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   void * _ColumnName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1065,33 +1058,27 @@ SQLColumnPrivileges_Internal (
 	}
 
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szColumnName, cbColumnName);
-            }
+          _TableQualifier = _iodbcdm_conv_var (pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
+          _ColumnName = _iodbcdm_conv_var (pstmt, 3, szColumnName, cbColumnName, conv_direct);
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
           szColumnName = _ColumnName;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
-          cbColumnName = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
+          cbColumnName = (cbColumnName > 0) ? SQL_NTS : cbColumnName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -1266,6 +1253,8 @@ SQLColumns_Internal (
   void * _TableOwner = NULL;
   void * _TableName = NULL;
   void * _ColumnName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1285,33 +1274,27 @@ SQLColumns_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *) szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *) szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *) szTableName, cbTableName);
-              _ColumnName = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *) szColumnName, cbColumnName);
-            }
+          _TableQualifier = _iodbcdm_conv_var (pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
+          _ColumnName = _iodbcdm_conv_var (pstmt, 3, szColumnName, cbColumnName, conv_direct);
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
           szColumnName = _ColumnName;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
-          cbColumnName = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
+          cbColumnName = (cbColumnName > 0) ? SQL_NTS : cbColumnName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -1495,6 +1478,8 @@ SQLForeignKeys_Internal (
   void * _FkTableQualifier = NULL;
   void * _FkTableOwner = NULL;
   void * _FkTableName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1516,41 +1501,33 @@ SQLForeignKeys_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _PkTableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szPkTableQualifier, cbPkTableQualifier);
-              _PkTableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szPkTableOwner, cbPkTableOwner);
-              _PkTableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szPkTableName, cbPkTableName);
-              _FkTableQualifier = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szFkTableQualifier, cbFkTableQualifier);
-              _FkTableOwner = _iodbcdm_conv_var_A2W(pstmt, 4, (SQLCHAR *)szFkTableOwner, cbFkTableOwner);
-              _FkTableName = _iodbcdm_conv_var_A2W(pstmt, 5, (SQLCHAR *)szFkTableName, cbFkTableName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _PkTableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szPkTableQualifier, cbPkTableQualifier);
-              _PkTableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szPkTableOwner, cbPkTableOwner);
-              _PkTableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szPkTableName, cbPkTableName);
-              _FkTableQualifier = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szFkTableQualifier, cbFkTableQualifier);
-              _FkTableOwner = _iodbcdm_conv_var_W2A(pstmt, 4, (SQLWCHAR *)szFkTableOwner, cbFkTableOwner);
-              _FkTableName = _iodbcdm_conv_var_W2A(pstmt, 5, (SQLWCHAR *)szFkTableName, cbFkTableName);
-            }
+          _PkTableQualifier = _iodbcdm_conv_var (pstmt, 0, szPkTableQualifier, cbPkTableQualifier, conv_direct);
+          _PkTableOwner = _iodbcdm_conv_var (pstmt, 1, szPkTableOwner, cbPkTableOwner, conv_direct);
+          _PkTableName = _iodbcdm_conv_var (pstmt, 2, szPkTableName, cbPkTableName, conv_direct);
+          _FkTableQualifier = _iodbcdm_conv_var (pstmt, 3, szFkTableQualifier, cbFkTableQualifier, conv_direct);
+          _FkTableOwner = _iodbcdm_conv_var (pstmt, 4, szFkTableOwner, cbFkTableOwner, conv_direct);
+          _FkTableName = _iodbcdm_conv_var (pstmt, 5, szFkTableName, cbFkTableName, conv_direct);
           szPkTableQualifier = _PkTableQualifier;
           szPkTableOwner = _PkTableOwner;
           szPkTableName = _PkTableName;
           szFkTableQualifier = _FkTableQualifier;
           szFkTableOwner = _FkTableOwner;
           szFkTableName = _FkTableName;
-          cbPkTableQualifier = SQL_NTS;
-          cbPkTableOwner = SQL_NTS;
-          cbPkTableName = SQL_NTS;
-          cbFkTableQualifier = SQL_NTS;
-          cbFkTableOwner = SQL_NTS;
-          cbFkTableName = SQL_NTS;
+          cbPkTableQualifier = (cbPkTableQualifier > 0) ? SQL_NTS : cbPkTableQualifier;
+          cbPkTableOwner = (cbPkTableOwner > 0) ? SQL_NTS : cbPkTableOwner;
+          cbPkTableName = (cbPkTableName > 0) ? SQL_NTS : cbPkTableName;
+          cbFkTableQualifier = (cbFkTableQualifier > 0) ? SQL_NTS : cbFkTableQualifier;
+          cbFkTableOwner = (cbFkTableOwner > 0) ? SQL_NTS : cbFkTableOwner;
+          cbFkTableName = (cbFkTableName > 0) ? SQL_NTS : cbFkTableName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -1759,6 +1736,8 @@ SQLPrimaryKeys_Internal (
   void * _TableQualifier = NULL;
   void * _TableOwner = NULL;
   void * _TableName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1777,29 +1756,24 @@ SQLPrimaryKeys_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-            }
+          _TableQualifier = _iodbcdm_conv_var(pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -1960,6 +1934,8 @@ SQLProcedureColumns_Internal (
   void * _ProcOwner = NULL;
   void * _ProcName = NULL;
   void * _ColumnName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -1979,33 +1955,27 @@ SQLProcedureColumns_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _ProcQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szProcName, cbProcName);
-              _ColumnName = _iodbcdm_conv_var_A2W(pstmt, 3, (SQLCHAR *)szColumnName, cbColumnName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _ProcQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szProcName, cbProcName);
-              _ColumnName = _iodbcdm_conv_var_W2A(pstmt, 3, (SQLWCHAR *)szColumnName, cbColumnName);
-            }
+          _ProcQualifier = _iodbcdm_conv_var (pstmt, 0, szProcQualifier, cbProcQualifier, conv_direct);
+          _ProcOwner = _iodbcdm_conv_var (pstmt, 1, szProcOwner, cbProcOwner, conv_direct);
+          _ProcName = _iodbcdm_conv_var (pstmt, 2, szProcName, cbProcName, conv_direct);
+          _ColumnName = _iodbcdm_conv_var (pstmt, 3, szColumnName, cbColumnName, conv_direct);
           szProcQualifier = _ProcQualifier;
           szProcOwner = _ProcOwner;
           szProcName = _ProcName;
           szColumnName = _ColumnName;
-          cbProcQualifier = SQL_NTS;
-          cbProcOwner = SQL_NTS;
-          cbProcName = SQL_NTS;
-          cbColumnName = SQL_NTS;
+          cbProcQualifier = (cbProcQualifier > 0) ? SQL_NTS : cbProcQualifier;
+          cbProcOwner = (cbProcOwner > 0) ? SQL_NTS : cbProcOwner;
+          cbProcName = (cbProcName > 0) ? SQL_NTS : cbProcName;
+          cbColumnName = (cbColumnName > 0) ? SQL_NTS : cbColumnName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -2180,6 +2150,8 @@ SQLProcedures_Internal (
   void * _ProcQualifier = NULL;
   void * _ProcOwner = NULL;
   void * _ProcName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -2198,29 +2170,24 @@ SQLProcedures_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _ProcQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szProcName, cbProcName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _ProcQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szProcQualifier, cbProcQualifier);
-              _ProcOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szProcOwner, cbProcOwner);
-              _ProcName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szProcName, cbProcName);
-            }
+          _ProcQualifier = _iodbcdm_conv_var (pstmt, 0, szProcQualifier, cbProcQualifier, conv_direct);
+          _ProcOwner = _iodbcdm_conv_var (pstmt, 1, szProcOwner, cbProcOwner, conv_direct);
+          _ProcName = _iodbcdm_conv_var (pstmt, 2, szProcName, cbProcName, conv_direct);
           szProcQualifier = _ProcQualifier;
           szProcOwner = _ProcOwner;
           szProcName = _ProcName;
-          cbProcQualifier = SQL_NTS;
-          cbProcOwner = SQL_NTS;
-          cbProcName = SQL_NTS;
+          cbProcQualifier = (cbProcQualifier > 0) ? SQL_NTS : cbProcQualifier;
+          cbProcOwner = (cbProcOwner > 0) ? SQL_NTS : cbProcOwner;
+          cbProcName = (cbProcName > 0) ? SQL_NTS : cbProcName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,
@@ -2378,6 +2345,8 @@ SQLTablePrivileges_Internal (
   void * _TableQualifier = NULL;
   void * _TableOwner = NULL;
   void * _TableName = NULL;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
 
   for (;;)
     {
@@ -2396,29 +2365,24 @@ SQLTablePrivileges_Internal (
 	  return SQL_ERROR;
 	}
 
-      if ((penv->unicode_driver && waMode != 'W')
-          || (!penv->unicode_driver && waMode == 'W'))
+      if (penv->unicode_driver && waMode != 'W')
+        conv_direct = CD_A2W;
+      else if (!penv->unicode_driver && waMode == 'W')
+        conv_direct = CD_W2A;
+      else if (waMode == 'W' && conv->dm_cp!=conv->drv_cp)
+        conv_direct = CD_W2W;
+
+      if (conv_direct != CD_NONE)
         {
-          if (waMode != 'W')
-            {
-            /* ansi=>unicode*/
-              _TableQualifier = _iodbcdm_conv_var_A2W(pstmt, 0, (SQLCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_A2W(pstmt, 1, (SQLCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_A2W(pstmt, 2, (SQLCHAR *)szTableName, cbTableName);
-            }
-          else
-            {
-            /* unicode=>ansi*/
-              _TableQualifier = _iodbcdm_conv_var_W2A(pstmt, 0, (SQLWCHAR *)szTableQualifier, cbTableQualifier);
-              _TableOwner = _iodbcdm_conv_var_W2A(pstmt, 1, (SQLWCHAR *)szTableOwner, cbTableOwner);
-              _TableName = _iodbcdm_conv_var_W2A(pstmt, 2, (SQLWCHAR *)szTableName, cbTableName);
-            }
+          _TableQualifier = _iodbcdm_conv_var (pstmt, 0, szTableQualifier, cbTableQualifier, conv_direct);
+          _TableOwner = _iodbcdm_conv_var (pstmt, 1, szTableOwner, cbTableOwner, conv_direct);
+          _TableName = _iodbcdm_conv_var (pstmt, 2, szTableName, cbTableName, conv_direct);
           szTableQualifier = _TableQualifier;
           szTableOwner = _TableOwner;
           szTableName = _TableName;
-          cbTableQualifier = SQL_NTS;
-          cbTableOwner = SQL_NTS;
-          cbTableName = SQL_NTS;
+          cbTableQualifier = (cbTableQualifier > 0) ? SQL_NTS : cbTableQualifier;
+          cbTableOwner = (cbTableOwner > 0) ? SQL_NTS : cbTableOwner;
+          cbTableName = (cbTableName > 0) ? SQL_NTS : cbTableName;
         }
 
       CALL_UDRIVER(pstmt->hdbc, pstmt, retcode, hproc, penv->unicode_driver,

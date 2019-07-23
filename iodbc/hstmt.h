@@ -97,9 +97,16 @@ typedef struct BIND {
   SWORD		 bn_type;	  /* ODBC C data type */
   void *	 bn_data;	  /* Pointer to data */
   SDWORD	 bn_size;	  /* Size of data area */
-  SQLLEN	*bn_pInd;	  /* Holds SQL_NULL_DATA | 0. 
-                                   * And length of returned char/bin data 
+  SQLLEN	*bn_pInd;	  /* Holds SQL_NULL_DATA | 0.
+                                   * And length of returned char/bin data
 				   */
+  CONV_DIRECT    direct;          /* convert direction */
+  SQLLEN         bn_conv_size;
+  void*          bn_conv_data;
+  SQLLEN        *bn_conv_pInd;
+  void*          bn_tmp;
+  void*          bn_tmp_Ind;
+  BOOL           rebinded;  /* is col was rebinded */
 } BIND_t;
 
 typedef struct SBLST	TBLST, *PBLST;
@@ -129,7 +136,12 @@ struct SPARM {
 				   */
   SQLLEN	 pm_cbValueMax;   /* cbValueMax */
   SQLSMALLINT	 pm_usage;	  /* SQL_PARAM_INPUT, SQL_PARAM_OUTPUT etc */
-
+  void          *pm_tmp;
+  void          *pm_tmp_Ind;
+  void          *pm_conv_data;
+  SQLLEN        *pm_conv_pInd;
+  SQLLEN         pm_conv_el_size;
+  BOOL           rebinded; /* is parameter was rebinded */
 };
 
 
@@ -155,7 +167,16 @@ typedef struct STMT
     int stmt_cip;		/* Call in progress on this handle */
 
     SQLUINTEGER rowset_size;
-    SQLUINTEGER bind_type;
+    SQLUINTEGER row_bind_type;      /* row_bind_type */
+    SQLUINTEGER row_bind_offset;
+
+    SQLUINTEGER param_bind_type;     /* param_bind_type */
+    SQLUINTEGER param_bind_offset;
+
+    void         *params_buf;       /* buffer for W2W params conversion */
+    void         *rows_buf;       /* buffer for W2W params conversion */
+    SQLUINTEGER   conv_param_bind_type;
+    SQLUINTEGER   conv_row_bind_type;
 
 #if (ODBCVER >= 0x0300)
     DESC_t * imp_desc[4];
@@ -179,6 +200,7 @@ typedef struct STMT
     PPARM	 st_pparam;	/* API user parameters from SQLSetParam */
     SQLUSMALLINT st_nparam;	/* # params allocated */
 
+    PPARM	 st_need_param;
   }
 STMT_t;
 
@@ -274,12 +296,16 @@ enum
  */
 SQLRETURN _iodbcdm_dropstmt (HSTMT stmt);
 
+SQLLEN _iodbcdm_OdbcCTypeSize (SWORD fCType);
 void _iodbcdm_FreeStmtParams(STMT_t *pstmt);
 void _iodbcdm_FreeStmtVars(STMT_t *pstmt);
 void *_iodbcdm_alloc_var(STMT_t *pstmt, int i, int size);
-wchar_t *_iodbcdm_conv_var_A2W(STMT_t *pstmt, int i, SQLCHAR *pData, int pDataLength);
-char *_iodbcdm_conv_var_W2A(STMT_t *pstmt, int i, SQLWCHAR *pData, int pDataLength);
+void *_iodbcdm_conv_var(STMT_t *pstmt, int i, void *pData, int pDataLength,
+	CONV_DIRECT direct);
 void _iodbcdm_ConvBindData (STMT_t *pstmt);
+void _iodbcdm_ConvBindData_m2d (STMT_t *pstmt);
+
+SQLRETURN _iodbcdm_FixColBindData (STMT_t *pstmt);
 SQLRETURN _iodbcdm_BindColumn (STMT_t *pstmt, BIND_t *pbind);
 int _iodbcdm_UnBindColumn (STMT_t *pstmt, BIND_t *pbind);
 void _iodbcdm_RemoveBind (STMT_t *pstmt);

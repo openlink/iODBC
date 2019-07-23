@@ -196,7 +196,8 @@ _iodbcdm_cfg_parse_str_Internal (PCONFIG pconfig, char *str)
  *  Initialize a configuration from string
  */
 int
-_iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide)
+_iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide,
+	DM_CONV *conv)
 {
   PCONFIG pconfig;
 
@@ -207,7 +208,7 @@ _iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide)
     return -1;
 
   /* parse */
-  if (_iodbcdm_cfg_parse_str (pconfig, str, size, wide) == -1)
+  if (_iodbcdm_cfg_parse_str (pconfig, str, size, wide, conv) == -1)
     {
       _iodbcdm_cfg_done (pconfig);
       return -1;
@@ -223,12 +224,13 @@ _iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide)
  *  Parse a configuration from string
  */
 int
-_iodbcdm_cfg_parse_str (PCONFIG pconfig, void *str, int size, int wide)
+_iodbcdm_cfg_parse_str (PCONFIG pconfig, void *str, int size, int wide,
+	DM_CONV *conv)
 {
   int ret;
   char *_str;
 
-  _str = wide ? (char *) dm_SQL_WtoU8 (str, size) : str;
+  _str = wide ? (char *) DM_WtoU8 (conv, str, size) : str;
 
   ret = _iodbcdm_cfg_parse_str_Internal (pconfig, _str);
 
