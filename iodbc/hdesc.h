@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -135,9 +135,9 @@ typedef struct DESC_s {
 
 #define LEAVE_DESC(hdesc, trace) \
 	ODBC_LOCK (); \
+	pdesc->desc_cip = 0; \
     done: \
     	TRACE(trace); \
-	pdesc->desc_cip = 0; \
 	ODBC_UNLOCK (); \
 	return (retcode)
 

@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -135,9 +135,6 @@
             val = conv_char_to_NSString(cour+1);
             [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:key!=nil?key:@"", @"key",
                                 val!=nil?val:@"", @"val", nil]];
-        }
-        else{
-            [_Attrs_list addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"", @"key", @"", @"val", nil]];
         }
     }
 }

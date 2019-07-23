@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -467,9 +467,16 @@ trace_stop(void)
 	fclose (trace_fp);
     }
 
+  MEM_FREE (trace_appname);
+  MEM_FREE (trace_fname);
+  MEM_FREE (trace_fname_template);
+
   ODBCSharedTraceFlag = SQL_OPT_TRACE_OFF;
   trace_fp = NULL;
   trace_fp_close = 0;
+  trace_appname = NULL;
+  trace_fname = NULL;
+  trace_fname_template = NULL;
 }
 
 
@@ -717,7 +724,7 @@ _trace_print_function (int func, int trace_leave, int retcode)
       tv.tv_sec--;
       tv.tv_usec += 1000000L;
     }
-  trace_emit ("\n[%06ld.%06ld]\n", tv.tv_sec, tv.tv_usec);
+  trace_emit ("\n[%06ld.%06ld]\n", (long) tv.tv_sec, (long) tv.tv_usec);
 #else
   trace_emit ("\n");
 #endif
@@ -1316,7 +1323,7 @@ _trace_bufferlen (SQLINTEGER length)
     }
 
   if (ptr)
-    trace_emit ("\t\t%-15.15s * %ld (%s)\n", "SQLINTEGER", length, ptr);
+    trace_emit ("\t\t%-15.15s * %ld (%s)\n", "SQLINTEGER", (long) length, ptr);
   else
     trace_emit ("\t\t%-15.15s * %ld\n", "SQLINTEGER", (long) length);
 }

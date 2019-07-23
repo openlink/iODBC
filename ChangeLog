@@ -1,0 +1,2503 @@
+2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/pthread_fix' into develop
+
+	Fixed small memory leaks
+
+	Fixed issue with memory use after free and potential memory leak
+
+2019-07-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issue holding global lock too long in SQLError, SQLGetDiagRec and SQLGetDiagField
+
+2019-07-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Disable empty initialization block
+
+2019-06-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/fixes' into develop
+
+	Removed unneeded checks
+
+	Fixed package versioning
+
+	Fixed issue with arg expansion while generating config.nice script
+
+2019-06-25  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed missing check for section
+
+	Fixed issue using heap after free in SQLConnect_internal
+
+	Fixed issue in Mac Cocoa code
+
+2019-05-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed SQLSetStmtAttr to cache the correct values for SQL_ATTR_ROW_ARRAY_SIZE and SQL_ATTR_ROW_BIND_TYPE
+
+	Closes: 35
+
+2019-05-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Added missing define SQL_CONVERT_GUID
+
+	Closes: 31
+
+2019-01-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated Copyright to include 2019
+
+2018-06-26  Adam Majer  <amajer@suse.de>
+
+	non-void function needs to return a value
+
+2018-06-26  Sam Hatchett  <samhatchett@gmail.com>
+
+	fixes an issue where build fails on Alpine
+
+2018-06-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Added extra validation for SQLAllocHandle (SQL_HANDLE_DESC, ...)
+
+	Fixed valgrind reporting write after free in SQLFreeHandle
+
+2018-01-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated Copyright to 2018
+
+2017-11-01  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated BUILD id to 171101
+
+2017-11-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix iODBC crash issue https://github.com/openlink/iODBC/issues/23
+
+2017-11-01  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed format specifiers and some casts to fix trace output
+
+	Added GCC __attribute__ for checking format string
+
+2017-01-11  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix iODBC apps/frameworks  CFBundleGetInfoString attribute
+
+2017-01-10  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated copyright to include 2017
+
+2016-11-02  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed typo
+
+2016-07-12  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Merge branch 'release/3.52.12' into develop
+
+	Updated version to 3.52.12 for final release
+
+	Updated NEWS and changelog
+
+	Fixed artifact in text conversion
+
+	Updated build number to 160712 for release
+
+	Regenerated text versions of README*.md files
+
+	Updated README files and converted them to MarkDown format
+
+	Fixed compiler warning
+
+2016-07-07  Patrick van Kleef  <patrick@rhel7.pvk.private>
+
+	Fixed autoconf/automake warning
+
+	Renamed configure.in to configure.ac
+
+	Renamed bootstrap.sh to autogen.sh
+
+2016-07-07  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Removed deprecated file
+
+	Merge branch 'feature/remove_carbon' into develop
+
+	Fixed indentation
+
+2016-07-05  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed typo
+
+2016-07-04  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Ignore mac build directories
+
+	Removed hooks to call graphical bundles if not building frameworks
+
+	Fixed EXTRA_DIST to package all the new Cocoa based code
+
+	Fixed issues building on Mac OS X 10.10 and 10.11
+
+	Renamed mac_cocoa/ -> mac/
+
+	Removed old Carbon based UI code
+
+2016-06-21  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix UI
+
+	- rename title of dialog to "iODBC Data Source Administrator (64-Bit Edition)" for 64bit version
+	- fix crash for ODBC Driver Add and Configure UI
+
+2016-06-13  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Update iODBC UI
+
+	- update behavior for DoubleClick action in DSNchoose(execute OK) and DSNmanage(execute Configure) dialogs
+	- rewrite loader of file list for FileDSN to Cocoa
+
+2016-06-08  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix missprint
+
+	Update for OS X Office2016 fix for recreate properly link, when source file was deleted and recreated
+
+2016-06-07  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issue with MSOffice2016 and UserDSN access
+
+2016-06-07  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed pool alloc
+
+2016-06-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix FileDSN tab, new button was added for choose FileDSN dir
+
+2016-06-03  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issue when dialog getting lost behind another dialog
+
+2016-06-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix double free issue and update xib file for resolve resource compilation issue
+
+2016-05-31  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated copyright to include 2016
+
+2016-05-30  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix Memory alloc issues in iODBC
+
+2016-05-26  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated version to 3.52.12-dev to start next development cycle
+
+	Merge branch 'feature/2015_08_11_CocoaPort' into develop
+
+2016-05-26  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix typo 'divers' => 'drivers'
+
+2016-05-26  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix iODBC DM
+
+	- improve the starting speed of iODBC DM
+	- fix UI names 'iODBC Administrator'  => 'iODBC Administrator64'  in iODBC Administrator64.app
+
+2016-05-26  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix TLOGIN structure
+
+	Fixed issue with Proxy Login/Setup dialogs
+
+	Rename Makefiles
+
+	Fix resource localised paths and split iODBCDemo package on two packages
+
+	Remove cfrelease(bundle_dll) calls in connect.c
+
+	Remove cfrelease(bundle_dll) calls
+
+	Add latest changes
+
+	Fix permissions
+
+2016-05-26  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Add latest fixes for CocoaPort
+
+	- convert UI dialogs for Xcode4.6 format
+	- fix issue with release bundle ref
+	- update version to 3.52.12
+
+2016-05-26  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix iODBCdemo resources
+
+	Fix func for conversion char/wchar to NSString
+
+	Fix permissions
+
+	Fix UI, rename iODBCAdminitirator64bit to iODBCAdminitirator64
+
+	Fix iODBCadministrator
+
+	Fix year and update iODBC Administrator
+
+	Port iODBC DM to Cocoa UI
+
+2016-05-26  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Merge branch 'release/3.52.11' into develop
+
+	Updated version to 3.52.11 for internal release
+
+2016-03-10  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Added xcodebuild option for Mac OS X 10.11
+
+	Fixed issue with Xcode on Mac OS X 10.10 Xcode 7.2.1
+
+	Fixed use only major.minor of Mac OS X version to configure flags
+
+2016-03-03  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated build numbers
+
+	Fixed merge issue
+
+	Updated Copyright to 2016
+
+2016-03-03  Bo Anderson  <bo@toxicflames.co.uk>
+
+	Fixed iODBCdrvproxy XIBs not compiling to NIBs on OS X.
+
+2016-01-12  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated Copyright to 2016
+
+2015-09-28  OpenLink Software  <github@openlinksw.com>
+
+	Merge pull request #13 from Bo98/drvproxy-nib-fix
+
+	Fixed iODBCdrvproxy XIBs not compiling to NIBs on OS X
+
+2015-09-28  OpenLink Software  <github@openlinksw.com>
+
+	Merge pull request #10 from Bo98/drvconn-free-fix
+
+	Fixed crash when passing an empty connect string with no window handle
+
+2015-09-28  OpenLink Software  <github@openlinksw.com>
+
+	Merge pull request #11 from Bo98/osx-dev-build-fixes
+
+	Fixed iODBCadm and iODBCdrvproxy Development build errors on OS X
+
+2015-09-28  OpenLink Software  <github@openlinksw.com>
+
+	Merge pull request #12 from Bo98/create_dsnsetup-crash-fix
+
+	OS X: Fixed crash when create_dsnsetup fails to load the window
+
+2015-09-28  Bo Anderson  <bo@toxicflames.co.uk>
+
+	Fixed iODBCdrvproxy XIBs not compiling to NIBs on OS X.
+
+	Fixed crash when create_dsnsetup fails to load the window.
+
+	Fixed iODBCadm and iODBCdrvproxy Development build errors on OS X.
+
+	Fixed crash when passing an empty connect string with no window handle.
+
+2015-07-21  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix iODBCdemo issue with UID/PWD values
+
+2015-07-17  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Added support for x86_64 to iODBC Demo
+
+2015-07-15  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix crash ODBCdemo - error message overwrite stack data
+
+2015-07-13  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed crash in iODBC DM on push of "Test" button when 64bit ODBC driver is used.
+
+2015-02-27  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed issue in SQLGetInfo
+
+2015-02-10  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Merge branch 'hotfix/3.52.10.1' into develop
+
+	Added missing file to distribution
+
+	Updated version to 3.52.11-dev to signal start of new development cycle
+
+	Merge branch 'release/3.52.10' into develop
+
+	Merge branch 'release/3.52.10'
+
+	Updated NEWS
+
+	Updated version number to 3.52.10 for final release
+
+	Added missing files from distribution
+
+2015-02-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix Unicode conversion issues
+
+	- SQLGetDiagField(,,,SQL_DIAG_MESSAGE_TEXT,,,) - possible memory overwrite
+	- SQLGetDiagField() - output string truncation when SQLGetDiagFieldW is call with ANSI ODBC driver
+	- SQLGetConnectAttr() - output string truncation when SQLGetConnectAttrW is call with ANSI ODBC driver
+	- SQLGetDescField() - output string truncation when SQLGetDescFieldW is call with ANSI ODBC driver
+	- SQLColAttribute() - output string truncation when SQLColAttributeW is call with ANSI ODBC driver
+
+2015-02-05  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated version to 3.52.10-rc1 for upcoming release
+
+	Updated NEWS
+
+	Updated version strings to 3.52.10 for upcoming release
+
+2015-02-05  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed UI elements
+
+	* Use SingleLine attribute for all textFields
+	* Fixed messages below the various tabs
+
+2015-01-31  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Install iODBC Administrator in /Applications/iODBC/
+
+2015-01-31  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Ignore error if directory already exists
+
+	Renamedd OpenLink ODBC Administrator to iODBC Administrator
+
+	Fixed About dialog and other text to make a more generic Administrator
+
+2015-01-31  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed FileDSN default path
+
+	From /Library/ODBC/ODBCDataSources => $HOME/Documents
+
+2015-01-31  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed FileDSN save dialog and Set Trace file option
+
+2015-01-29  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed app names/titles to iODBC Demo Unicode and iODBC Demo Ansi
+
+	Fixed permissions
+
+2015-01-29  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Updated iODBCdemo on Mac OS X to support blue links in gridView
+
+2015-01-28  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed issue with ~/Library/ODBC/odbc[inst].ini on Mac OS X
+
+	iODBC creates ~/.odbc[inst].ini when ~/Library/ODBC/odbc[inst].ini does not exist
+	* If $HOME/.odbc[inst].ini exists, import it and after this
+	  replace it with link to $HOME/Library/ODBC/.odbc[inst].ini
+	* open $HOME/Library/ODBC/odbc[inst].ini always and doesn't use $HOME/odbc[inst].ini
+
+2015-01-21  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed Mac OS X file chooser dialogs to return long file names
+
+2015-01-07  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed About
+
+	Fixed branding
+
+	Fixed typo
+
+	Added build support for Mac OS X 10.10
+
+	Updated About dialogs
+
+	Updated copyright to include 2015
+
+2015-01-06  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated iODBC version timestamp
+
+2015-01-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix  - OSX iODBC Demo.app shows gridView with columns, that could not be resized, for "SPARQL DESCRIBE..." queries
+
+2015-01-05  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated copyright to include 2015
+
+2014-04-15  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated version to 3.52.10-dev to signal start of new development cycle
+
+	Merge branch 'release/3.52.9' into develop
+
+	Merge branch 'release/3.52.9'
+
+	Updated Debian build files
+
+	Updated iODBC package version to 3.52.9 for final release
+
+2014-04-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated NEWS
+
+	Merge fixes
+
+2014-04-15  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Added support for Mac OS X 10.9
+
+2014-04-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Removed ChangeLog as it is generated
+
+	Added unix build directories to ignore list
+
+2014-04-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Partially reverted recent change for version autoconf/libtool
+
+	Recent changes did not work properly with the minimum required versions
+	of autoconf and libtool
+
+2014-04-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated files to reflect minimum versions of autoconf/automake/libtool
+
+2014-04-01  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated version to 3.32.9-dev
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Miscellaneous fixes from a developer from Teragram
+
+	configure.in:
+
+	* Rewrote the "underscore before symbols" code snippet to eliminate
+	   warnings (e.g. improper main() prototype) and potential optimizing-out
+	   of the fnord() function
+	* Use ${CFLAGS} with ${CC}, as the former may contain important flags
+	* Fail if pthread.h is not found, otherwise the configuration falls into
+	   a state where threading is enabled, but the header is missing
+
+	include/sqltypes.h:
+	* Need to check whether _MSC_VER is defined before using it in a cpp
+	   conditional, otherwise -Wundef gives a warning
+
+	iodbc/dlproc.h:
+	* Simplified the conditional affecting the definition of HDLL. (Is there
+	   any non-Win32 system that provides this type?)
+
+	http://sourceforge.net/p/iodbc/mailman/message/29560355/
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Build system updates
+
+	++ acinclude.m4
+	* Properly quote macro name in AC_DEFUN
+	* Use AC_LINK_IFELSE instead of the obsolete AC_TRY_LINK
+
+	++ admin/gtk-2.0.m4, admin/gtk.m4
+	* Properly quote macro name in AC_DEFUN
+
+	++ bootstrap.sh
+	* Call the various Autotools initialization programs with --warnings=all
+	   where applicable, to help with QA (and autoconf also gets no-obsolete so
+	   we don't hear about the obsolete usages still in the GTK m4 macros)
+
+	++ configure.in
+	* Use AC_CONFIG_HEADERS instead of the obsolete AM_CONFIG_HEADER
+	* Use AS_HELP_STRING instead of the obsolete AC_HELP_STRING
+	* Don't use A[CS]_HELP_STRING inside an echo "...", as this is not how the
+	   macro is intended to be used, and it doesn't do much good anyway
+	* Use AM_PROG_CC_C_O because AC_PROG_CC_C_O is not sufficient
+	* Replaced the obsolete AC_LIBTOOL_DLOPEN and AM_PROG_LIBTOOL macros with
+	   a call to LT_INIT
+	* Fixed the doc string for --disable-gui
+	* Use AC_RUN_IFELSE instead of the obsolete AC_TRY_RUN
+	* Can't use a variable in the doc string for --with-iodbc-filedsnpath, so
+	   replaced "$inidir" with "INIDIR"
+	* Rewrote the config info summary at the end to use "cat <<EOF" instead of
+	   a bunch of echo commands; this is more readable and makes getting the
+	   tabs right a *lot* easier
+
+	++ drvproxy/Makefile.am, drvproxy/gtk/Makefile.am, iodbc/Makefile.am,
+	    iodbc/trace/Makefile.am, iodbcadm/Makefile.am,
+	    iodbcadm/gtk/Makefile.am, iodbcinst/Makefile.am, samples/Makefile.am
+	* Use AM_CPPFLAGS instead of the obsolete variable name INCLUDES
+
+	http://sourceforge.net/p/iodbc/mailman/message/29590554/
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed infinite loop in connection pool
+
+	http://sourceforge.net/p/iodbc/mailman/message/29986083/
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix build warning messages and using "strlen" function with unicode data
+
+	- fix build warning messages
+	- fix using strlen with unicode data
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix check, if Unicode driver is used
+
+	http://sourceforge.net/p/iodbc/mailman/message/31801152/
+
+2014-04-01  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Merge branch 'feature/fix_pkg_config_and_odbc_config' into develop
+
+	Fixed typo
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixes for the pkg-config file and iodbc-config
+
+	http://sourceforge.net/p/iodbc/mailman/message/29721400/
+
+2014-04-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issue, when SQLCancel is call from another thread
+
+	From a developer at MySQL/Sun/Oracle, an issue with SQLCancel()
+	http://sourceforge.net/p/iodbc/mailman/message/31944526/
+
+2014-03-27  Sergey Malinin  <smalinin@openlinksw.com>
+
+	SQLInstallDriverEx does not work when driver library is read-only
+
+2014-02-17  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated copyright year
+
+2013-01-08  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Fixed missing declaration
+
+	Fixed issue with dladdr prototype on linux
+
+	Fixed issue with build dependancy when using make -j6
+
+	Fixed compiler warnings on newer Xcode compilers Mac OS X
+
+	Added support for Mac OS X 10.8
+
+	Added support for Mac OS X 10.8
+
+	Fixed issue with SDKs path on Mac OS X 10.7
+
+	Added support for Mac OS X 10.7
+
+	Fixed deprecated macro
+
+2013-01-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated copyright to include 2013
+
+2012-03-27  Patrick van Kleef  <patrick@taz.pvk.private>
+
+	Added missing file
+
+2012-03-27  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'release/v3.52.8' into develop
+
+	Merge branch 'release/v3.52.8'
+
+	Updated documentation
+
+	Added info to NEWS
+
+	Updated changelog
+
+	Updated version number to 3.52.8
+
+	Added support for Mac OS X 10.7
+
+2012-03-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed list of files to be distributed
+
+	Updated version to 3.52.8-rc1
+
+	Removed old .cvsignore files
+
+	Merge branch 'feature/mac_ui' into develop
+
+	Updated version of iODBC Demo to 1.1
+
+	Converted build rules to compile the UI from new .xib files
+
+	Fixed problem installing CFMSupport
+
+	Converted old .nib format to .xib format
+
+	Added Mac OS X build files to ignore list
+
+	Added more files to ignore
+
+	Added initial .gitignore
+
+2012-03-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated copyright to 2012
+
+2011-08-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed issue with using buffer after free
+
+	* Updated copyright year
+
+2010-09-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed use ssize_t where appropriate
+
+	* Fixed compiler warning
+
+	* Fixed version info
+
+	* Fixed warnings
+
+	* Fixed issue with strlen if param can be NULL
+
+	* Fixed use ssize_t for length of string * Fixed tracing SQLGetData using multiple chunks * Fixed problem tracing on big-endian machines
+
+	* Removed unused variables
+
+	* Fixed wrong type label
+
+2009-09-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed version
+
+	*** empty log message ***
+
+	*** empty log message ***
+
+	* Updated version of package to 3.52.7 for final release * Updated library versions
+
+	* Fixed loading libdrvproxy.so.2 and libiodbcadm.so.2 using major version   number. * Removed libdrvproxy.{a|so} and libiodbcadm.{a|so} from packaging   since they are not development libraries that user applications   should try to link with.
+
+	* Fixed instructions
+
+	*** empty log message ***
+
+	* Fixed distribution packaging
+
+2009-09-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed deprecated file
+
+	* Removed space from file name
+
+	* Moved iodbcunix.h from sql.h to sqltypes.h
+
+	* Fixed description
+
+	* Updated debian files
+
+	* Fixed compiler warnings
+
+	* Updated version info
+
+	* Fixed compile flags
+
+	* Fixed check for wchar.h on Mac framework build
+
+	* Moved symbol files
+
+	* Added install rules for iODBC CFM bridge
+
+	* Added iODBC CFM Bridge code
+
+	* Added support for overruling CFLAGS, CC and other environment vars
+
+	* Updated Mac OS X build instructions
+
+	* Fixed building/installing iODBC Demo Unicode version * Removed sudo from rules, user should perform 'sudo make install"
+
+2009-09-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed portability between various versions of Mac OS X
+
+	* Updated version info
+
+	* Added support for building solaris 2.10 on AMD64 and Sparc
+
+	* Added support for Mac OS X 10.6
+
+	*** empty log message ***
+
+	* Added defines for Virtuoso ODBC SPASQL extensions
+
+	* Fixed case label for x86_64 linux systems
+
+	* Fixed compiler warning
+
+	* FIxed namespace for internal dlopen functions
+
+	* Added support for Mac OS X 10.6
+
+	* Added support for Mac OS X 10.5
+
+2009-09-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed allow installation in temp directory structure
+
+	* Fixed typo
+
+	* More files to ignore
+
+	* Fixed install rules
+
+	* Fixed copyright year
+
+	* Fixed support to quit application from decoration
+
+	* Added iODBCdemo sample program for Mac OS X
+
+2009-09-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed prototype
+
+	* Fixed find relevant section instead of reading all entries in the file
+
+2009-09-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Ignore files from libtool 2.x
+
+	* Set minimum requirement for auto* tools to match RedHat Enterprise 4
+
+	* Use newer RPM macros for building to fix building on x86_64 * Fixed configure to completely disable building UI extensions when   using rpmbuild --define 'noadmin 1' .....
+
+	* Fixed prototype
+
+	*** empty log message ***
+
+	*** empty log message ***
+
+	* Fixed group box size
+
+2009-08-31  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed wrong text on tab
+
+2009-08-30  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Fixed unload bug  deref wrong pointer
+
+	* Added support for $S (sequence number) in TraceFile
+
+	* When tracefile length has reached its limit, try to open a new tracefile
+
+	* Fixed default window sizes
+
+	* Fixed typos
+
+	* Fixed typos
+
+	* Updated copyright year to 2009
+
+	* Fixed licensing information
+
+	* Fixed GTK based administrative code to use resizable windows
+
+2009-06-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated release number
+
+2009-02-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Moved Mac OS X gui components
+
+	* Moved Mac OS X gui components
+
+2009-02-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for Mac OS X 10.5
+
+	* Fixed missing function
+
+	* Removed old endif
+
+2009-01-30  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Added additional translations between unicode and ansi components (sm)
+
+	* Added additional translations between unicode and ansi components (sm)
+
+2008-10-30  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated spec file to latest standards
+
+2008-04-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed Connection Pooling UI
+
+2008-03-14  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed bug checking for odbc_ver on connect handle
+
+2007-10-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated version to 3.52.6 for final release (pvk)
+
+	*** empty log message ***
+
+	* Updated version to 3.52.6 for final release (pvk)
+
+	*** empty log message ***
+
+	* Fixed problem returning memory allocation error when max length of buffer   was set to 0.
+
+2007-10-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Updated instructions to get CVS tree from sourceforge archive
+
+	* Fixed checking for driver version when not connected
+
+	* Fixed typo
+
+	* Fixed for openbsd
+
+	* Fixed towlower on older Mac OS X systems * Use dummy towlower on systems that have no native support
+
+	* Fixed wchar check for FreeBSD 4.8 (pvk)
+
+	* Fixed checking pthread library on OSF 3.x and OSF 4.x (pvk)
+
+	* Fixed problem with C variable scope (pvk)
+
+2007-10-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed AutoReqProv:no setting
+
+2007-10-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Disabled building/installing old libodbc.a as this can interfere with   other driver managers * Fixed License keyword * Updated version of rpm
+
+2007-09-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Don't keep odbc mutex unnecessary long
+
+	* Split locking section into smaller segements
+
+2007-09-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed typos
+
+	* Fixed return code when driver could not be found
+
+	* Fixed error messages
+
+	* Use SQLFetchScroll on ODBC 3.x
+
+	* Added missing SQLStmtOptionA to export list
+
+	* Fixed checking for driver version when not connected
+
+2007-02-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Added initial support for gtk+ 2.x (sm)
+
+	* Fixed Unicode bug in SQLBrowseConnect * Added SQLBrowseConnectW to export-symbol list   (sm)
+
+2007-01-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Minor text changes (pvk)
+
+2007-01-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Updated version to 3.53.5 (pvk)
+
+	* Added support for RedHat FC6 64bit (pvk)
+
+	*** empty log message ***
+
+	* Reverted incomplete patch (pvk)
+
+2007-01-03  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Fixed buffer size calculation (sm)
+
+	* Fixed problem connecting with FileDSN (sm)
+
+	* Fixed missing newline when showing parameters (sm)
+
+2006-12-21  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Increased limit of tracedump char and hex data to 1000 lines max (pvk)
+
+	* Limit the size of the tracefile to about 1Gb (pvk)
+
+2006-12-21  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Fixed problems with FileDSN in GTK build (sm)
+
+2006-12-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated version to 3.52.5-rc2
+
+	* Added configure option to set default FileDSN directory (pvk)
+
+2006-12-15  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Allow user to bypass connection check when adding a FileDSN (sm)
+
+2006-12-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed bogus free (pvk)
+
+	* Removed duplicate error message box (pvk)
+
+2006-12-11  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Incorporated diff from debian web site (pvk)
+
+	* Updated version to 3.52.5-rc1
+
+	* Fixed problem when driver has not yet been connected (pvk)
+
+	* Use SQL_SUCCEEDED macro to increase readability (pvk)
+
+	* Fixed problem always returning SQL_ERROR due to logic bug (pvk)
+
+	* Call ODBC 2.x functions in driver if application uses ODBC 2.x only   (pvk)
+
+2006-09-25  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Call ODBC 2.x functions in driver if application uses ODBC 2.x only   (sm)
+
+2006-08-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added missing header to distribution
+
+2006-07-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed procid reference from code and simplified call mechanism (pvk)
+
+2006-07-11  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Simplified CALL_DRIVER and CALL_UDRIVER macros
+
+2006-07-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Merged FileDSN and ConnectionPooling support from iODBC-3_52_4-DEVEL
+
+	* Merged FileDSN and ConnectionPooling support from iODBC-3_52_4-DEVEL
+
+	* Merged FileDSN support from iODBC-3_52_4-DEVEL into HEAD
+
+	* Use highlighting in overview screen (pvk)
+
+	* Rewrote bootstrap script to be more verbose about programs/versions   needed (pvk)
+
+2006-04-27  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Skip {..}  when parsing connect string (sm)
+
+2006-03-21  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Use localtime_r (pvk)
+
+2006-03-06  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed typo in function prototype (pvk)
+
+2006-03-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated Info strings (pvk)
+
+2006-02-24  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Let the driver manager call the setup dialogs for now and then   call the driver with SQL_DRIVER_NOPROMPT (sm)
+
+2006-02-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Version information is inserted by installer scripts (pvk)
+
+	* Added sccid to all sections to get string with load type into binary (pvk)
+
+2006-02-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Remove ppc64 from universal builds (pvk)
+
+2006-02-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed include file problem on Mac OS X 10.3 (pvk)
+
+	* Added realclean rule (pvk)
+
+2006-01-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Finalized iODBC-3.52.4 release (pvk)
+
+	* Updated version number to 3.52.4 (pvk)
+
+	* Add -Wl,+s to HP/UX builds to enable SHLIB_PATH handling (pvk)
+
+	* Moved darwin specific -DNO_FRAMEWORKS from PORT.OpenLink to configure.in * Updated build instructions for Mac OS X   (pvk)
+
+	* Updated version number and build number in preparation for release (pvk)
+
+	* Fixed copyright notice (pvk)
+
+	* Added missing include directory (pvk)
+
+2006-01-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added project files for Mac OS X 10.4 Universal builds (pvk)
+
+	* Make it easier to change buildstyles (pvk)
+
+	* Fixed order in which targets need to be installed (pvk)
+
+	* Converted Xcode project files for Mac OS X 10.4 Universal builds (pvk)
+
+	* Fixed bug in determining which version of Mac OS X we build on (pvk)
+
+	* Cleanup Mac OS X project files (pvk)
+
+	* Cleanup Mac OS X project files (pvk)
+
+	* Cleanup Mac OS X project files (pvk)
+
+	* Updated version number (pvk)
+
+2006-01-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Simplified building process (pvk)
+
+	* Fixed include paths (pvk)
+
+	* Fixed wchar_t issue on Mac OS X (pvk)
+
+	* Added new version macros for Mac OS X build (pvk)
+
+	* Fixed building and installing iodbctest and iodbctestw (pvk)
+
+	* Files to ignore (pvk)
+
+	* Added guard against including sqlext.h twice (pvk)
+
+	* Fixed include paths building on Mac OS X (pvk)
+
+	* Added proper header file for prototypes * Fixed typo in function name   (pvk)
+
+	* Fixed compiler warnings (pvk)
+
+	* Fixed some compiler warnings (pvk)
+
+2006-01-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Clarify which version of the LGPL license this project adheres to   (pvk)
+
+	* Fixed temporary framework search paths * Fixed framework version for non-standard build   (pvk)
+
+	* Moved dlf.[ch] and unicode.[ch] to iodbcinst (pvk)
+
+	* Use iodbcinst_common and gtk/libdrvproxy-gtk.la convenience libraries   instead of referring to individual object files   (pvk)
+
+	* Use iodbcinst_common and gtk/libiodbcadm-gtk.la convenience libraries   instead of referring to individual object files   (pvk)
+
+	* Added more functions to export (pvk)
+
+	* Use new iodbcinst_common library so iodbc does not need to be linked   against libiodbcinst. This created problems on various platforms like HP/UX   with static link paths being inserted into the libiodbc.so library   (pvk)
+
+	* Created convenience library with common objects that are used in more   than one place (pvk)
+
+	* Moved dlf.[ch] and unicode.[ch] to iodbcinst (pvk)
+
+	* Moved confirm.c and question.xpm from drvproxy/gtk to iodbcadm/gtk (pvk)
+
+2006-01-18  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* If towlower does not exist and we cannot use Frameworks, then just return   the original character  (pvk)
+
+	* Added support for Mac OS X 10.2 (pvk)
+
+	* On AIX we prefer the cc_r7 compiler instead of the cc compiler (pvk)
+
+	* Temporarily disabled --disable-odbc3 untill all parts of iODBC DM have   been fixed to compile with ODBCVER=0x0250 (pvk)
+
+	* Unicode and ANSI functions did not exist in ODBC 2.50 (pvk)
+
+2006-01-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed errors when compiling iODBC for ODBC 2.50 specs (pvk)
+
+	* Fixed ODBCVER (pvk)
+
+2006-01-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for SUSE Linux on AMD opteron (pvk)
+
+	* Added missing header files for function prototypes (pvk)
+
+2006-01-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for building on Apple Mac OS X 10.4 ppc, ppc64 and i386   all in one   (pvk)
+
+2006-01-11  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Allow # as extra comment character on reading the odbc.ini file. (pvk)
+
+	* If subsequent SQLExecute returns SQL_ERROR, set handle state back to   en_stmt_prepared and leave the prep_state as is.  (pvk)
+
+	* Fixed typo in local variable decl (pvk)
+
+2005-11-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added missing file (pvk)
+
+	*** empty log message ***
+
+	* Finalized iODBC-3.52.3 release (pvk)
+
+	* Fixed build issue with previously installed libraries (pvk)
+
+2005-11-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed problem building on Mac OS X 64bit (pvk)
+
+	* Apple does not provide certain frameworks in 64bit mode yet (pvk)
+
+	* Added Unicode symbols (pvk)
+
+	* Added option to build in current directory (pvk)
+
+	* Updated DM build number and library version number (pvk)
+
+	* Updated version number to 3.52.3 (pvk)
+
+	* Added check for more wchar functions (pvk)
+
+	* Added support for AIX 5.x (pvk)
+
+	* Removed check for xml2 which is not needed for iODBC (pvk)
+
+	* Added support for HP/UX Itanium (pvk)
+
+	* Fixed support for building on Mac OS X 10.3 and 10.4 in Darwin mode (pvk)
+
+	* Added detection for glibtoolize for Mac OS X build (pvk)
+
+	* Apple does not provide certain frameworks in 64bit mode yet (pvk)
+
+2005-10-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Include config.h if present (pvk)
+
+	* Fixed calculating end of buffer without lvalue cast as some   compilers did not like this construction   (pvk)
+
+	* Ignore files from copied from autoconf/automake/libtool (pvk)
+
+	* Resurrected mkinstalldirs (pvk)
+
+	* Added timestamp to ENTER/EXIT trace lines to get better idea of   where application time was spend; inside or outside of ODBC calls.   (pvk)
+
+	* Removed files that are distributed by autoconf/automake/libtoolize (pvk)
+
+	* Updated build version and library version (pvk)
+
+	* Fixed problem with truncated messages in ODBC_Error function (pvk)
+
+	* C++ normally has wchar_t (pvk)
+
+	* Fixed problem with symbol hiding unicode translation functions (pvk)
+
+2005-09-12  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Avoid calling _iodbcdm_drvconn_dialbox twice (sm)
+
+2005-09-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed semicolon from end of statement block * Small code cleanup   (pvk)
+
+2005-09-12  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Set config mode before looking for driver name (sm)
+
+	* Fixed problem with ODBC_BOTH_DSN (sm)
+
+2005-08-30  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Reordered InfoTypes based on ODBC version * Fixed problem with some types like SQL_POS_OPERATION and   SQL_POSITIONED_STATEMENTS which where flagged ODBC 2.x only by mistake   (pvk)
+
+2005-08-22  Max Khon  <mkhon@openlinksw.com>
+
+	* Fixed NUL termination problem * DSN input was not disabled correctly   (mk)
+
+	* Fixed NUL termination problem (mk)
+
+2005-08-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed minor build problems on Mac OS X * Allow both Xcode 1.5 and 2.1 style build directories   (pvk)
+
+	* Disable Carbon framework in Mac OS X 64bit port (pvk)
+
+	* Fixed problem mixing framework type header files, which are prefixed   with framework name, and internal header files   (pvk)
+
+	* Add iodbcinst.h to install target (pvk)
+
+	* Do not distribute iodbc.h header anymore (pvk)
+
+2005-08-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Install iodbctest and iodbctestw in   /Library/Application Support/iODBC/bin   (pvk)
+
+	* Fixed include files for Mac OS X framework build (pvk)
+
+2005-08-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added 'reconnect' command to iodbctest (pvk)
+
+2005-07-29  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Added defines for Mac OS X 10.3 and newer (sergei)
+
+	* Fixed typo (sergei)
+
+2005-07-27  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Improve the quality of error messages for dynamic linker problems   (sergei)
+
+2005-07-27  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added Max (pvk)
+
+2005-07-27  Max Khon  <mkhon@openlinksw.com>
+
+	* Recalculate cbConnStrIn as szConnStrIn might have been changed by   iodbcdm_drvconn_dialbox   (mk)
+
+2005-07-19  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Changed SQL_DRIVER_PROMPT to SQL_DRIVER_COMPLETE which still allows   drivers that have graphical setup screens to use them, but fixes a   problem with the MyODBC driver which returns a very cryptic   "No DSN entered".   (pvk)
+
+2005-07-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added initial support for pkg-config spec file (pvk)
+
+	* Fixed problem with SQLDriverConnect when graphical library could not   be found, the driver manager automatically returned an error when   performing SQLDriverConnect (....., SQL_DRIVER_PROMPT).   Instead we now silently continue to call the driver and hope it either   asks for the missing connection parameters, or return an error.   (pvk)
+
+	* Added support for DSN-less connections (pvk)
+
+2005-05-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
+
+	* Replaced enum bool with int (pvk)
+
+	* Use getprogname on Mac OS X 10.3 and above (pvk)
+
+	* Fixed frameworkname for iODBCinst (pvk)
+
+	* Added support for sqlucode.h (pvk)
+
+2005-05-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
+
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
+
+2005-03-22  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added missing unicode.[ch] into project file (pvk)
+
+2005-03-14  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Added Unicode functions to gtk graphical code * Fixed small Unicode bugs   (sm)
+
+2005-03-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed space from -D compile flag (pvk)
+
+2005-03-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Stubs for gtk code until we can fix the Unicode part (pvk)
+
+2005-03-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Build iODBCadm as a bundle rather than a Framework * Fixed problems calling drvproxy code from iodbcadm   (sm)
+
+	* Added support for missing wchar functions (ep+sm)
+
+2005-03-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Indented code to improve readability (pvk)
+
+2005-03-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Added support for iodbcinst Unicode functions (ep+sm)
+
+2005-03-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated debian build files with latest fixes from Christian (pvk)
+
+2005-03-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Ignore config.nice (pvk)
+
+	* Explain which layouts are available instead of cryptic error (pvk)
+
+	* Added extra configure flag --disable-libodbc to disable the building of   the additional libodbc.so library some programs are linked against   (pvk)
+
+2005-02-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed problem compiling iodbctest.c with C++ compiler (pvk)
+
+2005-02-14  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added initial support for building on MAC OS X 10.4 (pvk)
+
+	* Don't stop the build process if strip fails on Darwin (pvk)
+
+2005-02-14  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Fixed symbol clash between Oracle instant client and iODBC on Mac OS X   (sergei)
+
+2005-02-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed static declaration from Done_iODBC (pvk)
+
+2005-02-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Finalized 3.52.2 release (pvk)
+
+	* Put in final release stamp (pvk)
+
+	* Added Mac OS X specific iodbc-config script for framework link (pvk)
+
+2005-02-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Ignore build directories (pvk)
+
+	* Updated version number to 3.52.2 (pvk)
+
+	* Added Port.OpenLink script to package distribution (pvk)
+
+	* Fixed iODBC initialization code * Added global lock around SQLAllocHandleSTD (SQL_HANDLE_HENV)   (pvk)
+
+	* Close tracefile after the last environment handle has been freed (pvk)
+
+	* Make sure trace_stop can be called multiple times (pvk)
+
+	* Fixed iODBC initialization code * Added global lock around SQLAllocEnv/SQLAllocHandle (SQL_HANDLE_HENV)   (pvk)
+
+	* Do not stop tracing prematurely (pvk)
+
+2005-01-31  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed whitespace (pvk)
+
+	* Allow root to trace odbc sessions, but make sure we do not overwrite   any existing files   (pvk)
+
+	* Changed parsing of TraceFile to avoid buffer overruns (pvk)
+
+	* Added Driver Manager version to start of trace * Added date/time finished to end of trace * Changed date/time format   (pvk)
+
+2005-01-21  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Build sample programs with static iODBC libraries (pvk)
+
+	* Removed generated file (pvk)
+
+	* Added script OpenLink uses to port iODBC as reference (pvk)
+
+	* Added bootstrap.sh in package distribution * Added admin/gtk.m4 so target machines without GTK can still use   bootstrap.sh to setup the automake/autoconf configuration   (pvk)
+
+2004-12-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* When a driver specific SQLSetConnectAttr fails return SQL_SUCCESS_WITH_INFO   rather than failing the connection   (pvk)
+
+	* Only Darwin needs this special build rule (pvk)
+
+	* Only call SQLGetDiagRec on allocated handles (pvk)
+
+	* Fixed C++ prototype problems with older code on 32bit (pvk)
+
+	* Use $DESTDIR/$libdir to make libodbc symlinks (pvk)
+
+2004-11-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed argument check to be case insensitive (pvk)
+
+2004-10-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed null pointer problem (pvk)
+
+2004-10-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Use returned size of buffer if possible instead of relying on SQL_NTS   (pvk)
+
+2004-10-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added DESTDIR in make install for packaging in different dir (pvk)
+
+2004-09-29  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Updated NEWS with highlights of new release * Added tag iODBC-3_52_1 to mark final release   (pvk)
+
+2004-09-29  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Fixed Mac OS X install problems (ep)
+
+2004-09-29  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed RPM build/package issue on RedHat 9 (pvk)
+
+	*** empty log message ***
+
+	* Keep deprecated SQLROWCOUNT,SQLROWSETSIZE,SQLTRANSID and SQLROWOFFSET   types around for backward compatibility (pvk)
+
+2004-09-28  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added missing files for Mac OS X build (pvk)
+
+	* Set project version to 3.52.1 (pvk)
+
+	* Added support for SQL_BINARY fields (pvk)
+
+	* Use SQL_DRIVER_PROMPT to call GUI setup if available (pvk)
+
+	* Final fixes for SQLLEN definition (pvk)
+
+	* Fixed problem with ODBCINT64 definition (pvk)
+
+	* Make sure SQLGUID structure is the same size on both 32 and 64bit   platforms (pvk)
+
+	* Moved some typedefs around (pvk)
+
+	* Small fixes to align with ms header file (pvk)
+
+	* Explain prototype choice SQLColAttribute (pvk)
+
+	* Mask out old and unused windows types (pvk)
+
+	* Added compile time check for sizeof(long) (pvk)
+
+	* Added symbolic tracing for SQLColAttribute (pvk)
+
+	* Indentation + standard copyright header (pvk)
+
+2004-09-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added new layer so drivers can be logically unloaded without being   physically unloaded. This is needed to resolve an outstanding memory   leak, while protecting the application from crashing if the unloaded driver   registered an on_exit hook. A new flag UnloadSafe can be added to a   driver to note it is safe to physically unload the driver.   (pvk)
+
+2004-08-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed SQLSetDescRec trace function (pvk)
+
+	* Fixed "statement not reached" warning (pvk)
+
+	* Converted SQLUINTEGER to SQLULEN for 64bit handling (pvk)
+
+2004-08-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed build issue on non Mac OS X machines (pvk)
+
+2004-08-20  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Fix to build non-framework version of iODBC on Mac OS X (ep)
+
+2004-08-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Enhanced support for tracing SQLGetFunctions (pvk)
+
+2004-08-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Increased size of output buffer for DSN to 1024 (pvk)
+
+2004-07-13  Tim Haynes  <thaynes@openlinksw.com>
+
+	* Set basic permissions (th)
+
+2004-07-13  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Added script to link Framework build into /usr/local/iODBC on Mac OS X * Fixed problem rewriting header files for Framework build   (ep)
+
+2004-07-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Allow other ini files besides odbc.ini and odbcinst.ini to support   FileDSN functions   (pvk)
+
+	* Added standard headers to get some basic typedefs like wchar_t * Added C calling conventions for C++   (pvk)
+
+	* Replaces wchar.h with stdlib.h (pvk)
+
+2004-07-13  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Small fixes for Mac OS X build (ep)
+
+2004-07-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Do not assume . is in PATH when reading the libiodbc.la file (pvk)
+
+	* Make sure we use shl_open on HP/UX (pvk)
+
+	* Removed INT64 and UINT64 types as they clash on various Unix versions   (pvk)
+
+2004-07-06  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for iodbcunix.h and iodbcext.h headers (pvk)
+
+	* Fixed 64bit cast problems (pvk)
+
+	* Fixed prototypes (pvk)
+
+	* Use ssize_t and size_t for string lengths * Fixed 64bit cast issues   (pvk)
+
+	* Fixed 64bit cast problems (pvk)
+
+	* Initial support for ODBC 3.52 API SQLLEN (pvk)
+
+	* Initialize SQLGetPrivateProfileString return buffer to empty string (pvk)
+
+	* Perform assignment in two steps for some older compilers (pvk)
+
+	* Use _mandir macro for path to man pages (pvk)
+
+	* Enhanced method for detecting pthread support on various platforms (pvk)
+
+	* Use AC_HELP_STRING to format --help texts (pvk)
+
+	* Handle UTF-8 sequences of 5 and 6 bytes * Skip bad UTF-8 sequences replacing them with a # in the trace   (pvk)
+
+2004-07-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed typo in HP/UX shared library name handling (pvk)
+
+2004-06-24  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Added project build file for iodbctestw (ep)
+
+	* Small fixes for Mac OS X build (ep)
+
+2004-06-22  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Small indentation fixes   (pvk)
+
+	* Fixed compiler warnings * Small indentation fixes   (pvk)
+
+	* Removed unused functions * Small indentation cleanups   (pvk)
+
+2004-06-21  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed C and C++ compiler warnings * Small indentation fixes   (pvk)
+
+	* Preparations for adding ODBC64 support (pvk)
+
+2004-06-19  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed obsolete FAR keyword (pvk)
+
+	* Simplified version number maintenance (pvk)
+
+	* Added initial man pages (pvk)
+
+2004-06-18  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed problems in SQLSetScrollOption emulation when driver does not   support this function (pvk)
+
+	* Added checks to make sure all stages succeed properly (pvk)
+
+	* Added extra tool needed to compile sample directory (pvk)
+
+	* Export Unicode and ANSI names of ODBC functions (pvk)
+
+	* Install sample source and Makefile in binary distributions (pvk)
+
+	* Added Unicode support * Added extra datatypes   (pvk)
+
+2004-05-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added iodbcext.h (pvk)
+
+2004-05-13  Sergey Malinin  <smalinin@openlinksw.com>
+
+	* Added support for SQLGetEnvAttr(SQL_ATTR_WCHAR_SIZE) extension (sm)
+
+2004-04-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed NULL pointer dereference when connection fails (pvk)
+
+2004-03-18  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Removed dependency on Carbon libraries for now so the driver manager   works on non console sessions (ep)
+
+2004-03-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Increased input buffer to 4096 (pvk)
+
+2004-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	*** empty log message ***
+
+	* Updated NEWS with highlights of new release * Updated version and build numbers to 3.51.2   (pvk)
+
+2004-02-24  Tim Haynes  <thaynes@openlinksw.com>
+
+	* Fixed build problem on panther (th)
+
+2004-02-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed build problem with older make programs (pvk)
+
+	* Fixed problem building on FreeBSD * Clean symbolic links   (pvk)
+
+	* Regenerated ChangeLog (pvk)
+
+	* Remove config.nice when making distributions (pvk)
+
+	* Updated version information in preparation of final release (pvk)
+
+	* Added --include-deps * Print comment on using --enable-maintainer-mode   (pvk)
+
+2004-02-23  Tim Haynes  <thaynes@openlinksw.com>
+
+	* Fixed problem building iodbctest program on Mac OS X (th)
+
+	* Removed Framework build (th)
+
+	* Check for pbxbuild (jaguar) or xcodebuild (panther)   (th)
+
+2004-02-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated copyright string (pvk)
+
+	* Added support for config.nice script (pvk)
+
+	* Removed debug code (pvk)
+
+	* Automatically regenerate libiodb.spec script when configure.in   changes (pvk)
+
+2004-02-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added --with-layout to simplify installation layouts for different   distributions like Debian, Gentoo, FreeBSD etc   (pvk)
+
+	* Added missing file in distcheck (pvk)
+
+	* Small documentation enhancements and clarifications (pvk)
+
+	* Renewed build utilities (pvk)
+
+	* Fixed license explaination * Fixed URL to source code on www.iodbc.org site   (pvk)
+
+2004-02-19  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed problem with finding install_libodbc.sh shell script (pvk)
+
+	* If the allocation of the statement handle in the drivermanager fails,   also release the statement handle in the driver   (pvk)
+
+	* Fixed prototype problem on Linux (pvk)
+
+2004-02-18  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed typo in fprintf format (pvk)
+
+	* Initialise native_error to 0 as some drivers do not set this field (pvk)
+
+2004-02-18  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Increased size of local variables to accommodate larger input * Added SQLRowCount to display number of affected rows on DDL/DML   statements   (ep)
+
+	* Removed compiler warning (ep)
+
+	* Initialise some local variables (ep)
+
+	* Added missing prototype (ep)
+
+	* Updated Mac OS X build project (ep)
+
+2004-02-18  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for displaying NativeError number * Added support for SQLDiagRec when compiling for ODBC 3.x   (pvk)
+
+	* Fixed problem with SQLCloseCursor * Replaced call to SQLFreeStmt (hstmt, SQL_CLOSE) with SQLCloseCursor   when compiling for ODBC 3.x   (pvk)
+
+	* Removed call to SQLSetConnectOption(SQL_OPT_TRACEFILE) (pvk)
+
+	* SQLCloseCursor should not return SQLState 24000 as this is up to the   Driver not the DriverManager (pvk)
+
+2004-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed compiler warnings * Fixed size calculation for variable length string and binary fields   (pvk)
+
+	* Fixed small compiler warnings * Use snprintf when available to guard against buffer overruns * Fixed problem with empty strings   (pvk)
+
+	* Added missing trace function for SQLSetDescRec (pvk)
+
+	* Removed stale message handler (pvk)
+
+	* Added support for asprintf and snprintf to guard against buffer overflows   (pvk)
+
+	* Create symbolic links for libodbc.a and libodbc.so for applications that   need it (pvk)
+
+	* Added support for snprintf (pvk)
+
+	* Increased size of buf to fix potential stack overwrite (pvk)
+
+	* Removed duplicate call to MEM_FREE (pvk)
+
+	* Changed command line arguments for cvs2cl (pvk)
+
+	* Added Tim (pvk)
+
+2004-02-17  Tim Haynes  <thaynes@openlinksw.com>
+
+	* Small text clarifications (th)
+
+2004-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added check for asnprintf and snprintf (pvk)
+
+	* Added tracing to SQLSetDescRec (pvk)
+
+2003-09-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added README.CVS to documentation (pvk)
+
+	* Merged previous Changelogs into NEWS file * Use cvs2cl script to generate Changelog information from CVS   (pvk)
+
+	* Updated version and build numbers to 3.51.1 (pvk)
+
+	* Added basic instructions for using the CVS tree (pvk)
+
+	* Renamed bootstrap to bootstrap.sh and made it more developer friendly   (pvk)
+
+2003-09-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Upgraded to libtool-1.4.3 (pvk)
+
+	* Updated package information and version/build strings (pvk)
+
+	* Rewrote check for Dl_info type (pvk)
+
+	* Removed symbol clash on iodbc_version between various components   (pvk)
+
+	* Removed symbol clash on iodbc_version between various components   (pvk)
+
+	* Added check for OS dependent compilers and flags for building   threaded programs (pvk)
+
+	* Display version number of Driver Manager (pvk)
+
+	* Removed symbol clash on iodbc_version between various components * Simplified getting version information from various components for   iodbcadm-gtk   (pvk)
+
+	* Added check for const handling (pvk)
+
+2003-09-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added check for FreeBSD wchar_t define (pvk)
+
+	* Do not use -static on convenience libraries (pvk)
+
+2003-09-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Moved iodbc/iodbc.h to include/iodbc.h (pvk)
+
+2003-09-04  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Updated build instructions for MyODBC on Mac OS X (ep)
+
+2003-09-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Use <iodbc.h> instead of <config.h> (pvk)
+
+	* Moved iodbc/iodbc.h to include/iodbc.h (pvk)
+
+2003-09-03  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Small fixes for MAC OS X (ep)
+
+2003-09-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added check for OS dependent libraries (pvk)
+
+2003-09-03  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Small cleanups for MAC OS X build (ep)
+
+2003-09-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Small changes to fix problems indicated by gcc compiler warnings (pvk)
+
+	* Fixed buffer size allocation using SQLGetPrivateProfileString * Always use a char buffer for SQLGetPrivateProfileString   (pvk)
+
+	* Use correct trace functions (pvk)
+
+2003-09-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added checks for wchar.h and wcslen, wcscpy and wcsncpy and provide   our own implementation if they do not exist in the standard C library   (pvk)
+
+2003-08-29  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed dependency problem between iodbc and iodbcinst (pvk)
+
+	* Fixed state transition for SQLExecDirect (pvk)
+
+	* Fixed state transitions for SQLFetch/SQLMoreresults (pvk)
+
+	* Added libiodbcinst.la to the library dependency list (pvk)
+
+	* Compile iodbcinst before iodbc (pvk)
+
+	* Removed libiodbcinst.la as this is already implicit from libiodbc.la (pvk)
+
+	* Added $(LIBADD_DL) to --static-libs (pvk)
+
+2003-08-22  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added info for new release (pvk)
+
+	* Updated version number to 3.51.00 to indicate start of new development   cycle (pvk)
+
+	* Merged iODBC-3_0_6-DEVEL tree onto main trunk   (pvk)
+
+2002-04-29  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added instructions on how to build MyODBC using the Mac OS X frameworks   (pvk)
+
+	* Wrote final entries for V3.0.6 release (pvk)
+
+2002-04-29  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Install iODBC frameworks always in /Library/Frameworks (pvk)
+
+	* Fixed problems with iODBC header files when building with Mac OS X
+	  frameworks (pvk)
+
+2002-04-29  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added relative search path for iODBC framework (pvk)
+
+2002-04-29  Christian Hammers  <ch@debian.org>
+
+	* Added packaging rules for the Debian project (ch)
+
+2002-04-26  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Changed includes to <iODBC/sql.h> for framework builds (ep)
+
+2002-04-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added define in config.h for building GUI extentions (pvk)
+
+2002-04-26  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Added initial build environment for Mac OS X framework (ep)
+
+	* Use /Library/Preferences instead of the old /System/Library/Preferences   (ep)
+
+	* When using Apple Frameworks we need to provide the framework name (ep)
+
+	* Cleaned some unused variables (ep)
+
+	* If we are not compiling with GUI enabled, make sure we do not   have any GUI references in our library (ep)
+
+	* Cleaned some unused variables (ep)
+
+2002-04-26  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Set default version if the package has not been configured (ep)
+
+	* Add default path for MacOS X preferences (ep)
+
+2002-04-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed GTK detection to enable GUI components * Fixed warnings from latest autoconf * Added check for DL_info datatype * Updated library version number to 3:6:1   (pvk)
+
+	* Install the odbctest program with the rest of the package (pvk)
+
+2002-04-25  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Create a new TOPLEVEL window if the user did not provide a valid   window handle (ep)
+
+2002-04-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed detection of Dl_info structure (pvk)
+
+	* Makefile cleanups (pvk)
+
+	* Ignore the autom4te.cache dir (pvk)
+
+	* Updated RedHat RPM spec file to latest release (pvk)
+
+	* Upgraded to automake 1.6.1 (pvk)
+
+	* Only build .tar.gz and .zip distributions for now (pvk)
+
+2002-03-14  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for automake 1.6, autoconf 2.53 and libtool 1.4.2 (pvk)
+
+	* Updated comment to reflect dual LGPL/BSD license (pvk)
+
+	* Updated comment to reflect dual LGPL/BSD license (pvk)
+
+	* Added include of iodbc.h (pvk)
+
+	* Fixed multiple definitions of CFLAGS in generated Makefile (pvk)
+
+2002-01-31  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Added support for mapping SQLError to either SQLGetDiagRec or SQLError   in the driver (epoitier)
+
+2001-10-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Print the version information of the connected driver * Renamed functions from DB_xxxx to ODBC_xxxx   (pvk)
+
+2001-09-11  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated version number to 3.0.6 (pvk)
+
+	* Wrote entries for V3.0.6 (pvk)
+
+	* Fixed wrong argument to SQLEndTran call (pvk)
+
+	* Fixed spelling errors (pvk)
+
+	* Added state transitions to SQLFetchScroll (pvk)
+
+	* Fixed typo in mapping SQL_COLUMN_NAME, SQL_COLUMN_NULLABLE, or   SQL_COLUMN_COUNT in SQLColumnAttributes (pvk)
+
+	* Fixed bug in cleanup code for descriptors * Fixed getting correct descriptor from driver
+
+	* Return immediately if the arguments to SQLSetPos are wrong (pvk)
+
+	* Added better support for skipping comments in string (pvk)
+
+	* Added support for Driver specific connect options (pvk)
+
+2001-06-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Finalized notes for 3.0.5 release (pvk)
+
+	* SQLMoreResults always returned SQL_NO_DATA_FOUND (pvk)
+
+2001-06-11  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added new package libiodbc-admin (pvk)
+
+	* Added support for multiple result sets (pvk)
+
+	* Added configure flag --enable-gui to switch building the GUI parts of   the iODBC administrator (pvk)
+
+	* iODBC is now released under either the GNU Library General Public License   or the BSD License. See files COPYING, COPYING.LGPL and COPYING.BSD for   details (pvk)
+
+	* Fixed portability issue with dladdr function (pvk)
+
+	* Check if setenv function exists in standard libraries, otherwise use   an internal copy (pvk)
+
+	* Fixed typo (pvk)
+
+	* Added sample odbcinst.ini file (pvk)
+
+2001-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Wrote entries for V3.0.5 (pvk)
+
+	* More files to ignore (pvk)
+
+	* Added new iodbcinst, iodbcadm, drvproxy directories (pvk)
+
+	* Added new contributor (pvk)
+
+2001-06-07  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Added new iodbcinst library (ep)
+
+2001-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added modified BSD license file (pvk)
+
+2001-06-07  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Added GUI frontend (ep)
+
+	* Added new iodbcadm library and iodbcadm-gtk frontend (ep)
+
+2001-06-06  Emmanuel Poitier  <epotier@openlinksw.com>
+
+	* Rewrote SQLDriverConnect(..., SQL_DRIVER_PROMPT) to use GUI where   appropriate (ep)
+
+	* Added version and libname symbols (ep)
+
+	* Fixed compiler warning on older compilers (ep)
+
+	* Added dlopen support for Macintosh, Beos and MACX (ep)
+
+	* Added support for Macintosh, Beos and MACX (ep)
+
+2001-06-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Only top Makefile.am needs AUTOMAKE_OPTIONS setting (pvk)
+
+	* Added notes (pvk)
+
+	* More files to ignore (pvk)
+
+	* Add -f to gzip (pvk)
+
+	* More files to ignore (pvk)
+
+	* Some files to ignore (pvk)
+
+2001-06-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added new config.h (generated from configure.in) (pvk)
+
+	* Linux RPM spec file now automatically contains proper version number (pvk)
+
+	* Set version number to 3.0.4 (pvk)
+
+2001-06-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added new config.h (generated from configure.in) (pvk)
+
+	* The libiodbc.spec file was moved to the admin directory (pvk)
+
+	* Updated version number to 3.0.4 (pvk)
+
+	* Renamed config.h to iodbc.h (pvk)
+
+2001-06-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Renamed config.h to iodbc.h (pvk)
+
+	* Added new config.h (generated from configure.in) (pvk)
+
+2001-06-04  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Linux RPM spec file now automatically contains proper version number (pvk)
+
+	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
+
+	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
+
+	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
+
+	* Major archive restructuring in preparation of adding iodbcinst code (pvk)
+
+2001-06-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added support for automake 1.4-p2, autoconf 2.50 and libtool 1.4 (pvk)
+
+	* Fixed problem with shl_unload on HP/UX (pvk)
+
+	* iODBC does not need a handle to itself on HP/UX (pvk)
+
+2001-06-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added usage information when called with -? (pvk)
+
+	 * Added more datatypes (pvk)
+
+2001-06-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Rewrote DYLD support for MacOS X/Darwin 1.2 (pvk)
+
+	* Disallow root to start a debug session as this is a security risk (pvk)
+
+	* Added checks for ODBC 3.x date, time and timestamp defines (pvk)
+
+	* Return Driver Type name instead of DSN Description (pvk)
+
+	* Removed stub for SQLGetPrivateProfileString (pvk)
+
+2000-07-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Translation of SQL_OJ_CAPABILITIES should only be done in ODBC 3.x (todd)
+
+	* Fixed typo (pvk)
+
+2000-06-14  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed initialization of cip flag which resulted in function sequence   errors (pvk)
+
+	* Added call to SQLCloseCursor for ODBC 3.x (pvk)
+
+2000-02-01  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Wrote ChangeLog entries for V3.0.1 and V3.0.2 distribution (pvk)
+
+	* Incremented package version number to 3.0.2 (pvk)
+
+	* SQLNumResult calls is also called from within iODBC, so it needs   a wrapper function (pvk)
+
+	* Check the pointer instead of the content (pvk)
+
+2000-01-28  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added extra check for ANSI C Compilers (pvk)
+
+	* Forgot to update pcbDSN and pcbDesc fields (pvk)
+
+	* Incremented package version number to 3.0.1 (pvk)
+
+	* Incremented package version number to 3.0.1 (pvk)
+
+	* Added new argument --libtool-libs (pvk)
+
+	* Added check for pthread library (pvk)
+
+	* Added new header file for thread-safe codebase (pvk)
+
+	* Added thread-safe macros to the codebase (pvk)
+
+	* Added thread-safe macros and definitions (pvk)
+
+2000-01-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Use $(MAKE) instead of plain make command (pvk)
+
+2000-01-21  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Ignore generated files (pvk)
+
+	* Removed generated files in favor of the bootstrap script (pvk)
+
+	* Added shell script for freshly checked out CVS tree (pvk)
+
+1999-12-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Refreshed generated files (pvk)
+
+	* Wrote ChangeLog entries for V3.0.0 distribution (pvk)
+
+	* Start using some of the ODBC 3.x API calls (pvk)
+
+	* Notify a ODBC 2.x driver when the internal rowset size changes (pvk)
+
+	* Added support for SQLCloseCursor (pvk)
+
+	* Added backward compatibility for SQL_OJ_CAPABILITIES call to ODBC 2.x   driver (pvk)
+
+	* Updated RPM specification file to reflect the new build (pvk)
+
+1999-12-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Set library version for ODBC 3.x interface to 3:0:1 (pvk)
+
+	* Set library version for ODBC 2.x interface to 2:51:0 (pvk)
+
+1999-12-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added initial support for MacOS X aka Rhapsody (pvk)
+
+	* Added initial support for MacOS X aka Rhapsody (pvk)
+
+1999-12-13  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Only use the [ODBC Data Sources] section to populate the SQLDataSources   call
+
+	* Simplified mapping of API calls to function pointers or text (pvk)
+
+	* Removed unneeded defines (pvk)
+
+1999-12-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Ignore iodbc-config generated script (pvk)
+
+	* Refreshed generated files (pvk)
+
+	* Added config script to get information about the installed version   of iODBC. (pvk)
+
+	* Set default directory for system wide odbc.ini to /etc (pvk)
+
+	* Rewrote checks for dlopen checking (pvk)
+
+1999-12-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed spurious #endif (pvk)
+
+1999-12-09  George Kodinov  <gkodinov@openlinksw.com>
+
+	* Added initial ODBC 3.x support (gk)
+
+	* Added initial ODBC 3.x support (gk)
+
+1999-12-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Changed to ODBC 3.x mode (pvk)
+
+	* Regenerated files (pvk)
+
+	* Added new contributor (pvk)
+
+	* Regenerated files (pvk)
+
+	* Reran libtoolize version 1.3.4 (pvk)
+
+1999-12-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added maintainer mode (pvk)
+
+	* Added support for ODBC 2.x and ODBC 3.x (pvk)
+
+1999-12-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Rewrote header files to support ODBC 3.5 specification (pvk)
+
+1999-06-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added latest changes to the log
+
+	* Changed typedef for SQLHENV, SQLHDBC, SQLSTMT to be void * instead of   SQLINTEGER. Although this is contra to the official header files, it   makes life a lot easier when you have ODBC 2.0 code you want to use
+
+	* Added latest changes to the log
+
+	* Updated README to reflect the current state of the project (pvk)
+
+1999-06-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added sql.h, sqlext.h, sqltypes.h to the list of installable headers (pvk)
+
+	* Set AutoReqProv flag to yes to allow rpm to automatically calculate
+	  dependancies (pvk)
+
+1999-06-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Regenerated file (pvk)
+
+	* Fixed check for default SYS_ODBC_INI when configure --prefix=/xxx is   used (pvk)
+
+	* Regenerated (pvk)
+
+	* Added sql.h, sqlext.h and sqltypes.h to the list of installable   include files (pvk)
+
+	* Use sql.h and sqlext.h instead of the nonstandard names isql.h and   isqlext.h (pvk)
+
+	* Renamed isql.h, isqlext.h and isqltypes.h to sql.h sqlext.h and sqtypes.h   and added dummy files for backward compatibility (pvk)
+
+	* Return SQL_SUCCESS on setting SQL_OPT_TRACEFILE (pvk)
+
+	* Removed empty line as this causes confusion to some linkers (pvk)
+
+	* Added target for binary tar distribution (pvk)
+
+1999-04-26  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Simplify building RPMS files on Linux (pvk)
+
+	* Removed CVS Id tag from header so Makefile.am and the generated   Makefile.in can be committed together rather than separate (pvk)
+
+	* Search for odbc.ini in various places (pvk)
+
+	* Set default system wide odbc.ini to /etc/odbc.ini if not configured   otherwise (pvk)
+
+	* Checked in generated files (pvk)
+
+	* Figure out location for system wide odbc.ini (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Checked in generated files (pvk)
+
+	* Use -I$(top_srcdir) to find the include files (pvk)
+
+	* Added source directory path to export file iodbc.exp (pvk)
+
+	* Checked in generated file (pvk)
+
+	* Added main.c to the list of files to be distributed. (pvk)
+
+	* Checked in generated file (pvk)
+
+	* Added iodbc.exp file which contains the symbol list of all symbols we   want to export using libtool. (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added isqltypes.h (pvk)
+
+	* Updated library version to 2.0.50 (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added Windows link file for iodbc.dll (pvk)
+
+	* Include isqltypes.h as a global include rather than a local include   file (pvk)
+
+	* Small code cleanups (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Code cleanups (pvk)
+
+	* Fixed errors in Windows macros (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Checked in new generated files (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated version number of package to 2.50.2 (pvk)
+
+	* Updated version number of library to 2:50:0 (pvk)
+
+1999-04-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Updated to more recent version of libtool 1.2f (pvk)
+
+	* Code cleanups (pvk)
+
+	* Added rudementary SQLGetPrivateProfileString call (pvk)
+
+	* Close open file handle (pvk)
+
+	* Use the internal form of the handle instead of the external   representation (pvk)
+
+	* Fixed some typo's (pvk)
+
+	* Use the libtool define to check for underscore representation (pvk)
+
+	* Added NEAR definition and HWND type for UNIX/VMS (pvk)
+
+1999-03-22  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Fixed a couple of typos (pvk)
+
+1999-03-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added missing arguments to prototype (pvk)
+
+	* Added support for SQL_DATE, SQL_TIME and SQL_TIMESTAMP (pvk)
+
+1999-03-17  Per Schroder  <per@mimer.se>
+
+	* Added support for VMS (ps)
+
+1999-03-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added Per Schroder who contributed the VMS patches to the iODBC project
+
+1999-03-17  Per Schroder  <per@mimer.se>
+
+	* Added support for VMS (ps)
+
+	* Added support for VMS (ps)
+
+1999-03-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Wrote new handle validation checks to make the driver manager more   resistant to handle misuse (pvk)
+
+	* Rewrote all function prototypes to conform to ODBC 2.51 standard (pvk)
+
+	* Rewrote all function prototypes to conform to ODBC 2.51 standard (pvk)
+
+	* Added file isqltypes.h (pvk)
+
+	* Rewrote all function prototypes to conform to ODBC 2.51 standard (pvk)
+
+1999-03-16  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added handle type definitions (pvk)
+
+	* Added new file with ODBC 2.51 types (pvk)
+
+	* Added full support for ODBC 2.51 specifications (pvk)
+
+1999-01-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Removed 2 copyright sccs stamps and comments as requested by Ke Jin (pvk)
+
+1999-01-19  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Prefix should of cause be / instead of /usr if we want to install   /etc/odbc.ini
+
+	* Added support for automake 1.4, autoconf 2.13 and libtool 1.2a
+
+	* Added sample odbc.ini file
+
+	* Changed reading of tokens from .ini file. We should really rewrite all   of these functions.
+
+	* Added specification file for Linux RPM builds
+
+	* Use NEED_USCORE to set _SQL if needed
+
+	* Removed as automake/autoconf/libtool can do this portable
+
+	* Added to comply to GNU standards
+
+	* Set default options
+
+	* Added unwanted files
+
+	* Version number is now set to 2.50
+
+	* Moved Changes.log into ChangeLog to comply with GNU standards
+
+	* Added new files to comply with standard GNU source packages
+
+	* Added missing typedefs, constants and prototypes
+
+	* Moves HWND typedef to isql.h
+
+	* Added proper support for SQLDataSources * SQLDrivers now returns SQL_NO_MORE_DATA so applications will not   go into infinite loops when trying to retrieve driver information
+
+	* Removed hwnd argument from SQLBrowseConnect as this is not part of the   API
+
+	* Added sample directory framework
+
+	* Removed as libtool does this automatically
+
+1999-01-18  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Moved iODBC licensing to LGPL as per Ke Jin's request
+
+	* Removed old build code
+
+	* Added information on LGPL licensing
+
+	* Re-indented code * Code cleanups * Added LGPL notice in all opening comments
+
+1998-12-27  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	* Added new comment to beginning of file * Reindented code
+
+	* Checkin of initial version from Ke Jin
+
+	* Checkin of initial version from Ke Jin

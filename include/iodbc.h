@@ -9,7 +9,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -84,13 +84,13 @@
 #endif
 
 #ifndef VERSION
-#define VERSION		"3.52.12"
+#define VERSION		"3.52.13"
 #define MAJ_VERSION	"3"
 #define MIN_VERSION	"52"
 #endif
 
 #ifndef IODBC_BUILD
-#define IODBC_BUILD 12160712	/* 0001.0928 */
+#define IODBC_BUILD 13190723	/* 0001.0928 */
 #endif
 
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)

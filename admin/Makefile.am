@@ -3,7 +3,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -71,10 +71,11 @@
 #
 
 EXTRA_DIST = \
-	$(srcdir)/gtk.m4 \
 	$(srcdir)/gtk-2.0.m4 \
+	$(srcdir)/gtk.m4 \
+	$(srcdir)/libiodbc.pc.in \
 	$(srcdir)/libiodbc.spec.in \
-	$(srcdir)/libiodbc.pc.in
+	$(srcdir)/openlink.m4
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libiodbc.pc

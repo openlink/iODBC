@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -1249,8 +1249,11 @@ _iodbcdm_driverload (
 	  if (sqlstat != en_00000)
 	    {
 	      _iodbcdm_dllclose (hdll);
-	      MEM_FREE (penv);
 	      PUSHSQLERR (pdbc->herr, en_IM004);
+
+	      /* free internal env */
+	      MEM_FREE (penv);
+	      pdbc->henv = NULL;
 
 	      return SQL_ERROR;
 	    }
@@ -1351,6 +1354,7 @@ _iodbcdm_driverload (
     }
 
   pdbc->cp_timeout = cp_timeout;
+  MEM_FREE (pdbc->cp_probe);
   pdbc->cp_probe = strdup (cp_probe);
 
   return SQL_SUCCESS;
@@ -1466,7 +1470,9 @@ _iodbcdm_driverunload (HDBC hdbc, int ver)
 	    }
 	}
 
+      /* free internal env */
       MEM_FREE (penv);
+      pdbc->henv = NULL;
     }
 
   /* pdbc->henv = SQL_NULL_HENV; */
@@ -2053,10 +2059,10 @@ SQLConnect_Internal (SQLHDBC hdbc,
       RETURN (SQL_ERROR);
     }
 
+  retcode = _iodbcdm_driverload (_dsn, (char *)driver, pdbc, thread_safe, unload_safe, waMode);
+
   MEM_FREE(_szDSN);
   _szDSN = NULL;
-
-  retcode = _iodbcdm_driverload (_dsn, (char *)driver, pdbc, thread_safe, unload_safe, waMode);
 
   switch (retcode)
     {

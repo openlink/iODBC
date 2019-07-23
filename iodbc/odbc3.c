@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -114,6 +114,88 @@ SQLRETURN SQLAllocStmt_Internal (SQLHDBC hdbc, SQLHSTMT * phstmt);
 SQLRETURN SQLFreeStmt_Internal (SQLHSTMT hstmt, SQLUSMALLINT fOption);
 SQLRETURN SQLTransact_Internal (SQLHENV henv, SQLHDBC hdbc, SQLUSMALLINT fType);
 
+SQLRETURN
+SQLAllocDesc_Internal (
+    SQLHDBC hdbc,
+    SQLHDESC * phdesc)
+{
+  CONN (pdbc, hdbc);
+  SQLRETURN retcode = SQL_SUCCESS;
+  HPROC hproc = SQL_NULL_HPROC;
+  DESC_t *new_desc;
+  SQLUINTEGER odbc_ver;
+  SQLUINTEGER dodbc_ver;
+
+  /* check state */
+  switch (pdbc->state)
+    {
+    case en_dbc_connected:
+    case en_dbc_hstmt:
+      break;
+
+    case en_dbc_allocated:
+    case en_dbc_needdata:
+      PUSHSQLERR (pdbc->herr, en_08003);
+      *phdesc = SQL_NULL_HSTMT;
+
+      return SQL_ERROR;
+
+    default:
+      return SQL_INVALID_HANDLE;
+    }
+
+  odbc_ver = ((GENV_t *) pdbc->genv)->odbc_ver;
+  dodbc_ver = (pdbc->henv != SQL_NULL_HENV) ? ((ENV_t *) pdbc->henv)->dodbc_ver : odbc_ver;
+
+  if (odbc_ver == SQL_OV_ODBC2 || dodbc_ver == SQL_OV_ODBC2)
+    {
+      PUSHSQLERR (pdbc->herr, en_HYC00);
+      return SQL_ERROR;
+    }
+
+  if (phdesc == NULL)
+    {
+      PUSHSQLERR (pdbc->herr, en_HY009);
+      return SQL_ERROR;
+    }
+
+  hproc = _iodbcdm_getproc (pdbc, en_AllocHandle);
+
+  if (hproc == SQL_NULL_HPROC)
+    {
+      PUSHSQLERR (pdbc->herr, en_IM001);
+      return SQL_ERROR;
+    }
+
+  new_desc = (DESC_t *) MEM_ALLOC (sizeof (DESC_t));
+  if (!new_desc)
+    {
+      PUSHSQLERR (pdbc->herr, en_HY001);
+      return SQL_ERROR;
+    }
+  memset (new_desc, 0, sizeof (DESC_t));
+  CALL_DRIVER (pdbc, pdbc, retcode, hproc, (SQL_HANDLE_DESC, pdbc->dhdbc, &new_desc->dhdesc));
+
+  if (!SQL_SUCCEEDED (retcode))
+    {
+      MEM_FREE (new_desc);
+      return SQL_ERROR;
+    }
+
+  new_desc->type = SQL_HANDLE_DESC;
+  new_desc->hdbc = pdbc;
+  new_desc->hstmt = NULL;
+  new_desc->herr = NULL;
+  new_desc->desc_cip = 0;
+  *phdesc = new_desc;
+
+  new_desc->next = (DESC_t *) pdbc->hdesc;
+  pdbc->hdesc = new_desc;
+
+  return SQL_SUCCESS;
+}
+
+
 RETCODE SQL_API
 SQLAllocHandle_Internal (
     SQLSMALLINT	  handleType,
@@ -159,9 +241,6 @@ SQLAllocHandle_Internal (
     case SQL_HANDLE_DESC:
       {
 	CONN (con, inputHandle);
-	HPROC hproc = SQL_NULL_HPROC;
-	RETCODE retcode;
-	DESC_t *new_desc;
 
 	if (!IS_VALID_HDBC (con))
 	  {
@@ -169,52 +248,7 @@ SQLAllocHandle_Internal (
 	  }
 	CLEAR_ERRORS (con);
 
-	if (((ENV_t *)(con->henv))->dodbc_ver == SQL_OV_ODBC2)
-	  {
-	    PUSHSQLERR (con->herr, en_HYC00);
-	    return SQL_ERROR;
-	  }
-	if (!outputHandlePtr)
-	  {
-	    PUSHSQLERR (con->herr, en_HY009);
-	    return SQL_ERROR;
-	  }
-
-	hproc = _iodbcdm_getproc (con, en_AllocHandle);
-
-	if (hproc == SQL_NULL_HPROC)
-	  {
-	    PUSHSQLERR (con->herr, en_IM001);
-	    return SQL_ERROR;
-	  }
-
-	new_desc = (DESC_t *) MEM_ALLOC (sizeof (DESC_t));
-	if (!new_desc)
-	  {
-	    PUSHSQLERR (con->herr, en_HY001);
-	    return SQL_ERROR;
-	  }
-	memset (new_desc, 0, sizeof (DESC_t));
-	CALL_DRIVER (con, con, retcode, hproc,
-	    (handleType, con->dhdbc, &new_desc->dhdesc));
-
-	if (!SQL_SUCCEEDED (retcode))
-	  {
-	    MEM_FREE (new_desc);
-	    return SQL_ERROR;
-	  }
-
-	new_desc->type = SQL_HANDLE_DESC;
-	new_desc->hdbc = con;
-	new_desc->hstmt = NULL;
-	new_desc->herr = NULL;
-	new_desc->desc_cip = 0;
-	*outputHandlePtr = new_desc;
-
-	new_desc->next = (DESC_t *) con->hdesc;
-	con->hdesc = new_desc;
-
-	return SQL_SUCCESS;
+        return SQLAllocDesc_Internal (inputHandle, outputHandlePtr);
       }
 
     default:
@@ -1452,7 +1486,7 @@ SQLSetStmtAttr_Internal (
 
           if (SQL_SUCCEEDED (retcode))
             {
-              stmt->rowset_size = Attribute;
+              stmt->rowset_size = (SQLUINTEGER) (SQLULEN) ValuePtr;
               if (retcode == SQL_SUCCESS_WITH_INFO)
                 {
                   SQLUINTEGER data;
@@ -1497,7 +1531,7 @@ SQLSetStmtAttr_Internal (
 
               if (SQL_SUCCEEDED (retcode))
                 {
-                  stmt->rowset_size = Attribute;;
+                  stmt->rowset_size = (SQLUINTEGER) (SQLULEN) ValuePtr;
                   if (retcode == SQL_SUCCESS_WITH_INFO)
                     {
                       SQLUINTEGER data;
@@ -1517,7 +1551,7 @@ SQLSetStmtAttr_Internal (
 
               if (SQL_SUCCEEDED (retcode))
                 {
-                  stmt->rowset_size = Attribute;;
+                  stmt->rowset_size = (SQLUINTEGER) (SQLULEN) ValuePtr;
                   if (retcode == SQL_SUCCESS_WITH_INFO)
                     {
                       SQLUINTEGER data;
@@ -1591,7 +1625,7 @@ SQLSetStmtAttr_Internal (
             }
 
           if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
-            stmt->bind_type = Attribute;
+            stmt->bind_type = (SQLUINTEGER) (SQLULEN) ValuePtr;
 
           return retcode;
 	}
@@ -1603,7 +1637,7 @@ SQLSetStmtAttr_Internal (
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, Attribute, ValuePtr));
               if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
-                stmt->bind_type = Attribute;
+                stmt->bind_type = (SQLUINTEGER) (SQLULEN) ValuePtr;
 	      return retcode;
 	    }
 	  else
@@ -1613,7 +1647,7 @@ SQLSetStmtAttr_Internal (
 	      CALL_DRIVER (stmt->hdbc, stmt, retcode, hproc,
 		  (stmt->dhstmt, Attribute, ValuePtr));
               if (Attribute == SQL_ATTR_ROW_BIND_TYPE && SQL_SUCCEEDED (retcode))
-                stmt->bind_type = Attribute;
+                stmt->bind_type = (SQLUINTEGER) (SQLULEN) ValuePtr;
 	      return retcode;
 	    }
 	  else

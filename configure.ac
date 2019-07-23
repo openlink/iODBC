@@ -6,7 +6,7 @@ AC_REVISION($Id$)
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
-#  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -74,6 +74,19 @@ AC_REVISION($Id$)
 #
 
 
+##########################################################################
+##									##
+##  Version info							##
+##									##
+##########################################################################
+m4_define(V_iodbc_major,       [3])            # ODBC Major version
+m4_define(V_iodbc_minor,       [52])           # ODBC Minor version
+m4_define(V_iodbc_patch,       [13])           # Increase every release
+m4_define(V_iodbc_devel,       [])             # -dev, -rc1 or empty for stable
+
+m4_define(V_iodbc_date,        [190723])       # YYMMDD of release
+m4_define(V_iodbc_shlib,       [27])           # Increase every change
+
 
 ##########################################################################
 ##									##
@@ -81,14 +94,14 @@ AC_REVISION($Id$)
 ##									##
 ##########################################################################
 AC_INIT([iODBC Driver Manager],
-        [3.52.12],
+        V_iodbc_major.V_iodbc_minor.V_iodbc_patch[]V_iodbc_devel,
 	[iodbc@openlinksw.com],
 	[libiodbc])
 AC_CONFIG_SRCDIR([include/isql.h])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_MACRO_DIR(admin)
 AC_CONFIG_HEADERS(include/config.h)
-AM_INIT_AUTOMAKE(AC_PACKAGE_TARNAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
@@ -102,14 +115,14 @@ AM_MAINTAINER_MODE
 #
 #  Version information for SQLGetInfo(SQL_DM_VER) call
 #
-BUILD_MAJOR="12"		# last digit of version number
-BUILD_MINOR="160712"		# year/month/day of release
+BUILD_MAJOR="V_iodbc_patch"		# last digit of version number
+BUILD_MINOR="V_iodbc_date"		# year/month/day of release
 BUILD_VER="${BUILD_MAJOR}${BUILD_MINOR}"
 
 #
 #  Library version numbers
 #
-lib3_version=3:25:1		# ODBC 3.x mode
+lib3_version=3:V_iodbc_shlib:1	# ODBC 3.x mode
 lib2_version=2:55:0		# ODBC 2.x mode (do not change)
 
 
@@ -137,22 +150,8 @@ fi
 ##  Save configuration for later reuse					##
 ##									##
 ##########################################################################
-echo creating config.nice
-rm -f config.nice 
-cat >config.nice<<CONFIG_NICE_EOF
-#! /bin/sh
-#
-# Created by configure for $PACKAGE_STRING
-#
 
-CONFIG_NICE_EOF
-echo ${SHELL} "\"$0\" \\" >> config.nice
-for arg in $ac_configure_args
-do
-    echo "$arg \\" >> config.nice
-done
-echo '"$@"' >> config.nice
-chmod +x config.nice
+OPL_CONFIG_NICE([config.nice])
 
 
 ##########################################################################
@@ -249,7 +248,6 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
 AC_PROG_CPP
-AM_PROG_AR
 AC_LANG([C])
 AC_C_CONST
 
@@ -262,7 +260,6 @@ AC_C_CONST
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-dnl AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 dnl LT_INIT(dlopen)
 

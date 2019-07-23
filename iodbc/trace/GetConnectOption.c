@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -113,7 +113,7 @@ _trace_connopt_type (SQLUSMALLINT type)
       _S (SQL_USE_BOOKMARKS);
     }
 
-  trace_emit ("\t\t%-15.15s   %ld (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
+  trace_emit ("\t\t%-15.15s   %d (%s)\n", "SQLUSMALLINT ", (int) type, ptr);
 }
 
 

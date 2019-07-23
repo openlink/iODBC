@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2016 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -278,6 +278,7 @@ Init_iODBC (void)
   SPINLOCK_INIT (iodbcdm_global_lock);
 #endif
 
+#if 0
   SPINLOCK_LOCK (iodbcdm_global_lock);
   if (!_iodbcdm_initialized)
     {
@@ -291,6 +292,7 @@ Init_iODBC (void)
        */
     }
   SPINLOCK_UNLOCK (iodbcdm_global_lock);
+#endif
 
   return;
 }
