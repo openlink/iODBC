@@ -1,5 +1,21 @@
 2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
 
+	Started new development cycle 3.52.14
+
+2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge tag 'v3.52.13' into develop
+
+	Tagged stable release
+
+2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'release/3.52.13'
+
+	Updated iODBC version to 03.52.13
+
+	Updated documentation
+
 	Merge branch 'feature/pthread_fix' into develop
 
 	Fixed small memory leaks
@@ -95,6 +111,8 @@
 2016-07-12  iODBC Maintainer  <iodbc@openlinksw.com>
 
 	Merge branch 'release/3.52.12' into develop
+
+	Merge branch 'release/3.52.12'
 
 	Updated version to 3.52.12 for final release
 
@@ -255,6 +273,8 @@
 
 	Merge branch 'release/3.52.11' into develop
 
+	Merge branch 'release/3.52.11'
+
 	Updated version to 3.52.11 for internal release
 
 2016-03-10  iODBC Maintainer  <iodbc@openlinksw.com>
@@ -338,6 +358,8 @@
 2015-02-10  iODBC Maintainer  <iodbc@openlinksw.com>
 
 	Merge branch 'hotfix/3.52.10.1' into develop
+
+	Merge branch 'hotfix/3.52.10.1'
 
 	Added missing file to distribution
 
