@@ -1,3 +1,19 @@
+Jul 23 2019, V3.52.13:
+    * Added extra validation for SQLAllocHandle (SQL_HANDLE_DESC, ...)
+    * Added GCC __attribute__ for checking format string
+    * Added missing define SQL_CONVERT_GUID
+    * Fixed issue using heap after free in SQLConnect_internal
+    * Fixed issue with global mutex in SQLError, SQLGetDiagRec and SQLGetDiagField
+    * Fixed SQLSetStmtAttr to cache the correct values for SQL_ATTR_ROW_ARRAY_SIZE and SQL_ATTR_ROW_BIND_TYPE
+    * Fixed format specifiers and some casts to fix trace output
+    * Fixed missing check for section in SQLGetPrivateProfileString
+    * Fixed non-void function needs to return a value
+    * Fixed issue in Mac Cocoa code
+    * Fixed iODBC apps/frameworks CFBundleGetInfoString attribute
+    * Fixes an issue where build fails on Alpine
+    * Fixed package versioning
+    * Fixed small memory leaks
+
 Jul 12 2016, V3.52.12:
     * Added new Cocoa based dialogs for Mac OS X which will allow 64bit applications to
       use the standard Login and Setup dialogs from the iODBCinst framework
