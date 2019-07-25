@@ -1692,6 +1692,7 @@ SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
   STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
+  int i;
 
   /* check argument */
 
@@ -1807,7 +1808,7 @@ SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
       pstmt->st_need_param = NULL;
 
       PPARM pparm = pstmt->st_pparam;
-      for (int i = 0; i < pstmt->st_nparam; i++, pparm++)
+      for (i = 0; i < pstmt->st_nparam; i++, pparm++)
         {
           if (pparm->pm_data == NULL)
             continue;
