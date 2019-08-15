@@ -177,6 +177,42 @@ endif
 
 
 #
+#  Mac OS X 10.12
+#
+ifeq (10.12, $(findstring 10.12, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.12
+    IODBC_TARGET=10.12
+endif
+
+
+#
+#  Mac OS X 10.13
+#
+ifeq (10.13, $(findstring 10.13, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.13
+    IODBC_TARGET=10.13
+endif
+
+
+#
+#  Mac OS X 10.14
+#
+ifeq (10.14, $(findstring 10.14, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.14
+    IODBC_TARGET=10.14
+endif
+
+
+#
+#  Mac OS X 10.15
+#
+ifeq (10.15, $(findstring 10.15, $(macosx_version)))
+    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.15
+    IODBC_TARGET=10.15
+endif
+
+
+#
 #  Pass settings to xcodebuild
 #
 export IODBC_TARGET IODBC_SDK
@@ -215,7 +251,7 @@ install:
 	#  Install Frameworks
 	#
 	-rm $(DESTDIR)/Library/Frameworks/iODBC.framework/Versions/Current
-	-rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
+	rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
 	cd iODBCinst;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	cd iODBC;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	#
@@ -245,7 +281,7 @@ install:
 	-mkdir -p "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
 	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge" "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
 	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge.res" "$(DESTDIR)/Library/CFMSupport/._iODBC CFM Bridge"
-	/System/Library/CoreServices/FixupResourceForks /Library/CFMSupport
+	-/System/Library/CoreServices/FixupResourceForks /Library/CFMSupport
 
 
 #
