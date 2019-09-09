@@ -358,7 +358,8 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
 
 	  for (ptr = (SQLCHAR *)_buffer_u8, ptrW = lpszRetBuffer; *ptr; )
 	    {
-              dm_StrCopyOut2_U8toW_d2m (&conv, ptr, ptrW, cbRetBuffer - length - 1,
+              dm_StrCopyOut2_U8toW_d2m (&conv, ptr, ptrW, 
+                  (cbRetBuffer - length - 1) * DM_WCHARSIZE(&conv),
                   &len, NULL);
 
 	      length += len;
@@ -378,13 +379,13 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
       else
 	{
           dm_StrCopyOut2_U8toW_d2m (&conv, (SQLCHAR *)_buffer_u8, lpszRetBuffer,
-              cbRetBuffer, &length, NULL);
+              cbRetBuffer*DM_WCHARSIZE(&conv), &length, NULL);
 	}
     }
   else
     {
       dm_StrCopyOut2_U8toW_d2m (&conv, (SQLCHAR *)_buffer_u8, lpszRetBuffer,
-          cbRetBuffer, &length, NULL);
+          cbRetBuffer*DM_WCHARSIZE(&conv), &length, NULL);
     }
 
 done:
