@@ -90,7 +90,7 @@
 #endif
 
 #ifndef IODBC_BUILD
-#define IODBC_BUILD 13190723	/* 0001.0928 */
+#define IODBC_BUILD 14190910	/* 0001.0928 */
 #endif
 
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
