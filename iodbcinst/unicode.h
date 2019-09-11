@@ -149,7 +149,7 @@ CONV_DIRECT;
 /*
  *  Max length of a UTF-8 encoded character sequence
  */
-#define UTF8_MAX_CHAR_LEN 4
+#define UTF8_MAX_CHAR_LEN 8
 
 /*
  *  Function Prototypes

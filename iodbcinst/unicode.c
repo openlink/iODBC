@@ -126,6 +126,9 @@ static size_t _utf8towcx (IODBC_CHARSET charset, char * ustr, void * wstr,
 
 static size_t _WCSLEN(IODBC_CHARSET charset, void *str);
 
+static size_t dm_UWtoA(wchar_t *src, int ilen, char *dest, int olen);
+static size_t dm_AtoUW(char *src, int ilen, wchar_t *dest, size_t olen);
+
 #ifndef MAX
 # define MAX(X,Y)	(X > Y ? X : Y)
 # define MIN(X,Y)	(X < Y ? X : Y)
@@ -433,25 +436,32 @@ SQLCHAR *
 dm_SQL_W2A (SQLWCHAR * inStr, int size)
 {
   SQLCHAR *outStr = NULL;
-  ssize_t len;
+  size_t len;
 
   if (inStr == NULL)
     return NULL;
 
   if (size == SQL_NTS)
-    len = wcslen (inStr);
+   len = wcslen (inStr);
+  else if (size < 0)
+   return NULL;
   else
-    len = size;
+    len = (size_t)size;
 
-  if (len < 0)
-    return NULL;
-
-  if ((outStr = (SQLCHAR *) malloc (len * UTF8_MAX_CHAR_LEN + 1)) != NULL)
+# ifdef WIN32
+  if ((outStr = (SQLCHAR *) calloc (len * UTF8_MAX_CHAR_LEN + 1, 1)) != NULL)
     {
       if (len > 0)
 	OPL_W2A (inStr, outStr, len);
       outStr[len] = '\0';
     }
+#else
+  if ((outStr = (SQLCHAR *) calloc (len * MB_CUR_MAX + 1, 1)) != NULL)
+    {
+      if (len > 0)
+        dm_UWtoA(inStr, len, outStr, len * MB_CUR_MAX);
+    }
+#endif
 
   return outStr;
 }
@@ -461,25 +471,32 @@ SQLWCHAR *
 dm_SQL_A2W (SQLCHAR * inStr, int size)
 {
   SQLWCHAR *outStr = NULL;
-  ssize_t len;
+  size_t len;
 
   if (inStr == NULL)
     return NULL;
 
   if (size == SQL_NTS)
     len = strlen ((char *) inStr);
-  else
-    len = size;
-
-  if (len < 0)
+  else if (size < 0)
     return NULL;
+  else
+    len = (size_t)size;
 
+# ifdef WIN32
   if ((outStr = (SQLWCHAR *) calloc (len + 1, sizeof (SQLWCHAR))) != NULL)
     {
       if (len > 0)
 	OPL_A2W (inStr, outStr, len);
       outStr[len] = L'\0';
     }
+#else
+  if ((outStr = (SQLWCHAR *) calloc (len + 1, sizeof (SQLWCHAR))) != NULL)
+    {
+      if (len > 0)
+        dm_AtoUW(inStr, len, outStr, len);
+    }
+#endif
 
   return outStr;
 }
@@ -508,18 +525,25 @@ dm_StrCopyOut2_A2W (
   if (size >= length + 1)
     {
       if (length > 0)
+#ifdef WIN32
 	OPL_A2W (inStr, outStr, length);
+#else
+        dm_AtoUW(inStr, length, outStr, length);
+#endif
       outStr[length] = L'\0';
       return 0;
     }
   if (size > 0)
     {
+#ifdef WIN32
       OPL_A2W (inStr, outStr, size);
+#else
+      dm_AtoUW(inStr, length, outStr, size);
+#endif
       outStr[--size] = L'\0';
     }
   return -1;
 }
-
 
 int
 dm_StrCopyOut2_W2A (
@@ -544,13 +568,21 @@ dm_StrCopyOut2_W2A (
   if (size >= length + 1)
     {
       if (length > 0)
+#ifdef WIN32
 	OPL_W2A (inStr, outStr, length);
+#else
+        dm_UWtoA(inStr, length, outStr, length);
+#endif
       outStr[length] = '\0';
       return 0;
     }
   if (size > 0)
     {
+#ifdef WIN32
       OPL_W2A (inStr, outStr, size);
+#else
+      dm_UWtoA(inStr, length, outStr, size);
+#endif
       outStr[--size] = '\0';
     }
   return -1;
@@ -567,7 +599,11 @@ dm_strcpy_A2W (SQLWCHAR * destStr, SQLCHAR * sourStr)
 
   length = strlen ((char *) sourStr);
   if (length > 0)
+#ifdef WIN32
     OPL_A2W (sourStr, destStr, length);
+#else
+    dm_AtoUW(sourStr, length, destStr, length);
+#endif
   destStr[length] = L'\0';
   return destStr;
 }
@@ -583,7 +619,11 @@ dm_strcpy_W2A (SQLCHAR * destStr, SQLWCHAR * sourStr)
 
   length = wcslen (sourStr);
   if (length > 0)
+#ifdef WIN32
     OPL_W2A (sourStr, destStr, length);
+#else
+    dm_UWtoA(sourStr, length, destStr, length);
+#endif
   destStr[length] = '\0';
   return destStr;
 }
@@ -1531,6 +1571,39 @@ dm_AtoU4(char *src, int ilen, ucs4_t *dest, size_t olen)
 
 
 static size_t
+dm_AtoUW(char *src, int ilen, wchar_t *dest, size_t olen)
+{
+  size_t n = 0;
+  wchar_t wc;
+  ucs4_t *us = dest;
+  int count = 0;
+
+  while (n < ilen && count < olen)
+    {
+      mbstate_t st;
+      size_t sz;
+      memset (&st, 0, sizeof (st));
+      sz = mbrtowc (&wc, src, ilen - n, &st);
+
+      if (((long) sz) > 0)
+        {
+          n += sz - 1;
+          src += sz - 1;
+        }
+
+      *us = wc;
+      n++;
+      us++;
+      count++;
+      if (!*src)
+	break;
+      src++;
+    }
+  return count;
+}
+
+
+static size_t
 dm_U2toA(ucs2_t *src, int ilen, char *dest, int olen)
 {
   size_t n = 0;
@@ -1543,7 +1616,7 @@ dm_U2toA(ucs2_t *src, int ilen, char *dest, int olen)
 
   while (n < olen)
     {
-      char temp[8];
+      char temp[MB_CUR_MAX];
       mbstate_t st;
       size_t sz, sz_written = 0;
 #ifdef WORDS_BIGENDIAN
@@ -1585,7 +1658,48 @@ dm_U4toA(ucs4_t *src, int ilen, char *dest, int olen)
 
   while (n < ilen && count < olen)
     {
-      char temp[8];
+      char temp[MB_CUR_MAX];
+      mbstate_t st;
+      size_t sz, sz_written = 0;
+
+      wc = *src;
+
+      memset (&st, 0, sizeof (st));
+      sz = wcrtomb (temp, wc, &st);
+
+      if (((long) sz) > 0)
+	{
+	  sz_written = MIN (sz, olen - count);
+	  memcpy (dest, temp, sz_written);
+	  count += sz_written - 1;
+	  dest += sz_written - 1;
+	}
+      else
+	*dest = '?';
+
+      src++;
+      count++;
+      n++;
+      dest++;
+    }
+  return n;
+}
+
+
+
+static size_t
+dm_UWtoA(wchar_t *src, int ilen, char *dest, int olen)
+{
+  int n = 0;
+  wchar_t wc;
+  int count = 0;
+
+  if (!*src)
+    return 0;
+
+  while (n < ilen && count < olen)
+    {
+      char temp[MB_CUR_MAX];
       mbstate_t st;
       size_t sz, sz_written = 0;
 
@@ -1719,6 +1833,9 @@ dm_conv_W2A(void *inStr, int inLen, char *outStr, int size,
           SQLCHAR *u8 = (SQLCHAR *)inStr;
           SQLCHAR c;
           int len, mask, i;
+          char temp[MB_CUR_MAX];
+          mbstate_t st;
+          size_t rc;
 
           while((c = *u8) && size > 0 && inLen > 0)
             {
@@ -1733,12 +1850,35 @@ dm_conv_W2A(void *inStr, int inLen, char *outStr, int size,
                   wc <<= 6;
                   wc |= (u8[i] & 0x3F);
                 }
+#ifdef WIN32
               OPL_W2A(&wc, outStr, 1);
+#else
+              memset (&st, 0, sizeof (st));
+              rc = wcrtomb (temp, wc, &st);
+              if (((ssize_t)rc) > 0)
+                {
+                  rc = MIN(rc, MB_CUR_MAX);
+                  rc = MIN(rc, size);
+                  memcpy(outStr, temp, rc);
+                  size -= rc -1;
+                  outStr += rc - 1;
+                  count += rc - 1;
+                }
+              else if (rc == 0)
+                {
+                  *outStr = 0;
+                }
+              else
+                {
+                  *outStr = '?';
+                }
+#endif
+              size --;
+              outStr ++;
+              count ++;
+
               u8 += len;
               inLen -= len;
-              size--;
-              outStr++;
-              count++;
             }
         }
       else if (charset == CP_UTF16)
@@ -1778,7 +1918,21 @@ dm_conv_A2W(char *inStr, int inLen, void *outStr, int size,
           int len,first,i;
           while(*inStr && size>0 && inLen > 0)
             {
+#ifdef WIN32
               OPL_A2W(inStr, &wc, 1);
+#else
+              mbstate_t st;
+              size_t rc;
+              memset (&st, 0, sizeof (st));
+              rc = mbrtowc (&wc, inStr, (size_t)inLen, &st);
+              if (((ssize_t)rc) > 0)
+                {
+                  inLen -= rc - 1;
+                  inStr += rc - 1;
+                }
+              else
+                wc = L'?';
+#endif
               CONV_TO_UTF8(wc, len, first);
               for(i = len-1; i > 0; --i)
                 {
@@ -1787,9 +1941,9 @@ dm_conv_A2W(char *inStr, int inLen, void *outStr, int size,
                 }
               u8[0] = wc | first;
               u8 += len;
-              inStr++;
               size -= len;
               count += len;
+              inStr++;
               inLen--;
             }
         }
