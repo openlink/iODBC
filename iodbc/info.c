@@ -972,7 +972,7 @@ SQLGetInfo_Internal (
           else if (conv_direct == CD_W2A)
             {
               /* unicode<=ansi*/
-              if ((_InfoValue = malloc(_cbInfoValueMax + 1)) == NULL)
+              if ((_InfoValue = malloc(_cbInfoValueMax * MB_CUR_MAX + 1)) == NULL)
 	        {
                   PUSHSQLERR (pdbc->herr, en_HY001);
                   return SQL_ERROR;
