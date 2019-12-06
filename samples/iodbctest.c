@@ -788,7 +788,6 @@ ODBC_Test ()
       else if (!TXTCMP (request, TEXT ("environment")))
 	{
 	  extern char **environ;
-	  int i;
 
 	  for (i = 0; environ[i]; i++)
 	    fprintf (stderr, "%03d: [%s]\n", i, environ[i]);
@@ -978,9 +977,9 @@ ODBC_Test ()
 	  while (1)
 	    {
 #if (ODBCVER < 0x0300)
-	      int sts = SQLFetch (hstmt);
+	      sts = SQLFetch (hstmt);
 #else
-	      int sts = SQLFetchScroll (hstmt, SQL_FETCH_NEXT, 1);
+	      sts = SQLFetchScroll (hstmt, SQL_FETCH_NEXT, 1);
 #endif
 
 	      if (sts == SQL_NO_DATA_FOUND)
