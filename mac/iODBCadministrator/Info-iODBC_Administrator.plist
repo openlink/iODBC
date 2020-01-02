@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBC Administrator</string>
 	<key>CFBundleGetInfoString</key>
-	<string>iODBC Administrator version 3.52.14, Copyright 1995-2019, OpenLink Software</string>
+	<string>iODBC Administrator version 3.52.14, Copyright 1995-2020, OpenLink Software</string>
 	<key>CFBundleIconFile</key>
 	<string>iODBCAdministrator.icns</string>
 	<key>CFBundleIdentifier</key>

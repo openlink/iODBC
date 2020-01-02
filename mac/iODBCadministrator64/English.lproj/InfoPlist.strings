@@ -2,5 +2,5 @@
 
 CFBundleName = "iODBC Administrator64";
 CFBundleShortVersionString = "iODBC Administrator64 version 3.52.14";
-CFBundleGetInfoString = "iODBC Administrator64 version 3.52.14, Copyright 1995-2019, OpenLink Software";
-NSHumanReadableCopyright = "Copyright  1995-2019, OpenLink Software";
+CFBundleGetInfoString = "iODBC Administrator64 version 3.52.14, Copyright 1995-2020, OpenLink Software";
+NSHumanReadableCopyright = "Copyright  1995-2020, OpenLink Software";
