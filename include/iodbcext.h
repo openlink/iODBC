@@ -229,6 +229,12 @@
 # define SQL_DM_CP_DEF  SQL_DM_CP_UCS4
 #endif
 
+/* DataDirect options for Connection/Env Attributes. */
+#define SQL_DD_CP_ANSI				0 
+#define SQL_DD_CP_UCS2				SQL_DM_CP_UTF16
+#define SQL_DD_CP_UTF8				SQL_DM_CP_UTF8
+#define SQL_DD_CP_UTF16				SQL_DD_CP_UCS2
+
 
 /*
  * IBM extensions for DB2
