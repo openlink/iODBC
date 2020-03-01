@@ -643,7 +643,7 @@ dm_strcpy_W2A (SQLCHAR * destStr, SQLWCHAR * sourStr)
     {                                           \
       Len = 3;                                  \
     }                                           \
-  else if (Char < 0x200000)                     \
+  else if (Char < 0x110000)                     \
     {                                           \
       Len = 4;                                  \
     }                                           \
@@ -668,7 +668,7 @@ dm_strcpy_W2A (SQLCHAR * destStr, SQLWCHAR * sourStr)
       Len = 3;                                  \
       First = 0xE0;                             \
     }                                           \
-  else if (Char < 0x200000)                     \
+  else if (Char < 0x110000)                     \
     {                                           \
       Len = 4;                                  \
       First = 0xf0;                             \
@@ -1505,13 +1505,13 @@ dm_AtoU2(char *src, int ilen, ucs2_t *dest, int olen)
   char *rc;
   char *us = (char*) dest;
   char *us_end = (char*)(dest + olen);
+  mbstate_t st;
+
+  memset (&st, 0, sizeof (st));
 
   while (n < ilen && us < us_end)
     {
-      mbstate_t st;
-      size_t sz;
-      memset (&st, 0, sizeof (st));
-      sz = mbrtowc (&wc, src, ilen - n, &st);
+      size_t sz = mbrtowc (&wc, src, ilen - n, &st);
 
       if (((long) sz) > 0)
         {
@@ -1544,13 +1544,13 @@ dm_AtoU4(char *src, int ilen, ucs4_t *dest, size_t olen)
   wchar_t wc;
   ucs4_t *us = dest;
   int count = 0;
+  mbstate_t st;
+  
+  memset (&st, 0, sizeof (st));
 
   while (n < ilen && count < olen)
     {
-      mbstate_t st;
-      size_t sz;
-      memset (&st, 0, sizeof (st));
-      sz = mbrtowc (&wc, src, ilen - n, &st);
+      size_t sz = mbrtowc (&wc, src, ilen - n, &st);
 
       if (((long) sz) > 0)
         {
@@ -1577,13 +1577,13 @@ dm_AtoUW(char *src, int ilen, wchar_t *dest, size_t olen)
   wchar_t wc;
   ucs4_t *us = dest;
   int count = 0;
+  mbstate_t st;
+  
+  memset (&st, 0, sizeof (st));
 
   while (n < ilen && count < olen)
     {
-      mbstate_t st;
-      size_t sz;
-      memset (&st, 0, sizeof (st));
-      sz = mbrtowc (&wc, src, ilen - n, &st);
+      size_t sz = mbrtowc (&wc, src, ilen - n, &st);
 
       if (((long) sz) > 0)
         {
@@ -1610,14 +1610,16 @@ dm_U2toA(ucs2_t *src, int ilen, char *dest, int olen)
   char *us = (char *) src;
   char *us_end = (char*)(src + ilen);
   wchar_t wc;
+  mbstate_t st;
 
   if (!*src)
     return 0;
 
+  memset (&st, 0, sizeof (st));
+  
   while (n < olen)
     {
       char temp[MB_CUR_MAX];
-      mbstate_t st;
       size_t sz, sz_written = 0;
 #ifdef WORDS_BIGENDIAN
       wc = eh_decode_char__UTF16BE((__constcharptr *) &us, us_end);
@@ -1627,7 +1629,6 @@ dm_U2toA(ucs2_t *src, int ilen, char *dest, int olen)
       if (wc == UNICHAR_EOD || wc == UNICHAR_NO_DATA || wc == UNICHAR_BAD_ENCODING)
         break;
 
-      memset (&st, 0, sizeof (st));
       sz = wcrtomb (temp, wc, &st);
       if (((long) sz) > 0)
 	{
@@ -1652,19 +1653,19 @@ dm_U4toA(ucs4_t *src, int ilen, char *dest, int olen)
   int n = 0;
   wchar_t wc;
   int count = 0;
+  mbstate_t st;
 
   if (!*src)
     return 0;
 
+  memset (&st, 0, sizeof (st));
+
   while (n < ilen && count < olen)
     {
       char temp[MB_CUR_MAX];
-      mbstate_t st;
       size_t sz, sz_written = 0;
 
       wc = *src;
-
-      memset (&st, 0, sizeof (st));
       sz = wcrtomb (temp, wc, &st);
 
       if (((long) sz) > 0)
@@ -1693,19 +1694,19 @@ dm_UWtoA(wchar_t *src, int ilen, char *dest, int olen)
   int n = 0;
   wchar_t wc;
   int count = 0;
+  mbstate_t st;
 
   if (!*src)
     return 0;
 
+  memset (&st, 0, sizeof (st));
+
   while (n < ilen && count < olen)
     {
       char temp[MB_CUR_MAX];
-      mbstate_t st;
       size_t sz, sz_written = 0;
 
       wc = *src;
-
-      memset (&st, 0, sizeof (st));
       sz = wcrtomb (temp, wc, &st);
 
       if (((long) sz) > 0)
@@ -1746,6 +1747,7 @@ dm_conv_W2W(void *inStr, int len, void *outStr, int size,
     {
       if (len == SQL_NTS)
         len = strlen((char*)inStr);
+
       count = _utf8ntowcx(ocharset, (char*)inStr, outStr, len, size, NULL);
       return count * o_wchar_size;
     }
@@ -1753,6 +1755,7 @@ dm_conv_W2W(void *inStr, int len, void *outStr, int size,
     {
       if (len == SQL_NTS)
         len = (icharset==CP_UTF8)?strlen((char*)inStr):_WCSLEN(icharset, inStr);
+
       return _wcxntoutf8(icharset, inStr, (char*)outStr, len, size, NULL);
     }
   else
@@ -1837,11 +1840,14 @@ dm_conv_W2A(void *inStr, int inLen, char *outStr, int size,
           mbstate_t st;
           size_t rc;
 
+          memset (&st, 0, sizeof (st));
+          
           while((c = *u8) && size > 0 && inLen > 0)
             {
               UTF8_COMPUTE (c, mask, len);
               if (len == -1)
                 return count;
+
               wc = c & mask;
               for(i = 1; i < len; i++)
                 {
@@ -1853,7 +1859,6 @@ dm_conv_W2A(void *inStr, int inLen, char *outStr, int size,
 #ifdef WIN32
               OPL_W2A(&wc, outStr, 1);
 #else
-              memset (&st, 0, sizeof (st));
               rc = wcrtomb (temp, wc, &st);
               if (((ssize_t)rc) > 0)
                 {
@@ -1916,14 +1921,16 @@ dm_conv_A2W(char *inStr, int inLen, void *outStr, int size,
         {
           SQLCHAR *u8 = (SQLCHAR*)outStr;
           int len,first,i;
+          mbstate_t st;
+
+          memset (&st, 0, sizeof (st));
+          
           while(*inStr && size>0 && inLen > 0)
             {
 #ifdef WIN32
               OPL_A2W(inStr, &wc, 1);
 #else
-              mbstate_t st;
               size_t rc;
-              memset (&st, 0, sizeof (st));
               rc = mbrtowc (&wc, inStr, (size_t)inLen, &st);
               if (((ssize_t)rc) > 0)
                 {
@@ -2083,7 +2090,7 @@ __W2A(IODBC_CHARSET charset, void * inStr, int size)
   if (len < 0)
     return NULL;
 
-  outStr = (SQLCHAR *) calloc(len + 1, sizeof(SQLCHAR));
+  outStr = (SQLCHAR *) calloc (len * MB_CUR_MAX + 1, 1);
   if (!outStr)
     return NULL;
 
@@ -2622,7 +2629,7 @@ conv_text_d2m(DM_CONV *conv, void *inStr, int size, CONV_DIRECT direct)
     return NULL;
 
   if (direct == CD_W2A)
-    outStr = calloc(len + 1, sizeof(char));
+    outStr = calloc (len * MB_CUR_MAX + 1, 1);
   else
     outStr = calloc(len + 1, DM_WCHARSIZE_ALLOC(conv));
 
@@ -2675,7 +2682,7 @@ conv_text_m2d(DM_CONV *conv, void *inStr, int size, CONV_DIRECT direct)
     return NULL;
 
   if (direct == CD_W2A)
-    outStr = calloc(len + 1, sizeof(char));
+    outStr = calloc (len * MB_CUR_MAX + 1, 1);
   else
     outStr = calloc(len + 1, DRV_WCHARSIZE_ALLOC(conv));
 
