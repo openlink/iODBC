@@ -260,8 +260,8 @@ AC_C_CONST
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_LIBTOOL
-dnl LT_INIT(dlopen)
+
+LT_INIT
 
 
 ##########################################################################
@@ -352,136 +352,73 @@ AM_CONDITIONAL(GTK, [test x$USE_GTK = xtrue])
 
 AC_CHECK_HEADERS(dlfcn.h dl.h dld.h)
 
+save_LIBS="$LIBS"
 LIBADD_DL=""
 
-AC_CHECK_LIB(dl, dlopen, 
-  [AC_DEFINE(HAVE_LIBDL, 1, [Define if you have the -ldl library]) 
-	LIBADD_DL="-ldl"],
-  [AC_CHECK_FUNCS(dlopen _dlopen, [
-	AC_DEFINE(HAVE_LIBDL, 1,[Define if you have the -ldl library])
-  ])]
-  )
+AC_CHECK_LIB(dl, dlopen,
+  [
+    AC_DEFINE(HAVE_LIBDL, 1, [Define if you have the -ldl library])
+    LIBADD_DL="-ldl"
+    LIBS="$LIBS -ldl"
+  ]
+)
 
-AC_CHECK_FUNC(shl_load, 
+AC_CHECK_FUNCS(dlopen _dlopen dlsym dladdr)
+
+AC_MSG_CHECKING([whether dlsym() requires a leading underscore in symbol names])
+_LT_TRY_DLOPEN_SELF([
+    AC_MSG_RESULT(no)
+], [
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(NEED_USCORE, 1, [Define if dlsym() requires a leading underscore in symbol names. ])
+], [
+  AC_MSG_RESULT(no)
+], [])
+
+##########################################################################
+##  Check if the dl library has the Dl_info structure                   ##
+##########################################################################
+AC_MSG_CHECKING([for Dl_info])
+AC_TRY_COMPILE([
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
+#include <dlfcn.h>
+  ],[
+Dl_info* info = 0;
+dladdr(0, info);
+  ],[
+    AC_DEFINE(HAVE_DL_INFO, 1, [Define to 1 if you have the Dl_info structure])
+    AC_MSG_RESULT(yes)
+  ],[
+    AC_MSG_RESULT(no)
+])
+
+##########################################################################
+##  Check for dynamic load module (hpux)				##
+##########################################################################
+AC_CHECK_FUNC(shl_load,
   [AC_DEFINE(HAVE_SHL_LOAD, 1, [Define if you have the shl_load function])],
-  [AC_CHECK_LIB(dld, shl_load, 
-    [AC_DEFINE(HAVE_SHL_LOAD, 1, [Define if you have the shl_load function]) LIBADD_DL="$LIBADD_DL -ldld"])]
+  [AC_CHECK_LIB(dld, shl_load,
+    [AC_DEFINE(HAVE_SHL_LOAD, 1, [Define if you have the shl_load function]) LIBADD_DL="-ldld"])]
   )
 
-AC_CHECK_LIB(dld, dld_link, 
+##########################################################################
+##  Check for dynamic load module (hpux)				##
+##########################################################################
+AC_CHECK_LIB(dld, dld_link,
    [AC_DEFINE(HAVE_DLD, 1, [Define if you have the -ldld library])dnl
-    test "x$ac_cv_lib_dld_shl_load" = yes || LIBADD_DL="$LIBADD_DL -ldld"])
+    test "x$ac_cv_lib_dld_shl_load" = yes || LIBADD_DL="-ldld"])
 
+##########################################################################
+##  Check for dynamic load module (macos)				##
+##########################################################################
 AC_CHECK_FUNC(NSCreateObjectFileImageFromFile,
     [AC_DEFINE(HAVE_DYLD, 1, [Define if you have the DYLD library])])
 
 AC_SUBST(LIBADD_DL)
 
-AC_CACHE_CHECK([for underscore before symbols], libltdl_cv_uscore, [
-  echo "int fnord(void){return 42;}int main(void){return fnord();}" > conftest.c
-  ${CC} ${CFLAGS} -c conftest.c > /dev/null 2>&1
-  if (nm conftest.o | grep _fnord) > /dev/null; then
-    libltdl_cv_uscore=yes
-  else
-    libltdl_cv_uscore=no
-  fi
-  rm -f conftest*
-])
-
-if test x"$libltdl_cv_uscore" = xyes; then
-  if test x"$ac_cv_func_dlopen" = xyes ||
-     test x"$ac_cv_lib_dl_dlopen" = xyes ; then
-	AC_CACHE_CHECK([whether we have to add an underscore for dlsym],
-		libltdl_cv_need_uscore, [dnl
-		AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#if HAVE_DLFCN_H
-#include <dlfcn.h>
-#endif
-
-#include <stdio.h>
-
-#ifdef RTLD_GLOBAL
-# define LTDL_GLOBAL	RTLD_GLOBAL
-#else
-# ifdef DL_GLOBAL
-#  define LTDL_GLOBAL	DL_GLOBAL
-# else
-#  define LTDL_GLOBAL	0
-# endif
-#endif
-
-/* We may have to define LTDL_LAZY_OR_NOW in the command line if we
-   find out it does not work in some platform. */
-#ifndef LTDL_LAZY_OR_NOW
-# ifdef RTLD_LAZY
-#  define LTDL_LAZY_OR_NOW	RTLD_LAZY
-# else
-#  ifdef DL_LAZY
-#   define LTDL_LAZY_OR_NOW	DL_LAZY
-#  else
-#   ifdef RTLD_NOW
-#    define LTDL_LAZY_OR_NOW	RTLD_NOW
-#   else
-#    ifdef DL_NOW
-#     define LTDL_LAZY_OR_NOW	DL_NOW
-#    else
-#     define LTDL_LAZY_OR_NOW	0
-#    endif
-#   endif
-#  endif
-# endif
-#endif
-
-void
-fnord ()
-{
-  int i = 42;
-}
-
-int
-main ()
-{
-  void *self, *ptr1, *ptr2;
-  self = dlopen (0, LTDL_GLOBAL | LTDL_LAZY_OR_NOW);
-  if (self)
-    {
-      ptr1 = dlsym (self, "fnord");
-      ptr2 = dlsym (self, "_fnord");
-      if (ptr1 && !ptr2)
-	{
-	  dlclose (self);
-	  exit (0);
-	}
-    }
-  exit (1);
-}
-]])],	libltdl_cv_need_uscore=no, libltdl_cv_need_uscore=yes,
-	libltdl_cv_need_uscore=no
-)])
-  fi
-fi
-
-if test x"$libltdl_cv_need_uscore" = xyes; then
-   AC_DEFINE(NEED_USCORE, 1,
-	[Define if dlsym() requires a leading underscore in symbol names. ])
-fi
-
-
-##########################################################################
-##                                                                      ##
-##  Check if the dl library has the dladdr function                     ##
-##                                                                      ##
-##########################################################################
-AC_CHECK_FUNC(dladdr, AC_DEFINE(HAVE_DLADDR, 1, [Define to 1 if you have the `dladdr' function.]),
-[AC_CHECK_LIB(dl, dladdr, [AC_DEFINE(HAVE_DLADDR, 1, [Define to 1 if you have the `dladdr' function]) LIBADD_DL="-ldl"],[])]
-)
- 
-AC_CHECK_TYPE([Dl_info],
-  [AC_DEFINE(HAVE_DL_INFO, 1, [Define to 1 if you have the Dl_info structure])],
-  [],
-  [#include <dlfcn.h>]
-)
-
+LIBS="$save_LIBS"
 
 ##########################################################################
 ##									##
