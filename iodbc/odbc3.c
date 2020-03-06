@@ -3575,7 +3575,6 @@ SQLFetchScroll_Internal (
 	{
 	case en_stmt_allocated:
 	case en_stmt_prepared:
-	case en_stmt_fetched:
 	case en_stmt_needdata:
 	case en_stmt_mustput:
 	case en_stmt_canput:
@@ -3654,6 +3653,7 @@ SQLFetchScroll_Internal (
   switch (stmt->state)
     {
     case en_stmt_cursoropen:
+    case en_stmt_fetched:
     case en_stmt_xfetched:
       switch (retcode)
 	{

@@ -106,7 +106,6 @@ SQLFetch_Internal (SQLHSTMT hstmt)
 	{
 	case en_stmt_allocated:
 	case en_stmt_prepared:
-	case en_stmt_xfetched:
 	case en_stmt_needdata:
 	case en_stmt_mustput:
 	case en_stmt_canput:
@@ -184,18 +183,30 @@ SQLFetch_Internal (SQLHSTMT hstmt)
     {
     case en_stmt_cursoropen:
     case en_stmt_fetched:
+    case en_stmt_xfetched:
       switch (retcode)
 	{
 	case SQL_SUCCESS:
 	case SQL_SUCCESS_WITH_INFO:
-	  pstmt->state = en_stmt_fetched;
-	  pstmt->cursor_state = en_stmt_cursor_fetched;
+	  if (pstmt->state == en_stmt_xfetched)
+	    {
+	      pstmt->state = en_stmt_xfetched;
+	      pstmt->cursor_state = en_stmt_cursor_xfetched;
+	    }
+	  else
+	    {
+	      pstmt->state = en_stmt_fetched;
+	      pstmt->cursor_state = en_stmt_cursor_fetched;
+	    }
 	  break;
 
 	case SQL_NO_DATA_FOUND:
 	  if (pstmt->prep_state)
 	    {
-	      pstmt->state = en_stmt_fetched;
+	      if (pstmt->state == en_stmt_xfetched)
+	        pstmt->state = en_stmt_xfetched;
+	      else
+	        pstmt->state = en_stmt_fetched;
 	    }
 	  else
 	    {
