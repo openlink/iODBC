@@ -1493,6 +1493,10 @@ dm_AtoU2(char *src, int ilen, ucs2_t *dest, int olen)
           n += sz - 1;
           src += sz - 1;
         }
+      else if (((long) sz) < 0)
+        {
+          wc = 0xFFFD;
+        }
 
 #ifdef WORDS_BIGENDIAN
       rc = eh_encode_char__UTF16BE (wc, us, us_end);
@@ -1532,6 +1536,10 @@ dm_AtoU4(char *src, int ilen, ucs4_t *dest, size_t olen)
           n += sz - 1;
           src += sz - 1;
         }
+      else if (((long) sz) < 0)
+        {
+          wc = 0xFFFD;
+        }
 
       *us = wc;
       n++;
@@ -1564,6 +1572,10 @@ dm_AtoUW(char *src, int ilen, wchar_t *dest, size_t olen)
         {
           n += sz - 1;
           src += sz - 1;
+        }
+      else if (((long) sz) < 0)
+        {
+          wc = 0xFFFD;
         }
 
       *us = wc;
@@ -1914,8 +1926,10 @@ dm_conv_A2W(char *inStr, int inLen, void *outStr, int size,
                   inLen -= rc - 1;
                   inStr += rc - 1;
                 }
-              else
-                wc = L'?';
+              else if (((ssize_t)rc) < 0)
+                {
+                  wc = 0xFFFD;
+                }
 
               CONV_TO_UTF8(wc, len, first);
               for(i = len-1; i > 0; --i)
