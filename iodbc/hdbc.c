@@ -883,7 +883,7 @@ _iodbcdm_GetConnectOption (
         case SQL_CURRENT_QUALIFIER:
         case SQL_TRANSLATE_DLL:
 
-          if (conv_direct == CD_NONE)
+          if (conv_direct != CD_NONE)
             {
               if ((_Param = malloc(SQL_MAX_OPTION_STRING_LENGTH * WCHAR_MAXSIZE)) == NULL)
 	        {

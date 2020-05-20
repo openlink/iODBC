@@ -3606,7 +3606,7 @@ SQLBrowseConnect_Internal (SQLHDBC hdbc,
       return SQL_ERROR;
     }
 
-  if (szConnStrOut && SQL_SUCCEEDED (retcode) && conv_direct == CD_NONE)
+  if (szConnStrOut && SQL_SUCCEEDED (retcode) && conv_direct != CD_NONE)
     {
       if (conv_direct == CD_A2W)
         {
