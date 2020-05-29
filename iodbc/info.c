@@ -1216,15 +1216,6 @@ static int FunctionNumbers[] =
 #undef FUNCDEF
 };
 
-#if (ODBCVER >= 0x0300)
-
-#define SQL_ODBC3_SET_FUNC_ON(pfExists, uwAPI) \
-	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) |= (1 << ((uwAPI) & 0x000F))
-
-#define SQL_ODBC3_SET_FUNC_OFF(pfExists, uwAPI) \
-	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) &= !(1 << ((uwAPI) & 0x000F))
-
-#endif
 
 
 static SQLRETURN 
