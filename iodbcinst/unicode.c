@@ -2276,11 +2276,7 @@ __WtoU8(IODBC_CHARSET charset, void *inStr, int size)
   if (size == SQL_NTS)
     _wcxtoutf8 (charset, inStr, (char *)outStr, len);
   else
-    {
-      if (charset != CP_UTF8)
-        size /= _WCHARSIZE(charset);
-      _wcxntoutf8 (charset, inStr, (char *)outStr, size, len, NULL);
-    }
+    _wcxntoutf8 (charset, inStr, (char *)outStr, size, len, NULL);
 
   return outStr;
 }
