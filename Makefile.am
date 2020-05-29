@@ -159,7 +159,6 @@ EXTRA_DIST		= \
 	$(srcdir)/mac/iODBCtest/iODBCtest.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCtestw/iODBCtestw.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/link-inclibs.sh \
-	$(srcdir)/mac/README.MYODBC \
 	$(srcdir)/debian/changelog \
 	$(srcdir)/debian/compat \
 	$(srcdir)/debian/control \
