@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -972,7 +972,7 @@ SQLGetInfo_Internal (
           else if (conv_direct == CD_W2A)
             {
               /* unicode<=ansi*/
-              if ((_InfoValue = malloc(_cbInfoValueMax + 1)) == NULL)
+              if ((_InfoValue = malloc(_cbInfoValueMax * MB_CUR_MAX + 1)) == NULL)
 	        {
                   PUSHSQLERR (pdbc->herr, en_HY001);
                   return SQL_ERROR;
@@ -1216,15 +1216,6 @@ static int FunctionNumbers[] =
 #undef FUNCDEF
 };
 
-#if (ODBCVER >= 0x0300)
-
-#define SQL_ODBC3_SET_FUNC_ON(pfExists, uwAPI) \
-	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) |= (1 << ((uwAPI) & 0x000F))
-
-#define SQL_ODBC3_SET_FUNC_OFF(pfExists, uwAPI) \
-	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) &= !(1 << ((uwAPI) & 0x000F))
-
-#endif
 
 
 static SQLRETURN 

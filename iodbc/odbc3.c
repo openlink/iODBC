@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -2046,7 +2046,7 @@ SQLGetConnectAttr_Internal (
           else if (conv_direct == CD_W2A)
             {
               /*unicode<=ansi*/
-              if ((_Value = malloc(StringLength + 1)) == NULL)
+              if ((_Value = malloc(StringLength * MB_CUR_MAX + 1)) == NULL)
 	        {
                   PUSHSQLERR (con->herr, en_HY001);
                   return SQL_ERROR;
@@ -2277,7 +2277,7 @@ SQLGetDescField_Internal (
           else if (conv_direct == CD_W2A)
             {
               /*unicode<=ansi*/
-              if ((_ValuePtr = malloc(_BufferLength + 1)) == NULL)
+              if ((_ValuePtr = malloc(_BufferLength * MB_CUR_MAX + 1)) == NULL)
 	        {
                   PUSHSQLERR (desc->herr, en_HY001);
                   return SQL_ERROR;
@@ -2626,7 +2626,7 @@ SQLGetDescRec_Internal (
   else if (conv_direct == CD_W2A)
     {
       /* unicode<=ansi*/
-      if ((_Name = malloc(BufferLength + 1)) == NULL)
+      if ((_Name = malloc(BufferLength * MB_CUR_MAX + 1)) == NULL)
         {
           PUSHSQLERR (desc->herr, en_HY001);
           return SQL_ERROR;
@@ -3012,7 +3012,7 @@ SQLColAttribute_Internal (
           else if (conv_direct == CD_W2A)
             {
               /*unicode<=ansi*/
-              if ((_charAttr = malloc(BufferLength + 1)) == NULL)
+              if ((_charAttr = malloc(BufferLength * MB_CUR_MAX + 1)) == NULL)
                 {
                   PUSHSQLERR (stmt->herr, en_HY001);
                   return SQL_ERROR;
@@ -3575,7 +3575,6 @@ SQLFetchScroll_Internal (
 	{
 	case en_stmt_allocated:
 	case en_stmt_prepared:
-	case en_stmt_fetched:
 	case en_stmt_needdata:
 	case en_stmt_mustput:
 	case en_stmt_canput:
@@ -3654,6 +3653,7 @@ SQLFetchScroll_Internal (
   switch (stmt->state)
     {
     case en_stmt_cursoropen:
+    case en_stmt_fetched:
     case en_stmt_xfetched:
       switch (retcode)
 	{

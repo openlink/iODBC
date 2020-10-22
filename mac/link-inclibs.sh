@@ -4,7 +4,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -97,20 +97,20 @@ mkdir -p "$PREFIX/include"
 
 
 #
-#  Create symlinks for all header files
+#  Copy header files
 #
-ln -s "$ODBC_FW/Headers/iodbcext.h"	"$PREFIX/include/iodbcext.h"
-ln -s "$ODBC_FW/Headers/iodbcunix.h"	"$PREFIX/include/iodbcunix.h"
-ln -s "$ODBC_FW/Headers/isql.h"		"$PREFIX/include/isql.h"
-ln -s "$ODBC_FW/Headers/isqlext.h"	"$PREFIX/include/isqlext.h"
-ln -s "$ODBC_FW/Headers/isqltypes.h"	"$PREFIX/include/isqltypes.h"
-ln -s "$ODBC_FW/Headers/sql.h"		"$PREFIX/include/sql.h"
-ln -s "$ODBC_FW/Headers/sqlext.h"	"$PREFIX/include/sqlext.h"
-ln -s "$ODBC_FW/Headers/sqltypes.h"	"$PREFIX/include/sqltypes.h"
-ln -s "$ODBC_FW/Headers/sqlucode.h"	"$PREFIX/include/sqlucode.h"
+cp -f "../include/iodbcext.h"	"$PREFIX/include/iodbcext.h"
+cp -f "../include/iodbcunix.h"	"$PREFIX/include/iodbcunix.h"
+cp -f "../include/isql.h"	"$PREFIX/include/isql.h"
+cp -f "../include/isqlext.h"	"$PREFIX/include/isqlext.h"
+cp -f "../include/isqltypes.h"	"$PREFIX/include/isqltypes.h"
+cp -f "../include/sql.h"	"$PREFIX/include/sql.h"
+cp -f "../include/sqlext.h"	"$PREFIX/include/sqlext.h"
+cp -f "../include/sqltypes.h"	"$PREFIX/include/sqltypes.h"
+cp -f "../include/sqlucode.h"	"$PREFIX/include/sqlucode.h"
 
-ln -s "$INST_FW/Headers/iodbcinst.h"	"$PREFIX/include/iodbcinst.h"
-ln -s "$INST_FW/Headers/odbcinst.h"	"$PREFIX/include/odbcinst.h"
+cp -f "../include/iodbcinst.h"	"$PREFIX/include/iodbcinst.h"
+cp -f "../include/odbcinst.h"	"$PREFIX/include/odbcinst.h"
 
 
 #

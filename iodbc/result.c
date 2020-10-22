@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -313,7 +313,7 @@ SQLGetCursorName_Internal (
   else if (conv_direct == CD_W2A)
     {
       /* unicode<=ansi*/
-      if ((_Cursor = malloc(cbCursorMax + 1)) == NULL)
+      if ((_Cursor = malloc(cbCursorMax * MB_CUR_MAX + 1)) == NULL)
 	{
           PUSHSQLERR (pstmt->herr, en_HY001);
           return SQL_ERROR;
@@ -716,7 +716,7 @@ SQLDescribeCol_Internal (
   else if (conv_direct == CD_W2A)
     {
       /*unicode<=ansi*/
-      if ((_ColName = _iodbcdm_alloc_var(pstmt, 0, cbColNameMax)) == NULL)
+      if ((_ColName = _iodbcdm_alloc_var(pstmt, 0, cbColNameMax * MB_CUR_MAX + 1)) == NULL)
 	{
           PUSHSQLERR (pstmt->herr, en_HY001);
           return SQL_ERROR;
@@ -1054,7 +1054,7 @@ SQLColAttributes_Internal (
           else if (conv_direct == CD_W2A)
             {
              /*unicode<=ansi*/
-              if ((_Desc = _iodbcdm_alloc_var(pstmt, 0, _cbDescMax + 1)) == NULL)
+              if ((_Desc = _iodbcdm_alloc_var(pstmt, 0, _cbDescMax * MB_CUR_MAX + 1)) == NULL)
 	        {
                   PUSHSQLERR (pstmt->herr, en_HY001);
                   return SQL_ERROR;

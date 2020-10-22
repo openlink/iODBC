@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -1692,6 +1692,7 @@ SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
   STMT (pstmt, hstmt);
   HPROC hproc;
   SQLRETURN retcode;
+  int i;
 
   /* check argument */
 
@@ -1803,24 +1804,26 @@ SQLParamData_Internal (SQLHSTMT hstmt, SQLPOINTER * prgbValue)
       break;
 
     case SQL_NEED_DATA:
-      pstmt->state = en_stmt_mustput;
-      pstmt->st_need_param = NULL;
+      {
+	PPARM pparm = pstmt->st_pparam;
+	pstmt->state = en_stmt_mustput;
+	pstmt->st_need_param = NULL;
 
-      PPARM pparm = pstmt->st_pparam;
-      for (int i = 0; i < pstmt->st_nparam; i++, pparm++)
-        {
-          if (pparm->pm_data == NULL)
-            continue;
+	for (i = 0; i < pstmt->st_nparam; i++, pparm++)
+	  {
+	    if (pparm->pm_data == NULL)
+	      continue;
 
-          if ((pparm->pm_c_type_orig == SQL_C_WCHAR
-               || pparm->pm_c_type_orig == SQL_C_CHAR
-               || pparm->pm_c_type_orig == SQL_C_BINARY)
-              && prgbValue != NULL && pparm->pm_data == *prgbValue)
-            {
-              pstmt->st_need_param = pparm;
-              break;
-            }
-        }
+	    if ((pparm->pm_c_type_orig == SQL_C_WCHAR
+		    || pparm->pm_c_type_orig == SQL_C_CHAR
+		    || pparm->pm_c_type_orig == SQL_C_BINARY)
+		&& prgbValue != NULL && pparm->pm_data == *prgbValue)
+	      {
+		pstmt->st_need_param = pparm;
+		break;
+	      }
+	  }
+      }
       break;
 
     default:

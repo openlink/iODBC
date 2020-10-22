@@ -1,6 +1,6 @@
 # How to build iODBC for Mac OS X
 
-    Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+    Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
 
 ## Method 1: Using Project builder
 You first need to install the latest Mac OS X Developer Packages, which can be found at:

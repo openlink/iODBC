@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -467,16 +467,9 @@ trace_stop(void)
 	fclose (trace_fp);
     }
 
-  MEM_FREE (trace_appname);
-  MEM_FREE (trace_fname);
-  MEM_FREE (trace_fname_template);
-
   ODBCSharedTraceFlag = SQL_OPT_TRACE_OFF;
   trace_fp = NULL;
   trace_fp_close = 0;
-  trace_appname = NULL;
-  trace_fname = NULL;
-  trace_fname_template = NULL;
 }
 
 

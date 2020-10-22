@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -149,7 +149,12 @@ CONV_DIRECT;
 /*
  *  Max length of a UTF-8 encoded character sequence
  */
-#define UTF8_MAX_CHAR_LEN 4
+#define UTF8_MAX_CHAR_LEN	4	/* According to RFC3629 */
+
+#ifndef MB_CUR_MAX
+#define MB_CUR_MAX		UTF8_MAX_CHAR_LEN
+#endif
+
 
 /*
  *  Function Prototypes

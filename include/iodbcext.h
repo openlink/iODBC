@@ -8,7 +8,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -228,6 +228,12 @@
 #else
 # define SQL_DM_CP_DEF  SQL_DM_CP_UCS4
 #endif
+
+/* DataDirect options for Connection/Env Attributes. */
+#define SQL_DD_CP_ANSI				0 
+#define SQL_DD_CP_UCS2				SQL_DM_CP_UTF16
+#define SQL_DD_CP_UTF8				SQL_DM_CP_UTF8
+#define SQL_DD_CP_UTF16				SQL_DD_CP_UCS2
 
 
 /*

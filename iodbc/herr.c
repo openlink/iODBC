@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -397,7 +397,7 @@ _iodbcdm_sqlerror (
       else if (conv_direct == CD_W2A)
         {
           /* unicode<=ansi*/
-          if ((_ErrorMsg = malloc(cbErrorMsgMax + 1)) == NULL)
+          if ((_ErrorMsg = malloc(cbErrorMsgMax * MB_CUR_MAX + 1)) == NULL)
             return SQL_ERROR;
           errorMsgOut = _ErrorMsg;
           SqlstateOut = _sqlState;
@@ -1097,7 +1097,7 @@ SQLGetDiagRec_Internal (
       else if (conv_direct == CD_W2A)
         {
           /* unicode<=ansi*/
-          if ((_MessageText = malloc(BufferLength + 1)) == NULL)
+          if ((_MessageText = malloc(BufferLength * MB_CUR_MAX + 1)) == NULL)
             {
               return SQL_ERROR;
             }
@@ -1927,7 +1927,7 @@ SQLGetDiagField_Internal (
                   {
                   /*unicode<=ansi*/
                     _nBufferLength /= DM_WCHARSIZE(conv);
-                    if ((_DiagInfoPtr = malloc(_nBufferLength + 1)) == NULL)
+                    if ((_DiagInfoPtr = malloc(_nBufferLength * MB_CUR_MAX + 1)) == NULL)
                       {
                         return SQL_ERROR;
                       }

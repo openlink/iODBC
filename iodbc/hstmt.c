@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2020 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -1286,7 +1286,7 @@ _iodbcdm_conv_var(STMT_t *pstmt, int i, void *pData, int pDataLength,
     size = pDataLength;
 
   if (direct == CD_W2A )
-    count_alloc = size + 1;
+    count_alloc = size * MB_CUR_MAX + 1;
   else
     count_alloc = (size + 1) * DRV_WCHARSIZE_ALLOC(conv);
 
