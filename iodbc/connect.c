@@ -1062,6 +1062,7 @@ _iodbcdm_driverload (
   int cp_timeout = 0;
   void *pfaux;
   int driver_unicode_cp = -1;
+  SQLINTEGER wchar_id;
 
   if (drv == NULL || ((char*)drv)[0] == '\0')
     {
@@ -1591,27 +1592,45 @@ _iodbcdm_driverload (
         }
     }
 
-    if (driver_unicode_cp != -1)
-    {
-      SQLINTEGER wchar_id = driver_unicode_cp;
 
-      retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_TYPE,
-	wchar_id);
+    wchar_id = penv->conv.dm_cp;
+    
+    retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_TYPE, wchar_id);
 
-      DPRINTF ((stderr, "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) retcode=%d\n", wchar_id, retcode));
-      if (retcode == SQL_SUCCESS)
-        {
-	  penv->conv.drv_cp = wchar_id;
-	  pdbc->conv.drv_cp = wchar_id;
+    DPRINTF ((stderr, "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) retcode=%d\n", wchar_id, retcode));
+    
+    if (retcode == SQL_SUCCESS)
+      {
+        penv->conv.drv_cp = wchar_id;
+        pdbc->conv.drv_cp = wchar_id;
 
-          DPRINTF ((stderr,
+        DPRINTF ((stderr,
             "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) %s\n",
                penv->conv.drv_cp,
                penv->conv.drv_cp==CP_UCS4
                           ?"UCS4"
                           :(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
-        }
-    }
+      }
+    else if (driver_unicode_cp != -1)
+      {
+        wchar_id = driver_unicode_cp;
+        
+        retcode = _iodbcdm_SetConnectAttr_init (hdbc, SQL_ATTR_APP_WCHAR_TYPE, wchar_id);
+
+        DPRINTF ((stderr, "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) retcode=%d\n", wchar_id, retcode));
+        if (retcode == SQL_SUCCESS)
+          {
+            penv->conv.drv_cp = wchar_id;
+            pdbc->conv.drv_cp = wchar_id;
+
+            DPRINTF ((stderr,
+                "DEBUG: _iodbcdm_driverload(set ODBC Driver WCHAR_TYPE=%d) %s\n",
+                   penv->conv.drv_cp,
+                   penv->conv.drv_cp==CP_UCS4
+                          ?"UCS4"
+                          :(penv->conv.drv_cp==CP_UTF16?"UTF16":"UTF8")));
+          }
+      }
 
   pdbc->cp_timeout = cp_timeout;
   MEM_FREE (pdbc->cp_probe);
