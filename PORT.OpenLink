@@ -286,7 +286,7 @@ case $OS in
        ;;
 
     x86_64-*-linux-gnu)
-       CONFLAGS="--enable-gui --enable-maintainer-mode"
+       CONFLAGS="--enable-gui --enable-maintainer-mode --with-pic"
 
        CFLAGS="-O3 -m32"
        export CFLAGS CONFLAGS
