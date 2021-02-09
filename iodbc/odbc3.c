@@ -639,8 +639,8 @@ SQLSetEnvAttr_Internal (SQLHENV environmentHandle,
       DPRINTF ((stderr,
       "DEBUG: SQLSetEnvAttr DiverManager AppUnicodeType=%s\n",
         genv->conv.dm_cp==CP_UCS4?"UCS4":(genv->conv.dm_cp==CP_UTF16?"UTF16":"UTF8")));
-
-      break;
+      
+      return SQL_SUCCESS;
 
     default:
       PUSHSQLERR (genv->herr, en_HY092);
