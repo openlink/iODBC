@@ -82,7 +82,7 @@ AC_REVISION($Id$)
 m4_define(V_iodbc_major,       [3])            # ODBC Major version
 m4_define(V_iodbc_minor,       [52])           # ODBC Minor version
 m4_define(V_iodbc_patch,       [14])           # Increase every release
-m4_define(V_iodbc_devel,       [-rc3])         # -dev, -rc1 or empty for stable
+m4_define(V_iodbc_devel,       [-rc4])         # -dev, -rc1 or empty for stable
 
 m4_define(V_iodbc_date,        [200520])       # YYMMDD of release
 m4_define(V_iodbc_shlib,       [28])           # Increase every change
