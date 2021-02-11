@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -558,6 +558,11 @@ error:
             return;
         }
     
+# ifdef UNICODE
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+        (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+#endif
+
 #if (ODBCVER < 0x300)
     if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
 #else

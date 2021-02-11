@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -198,6 +198,11 @@ ODBC_Connect (char *connStr)
   if (SQLAllocEnv (&henv) != SQL_SUCCESS)
     return -1;
 
+# ifdef UNICODE
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+      (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+#endif
+
   if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
     return -1;
 #else
@@ -206,6 +211,11 @@ ODBC_Connect (char *connStr)
 
   SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
       SQL_IS_UINTEGER);
+
+# ifdef UNICODE
+  SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+      (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+#endif
 
   if (SQLAllocHandle (SQL_HANDLE_DBC, henv, &hdbc) != SQL_SUCCESS)
     return -1;
@@ -673,8 +683,8 @@ ODBC_Test ()
   SQLTCHAR request[4096];
   SQLTCHAR fetchBuffer[1024];
   char buf[4096];
-  size_t displayWidths[MAXCOLS];
-  size_t displayWidth;
+  int displayWidths[MAXCOLS];
+  int displayWidth;
   short numCols;
   short colNum;
   SQLTCHAR colName[50];
@@ -778,7 +788,6 @@ ODBC_Test ()
       else if (!TXTCMP (request, TEXT ("environment")))
 	{
 	  extern char **environ;
-	  int i;
 
 	  for (i = 0; environ[i]; i++)
 	    fprintf (stderr, "%03d: [%s]\n", i, environ[i]);
@@ -968,9 +977,9 @@ ODBC_Test ()
 	  while (1)
 	    {
 #if (ODBCVER < 0x0300)
-	      int sts = SQLFetch (hstmt);
+	      sts = SQLFetch (hstmt);
 #else
-	      int sts = SQLFetchScroll (hstmt, SQL_FETCH_NEXT, 1);
+	      sts = SQLFetchScroll (hstmt, SQL_FETCH_NEXT, 1);
 #endif
 
 	      if (sts == SQL_NO_DATA_FOUND)

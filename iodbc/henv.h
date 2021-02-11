@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -120,9 +120,10 @@ typedef struct
 				      time of env creation */
     SQLINTEGER cp_match;	/* connection pool matching method */
     struct DBC *pdbc_pool;	/* connection pool */
-#endif    
+#endif
 
     SQLSMALLINT err_rec;
+    DM_CONV conv;
   }
 GENV_t;
 
@@ -141,7 +142,8 @@ typedef struct
 
 #if (ODBCVER >= 0x300)
     SQLUINTEGER dodbc_ver;	/* driver's ODBC version */
-#endif    
+#endif
+    DM_CONV conv;
   }
 ENV_t;
 

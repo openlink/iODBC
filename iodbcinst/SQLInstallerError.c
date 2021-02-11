@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -174,7 +174,7 @@ SQLInstallerErrorW (WORD iError, DWORD * pfErrorCode, LPWSTR lpszErrorMsg,
 
   if (retcode != SQL_ERROR)
     {
-      dm_StrCopyOut2_U8toW (_errormsg_u8, lpszErrorMsg, cbErrorMsgMax,
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_errormsg_u8, lpszErrorMsg, cbErrorMsgMax,
 	  pcbErrorMsg);
     }
 

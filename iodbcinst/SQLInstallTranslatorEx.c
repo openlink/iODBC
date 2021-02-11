@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -223,7 +223,7 @@ SQLInstallTranslatorExW (LPCWSTR lpszTranslator, LPCWSTR lpszPathIn,
 	{
 	  for (ptr = (SQLWCHAR *) lpszTranslator, ptr_u8 = _translator_u8;
 	      *ptr; ptr += WCSLEN (ptr) + 1, ptr_u8 += STRLEN (ptr_u8) + 1)
-	    dm_StrCopyOut2_W2A (ptr, ptr_u8, WCSLEN (ptr) * UTF8_MAX_CHAR_LEN,
+	    dm_StrCopyOut2_W2A (ptr, (SQLCHAR *)ptr_u8, WCSLEN (ptr) * UTF8_MAX_CHAR_LEN,
 		NULL);
 	  *ptr_u8 = '\0';
 	}
@@ -261,7 +261,7 @@ SQLInstallTranslatorExW (LPCWSTR lpszTranslator, LPCWSTR lpszPathIn,
 
   if (retcode == TRUE)
     {
-      dm_StrCopyOut2_U8toW (_pathout_u8, lpszPathOut, cbPathOutMax,
+      dm_StrCopyOut2_U8toW ((SQLCHAR *)_pathout_u8, lpszPathOut, cbPathOutMax,
 	  pcbPathOut);
     }
 

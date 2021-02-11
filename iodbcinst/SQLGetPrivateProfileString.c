@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -82,6 +82,7 @@
 #include "misc.h"
 
 #ifndef WIN32
+
 int
 GetPrivateProfileString (LPCSTR lpszSection, LPCSTR lpszEntry,
     LPCSTR lpszDefault, LPSTR lpszRetBuffer, int cbRetBuffer,
@@ -259,6 +260,32 @@ quit:
   return len;
 }
 
+
+static IODBC_CHARSET
+detectCharset(void *str)
+{
+  char *ch = (char *) str;
+  IODBC_CHARSET cp = CP_UCS4;
+
+#ifdef WORDS_BIGENDIAN
+  if (ch[0]==0 && ch[1]!=0 && ch[2]==0)
+    cp = CP_UTF16;
+  else if (ch[0]==0 && ch[1]==0 && ch[2]==0 && ch[3]!=0)
+    cp = CP_UCS4;
+  else
+    cp = CP_UTF8;
+#else
+  if (ch[0]!=0 && ch[1]==0 && ch[2]!=0)
+    cp = CP_UTF16;
+  else if (ch[0]!=0 && ch[1]==0 && ch[2]==0 && ch[3]==0)
+    cp = CP_UCS4;
+  else
+    cp = CP_UTF8;
+#endif
+  return cp;
+}
+
+
 int INSTAPI
 SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
     LPCWSTR lpszDefault, LPWSTR lpszRetBuffer, int cbRetBuffer,
@@ -269,32 +296,39 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
   char *_default_u8 = NULL;
   char *_buffer_u8 = NULL;
   char *_filename_u8 = NULL;
-  SQLCHAR *ptr;
-  SQLWCHAR *ptrW;
-  SQLSMALLINT length, len;
+  WORD length, len;
+  DM_CONV conv;
 
-  _section_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszSection, SQL_NTS);
+  conv.drv_cp = conv.dm_cp = CP_UCS4;
+
+  if (lpszFilename)
+    conv.dm_cp = detectCharset((void *)lpszFilename);
+  else if (lpszEntry)
+    conv.dm_cp = detectCharset((void *)lpszEntry);
+
+  length = 0;
+  _section_u8 = (char *) DM_WtoU8(&conv, (void *)lpszSection, SQL_NTS);
   if (_section_u8 == NULL && lpszSection)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _entry_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszEntry, SQL_NTS);
+  _entry_u8 = (char *) DM_WtoU8(&conv, (void *)lpszEntry, SQL_NTS);
   if (_entry_u8 == NULL && lpszEntry)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _default_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszDefault, SQL_NTS);
+  _default_u8 = (char *) DM_WtoU8(&conv, (void *)lpszDefault, SQL_NTS);
   if (_default_u8 == NULL && lpszDefault)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
       goto done;
     }
 
-  _filename_u8 = (char *) dm_SQL_WtoU8 ((SQLWCHAR *) lpszFilename, SQL_NTS);
+  _filename_u8 = (char *) DM_WtoU8(&conv, (void *)lpszFilename, SQL_NTS);
   if (_filename_u8 == NULL && lpszFilename)
     {
       PUSH_ERROR (ODBC_ERROR_OUT_OF_MEM);
@@ -318,28 +352,40 @@ SQLGetPrivateProfileStringW (LPCWSTR lpszSection, LPCWSTR lpszEntry,
       if (lpszSection == NULL || lpszEntry == NULL ||
 	  lpszSection[0] == '\0' || lpszEntry[0] == '\0')
 	{
+          SQLCHAR *ptr;
+          void *ptrW;
 	  length = 0;
 
-	  for (ptr = _buffer_u8, ptrW = lpszRetBuffer; *ptr;
-	      ptr += STRLEN (ptr) + 1, ptrW += WCSLEN (ptrW) + 1)
+	  for (ptr = (SQLCHAR *)_buffer_u8, ptrW = lpszRetBuffer; *ptr; )
 	    {
-	      dm_StrCopyOut2_U8toW (ptr, ptrW, cbRetBuffer - length - 1,
-		  &len);
-	      length += len;
-	    }
+              dm_StrCopyOut2_U8toW_d2m (&conv, ptr, ptrW, 
+                  (cbRetBuffer - length - 1) * DM_WCHARSIZE(&conv),
+                  &len, NULL);
 
-	  *ptrW = L'\0';
+	      length += len;
+
+	      ptr += STRLEN (ptr) + 1;
+	      ptrW += (DM_WCSLEN (&conv, ptrW) + 1) * DM_WCHARSIZE(&conv);
+	    }
+          if (conv.dm_cp == CP_UCS4)
+	    *(ucs4_t *) ptrW = 0;
+	  else if (conv.dm_cp == CP_UTF16)
+	    *(ucs2_t *) ptrW = 0;
+	  else
+	    *(SQLCHAR *) ptrW = 0;
+
 	  length++;
 	}
       else
 	{
-	  dm_StrCopyOut2_U8toW (_buffer_u8, lpszRetBuffer, cbRetBuffer,
-	      &length);
+          dm_StrCopyOut2_U8toW_d2m (&conv, (SQLCHAR *)_buffer_u8, lpszRetBuffer,
+              cbRetBuffer*DM_WCHARSIZE(&conv), &length, NULL);
 	}
     }
   else
     {
-      dm_StrCopyOut2_U8toW (_buffer_u8, lpszRetBuffer, cbRetBuffer, &length);
+      dm_StrCopyOut2_U8toW_d2m (&conv, (SQLCHAR *)_buffer_u8, lpszRetBuffer,
+          cbRetBuffer*DM_WCHARSIZE(&conv), &length, NULL);
     }
 
 done:

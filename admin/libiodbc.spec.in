@@ -7,7 +7,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -107,7 +107,7 @@ ODBC compliant driver manager which allows developers to write ODBC
 compliant applications that can connect to various databases using
 appropriate backend drivers.
 
-The iODBC Driver Manager was originally created by Ke Jin and is
+The iODBC Driver Manager was originally created Ke Jin and is
 currently maintained by OpenLink Software under a LGPL or BSD license
 (see "LICENSE" file included in the distribution).
 
@@ -125,7 +125,7 @@ appropriate backend drivers.
 This package contains the header files and libraries needed to develop
 program that use the driver manager.
 
-The iODBC Driver Manager was originally created by Ke Jin and is 
+The iODBC Driver Manager was originally created Ke Jin and is 
 currently maintained by OpenLink Software under a LGPL or BSD license
 (see "LICENSE" file included in the distribution).
 
@@ -144,7 +144,7 @@ appropriate backend drivers.
 This package contains a GTK based administrator program for maintaining
 DSN information in odbc.ini and odbcinst.ini files.
 
-The iODBC Driver Manager was originally created by Ke Jin and is
+The iODBC Driver Manager was originally created Ke Jin and is
 currently maintained by OpenLink Software under a LGPL or BSD license
 (see "LICENSE" file included in the distribution).
 %endif
