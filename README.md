@@ -5,7 +5,7 @@
     All Rights Reserved.
 
 ## License
-Copyright 1996-2019 [OpenLink Software](http://www.openlinksw.com)
+Copyright 1996-2021 [OpenLink Software](http://www.openlinksw.com)
 
 This software is released under either the GNU Library General Public License
 (see [LICENSE.LGPL](http://github.com/openlink/iODBC/blob/develop/LICENSE.LGPL)) or the BSD License
