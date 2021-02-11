@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -74,8 +74,10 @@
 
 #include "inifile.h"
 
-int _iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide);
-int _iodbcdm_cfg_parse_str (PCONFIG pconfig, void *str, int size, int wide);
+int _iodbcdm_cfg_init_str (PCONFIG *ppconf, void *str, int size, int wide,
+    DM_CONV *conv);
+int _iodbcdm_cfg_parse_str (PCONFIG pconfig, void *str, int size, int wide,
+    DM_CONV *conv);
 void *_iodbcdm_cfg_lookup (PCONFIG pconfig, const char *id);
 int _iodbcdm_cfg_to_string (PCONFIG pconfig, char *section,
 			    char *buf, size_t buf_sz);

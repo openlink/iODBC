@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -76,6 +76,7 @@
 #import <iODBC/sqlext.h>
 #import <iODBC/sqltypes.h>
 #import <iODBC/sqlucode.h>
+#import <iODBC/iodbcext.h>
 
 @interface TestController : NSObject <NSTableViewDelegate, NSTableViewDataSource>
 {

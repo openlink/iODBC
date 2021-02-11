@@ -3,7 +3,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -274,7 +274,12 @@ void addDSNs_to_list(BOOL systemDSN, NSArrayController* list)
     /* Set the version ODBC API to use */
     SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
                    SQL_IS_UINTEGER);
-    
+
+# ifdef UNICODE
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+                   (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+#endif
+             
     /* Get the list of datasources */
     ret = SQLDataSourcesW (henv,
                            systemDSN ? SQL_FETCH_FIRST_SYSTEM : SQL_FETCH_FIRST_USER,

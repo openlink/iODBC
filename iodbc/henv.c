@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -86,6 +86,7 @@
 
 #include <dlproc.h>
 
+#include <unicode.h>
 #include <herr.h>
 #include <henv.h>
 
@@ -133,11 +134,13 @@ _iodbcdm_env_settracing (GENV_t *genv)
 
 unsigned long _iodbc_env_counter = 0;
 
-SQLRETURN 
+SQLRETURN
 SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
 {
+  char buf[1024];
   GENV (genv, NULL);
   int retcode = SQL_SUCCESS;
+  char *s;
 
   genv = (GENV_t *) MEM_ALLOC (sizeof (GENV_t));
 
@@ -147,6 +150,7 @@ SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
 
       return SQL_ERROR;
     }
+
   genv->rc = 0;
 
   /*
@@ -163,6 +167,34 @@ SQLAllocEnv_Internal (SQLHENV * phenv, int odbc_ver)
   genv->pdbc_pool = NULL;
 #endif
   genv->err_rec = 0;
+
+  genv->conv.dm_cp  = CP_DEF;
+  genv->conv.drv_cp = CP_DEF;
+
+  SQLSetConfigMode (ODBC_BOTH_DSN);
+  if ( SQLGetPrivateProfileString ("ODBC", "AppUnicodeType", "0", buf, sizeof(buf) / sizeof(SQLTCHAR), "odbcinst.ini"))
+    {
+      if (STRCASEEQ (buf, "0") || STRCASEEQ (buf, "ucs4"))
+          genv->conv.dm_cp  = CP_UCS4;
+      else if (STRCASEEQ (buf, "1") || STRCASEEQ (buf, "utf16"))
+          genv->conv.dm_cp  = CP_UTF16;
+      else if (STRCASEEQ (buf, "2") || STRCASEEQ (buf, "utf8"))
+          genv->conv.dm_cp  = CP_UTF8;
+    }
+
+  if ((s = getenv("ODBC_APP_UNICODE_TYPE")) != NULL)
+    {
+      if (STRCASEEQ (s, "0") || STRCASEEQ (s, "ucs4"))
+          genv->conv.dm_cp  = CP_UCS4;
+      else if (STRCASEEQ (s, "1") || STRCASEEQ (s, "utf16"))
+          genv->conv.dm_cp  = CP_UTF16;
+      else if (STRCASEEQ (s, "2") || STRCASEEQ (s, "utf8"))
+          genv->conv.dm_cp  = CP_UTF8;
+    }
+
+  DPRINTF ((stderr,
+      "DEBUG: SQLAllocEnv DiverManager AppUnicodeType=%s\n",
+      genv->conv.dm_cp==CP_UCS4?"UCS4":(genv->conv.dm_cp==CP_UTF16?"UTF16":"UTF8")));
 
   *phenv = (SQLHENV) genv;
 

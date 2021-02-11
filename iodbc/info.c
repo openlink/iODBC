@@ -7,8 +7,8 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1995 by Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -367,8 +367,10 @@ SQLDataSourcesW (
   SQLSMALLINT		  cbDescMax,
   SQLSMALLINT 		* pcbDesc)
 {
-  SQLCHAR *_DSN = NULL;  
+  SQLCHAR *_DSN = NULL;
   SQLCHAR *_Desc = NULL;
+  GENV (glenv, henv);
+  DM_CONV *conv = &glenv->conv;
 
   ENTER_HENV (henv,
     trace_SQLDataSourcesW (TRACE_ENTER,
@@ -404,8 +406,10 @@ SQLDataSourcesW (
 
   if (SQL_SUCCEEDED (retcode))
     {
-      dm_StrCopyOut2_U8toW (_DSN, szDSN, cbDSNMax, pcbDSN);
-      dm_StrCopyOut2_U8toW (_Desc, szDesc, cbDescMax, pcbDesc);
+      dm_StrCopyOut2_U8toW_d2m (conv, _DSN, szDSN,
+	cbDSNMax * DM_WCHARSIZE(conv), pcbDSN, NULL);
+      dm_StrCopyOut2_U8toW_d2m (conv, _Desc, szDesc,
+	cbDescMax * DM_WCHARSIZE(conv), pcbDesc, NULL);
     }
 
   MEM_FREE (_DSN);
@@ -655,8 +659,10 @@ SQLDriversW (SQLHENV henv,
     SQLSMALLINT		  cbDrvAttrMax,
     SQLSMALLINT		* pcbDrvAttr)
 {
-  SQLCHAR *_Driver = NULL;  
+  SQLCHAR *_Driver = NULL;
   SQLCHAR *_Attrs = NULL;
+  GENV (glenv, henv);
+  DM_CONV *conv = &glenv->conv;
 
   ENTER_HENV (henv,
     trace_SQLDriversW (TRACE_ENTER,
@@ -692,8 +698,10 @@ SQLDriversW (SQLHENV henv,
 
   if (SQL_SUCCEEDED (retcode))
     {
-      dm_StrCopyOut2_U8toW (_Driver, szDrvDesc, cbDrvDescMax, pcbDrvDesc);
-      dm_StrCopyOut2_U8toW (_Attrs, szDrvAttr, cbDrvAttrMax, pcbDrvAttr);
+      dm_StrCopyOut2_U8toW_d2m (conv, _Driver, szDrvDesc,
+        cbDrvDescMax * DM_WCHARSIZE(conv), pcbDrvDesc, NULL);
+      dm_StrCopyOut2_U8toW_d2m (conv, _Attrs, szDrvAttr,
+        cbDrvAttrMax * DM_WCHARSIZE(conv), pcbDrvAttr, NULL);
     }
 
   MEM_FREE (_Driver);
@@ -726,8 +734,11 @@ SQLGetInfo_Internal (
   SQLRETURN retcode = SQL_SUCCESS;
   void * _InfoValue = NULL;
   void * infoValueOut = rgbInfoValue;
-
   SQLPOINTER ptr = 0;
+  SQLSMALLINT _cbInfoValueMax = cbInfoValueMax;
+  CONV_DIRECT conv_direct = CD_NONE;
+  DM_CONV *conv = &pdbc->conv;
+
   int size = 0, len = 0, ret = 0;
   wchar_t buf[20] = {'\0'};
 
@@ -759,48 +770,47 @@ SQLGetInfo_Internal (
       else
 #endif
 	sprintf ((char*)buf, "%02d.%02d.0000", SQL_SPEC_MAJOR, SQL_SPEC_MINOR);
-
-      if (waMode != 'W')
+      if(waMode == 'W')
         {
-          if (rgbInfoValue != NULL && cbInfoValueMax > 0)
+          void *prov = DM_U8toW(conv, (SQLCHAR *)buf, SQL_NTS);
+          if(prov)
+            {
+              DM_WCSNCPY(conv, buf, prov, sizeof(buf)/DM_WCHARSIZE(conv));
+              free(prov);
+            }
+          else
+            DM_SetWCharAt(conv, buf, 0, 0);
+        }
+
+
+      if (rgbInfoValue != NULL  && cbInfoValueMax > 0)
+	{
+	  len = (waMode != 'W' ? STRLEN (buf) : DM_WCSLEN(conv, buf));
+
+	  if (len > cbInfoValueMax - 1)
 	    {
-	      len = STRLEN (buf);
+	      len = cbInfoValueMax - 1;
+	      PUSHSQLERR (pdbc->herr, en_01004);
 
-	      if (len > cbInfoValueMax - 1)
-	        {
-	          len = cbInfoValueMax - 1;
-                  ret = -1;
-	        }
-              else
-                {
-                  ret = 0;
-                }
+	      retcode = SQL_SUCCESS_WITH_INFO;
+	    }
 
+	  if (waMode != 'W')
+	    {
 	      STRNCPY (rgbInfoValue, buf, len);
 	      ((char *) rgbInfoValue)[len] = '\0';
 	    }
+	  else
+	    {
+	      DM_WCSNCPY (conv, rgbInfoValue, buf, len);
+	      DM_SetWCharAt(conv, rgbInfoValue, len, 0);
+	    }
+	}
 
-          if (pcbInfoValue != NULL)
-            *pcbInfoValue = (SWORD) len;
-        }
-      else
-        {
-          ret = dm_StrCopyOut2_A2W ((SQLCHAR *) buf,  
-		(SQLWCHAR *) rgbInfoValue, 
-    		cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
-          if (pcbInfoValue)
-            *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
-        }
-
-       if (ret == -1)
-         {
-           PUSHSQLERR (pdbc->herr, en_01004);
-           retcode = SQL_SUCCESS_WITH_INFO;
-         }
-       else
-         {
-           retcode = SQL_SUCCESS;
-         }
+      if (pcbInfoValue != NULL)
+	{
+	  *pcbInfoValue = (SWORD) len;
+	}
 
       return retcode;
     }
@@ -897,8 +907,14 @@ SQLGetInfo_Internal (
       fInfoType = 65003;
 #endif /* ODBCVER >= 0x0300 */
 
-  if ((penv->unicode_driver && waMode != 'W') 
-      || (!penv->unicode_driver && waMode == 'W'))
+  if (penv->unicode_driver && waMode != 'W')
+    conv_direct = CD_A2W;
+  else if (!penv->unicode_driver && waMode == 'W')
+    conv_direct = CD_W2A;
+  else if (waMode == 'W' && conv && conv->dm_cp!=conv->drv_cp)
+    conv_direct = CD_W2W;
+
+  if (conv_direct != CD_NONE)
     {
       switch(fInfoType)
         {
@@ -940,33 +956,37 @@ SQLGetInfo_Internal (
         case SQL_USER_NAME:
         case SQL_XOPEN_CLI_YEAR:
         case SQL_OUTER_JOINS:
-          if (waMode != 'W')  
+          if (conv_direct == CD_A2W || conv_direct == CD_W2W)
             {
-            /* ansi=>unicode*/
-              if ((_InfoValue = malloc((cbInfoValueMax + 1) * sizeof(wchar_t))) == NULL)
+              /* ansi<=unicode  OR  unicode<=unicode*/
+              if (conv_direct == CD_W2W)
+                _cbInfoValueMax /= DM_WCHARSIZE(conv);
+
+              if ((_InfoValue = malloc((_cbInfoValueMax + 1) * DRV_WCHARSIZE_ALLOC(conv))) == NULL)
 	        {
                   PUSHSQLERR (pdbc->herr, en_HY001);
                   return SQL_ERROR;
                 }
-              cbInfoValueMax *=  sizeof(wchar_t);
+              _cbInfoValueMax *=  DRV_WCHARSIZE_ALLOC(conv);
             }
-          else
+          else if (conv_direct == CD_W2A)
             {
-            /* unicode=>ansi*/
-              if ((_InfoValue = malloc(cbInfoValueMax + 1)) == NULL)
+              /* unicode<=ansi*/
+              if ((_InfoValue = malloc(_cbInfoValueMax * MB_CUR_MAX + 1)) == NULL)
 	        {
                   PUSHSQLERR (pdbc->herr, en_HY001);
                   return SQL_ERROR;
                 }
-              cbInfoValueMax /=  sizeof(wchar_t);
+              _cbInfoValueMax /=  DM_WCHARSIZE(conv);
             }
+
           infoValueOut = _InfoValue;
           break;
         }
     }
 
-  CALL_UDRIVER(hdbc, pdbc, retcode, hproc, penv->unicode_driver, 
-    en_GetInfo, (pdbc->dhdbc, fInfoType, infoValueOut, cbInfoValueMax, 
+  CALL_UDRIVER(hdbc, pdbc, retcode, hproc, penv->unicode_driver,
+    en_GetInfo, (pdbc->dhdbc, fInfoType, infoValueOut, _cbInfoValueMax,
     pcbInfoValue));
 
   if (hproc == SQL_NULL_HPROC)
@@ -1004,11 +1024,11 @@ SQLGetInfo_Internal (
         }
       else
         {
-          ret = dm_StrCopyOut2_A2W ((SQLCHAR *) "01.00",  
-		(SQLWCHAR *) rgbInfoValue, 
-    		cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+          int count;
+          ret = dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) "01.00",
+		rgbInfoValue, cbInfoValueMax, NULL, &count);
           if (pcbInfoValue)
-            *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
+            *pcbInfoValue = (SQLSMALLINT)count;
         }
 
        if (ret == -1)
@@ -1022,11 +1042,9 @@ SQLGetInfo_Internal (
          }
 
     }
-  else if (rgbInfoValue 
-          && SQL_SUCCEEDED (retcode)
-          && ((penv->unicode_driver && waMode != 'W') 
-              || (!penv->unicode_driver && waMode == 'W')))
+  else if (rgbInfoValue && conv_direct != CD_NONE && SQL_SUCCEEDED (retcode))
     {
+      int count;
       switch(fInfoType)
         {
         case SQL_ACCESSIBLE_PROCEDURES:
@@ -1067,21 +1085,29 @@ SQLGetInfo_Internal (
         case SQL_USER_NAME:
         case SQL_XOPEN_CLI_YEAR:
         case SQL_OUTER_JOINS:
-          if (waMode != 'W')
+          if (conv_direct == CD_A2W)
             {
             /* ansi<=unicode*/
-              ret = dm_StrCopyOut2_W2A ((SQLWCHAR *) infoValueOut, 
-		(SQLCHAR *) rgbInfoValue, 
-                cbInfoValueMax / sizeof(wchar_t), pcbInfoValue);
+              ret = dm_StrCopyOut2_W2A_d2m (conv, infoValueOut,
+		(SQLCHAR *) rgbInfoValue, cbInfoValueMax, NULL, &count);
+              if (pcbInfoValue)
+                *pcbInfoValue = (SQLSMALLINT)count;
             }
-          else
+          else if (conv_direct == CD_W2A)
             {
             /* unicode<=ansi*/
-              ret = dm_StrCopyOut2_A2W ((SQLCHAR *) infoValueOut, 
-		(SQLWCHAR *) rgbInfoValue, 
-		cbInfoValueMax, pcbInfoValue);
+              ret = dm_StrCopyOut2_A2W_d2m (conv, (SQLCHAR *) infoValueOut,
+		rgbInfoValue, cbInfoValueMax, NULL, &count);
               if (pcbInfoValue)
-                *pcbInfoValue = *pcbInfoValue * sizeof(wchar_t);
+                *pcbInfoValue = (SQLSMALLINT)count;
+            }
+          else if (conv_direct == CD_W2W)
+            {
+              /* unicode<=unicode*/
+              ret = dm_StrCopyOut2_W2W_d2m (conv, infoValueOut,
+		rgbInfoValue, cbInfoValueMax, NULL, &count);
+              if (pcbInfoValue)
+                *pcbInfoValue = (SQLSMALLINT)count;
             }
 
           if (ret == -1)
@@ -1190,15 +1216,6 @@ static int FunctionNumbers[] =
 #undef FUNCDEF
 };
 
-#if (ODBCVER >= 0x0300)
-
-#define SQL_ODBC3_SET_FUNC_ON(pfExists, uwAPI) \
-	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) |= (1 << ((uwAPI) & 0x000F))
-
-#define SQL_ODBC3_SET_FUNC_OFF(pfExists, uwAPI) \
-	*( ((UWORD*) (pfExists)) + ((uwAPI) >> 4) ) &= !(1 << ((uwAPI) & 0x000F))
-
-#endif
 
 
 static SQLRETURN 

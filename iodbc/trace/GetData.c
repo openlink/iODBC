@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -416,7 +416,7 @@ _trace_data (
     case SQL_C_WCHAR:
       {
 	SQLCHAR *wstr;
-        ssize_t len;
+        ssize_t len = 0;
 	if (pcbValue)
 	  len = (ssize_t) *pcbValue;
         if (len > cbValueMax)

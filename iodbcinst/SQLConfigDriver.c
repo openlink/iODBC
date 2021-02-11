@@ -8,7 +8,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -161,7 +161,7 @@
 #define CALL_CONFIG_DRIVERW_BUNDLE(driverpath) \
     if (bundle_dll != NULL) \
       { \
-	if ((pConfigDriverW = (pConfigDriverFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriverW"))) != NULL) \
+	if ((pConfigDriverW = (pConfigDriverWFunc) CFBundleGetFunctionPointerForName (bundle_dll, CFSTR ("ConfigDriverW"))) != NULL) \
 	  { \
 	    if (pConfigDriverW (hwndParent, fRequest, (SQLWCHAR *) lpszDriver, (SQLWCHAR *) lpszArgs, (SQLWCHAR *) lpszMsg, cbMsgMax, pcbMsgOut)) \
 	      { \
