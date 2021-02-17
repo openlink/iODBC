@@ -636,7 +636,7 @@ SQLBindParameter_Internal (
 	  free (pstmt->st_pparam);
 	}
       pstmt->st_pparam = newparam;
-      pstmt->st_nparam = (u_short) newsize;
+      pstmt->st_nparam = (SQLUSMALLINT) newsize;
     }
 
   pstmt->st_pparam[ipar-1] = parm;
