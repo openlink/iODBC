@@ -23,14 +23,13 @@ benefit the Open Source and Data Access community as a whole. Submissions may be
 made via the [iODBC Github project](https://github.com/openlink/iODBC/) or via
 email to [iodbc@openlinksw.com](mailto:iodbc@openlinksw.com).
 
-
-
 ## Introduction
-Welcome to the iODBC driver manager maintained by [OpenLink Software](http://www.openlinksw.com/).
 
-This kit will provide you with everything you need in order to develop
-ODBC-compliant applications under Unix without having to pay royalties to other
-parties.
+Welcome to the iODBC driver manager maintained by 
+[OpenLink Software](http://www.openlinksw.com/).
+
+This kit will provide you with everything you need to develop ODBC-compliant
+applications under Unix without having to pay royalties to other parties.
 
 This kit consists of a number of parts:
 
@@ -131,7 +130,7 @@ The iODBC driver manager has been ported to following platforms:
 | HP/UX            | 9.x           | HP9000 s300/s400            |
 | IBM AIX          | 3.x - 5.x     | IBM RS6000, PowerPC         |
 | Linux ELF        | 1.x, 2.x      | x86, x86_64, IA_64, PowerPC |
-| Mac OS X         | 10.x          | PowerPC, x86, x86_64        |
+| macOS            | 10.x - 11.x   | PowerPC, x86, x86_64, arm64 |
 | Max/OS SVR4      | 1.x           | Concurrent Maxion 9200 MP   |
 | NCR SVR4         | 3.x           | NCR 3435                    |
 | OpenVMS          | 6.x           | DEC Alpha                   |
@@ -150,14 +149,14 @@ your patches to [iodbc@openlinksw.com](mailto:iodbc@openlinksw.com), so we can
 include them for the next build.
 
 Porting the iODBC driver manager to some non-UNIX-like operating systems such
-as the Windows family (3.x, 95, NT, 200x, etc.), IBM OS/2,  and Mac Classic is 
+as the Windows family (3.x, 95, NT, 200x, etc.), IBM OS/2, and Mac Classic is 
 supported, but has not been compiled or tested recently. Of course, you will need
 to supply a `make`/`build` file and a short `LibMain` for creating the `iodbc.dll`.
 
-## How to build iODBC driver manager:
+## How to build iODBC driver manager
 
-Users of macOS should read the separate [README_MACOSX](./README_MACOSX.md) document for more detail
-of porting to this platform.
+Users of macOS should read the separate [README_MACOSX](./README_MACOSX.md) 
+document for more detail of porting to this platform.
 
 Users of all other UNIX-like OS:
 
@@ -308,7 +307,7 @@ If `<optional_trace_file>` is `stderr` or `stdout`, i.e. --
 
 -- the tracing message will go to the terminal screen (if available).
 
-## Further Information Sources:
+## Further Information Sources
 
 * [iODBC Website](http://www.iodbc.org/) containing binaries, sources and documentation.
 
