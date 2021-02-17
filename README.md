@@ -130,7 +130,7 @@ The iODBC driver manager has been ported to following platforms:
 | HP/UX            | 9.x           | HP9000 s300/s400            |
 | IBM AIX          | 3.x - 5.x     | IBM RS6000, PowerPC         |
 | Linux ELF        | 1.x, 2.x      | x86, x86_64, IA_64, PowerPC |
-| macOS            | 10.x - 11.x   | PowerPC, x86, x86_64, arm64 |
+| macOS            | 10.x - 11.x   | PowerPC, x86, x86_64        |
 | Max/OS SVR4      | 1.x           | Concurrent Maxion 9200 MP   |
 | NCR SVR4         | 3.x           | NCR 3435                    |
 | OpenVMS          | 6.x           | DEC Alpha                   |
