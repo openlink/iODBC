@@ -8,7 +8,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -208,6 +208,32 @@
 #define SQL_RE_OFF		0L	/* No regionalization occurs on output character conversions */
 #define SQL_RE_ON		1L	/* Regionalization occurs on output character conversions */
 #define SQL_RE_DEFAULT	SQL_RE_OFF
+
+
+#define SQL_ATTR_APP_WCHAR_TYPE		      1061
+
+#define SQL_ATTR_APP_UNICODE_TYPE             1064
+#define SQL_ATTR_DRIVER_UNICODE_TYPE          1065
+
+#define SQL_DM_CP_UTF16			1
+#define SQL_DM_CP_UTF8			2
+#define SQL_DM_CP_UCS4			3
+
+#if defined(SIZEOF_WCHAR)
+# if (SIZEOF_WCHAR == 2)
+#  define SQL_DM_CP_DEF  SQL_DM_CP_UTF16
+# else
+#  define SQL_DM_CP_DEF  SQL_DM_CP_UCS4
+# endif
+#else
+# define SQL_DM_CP_DEF  SQL_DM_CP_UCS4
+#endif
+
+/* DataDirect options for Connection/Env Attributes. */
+#define SQL_DD_CP_ANSI				0 
+#define SQL_DD_CP_UCS2				SQL_DM_CP_UTF16
+#define SQL_DD_CP_UTF8				SQL_DM_CP_UTF8
+#define SQL_DD_CP_UTF16				SQL_DD_CP_UCS2
 
 
 /*

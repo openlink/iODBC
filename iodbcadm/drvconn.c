@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -94,7 +94,7 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
 #define CALL_DRVCONN_DIALBOXW(path, a) \
     if (path) \
     { \
-       char *_path_u8 = (a == 'A') ? strdup(path) : (char*)dm_SQL_W2A ((wchar_t*)path, SQL_NTS); \
+       char *_path_u8 = (a == 'A') ? strdup((const char *)path) : (char*)dm_SQL_W2A ((wchar_t*)path, SQL_NTS); \
        if (_path_u8) { \
          char *ptr = strstr(_path_u8, "/Contents/MacOS/"); \
          if (ptr) \
@@ -139,12 +139,12 @@ typedef SQLRETURN SQL_API (*pDriverConnWFunc) (HWND hwnd, LPWSTR szInOutConnStr,
                 for (_prvw = szInOutConnStr, _prvu8 = _szinoutconstr_u8 ; \
                   *_prvw != L'\0' ; _prvw += WCSLEN (_prvw) + 1, \
                   _prvu8 += STRLEN (_prvu8) + 1) \
-                  dm_StrCopyOut2_W2A (_prvw, _prvu8, cbInOutConnStr, NULL); \
+                  dm_StrCopyOut2_W2A (_prvw, (SQLCHAR *)_prvu8, cbInOutConnStr, NULL); \
                   *_prvu8 = '\0'; \
                 SQLSetConfigMode (*config); \
                 if (pDrvConn (hwnd, _szinoutconstr_u8, cbInOutConnStr, sqlStat, fDriverCompletion, config) == SQL_SUCCESS) \
                   { \
-                    dm_StrCopyOut2_A2W (_szinoutconstr_u8, szInOutConnStr, cbInOutConnStr, NULL); \
+                    dm_StrCopyOut2_A2W ((SQLCHAR *)_szinoutconstr_u8, szInOutConnStr, cbInOutConnStr, NULL); \
                     MEM_FREE (_szinoutconstr_u8); \
                     retcode = SQL_SUCCESS; \
                     goto quit; \
@@ -494,7 +494,7 @@ iodbcdm_drvconn_dialboxw (
     }
 
   /* Call the iodbcdm_drvconn_dialbox */
-  _szdriver_u8 = (char*)dm_SQL_W2A (szDriver, SQL_NTS);
+  _szdriver_u8 = (char *)dm_SQL_W2A (szDriver, SQL_NTS);
 
   SQLSetConfigMode (ODBC_USER_DSN);
   if (!access (_szdriver_u8, X_OK))

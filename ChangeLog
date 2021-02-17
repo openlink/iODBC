@@ -1,4 +1,160 @@
+2021-02-17  Ted Thibodeau  <tthibodeau@openlinksw.com>
+
+	Small documentation fixes
+
+2021-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issue with return buffer
+
+	Fixed cast
+
+	Fixed argument type
+
+	Fixed mode flags
+
+	Fixed missing check on pcbConnStrOut
+
+2021-02-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed always build with PIC on linux
+
+	Updated version to 3.53.14-rc4
+
+2021-02-09  Sergey Malinin  <smalinin@openlinksw.com>
+
+	SQLSetEnvAttr doesn't return SQL_SUCCESS for option SQL_ATTR_APP_UNICODE_TYPE
+
+2021-02-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to 3.53.14-rc3
+
+2021-02-08  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issue with switch ODBC driver to best supported unicode codepage
+
+2021-01-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated Copyright to include 2021
+
+2020-05-29  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Remove outdated file
+
+	Remove old code
+
+	Fix __WtoU8()
+
+2020-05-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to rc2
+
+2020-05-20  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix include files for /usr/local/iODBC/include
+
+2020-05-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2020_05_20_fix_SQLGetConnectOption' into develop
+
+2020-05-20  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix missprint in SQLBrowseConnect
+
+	SQLGetConnectOption returned wrong value for SQL_CURRENT_QUALIFIER and SQL_TRANSLATE_DLL for some cases
+
+2020-03-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix mixing calls to SQLFetchScroll with SQLFetch
+
+	Fix unicode conversion issues
+
+2020-03-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to rc1
+
+2020-03-05  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issues with Unicode <=> Ansi conversions, remove old Windows code
+
+2020-03-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issues checking for underscore
+
+2020-03-03  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Add DataDirect options to iodbcext.h
+
+2020-03-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix for ansi buffers allocation
+
+2020-01-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated Copyright
+
+2019-12-06  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2019_09_11_fix_ansi_conversions' into develop
+
+2019-12-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Increase size of buffers for Wide=>Ansi conversion
+
+	Update code for conversion between Ansi and Unicode
+
+2019-12-06  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed compiler warnings
+
+	Fixed issue with tracing
+
+	Fixed compiler warning
+
+2019-09-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated build number
+
+2019-09-09  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix truncate data in SQLGetPrivateProfileStringW
+
+2019-08-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed small issues building on recent versions of Mac OS X
+
+2019-08-13  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated version to 3.52.14
+
+2019-07-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issue with older compilers
+
+2019-07-23  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Added initial support for Unicode UTF-8 and UTF-16 codepages
+
+	Enable transparent conversions between UCS4, UTF-8 and UTF-16 codepages
+
 2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Update documentation
+
+	Started new development cycle 3.52.14
+
+2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge tag 'v3.52.13' into develop
+
+	Tagged stable release
+
+2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'release/3.52.13'
+
+	Updated iODBC version to 03.52.13
+
+	Updated documentation
 
 	Merge branch 'feature/pthread_fix' into develop
 
@@ -95,6 +251,8 @@
 2016-07-12  iODBC Maintainer  <iodbc@openlinksw.com>
 
 	Merge branch 'release/3.52.12' into develop
+
+	Merge branch 'release/3.52.12'
 
 	Updated version to 3.52.12 for final release
 
@@ -255,6 +413,8 @@
 
 	Merge branch 'release/3.52.11' into develop
 
+	Merge branch 'release/3.52.11'
+
 	Updated version to 3.52.11 for internal release
 
 2016-03-10  iODBC Maintainer  <iodbc@openlinksw.com>
@@ -338,6 +498,8 @@
 2015-02-10  iODBC Maintainer  <iodbc@openlinksw.com>
 
 	Merge branch 'hotfix/3.52.10.1' into develop
+
+	Merge branch 'hotfix/3.52.10.1'
 
 	Added missing file to distribution
 

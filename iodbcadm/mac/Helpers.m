@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -74,6 +74,7 @@
 
 #import "Helpers.h"
 #include "iodbc.h"
+#include "iodbcext.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -182,7 +183,10 @@ void addPools_to_list(NSArrayController* list)
         _iodbcdm_nativeerrorbox ((void*)1L, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
         goto end;
     }
-    
+
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+        (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
     /* Set the version ODBC API to use */
     SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
                    SQL_IS_UINTEGER);
@@ -274,7 +278,10 @@ void addDrivers_to_list(NSArrayController* list)
         _iodbcdm_nativeerrorbox ((void*)1L, henv, SQL_NULL_HANDLE, SQL_NULL_HANDLE);
         goto end;
     }
-    
+
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+        (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
     /* Set the version ODBC API to use */
     SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
                    SQL_IS_UINTEGER);
@@ -495,7 +502,10 @@ void addDSNs_to_list(BOOL systemDSN, NSArrayController* list)
     /* Set the version ODBC API to use */
     SQLSetEnvAttr (henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3,
                    SQL_IS_UINTEGER);
-    
+
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+        (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
     /* Get the list of datasources */
     ret = SQLDataSourcesW (henv,
                            systemDSN ? SQL_FETCH_FIRST_SYSTEM : SQL_FETCH_FIRST_USER,
@@ -725,7 +735,10 @@ void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver)
                                      SQL_NULL_HDBC, SQL_NULL_HSTMT);
             goto done;
         }
-        
+
+        SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+            (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
 #if (ODBCVER < 0x300)
         if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
 #else
@@ -1007,7 +1020,10 @@ test_driver_connect (char *connstr)
                                      henv, SQL_NULL_HDBC, SQL_NULL_HSTMT);
             return FALSE;
         }
-    
+
+    SQLSetEnvAttr (henv, SQL_ATTR_APP_UNICODE_TYPE,
+        (SQLPOINTER) SQL_DM_CP_DEF, SQL_IS_UINTEGER);
+
 #if (ODBCVER < 0x300)
     if (SQLAllocConnect (henv, &hdbc) != SQL_SUCCESS)
 #else

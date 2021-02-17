@@ -1,3 +1,19 @@
+Feb 17 2021, V3.52.14:
+    * Added support for transparent conversion between UCS4, UTF-8 and UTF-16 codepages
+    * Small documentation fixes
+    * Fixed issue with return buffer
+    * Fixed compiler warnings
+    * Fixed missing check on pcbConnStrOut
+    * Fixed SQLSetEnvAttr doesn't return SQL_SUCCESS for option SQL_ATTR_APP_UNICODE_TYPE
+    * Fixed issue with switch ODBC driver to best supported unicode codepage
+    * Fixed typo in SQLBrowseConnect
+    * Fixed SQLGetConnectOption returned wrong value for SQL_CURRENT_QUALIFIER and SQL_TRANSLATE_DLL for some cases
+    * Fixed mixing calls to SQLFetchScroll with SQLFetch
+    * Fixed unicode conversion issues
+    * Fixed ansi buffers allocation
+    * Fixed issue with tracing
+    * Fixed truncate data in SQLGetPrivateProfileStringW
+
 Jul 23 2019, V3.52.13:
     * Added extra validation for SQLAllocHandle (SQL_HANDLE_DESC, ...)
     * Added GCC __attribute__ for checking format string

@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2019 by OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -99,7 +99,7 @@
 
 extern BOOL ValidDSN (LPCSTR lpszDSN);
 
-static PCFGENTRY __iodbcdm_cfg_poolalloc (PCONFIG p, u_int count);
+static PCFGENTRY __iodbcdm_cfg_poolalloc (PCONFIG p, unsigned int count);
 static int __iodbcdm_cfg_parse (PCONFIG pconfig);
 
 /*** READ MODULE ****/
@@ -195,7 +195,7 @@ _iodbcdm_cfg_freeimage (PCONFIG pconfig)
 {
   char *saveName;
   PCFGENTRY e;
-  u_int i;
+  unsigned int i;
 
   if (pconfig->image)
     free (pconfig->image);
@@ -503,10 +503,10 @@ _iodbcdm_cfg_storeentry (
 
 
 static PCFGENTRY
-__iodbcdm_cfg_poolalloc (PCONFIG p, u_int count)
+__iodbcdm_cfg_poolalloc (PCONFIG p, unsigned int count)
 {
   PCFGENTRY newBase;
-  u_int newMax;
+  unsigned int newMax;
 
   if (p->numEntries + count > p->maxEntries)
     {
