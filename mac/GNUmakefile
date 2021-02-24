@@ -70,6 +70,11 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+#
+#  iODBC VERSION
+#
+IODBC_VERSION=3.52.15
+
 
 #
 #  Determine build model (Deployment/Development)
@@ -215,7 +220,7 @@ endif
 #
 #  Pass settings to xcodebuild
 #
-export IODBC_TARGET IODBC_SDK
+export IODBC_TARGET IODBC_SDK IODBC_VERSION
 
 
 #

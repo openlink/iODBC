@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBC Administrator64</string>
 	<key>CFBundleGetInfoString</key>
-	<string>iODBC Administrator64 version 3.52.14, Copyright 1995-2021, OpenLink Software</string>
+	<string>iODBC Administrator64 version $IODBC_VERSION, Copyright 1995-2021, OpenLink Software</string>
 	<key>CFBundleIconFile</key>
 	<string>iODBCAdministrator.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.14</string>
+	<string>$IODBC_VERSION</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.14</string>
+	<string>$IODBC_VERSION</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
