@@ -91,56 +91,17 @@ macosx_version  := $(shell sw_vers -productVersion | cut -d . -f 1-2)
 
 
 #
-#  Mac OS X 10.2
+#  Common build settings
 #
-ifeq (10.2, $(findstring 10.2, $(macosx_version)))
-    PROJBUILD := /usr/bin/pbxbuild -buildstyle $(MODEL)
-endif
-
-
-#
-#  Mac OS X 10.3
-#
-ifeq (10.3, $(findstring 10.3, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -buildstyle $(MODEL)
-endif
-
-
-#
-#  Mac OS X 10.4
-#
-ifeq (10.4, $(findstring 10.4, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
-    IODBC_TARGET=10.4
-    IODBC_SDK=/Developer/SDKs/MacOSX10.4u.sdk/
-endif
-
-
-#
-#  Mac OS X 10.5
-#
-ifeq (10.5, $(findstring 10.5, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
-    IODBC_TARGET=10.5
-    IODBC_SDK=/Developer/SDKs/MacOSX10.5.sdk/
-endif
-
-
-#
-#  Mac OS X 10.6
-#
-ifeq (10.6, $(findstring 10.6, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
-    IODBC_TARGET=10.6
-    IODBC_SDK=/Developer/SDKs/MacOSX10.6.sdk/
-endif
+PROJBUILD	:= /usr/bin/xcodebuild -configuration $(MODEL)
+IODBC_TARGET	= 10.9
+IODBC_32BIT	= "i386"
 
 
 #
 #  Mac OS X 10.7
 #
 ifeq (10.7, $(findstring 10.7, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.7
     IODBC_TARGET=10.7
 endif
 
@@ -149,7 +110,6 @@ endif
 #  Mac OS X 10.8
 #
 ifeq (10.8, $(findstring 10.8, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.8
     IODBC_TARGET=10.8
 endif
 
@@ -158,8 +118,6 @@ endif
 #  Mac OS X 10.9
 #
 ifeq (10.9, $(findstring 10.9, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.9
-    IODBC_TARGET=10.9
 endif
 
 
@@ -167,8 +125,6 @@ endif
 #  Mac OS X 10.10
 #
 ifeq (10.10, $(findstring 10.10, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.10
-    IODBC_TARGET=10.10
 endif
 
 
@@ -176,8 +132,6 @@ endif
 #  Mac OS X 10.11
 #
 ifeq (10.11, $(findstring 10.11, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.11
-    IODBC_TARGET=10.11
 endif
 
 
@@ -185,8 +139,6 @@ endif
 #  Mac OS X 10.12
 #
 ifeq (10.12, $(findstring 10.12, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.12
-    IODBC_TARGET=10.12
 endif
 
 
@@ -194,8 +146,6 @@ endif
 #  Mac OS X 10.13
 #
 ifeq (10.13, $(findstring 10.13, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.13
-    IODBC_TARGET=10.13
 endif
 
 
@@ -203,8 +153,6 @@ endif
 #  Mac OS X 10.14
 #
 ifeq (10.14, $(findstring 10.14, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.14
-    IODBC_TARGET=10.14
 endif
 
 
@@ -212,15 +160,22 @@ endif
 #  Mac OS X 10.15
 #
 ifeq (10.15, $(findstring 10.15, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.15
-    IODBC_TARGET=10.15
+IODBC_32BIT	:= ""
+endif
+
+
+#
+#  Mac OS 11.x
+#
+ifeq (11.2, $(findstring 11.2, $(macosx_version)))
+IODBC_32BIT	:= ""
 endif
 
 
 #
 #  Pass settings to xcodebuild
 #
-export IODBC_TARGET IODBC_SDK IODBC_VERSION
+export IODBC_TARGET IODBC_SDK IODBC_VERSION IODBC_32BIT
 
 
 #

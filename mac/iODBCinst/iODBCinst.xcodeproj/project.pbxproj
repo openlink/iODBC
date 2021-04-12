@@ -403,8 +403,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
@@ -416,8 +416,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;

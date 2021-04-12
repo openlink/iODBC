@@ -277,8 +277,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 					x86_64,
 				);
 				COPY_PHASE_STRIP = NO;
@@ -306,8 +306,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 					x86_64,
 				);
 				FRAMEWORK_SEARCH_PATHS = (
@@ -331,8 +331,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 					x86_64,
 				);
 				FRAMEWORK_SEARCH_PATHS = (
@@ -354,8 +354,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 					x86_64,
 				);
 				FRAMEWORK_SEARCH_PATHS = (

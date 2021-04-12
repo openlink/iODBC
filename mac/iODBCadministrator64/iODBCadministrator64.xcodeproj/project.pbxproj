@@ -268,7 +268,7 @@
 		CDAE3B870987D655003250F8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "x86_64";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -322,7 +322,7 @@
 		CDAE3B880987D655003250F8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "x86_64";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Deployment,
@@ -368,7 +368,7 @@
 		CDAE3B8D0987D656003250F8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "x86_64";
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
 			};
@@ -377,7 +377,7 @@
 		CDAE3B8E0987D656003250F8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "x86_64";
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
 			};

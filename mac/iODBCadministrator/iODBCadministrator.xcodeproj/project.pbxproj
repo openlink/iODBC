@@ -269,8 +269,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 				);
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
@@ -326,8 +326,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 				);
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -375,8 +375,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
@@ -387,8 +387,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
-					i386,
+					arm64,
+					$IODBC_32BIT,
 				);
 				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
 				SDKROOT = $IODBC_SDK;
