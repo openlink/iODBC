@@ -85,7 +85,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <unicode.h>
+#include "unicode.h"
 
 #include <fcntl.h>
 #include <sys/stat.h>

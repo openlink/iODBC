@@ -84,13 +84,13 @@
 
 #include <odbcinst.h>
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <unicode.h>
-#include <herr.h>
-#include <henv.h>
+#include "unicode.h"
+#include "herr.h"
+#include "henv.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
 /*
  *  Use static initializer where possible

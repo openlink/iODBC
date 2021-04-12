@@ -77,9 +77,9 @@
 
 #include "gui.h"
 
-#include <herr.h>
-#include <unicode.h>
-#include <dlproc.h>
+#include "herr.h"
+#include "unicode.h"
+#include "dlproc.h"
 
 #ifndef WIN32
 #include <unistd.h>
