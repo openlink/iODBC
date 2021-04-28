@@ -91,69 +91,16 @@ macosx_version  := $(shell sw_vers -productVersion | cut -d . -f 1-2)
 
 
 #
+#  Determine major version of the Xcode tool
+#
+xcodebuild_version := $(shell xcodebuild -version | grep -i Xcode | cut -d " " -f 2 | cut -d. -f1)
+
+
+#
 #  Common build settings
 #
 PROJBUILD	:= /usr/bin/xcodebuild -configuration $(MODEL)
-IODBC_TARGET	= 10.9
 IODBC_32BIT	= "i386"
-
-
-#
-#  Mac OS X 10.7
-#
-ifeq (10.7, $(findstring 10.7, $(macosx_version)))
-    IODBC_TARGET=10.7
-endif
-
-
-#
-#  Mac OS X 10.8
-#
-ifeq (10.8, $(findstring 10.8, $(macosx_version)))
-    IODBC_TARGET=10.8
-endif
-
-
-#
-#  Mac OS X 10.9
-#
-ifeq (10.9, $(findstring 10.9, $(macosx_version)))
-endif
-
-
-#
-#  Mac OS X 10.10
-#
-ifeq (10.10, $(findstring 10.10, $(macosx_version)))
-endif
-
-
-#
-#  Mac OS X 10.11
-#
-ifeq (10.11, $(findstring 10.11, $(macosx_version)))
-endif
-
-
-#
-#  Mac OS X 10.12
-#
-ifeq (10.12, $(findstring 10.12, $(macosx_version)))
-endif
-
-
-#
-#  Mac OS X 10.13
-#
-ifeq (10.13, $(findstring 10.13, $(macosx_version)))
-endif
-
-
-#
-#  Mac OS X 10.14
-#
-ifeq (10.14, $(findstring 10.14, $(macosx_version)))
-endif
 
 
 #
@@ -175,13 +122,13 @@ endif
 #
 #  Pass settings to xcodebuild
 #
-export IODBC_TARGET IODBC_SDK IODBC_VERSION IODBC_32BIT
+export IODBC_VERSION IODBC_32BIT
 
 
 #
 #  Build the libraries
 #
-all: include
+all: check_supported include
 	@echo "Building on Mac OS X $(macosx_version)"
 	@echo "Projbuild is [$(PROJBUILD)]"
 	cd iODBCinst;		$(PROJBUILD) build
@@ -195,6 +142,18 @@ all: include
 	cd iODBCdemo/DemoAnsi;	   $(PROJBUILD) build
 	cd iODBCdemo/DemoUnicode;  $(PROJBUILD) build
 
+
+#
+#  Make sure the version of Xcode is 8.x or newer
+#
+check_supported:
+	@if test 0$(xcodebuild_version) -lt 8 ; then \
+	    echo "You are using Xcode $(xcodebuild_version) on Mac OS $(macosx_version)"; \
+	    echo ""; \
+	    echo "ERROR: iODBC requires a Xcode version 8.x or newer"; \
+	    echo ""; \
+	    exit 1; \
+	fi
 
 #
 #  Generate iODBC framework style include files
@@ -211,7 +170,7 @@ install:
 	#  Install Frameworks
 	#
 	-rm $(DESTDIR)/Library/Frameworks/iODBC.framework/Versions/Current
-	rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
+	-rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
 	cd iODBCinst;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	cd iODBC;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	#

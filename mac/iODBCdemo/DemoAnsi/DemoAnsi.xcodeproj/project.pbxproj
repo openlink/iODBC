@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,7 +14,6 @@
 		8501705F1CCD0653008AC148 /* NSAttributedStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 850170561CCD0653008AC148 /* NSAttributedStringAdditions.m */; };
 		850170601CCD0653008AC148 /* NSResWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 850170581CCD0653008AC148 /* NSResWindow.m */; };
 		850170611CCD0653008AC148 /* TestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8501705A1CCD0653008AC148 /* TestController.m */; };
-		8594AF211CCE4CF900EE7ABC /* InfoAnsi.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8518E2151CCD025900967942 /* InfoAnsi.plist */; };
 		8594AF2A1CCE4D2500EE7ABC /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 8594AF221CCE4D2500EE7ABC /* Credits.rtf */; };
 		8594AF2B1CCE4D2500EE7ABC /* ExecSQL.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8594AF241CCE4D2500EE7ABC /* ExecSQL.xib */; };
 		8594AF2C1CCE4D2500EE7ABC /* iODBCdemo.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8594AF261CCE4D2500EE7ABC /* iODBCdemo.icns */; };
@@ -26,7 +25,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		8501704D1CCD0653008AC148 /* ExecController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecController.h; path = ../ExecController.h; sourceTree = "<group>"; };
 		8501704E1CCD0653008AC148 /* ExecController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExecController.m; path = ../ExecController.m; sourceTree = "<group>"; };
@@ -43,13 +41,14 @@
 		850170591CCD0653008AC148 /* TestController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestController.h; path = ../TestController.h; sourceTree = "<group>"; };
 		8501705A1CCD0653008AC148 /* TestController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestController.m; path = ../TestController.m; sourceTree = "<group>"; };
 		8518E2151CCD025900967942 /* InfoAnsi.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoAnsi.plist; sourceTree = "<group>"; };
-		8594AF231CCE4D2500EE7ABC /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = ../English.lproj/Credits.rtf; sourceTree = "<group>"; };
-		8594AF251CCE4D2500EE7ABC /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = ../English.lproj/ExecSQL.xib; sourceTree = "<group>"; };
-		8594AF271CCE4D2500EE7ABC /* English */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = English; path = ../English.lproj/iODBCdemo.icns; sourceTree = "<group>"; };
-		8594AF291CCE4D2500EE7ABC /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = ../English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		85F0784509F88DFC0007FC8F /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = /Library/Frameworks/iODBC.framework; sourceTree = "<absolute>"; };
 		CD7C36440A0109AA001A43B7 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = /Library/Frameworks/iODBCinst.framework; sourceTree = "<absolute>"; };
 		CD7C37B70A063F40001A43B7 /* iODBC Demo Ansi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iODBC Demo Ansi.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDCBD5F3263707F900F31A21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = ../Base.lproj/ExecSQL.xib; sourceTree = "<group>"; };
+		CDCBD5F4263707FA00F31A21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = ../Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		CDCBD5F5263707FF00F31A21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = ../en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		CDCBD5F6263707FF00F31A21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CDCBD5F7263707FF00F31A21 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = en; path = ../en.lproj/iODBCdemo.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,14 +163,20 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 1130;
+				TargetAttributes = {
+					CD7C37A70A063F40001A43B7 = {
+						ProvisioningStyle = Manual;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "DemoAnsi" */;
-			compatibilityVersion = "Xcode 2.4";
-			developmentRegion = English;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
-				English,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* iODBC Demo Unicode */;
 			projectDirPath = "";
@@ -188,7 +193,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8594AF2C1CCE4D2500EE7ABC /* iODBCdemo.icns in Resources */,
-				8594AF211CCE4CF900EE7ABC /* InfoAnsi.plist in Resources */,
 				8594AF2B1CCE4D2500EE7ABC /* ExecSQL.xib in Resources */,
 				8594AF2A1CCE4D2500EE7ABC /* Credits.rtf in Resources */,
 				CD7C37AA0A063F40001A43B7 /* InfoPlist.strings in Resources */,
@@ -219,7 +223,7 @@
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C165DFE840E0CC02AAC07 /* English */,
+				CDCBD5F6263707FF00F31A21 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -227,7 +231,7 @@
 		8594AF221CCE4D2500EE7ABC /* Credits.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				8594AF231CCE4D2500EE7ABC /* English */,
+				CDCBD5F5263707FF00F31A21 /* en */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -235,7 +239,7 @@
 		8594AF241CCE4D2500EE7ABC /* ExecSQL.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				8594AF251CCE4D2500EE7ABC /* English */,
+				CDCBD5F3263707F900F31A21 /* Base */,
 			);
 			name = ExecSQL.xib;
 			sourceTree = "<group>";
@@ -243,7 +247,7 @@
 		8594AF261CCE4D2500EE7ABC /* iODBCdemo.icns */ = {
 			isa = PBXVariantGroup;
 			children = (
-				8594AF271CCE4D2500EE7ABC /* English */,
+				CDCBD5F7263707FF00F31A21 /* en */,
 			);
 			name = iODBCdemo.icns;
 			sourceTree = "<group>";
@@ -251,7 +255,7 @@
 		8594AF281CCE4D2500EE7ABC /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				8594AF291CCE4D2500EE7ABC /* English */,
+				CDCBD5F4263707FA00F31A21 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -267,18 +271,43 @@
 					$IODBC_32BIT,
 					x86_64,
 				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Deployment,
 					../../mac/iODBC/build,
 					../../mac/iODBCinst/build/Deployment,
 					../../mac/iODBCinst/build,
 				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
-				PREBINDING = NO;
-				SDKROOT = $IODBC_SDK;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Development;
 		};
@@ -290,29 +319,49 @@
 					$IODBC_32BIT,
 					x86_64,
 				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../mac/iODBC/build/Deployment,
 					../../../mac/iODBC/build,
 					../../../mac/iODBCinst/build/Deployment,
 					../../../mac/iODBCinst/build,
 				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
-				PREBINDING = NO;
-				SDKROOT = $IODBC_SDK;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 			};
 			name = Deployment;
 		};
 		CD7C37B50A063F40001A43B7 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					arm64,
-					$IODBC_32BIT,
-					x86_64,
-				);
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../mac/iODBC/build/Deployment,
@@ -321,12 +370,12 @@
 					../../../mac/iODBCinst/build,
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoAnsi.plist;
 				INSTALL_PATH = /Applications/iODBC;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-ansi";
 				PRODUCT_NAME = "iODBC Demo Ansi";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -336,11 +385,7 @@
 		CD7C37B60A063F40001A43B7 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					arm64,
-					$IODBC_32BIT,
-					x86_64,
-				);
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../mac/iODBC/build/Deployment,
 					../../../mac/iODBC/build,
@@ -352,6 +397,7 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoAnsi.plist;
 				INSTALL_PATH = /Applications/iODBC;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-ansi";
 				PRODUCT_NAME = "iODBC Demo Ansi";
 				WRAPPER_EXTENSION = app;
 			};

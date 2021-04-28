@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -72,7 +72,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8568A59C196E8AE900738ECF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = SYSTEM_DEVELOPER_DIR; };
+		8568A59C196E8AE900738ECF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		8568A59E196E8B1D00738ECF /* confirm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = confirm.png; path = ../../iodbcadm/mac/confirm.png; sourceTree = "<group>"; };
 		8568A5A2196E8B1D00738ECF /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../../iodbcadm/mac/utils.h; sourceTree = "<group>"; };
 		8568A5A3196E8B1D00738ECF /* utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = utils.m; path = ../../iodbcadm/mac/utils.m; sourceTree = "<group>"; };
@@ -120,22 +120,22 @@
 		85983D8507D2C1870022E958 /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../iODBC/build/Development/iODBC.framework; sourceTree = SOURCE_ROOT; };
 		85983D8707D2C1A50022E958 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../iODBCinst/build/Development/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		85983E0E07D2C2080022E958 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
-		85A3909A1B790E0A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
-		85A3909D1B790E1700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_PoolConfigController.xib; sourceTree = "<group>"; };
-		85A390A01B790E2000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DSNmanageController.xib; sourceTree = "<group>"; };
-		85A390A31B790E2D00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DrvConfigController.xib; sourceTree = "<group>"; };
-		85A390A61B790E3500AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DrvRemoveController.xib; sourceTree = "<group>"; };
-		85A390A91B790E3A00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DriverChooseDSNController.xib; sourceTree = "<group>"; };
-		85A390AC1B790E4000AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_SetupController.xib; sourceTree = "<group>"; };
-		85A390AF1B790E4900AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DSNchooserController.xib; sourceTree = "<group>"; };
-		85A390B51B790E5700AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_DriverChooseFDSNController.xib; sourceTree = "<group>"; };
-		85A390B81B790E5C00AC8862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = English.lproj/IODBCadm_KeyValController.xib; sourceTree = "<group>"; };
 		85D41905197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_DriverChooseFDSNController.h; path = ../../iodbcadm/mac/IODBCadm_DriverChooseFDSNController.h; sourceTree = "<group>"; };
 		85D41906197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_DriverChooseFDSNController.m; path = ../../iodbcadm/mac/IODBCadm_DriverChooseFDSNController.m; sourceTree = "<group>"; };
 		85D4190B197B824300C2C443 /* IODBCadm_KeyValController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IODBCadm_KeyValController.h; path = ../../iodbcadm/mac/IODBCadm_KeyValController.h; sourceTree = "<group>"; };
 		85D4190C197B824300C2C443 /* IODBCadm_KeyValController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IODBCadm_KeyValController.m; path = ../../iodbcadm/mac/IODBCadm_KeyValController.m; sourceTree = "<group>"; };
 		CDAE3C230987D71D003250F8 /* Info-iODBCadm.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iODBCadm.plist"; sourceTree = "<group>"; };
 		CDAE3C240987D71D003250F8 /* iODBCadm.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iODBCadm.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDE9EB232636F93B0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_PoolConfigController.xib; sourceTree = "<group>"; };
+		CDE9EB242636F93B0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_DSNmanageController.xib; sourceTree = "<group>"; };
+		CDE9EB252636F93B0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_DrvConfigController.xib; sourceTree = "<group>"; };
+		CDE9EB262636F93C0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_DrvRemoveController.xib; sourceTree = "<group>"; };
+		CDE9EB272636F93C0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_DriverChooseDSNController.xib; sourceTree = "<group>"; };
+		CDE9EB282636F93C0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_SetupController.xib; sourceTree = "<group>"; };
+		CDE9EB292636F93C0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_DSNchooserController.xib; sourceTree = "<group>"; };
+		CDE9EB2A2636F93C0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_DriverChooseFDSNController.xib; sourceTree = "<group>"; };
+		CDE9EB2B2636F93D0056782B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IODBCadm_KeyValController.xib; sourceTree = "<group>"; };
+		CDE9EB2C2636F9440056782B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,13 +377,20 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 1130;
+				TargetAttributes = {
+					CDAE3BE90987D71D003250F8 = {
+						ProvisioningStyle = Manual;
+					};
+				};
 			};
 			buildConfigurationList = CDAE3C250987D71E003250F8 /* Build configuration list for PBXProject "iODBCadm" */;
-			compatibilityVersion = "Xcode 2.4";
-			developmentRegion = English;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* iODBCadm */;
 			projectDirPath = "";
@@ -460,7 +467,7 @@
 		85A390991B790E0A00AC8862 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A3909A1B790E0A00AC8862 /* en */,
+				CDE9EB2C2636F9440056782B /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -468,7 +475,7 @@
 		85A3909E1B790E1700AC8862 /* IODBCadm_PoolConfigController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A3909D1B790E1700AC8862 /* en */,
+				CDE9EB232636F93B0056782B /* Base */,
 			);
 			name = IODBCadm_PoolConfigController.xib;
 			path = ../../iodbcadm/mac;
@@ -477,7 +484,7 @@
 		85A390A11B790E2000AC8862 /* IODBCadm_DSNmanageController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390A01B790E2000AC8862 /* en */,
+				CDE9EB242636F93B0056782B /* Base */,
 			);
 			name = IODBCadm_DSNmanageController.xib;
 			path = ../../iodbcadm/mac;
@@ -486,7 +493,7 @@
 		85A390A41B790E2D00AC8862 /* IODBCadm_DrvConfigController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390A31B790E2D00AC8862 /* en */,
+				CDE9EB252636F93B0056782B /* Base */,
 			);
 			name = IODBCadm_DrvConfigController.xib;
 			path = ../../iodbcadm/mac;
@@ -495,7 +502,7 @@
 		85A390A71B790E3500AC8862 /* IODBCadm_DrvRemoveController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390A61B790E3500AC8862 /* en */,
+				CDE9EB262636F93C0056782B /* Base */,
 			);
 			name = IODBCadm_DrvRemoveController.xib;
 			path = ../../iodbcadm/mac;
@@ -504,7 +511,7 @@
 		85A390AA1B790E3A00AC8862 /* IODBCadm_DriverChooseDSNController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390A91B790E3A00AC8862 /* en */,
+				CDE9EB272636F93C0056782B /* Base */,
 			);
 			name = IODBCadm_DriverChooseDSNController.xib;
 			path = ../../iodbcadm/mac;
@@ -513,7 +520,7 @@
 		85A390AD1B790E4000AC8862 /* IODBCadm_SetupController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390AC1B790E4000AC8862 /* en */,
+				CDE9EB282636F93C0056782B /* Base */,
 			);
 			name = IODBCadm_SetupController.xib;
 			path = ../../iodbcadm/mac;
@@ -522,7 +529,7 @@
 		85A390B01B790E4900AC8862 /* IODBCadm_DSNchooserController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390AF1B790E4900AC8862 /* en */,
+				CDE9EB292636F93C0056782B /* Base */,
 			);
 			name = IODBCadm_DSNchooserController.xib;
 			path = ../../iodbcadm/mac;
@@ -531,7 +538,7 @@
 		85A390B61B790E5700AC8862 /* IODBCadm_DriverChooseFDSNController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390B51B790E5700AC8862 /* en */,
+				CDE9EB2A2636F93C0056782B /* Base */,
 			);
 			name = IODBCadm_DriverChooseFDSNController.xib;
 			path = ../../iodbcadm/mac;
@@ -540,7 +547,7 @@
 		85A390B91B790E5C00AC8862 /* IODBCadm_KeyValController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				85A390B81B790E5C00AC8862 /* en */,
+				CDE9EB2B2636F93D0056782B /* Base */,
 			);
 			name = IODBCadm_KeyValController.xib;
 			path = ../../iodbcadm/mac;
@@ -557,6 +564,7 @@
 					$IODBC_32BIT,
 					x86_64,
 				);
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -571,7 +579,6 @@
 				);
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
@@ -587,16 +594,15 @@
 				INSTALL_PATH = /;
 				LIBRARY_SEARCH_PATHS = "";
 				LIBRARY_STYLE = BUNDLE;
-				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				OTHER_LDFLAGS = (
 					"-multiply_defined",
 					suppress,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = org.iodbc.adm;
 				PRODUCT_NAME = iODBCadm;
-				SDKROOT = macosx10.8;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				STRIPFLAGS = "-u -r -s ../../mac/iodbcadm.exp";
@@ -618,6 +624,7 @@
 					$IODBC_32BIT,
 					x86_64,
 				);
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Deployment,
@@ -625,7 +632,6 @@
 					../../mac/iODBC/build/Deployment,
 					../../mac/iODBC/build,
 				);
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
@@ -641,16 +647,15 @@
 				INSTALL_PATH = /;
 				LIBRARY_SEARCH_PATHS = "";
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				OTHER_LDFLAGS = (
 					"-multiply_defined",
 					suppress,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = org.iodbc.adm;
 				PRODUCT_NAME = iODBCadm;
-				SDKROOT = $IODBC_SDK;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -670,10 +675,38 @@
 					$IODBC_32BIT,
 					x86_64,
 				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
-				SDKROOT = $IODBC_SDK;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Development;
@@ -686,10 +719,36 @@
 					$IODBC_32BIT,
 					x86_64,
 				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				MACOSX_DEPLOYMENT_TARGET = $IODBC_TARGET;
-				SDKROOT = $IODBC_SDK;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Deployment;
