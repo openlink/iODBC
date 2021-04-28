@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
@@ -7,11 +7,11 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBC Administrator64</string>
 	<key>CFBundleGetInfoString</key>
-	<string>iODBC Administrator64 version 3.52.14, Copyright 1995-2021, OpenLink Software</string>
+	<string>iODBC Administrator64 version $IODBC_VERSION, Copyright 1995-2021, OpenLink Software</string>
 	<key>CFBundleIconFile</key>
 	<string>iODBCAdministrator.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.iodbc.iODBCAdministrator64</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.52.14</string>
+	<string>$IODBC_VERSION</string>
 	<key>CFBundleSignature</key>
 	<string>odbc</string>
 	<key>CFBundleVersion</key>
-	<string>3.52.14</string>
+	<string>$IODBC_VERSION</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

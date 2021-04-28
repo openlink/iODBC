@@ -81,14 +81,14 @@
 #include <sql.h>
 #include <sqlext.h>
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <unicode.h>
-#include <herr.h>
-#include <henv.h>
-#include <hdbc.h>
+#include "unicode.h"
+#include "herr.h"
+#include "henv.h"
+#include "hdbc.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
 char *odbcapi_symtab[] =
 {

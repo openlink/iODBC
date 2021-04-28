@@ -85,7 +85,7 @@ CC=${CC:-cc}
 CFLAGS=${CFLAGS:-"-O"}
 LDFLAGS=${LDFLAGS:-""}
 CONFLAGS=${CONFLAGS:-"--disable-gui --enable-maintainer-mode"}
-MAKE=${MAKE:-gmake}
+MAKE=${MAKE:-make}
 
 BUILD=run_make
 
@@ -296,6 +296,15 @@ case $OS in
        export CFLAGS CONFLAGS
        $BUILD 64
        ;;
+
+    aarch64-apple-darwin20*)
+       PREFIX=/usr/local/iODBC.universal
+       CONFLAGS="--disable-shared --with-pic --disable-dependency-tracking"
+       CFLAGS="-O -mmacosx-version-min=10.9 -arch arm64 -arch x86_64"
+       export PREFIX CONFLAGS CFLAGS
+       $BUILD universal
+       ;;
+
 
     *-apple-darwin14*)
        PREFIX=/usr/local/iODBC.darwin

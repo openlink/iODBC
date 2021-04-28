@@ -81,16 +81,16 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
-#include <unicode.h>
+#include "unicode.h"
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <herr.h>
-#include <henv.h>
-#include <hdbc.h>
-#include <hstmt.h>
+#include "herr.h"
+#include "henv.h"
+#include "hdbc.h"
+#include "hstmt.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
 static SQLRETURN
 SQLBindCol_Internal (

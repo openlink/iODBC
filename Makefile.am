@@ -122,12 +122,6 @@ EXTRA_DIST		= \
 	$(srcdir)/mac/iODBCadministrator64/Info-iODBC_Administrator.plist \
 	$(srcdir)/mac/iODBCadministrator64/iODBCadministrator64.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCadministrator64/main.m \
-	$(srcdir)/mac/iODBCcfmbridge/*.c \
-	$(srcdir)/mac/iODBCcfmbridge/*.h \
-	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.exp \
-	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.r \
-	$(srcdir)/mac/iODBCcfmbridge/iODBC_CFM_Bridge \
-	$(srcdir)/mac/iODBCcfmbridge/iODBC_CFM_Bridge.res \
 	$(srcdir)/mac/iODBCdemo/*.h \
 	$(srcdir)/mac/iODBCdemo/DemoAnsi/DemoAnsi.xcodeproj/project.pbxproj \
 	$(srcdir)/mac/iODBCdemo/DemoAnsi/English.lproj/InfoPlist.strings \

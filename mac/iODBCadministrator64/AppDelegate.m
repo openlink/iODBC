@@ -77,6 +77,7 @@
 #import <iODBC/sqlext.h>
 #import <iODBC/sqltypes.h>
 #import <iODBC/sqlucode.h>
+#include <iODBCinst/odbcinst.h>
 
 @interface AppDelegate ()
 

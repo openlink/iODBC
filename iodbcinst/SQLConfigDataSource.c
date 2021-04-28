@@ -77,7 +77,7 @@
 
 #include <iodbc.h>
 #include <odbcinst.h>
-#include <unicode.h>
+#include "unicode.h"
 
 #if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #  include <Carbon/Carbon.h>
