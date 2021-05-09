@@ -95,7 +95,7 @@ EXTRA_DIST		= \
 	$(srcdir)/mac/drvproxy.exp \
 	$(srcdir)/mac/framework-include.sh \
 	$(srcdir)/mac/GNUmakefile \
-	$(srcdir)/mac/iodbc-config.macosx \
+	$(srcdir)/mac/iodbc-config.macos \
 	$(srcdir)/mac/iodbc.exp \
 	$(srcdir)/mac/iODBC/English.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBC/Info-iODBC.plist \

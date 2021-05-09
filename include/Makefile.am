@@ -85,4 +85,5 @@ include_HEADERS         = \
 	iodbcext.h
 
 noinst_HEADERS	= \
-	iodbc.h
+	iodbc.h \
+	macos_config.h

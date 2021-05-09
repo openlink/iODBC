@@ -586,7 +586,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ODBCVER=0x351",
 					_MACX,
-					DLDAPI_MACX,
 					IODBC_COCOA,
 				);
 				HEADER_SEARCH_PATHS = ../../include;
@@ -639,7 +638,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ODBCVER=0x351",
 					_MACX,
-					DLDAPI_MACX,
 					IODBC_COCOA,
 				);
 				HEADER_SEARCH_PATHS = ../../include;

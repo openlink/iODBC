@@ -704,7 +704,6 @@
 					_REENTRANT,
 					WITH_PTHREADS,
 					_MACX,
-					DLDAPI_MACX,
 					IODBC_COCOA,
 				);
 				HEADER_SEARCH_PATHS = (
@@ -756,7 +755,6 @@
 					_REENTRANT,
 					WITH_PTHREADS,
 					_MACX,
-					DLDAPI_MACX,
 					IODBC_COCOA,
 				);
 				HEADER_SEARCH_PATHS = (

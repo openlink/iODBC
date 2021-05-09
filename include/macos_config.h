@@ -1,9 +1,7 @@
 /*
- *  iodbcunix.h
+ *  macos_config.h
  *
- *  $Id$
- *
- *  ODBC defines for Unix
+ *  Extract from config.h for macOS xcodebuild
  *
  *  The iODBC driver manager.
  *
@@ -75,86 +73,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _IODBCUNIX_H
-#define _IODBCUNIX_H
+#ifndef _MACOS_CONFIG_H
+#define _MACOS_CONFIG_H
 
-/*
- *  Standard header files
- */
-#include <stdlib.h>
-#include <unistd.h>
+#define HAVE_ASPRINTF 1
+#define HAVE_DLADDR 1
+#define HAVE_DLFCN_H 1
+#define HAVE_DL_INFO 1
+#define HAVE_DLOPEN 1
+#define HAVE_DLSYM 1
+#define HAVE_GETTIMEOFDAY 1
+#define HAVE_INTTYPES_H 1
+#define HAVE_LIBDL 1
+#define HAVE_LOCALTIME_R 1
+#define HAVE_MEMORY_H 1
+#define HAVE_SETENV 1
+#define HAVE_SNPRINTF 1
+#define HAVE_STDINT_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_STRERROR 1
+#define HAVE_STRING_H 1
+#define HAVE_STRINGS_H 1
+#define HAVE_SYS_STAT_H 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_TOWLOWER 1
+#define HAVE_UNISTD_H 1
+#define HAVE_WCHAR_H 1
+#define HAVE_WCSCAT 1
+#define HAVE_WCSCHR 1
+#define HAVE_WCSCMP 1
+#define HAVE_WCSCPY 1
+#define HAVE_WCSLEN 1
+#define HAVE_WCSNCASECMP 1
+#define HAVE_WCSNCPY 1
+#define STDC_HEADERS 1
+#define TIME_WITH_SYS_TIME 1
 
-#if defined(__WCHAR_TYPE__)
-#include <wchar.h>
+#undef HAVE_DYLD
+#undef DLDAPI_MACX
 #endif
-
-
-/*
- *  Windows-style declarations
- */
-#define NEAR
-#define FAR
-#define EXPORT
-#define PASCAL
-#define VOID			void
-#define CALLBACK
-#define _cdecl
-#define __stdcall
-
-
-/*
- *  Boolean support
- */
-#ifndef TRUE
-#define TRUE			1
-#endif
-#ifndef FALSE
-#define FALSE			0
-#endif
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-/*
- *  Windows-style typedefs
- */
-#if defined (OBSOLETE_WINDOWS_TYPES)
-typedef unsigned char		BYTE;
-#endif
-typedef unsigned short		WORD;
-typedef unsigned int		DWORD;
-typedef char *			LPSTR;
-typedef const char *		LPCSTR;
-typedef wchar_t *		LPWSTR;
-typedef const wchar_t *		LPCWSTR;
-typedef DWORD *			LPDWORD;
-
-#if !defined(BOOL) && !defined(_OBJC_OBJC_H_)
-typedef int			BOOL;
-#endif
-
-
-/*
- *  Determine sizeof(long) in case it is not determined by configure/config.h
- */
-#ifndef SIZEOF_LONG
-#if defined (_LP64)	|| \
-    defined (__LP64__)	|| \
-    defined (__64BIT__)	|| \
-    defined (__alpha)	|| \
-    defined (__sparcv9)	|| \
-    defined (__arch64__)
-#define SIZEOF_LONG	8		/* 64 bit operating systems */
-#else
-#define SIZEOF_LONG	4		/* 32 bit operating systems */
-#endif
-#endif /* SIZEOF_LONG */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _IODBCUNIX_H */
