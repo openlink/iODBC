@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  The iODBC driver manager.
 #
@@ -84,11 +84,17 @@ SYSODBCINI=/Library/ODBC/odbc.ini
 SYSODBCINSTINI=/Library/ODBC/odbcinst.ini
 
 
+#
+#  macOS version
+#
+export MACOS_VERSION=$(sw_vers -productVersion)
+
+
 usage()
 {
 	cat <<EOF
 iODBC Configuration Script (framework build)
-iODBC Driver Manager $version
+iODBC Driver Manager $version for macOS $MACOS_VERSION
 Copyright (C) 1996-2021 OpenLink Software
 Please report all bugs to <iodbc@openlinksw.com>
 
@@ -155,12 +161,12 @@ while test $# -gt 0; do
       echo_libs=yes
       ;;
    --static-libs)
-      echo "** Warning: Mac OS X framework build does not support static libraries" >&2
+      echo "** Warning: macOS $MACOS_VERSION framework build does not support static libraries" >&2
       echo_libs=yes
       #echo_staticlibs=yes
       ;;
    --libtool-libs)
-      echo "** Warning: Mac OS X framework build does not support libtool libraries" >&2
+      echo "** Warning: macOS $MACOS_VERSION framework build does not support libtool libraries" >&2
       echo_libs=yes
       #echo_libtoollibs=yes
       ;;

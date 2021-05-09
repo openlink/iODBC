@@ -85,9 +85,10 @@ endif
 
 
 #
-#  Determine which version of Mac OS X we are running
+#  Determine which version of macOS we are running
 #
-macosx_version  := $(shell sw_vers -productVersion | cut -d . -f 1-2)
+macos_version  := $(shell sw_vers -productVersion)
+macos_major	:= $(shell sw_vers -productVersion | cut -d . -f 1 )
 
 
 #
@@ -104,17 +105,17 @@ IODBC_32BIT	= "i386"
 
 
 #
-#  Mac OS X 10.15
+#  macOS 10.15 (Catalina) does not have 32bit support
 #
-ifeq (10.15, $(findstring 10.15, $(macosx_version)))
+ifeq (10.15, $(findstring 10.15, $(macos_version)))
 IODBC_32BIT	:= ""
 endif
 
 
 #
-#  Mac OS 11.x
+#  macOS 11.x (BigSur)does not have 32bit support
 #
-ifeq (11.2, $(findstring 11.2, $(macosx_version)))
+ifeq (11, $(findstring 11, $(macos_major)))
 IODBC_32BIT	:= ""
 endif
 
@@ -129,7 +130,7 @@ export IODBC_VERSION IODBC_32BIT
 #  Build the libraries
 #
 all: check_supported include
-	@echo "Building on Mac OS X $(macosx_version)"
+	@echo "Building on macOS $(macos_version)"
 	@echo "Projbuild is [$(PROJBUILD)]"
 	cd iODBCinst;		$(PROJBUILD) build
 	cd iODBC;		$(PROJBUILD) build
@@ -148,7 +149,7 @@ all: check_supported include
 #
 check_supported:
 	@if test 0$(xcodebuild_version) -lt 8 ; then \
-	    echo "You are using Xcode $(xcodebuild_version) on Mac OS $(macosx_version)"; \
+	    echo "You are using Xcode $(xcodebuild_version) on macOS $(macos_version)"; \
 	    echo ""; \
 	    echo "ERROR: iODBC requires a Xcode version 8.x or newer"; \
 	    echo ""; \
