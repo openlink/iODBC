@@ -85,7 +85,7 @@ _iodbcdm_nativeerrorbox (
     HDBC	hdbc,
     HSTMT	hstmt)
 {
-  SQLCHAR buf[250];
+  SQLCHAR buf[4096];
   SQLCHAR sqlstate[15];
 
   /*
