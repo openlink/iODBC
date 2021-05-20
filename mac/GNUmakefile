@@ -108,7 +108,7 @@ IODBC_32BIT	= "i386"
 #  macOS 10.15 (Catalina) does not have 32bit support
 #
 ifeq (10.15, $(findstring 10.15, $(macos_version)))
-IODBC_32BIT	:= ""
+IODBC_32BIT	:= "x86_64"
 endif
 
 
@@ -116,7 +116,7 @@ endif
 #  macOS 11.x (BigSur)does not have 32bit support
 #
 ifeq (11, $(findstring 11, $(macos_major)))
-IODBC_32BIT	:= ""
+IODBC_32BIT	:= "x86_64"
 endif
 
 
