@@ -84,17 +84,17 @@
 #include <iodbcext.h>
 #include <odbcinst.h>
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <unicode.h>
-#include <herr.h>
-#include <henv.h>
-#include <hdbc.h>
-#include <hstmt.h>
+#include "unicode.h"
+#include "herr.h"
+#include "henv.h"
+#include "hdbc.h"
+#include "hstmt.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
-#include <unicode.h>
+#include "unicode.h"
 
 #if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>

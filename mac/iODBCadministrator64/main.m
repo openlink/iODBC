@@ -106,7 +106,7 @@ main (int argc, char *argv[])
 
   setlocale (LC_ALL, "");	/* Use native locale */
 
-  printf ("OpenLink iODBC Administrator (Mac OS X)\n");
+  printf ("OpenLink iODBC Administrator (macOS)\n");
   printf ("iODBC Driver Manager %s\n", VERSION);
   printf ("Copyright (C) 2000-2021 OpenLink Software\n");
   printf ("Please report all bugs to <iodbc@openlinksw.com>\n");

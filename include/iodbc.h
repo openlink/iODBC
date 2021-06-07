@@ -81,16 +81,18 @@
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
+#elif defined (__APPLE__)
+#include "macos_config.h"
 #endif
 
 #ifndef VERSION
-#define VERSION		"3.52.14"
+#define VERSION		"3.52.15"
 #define MAJ_VERSION	"3"
 #define MIN_VERSION	"52"
 #endif
 
 #ifndef IODBC_BUILD
-#define IODBC_BUILD 14210217	/* 0001.0928 */
+#define IODBC_BUILD 15210607	/* 0001.0928 */
 #endif
 
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
@@ -213,21 +215,6 @@
  */
 #define DLDAPI_VMS_IODBC	/* Use enhanced dlopen() */
 #endif
-
-
-/*
- *  Mac OS X Section
- */
-#if defined (__APPLE__)
-#  include <AvailabilityMacros.h>
-
-#  if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-#    undef DLDAPI_DYLD
-#    undef DLDAPI_MACX
-#    define HAVE_LIBDL 1
-#  endif
-#endif
-
 
 #define SYSERR		(-1)
 

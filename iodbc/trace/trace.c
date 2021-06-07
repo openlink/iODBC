@@ -75,9 +75,7 @@
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <iodbc.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -429,15 +427,9 @@ trace_start(void)
       trace_set_appname ("{No Application Name}");
   }
 #elif defined(__APPLE__)
-#ifdef MACOSX102
-  {
-    trace_set_appname ("{No Application Name}");
-  }
-#else
   {
     trace_set_appname ((char *) getprogname ());
   }
-#endif
 #endif
 
   /*

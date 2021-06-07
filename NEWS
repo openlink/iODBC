@@ -1,3 +1,18 @@
+Jun 07 2021, V3.52.15:
+    * Added support for macOS Big Sur on Apple Silicon using a universal build
+    * Fixed title to show CPU architecture used
+    * Fixed length of error message buffer
+    * Fixed small portability issues
+    * Removed support for Mac OS X 10.6 and older
+    * Removed deprecated iODBCcfmbridge for PPC
+
+    * Upgraded iODBC build to use recent versions of Xcode
+      - Minimum Xcode version is set to Xcode 8.0
+      - Minimum Mac OS deployment target is Mac OS X 10.9
+      - Migrated dialogs and plist files
+      - Migrated translation support
+
+
 Feb 17 2021, V3.52.14:
     * Added support for transparent conversion between UCS4, UTF-8 and UTF-16 codepages
     * Small documentation fixes

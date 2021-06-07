@@ -129,27 +129,15 @@ noinst_HEADERS		= \
 	iodbcadm.h
 
 EXTRA_DIST		= \
+	$(srcdir)/*.c \
+	$(srcdir)/*.h \
 	$(srcdir)/iodbcadm.exp \
+	$(srcdir)/Makefile.am \
+	$(srcdir)/gtk/*.c \
+	$(srcdir)/gtk/*.h \
+	$(srcdir)/gtk/*.xpm \
 	$(srcdir)/mac/*.c \
 	$(srcdir)/mac/*.h \
+	$(srcdir)/mac/*.m \
 	$(srcdir)/mac/*.png \
-	$(srcdir)/mac/English.lproj/IODBCadm_DriverChooseDSNController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_DriverChooseFDSNController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_DrvConfigController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_DrvRemoveController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_DSNchooserController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_DSNmanageController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_KeyValController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_PoolConfigController.xib \
-	$(srcdir)/mac/English.lproj/IODBCadm_SetupController.xib \
-	$(srcdir)/mac/Helpers.m \
-	$(srcdir)/mac/IODBCadm_DriverChooseDSNController.m \
-	$(srcdir)/mac/IODBCadm_DriverChooseFDSNController.m \
-	$(srcdir)/mac/IODBCadm_DrvConfigController.m \
-	$(srcdir)/mac/IODBCadm_DrvRemoveController.m \
-	$(srcdir)/mac/IODBCadm_DSNchooserController.m \
-	$(srcdir)/mac/IODBCadm_DSNmanageController.m \
-	$(srcdir)/mac/IODBCadm_KeyValController.m \
-	$(srcdir)/mac/IODBCadm_PoolConfigController.m \
-	$(srcdir)/mac/IODBCadm_SetupController.m \
-	$(srcdir)/mac/utils.m
+	$(srcdir)/mac/Base.lproj/*.xib

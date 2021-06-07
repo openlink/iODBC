@@ -80,18 +80,6 @@
 #include <iodbc.h>
 #include <iodbcext.h>
 
-
-#if defined (__APPLE__) && !defined (MACOSX102) && !defined (HAVE_CONFIG_H)
-#define HAVE_WCHAR_H 
-#define HAVE_WCSLEN 
-#define HAVE_WCSCPY 
-#define HAVE_WCSNCPY
-#define HAVE_WCSCHR
-#define HAVE_WCSCAT
-#define HAVE_WCSCMP
-#define HAVE_TOWLOWER
-#endif
-
 #if defined (HAVE_WCHAR_H)
 #include <wchar.h>
 #endif

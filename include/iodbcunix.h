@@ -84,7 +84,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#if defined(__WCHAR_TYPE__) && !defined(MACOSX102)
+#if defined(__WCHAR_TYPE__)
 #include <wchar.h>
 #endif
 
