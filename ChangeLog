@@ -1,3 +1,96 @@
+2021-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated NEWS
+
+	Updated README_MACOSX to add notes for macOS 11 Big Sur
+
+2021-05-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed iODBC Administrator base cpu flag for catalina and big sure builds
+
+	Fixed length of error message buffer
+
+2021-05-09  Patrick van Kleef  <patrick@muttley.pvk.private>
+
+	Fixed make distcheck
+
+	Fixed small portability issues and removed support for very old Mac OS X versions
+
+2021-05-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed use macOS instead of Mac OS X
+
+2021-04-28  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/big_sur' into develop
+
+	Fixed title to show CPU architecture used
+
+2021-04-28  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Upgraded to use recent versions of Xcode
+
+	* Minimum Xcode version is set to Xcode 8.0
+	* Minimum Mac OS deployment target is Mac OS X 10.9
+	* Migrated dialogs and plist files
+	* Migrated translation support
+	* Removed build support for older versions
+
+2021-04-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Added support for building on Big Sur
+
+2021-04-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Simplified build rules for Mac OS X and Mac OS 11
+
+	* Added support for building Apple Silicon on BigSur
+	* Fixed support for building i386 on Mojave and older
+	* Fixed backward compatible building for Mac OS 10.9 where possible
+	* Removed build rules for deprecated platforms Mac OS X 10.6 and older
+
+2021-04-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Added missing import
+
+	Fixed local include files from <> to ""
+
+2021-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Removed deprecated iODBCcfmbridge for PPC
+
+2021-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed dialog and menu definitions
+
+	The dialogs have been converted to the format used by Xcode 8 or
+	newer and are tagged to be compatible with machines running Mac OS
+	X 10.9 or newer.
+
+2021-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed pass iODBC version via environment variable to xcodebuild
+
+	Updated DOCTYPE of plist files
+
+	Updated version to 3.52.15 to start a new development cycle
+
+	Converted .strings files to UTF-8
+
+2021-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge tag 'v3.52.14' into develop
+
+	Tagged for final release
+
+2021-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'release/3.52.14'
+
+	Updated version and build date for release 3.52.14
+
+	Updated ChangeLog and NEWS
+
 2021-02-17  Ted Thibodeau  <tthibodeau@openlinksw.com>
 
 	Small documentation fixes
