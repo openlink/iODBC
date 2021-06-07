@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleName = "iODBC Demo Ansi";
+CFBundleShortVersionString = "Version 1.4";
+CFBundleGetInfoString = "iODBC Demo version 1.4, Copyright 2006-2021, OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 2006-2021, OpenLink Software";

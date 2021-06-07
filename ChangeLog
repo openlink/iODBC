@@ -1,4 +1,237 @@
+2021-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated NEWS
+
+	Updated README_MACOSX to add notes for macOS 11 Big Sur
+
+2021-05-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed iODBC Administrator base cpu flag for catalina and big sure builds
+
+	Fixed length of error message buffer
+
+2021-05-09  Patrick van Kleef  <patrick@muttley.pvk.private>
+
+	Fixed make distcheck
+
+	Fixed small portability issues and removed support for very old Mac OS X versions
+
+2021-05-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed use macOS instead of Mac OS X
+
+2021-04-28  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/big_sur' into develop
+
+	Fixed title to show CPU architecture used
+
+2021-04-28  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Upgraded to use recent versions of Xcode
+
+	* Minimum Xcode version is set to Xcode 8.0
+	* Minimum Mac OS deployment target is Mac OS X 10.9
+	* Migrated dialogs and plist files
+	* Migrated translation support
+	* Removed build support for older versions
+
+2021-04-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Added support for building on Big Sur
+
+2021-04-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Simplified build rules for Mac OS X and Mac OS 11
+
+	* Added support for building Apple Silicon on BigSur
+	* Fixed support for building i386 on Mojave and older
+	* Fixed backward compatible building for Mac OS 10.9 where possible
+	* Removed build rules for deprecated platforms Mac OS X 10.6 and older
+
+2021-04-12  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Added missing import
+
+	Fixed local include files from <> to ""
+
+2021-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Removed deprecated iODBCcfmbridge for PPC
+
+2021-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed dialog and menu definitions
+
+	The dialogs have been converted to the format used by Xcode 8 or
+	newer and are tagged to be compatible with machines running Mac OS
+	X 10.9 or newer.
+
+2021-02-24  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed pass iODBC version via environment variable to xcodebuild
+
+	Updated DOCTYPE of plist files
+
+	Updated version to 3.52.15 to start a new development cycle
+
+	Converted .strings files to UTF-8
+
+2021-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge tag 'v3.52.14' into develop
+
+	Tagged for final release
+
+2021-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'release/3.52.14'
+
+	Updated version and build date for release 3.52.14
+
+	Updated ChangeLog and NEWS
+
+2021-02-17  Ted Thibodeau  <tthibodeau@openlinksw.com>
+
+	Small documentation fixes
+
+2021-02-17  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issue with return buffer
+
+	Fixed cast
+
+	Fixed argument type
+
+	Fixed mode flags
+
+	Fixed missing check on pcbConnStrOut
+
+2021-02-09  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed always build with PIC on linux
+
+	Updated version to 3.53.14-rc4
+
+2021-02-09  Sergey Malinin  <smalinin@openlinksw.com>
+
+	SQLSetEnvAttr doesn't return SQL_SUCCESS for option SQL_ATTR_APP_UNICODE_TYPE
+
+2021-02-08  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to 3.53.14-rc3
+
+2021-02-08  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issue with switch ODBC driver to best supported unicode codepage
+
+2021-01-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated Copyright to include 2021
+
+2020-05-29  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Remove outdated file
+
+	Remove old code
+
+	Fix __WtoU8()
+
+2020-05-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to rc2
+
+2020-05-20  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix include files for /usr/local/iODBC/include
+
+2020-05-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2020_05_20_fix_SQLGetConnectOption' into develop
+
+2020-05-20  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix missprint in SQLBrowseConnect
+
+	SQLGetConnectOption returned wrong value for SQL_CURRENT_QUALIFIER and SQL_TRANSLATE_DLL for some cases
+
+2020-03-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix mixing calls to SQLFetchScroll with SQLFetch
+
+	Fix unicode conversion issues
+
+2020-03-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to rc1
+
+2020-03-05  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issues with Unicode <=> Ansi conversions, remove old Windows code
+
+2020-03-03  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issues checking for underscore
+
+2020-03-03  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Add DataDirect options to iodbcext.h
+
+2020-03-01  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix for ansi buffers allocation
+
+2020-01-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated Copyright
+
+2019-12-06  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2019_09_11_fix_ansi_conversions' into develop
+
+2019-12-06  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Increase size of buffers for Wide=>Ansi conversion
+
+	Update code for conversion between Ansi and Unicode
+
+2019-12-06  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed compiler warnings
+
+	Fixed issue with tracing
+
+	Fixed compiler warning
+
+2019-09-10  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated build number
+
+2019-09-09  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix truncate data in SQLGetPrivateProfileStringW
+
+2019-08-15  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed small issues building on recent versions of Mac OS X
+
+2019-08-13  iODBC Maintainer  <iodbc@openlinksw.com>
+
+	Updated version to 3.52.14
+
+2019-07-25  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed issue with older compilers
+
+2019-07-23  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Added initial support for Unicode UTF-8 and UTF-16 codepages
+
+	Enable transparent conversions between UCS4, UTF-8 and UTF-16 codepages
+
 2019-07-23  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Update documentation
 
 	Started new development cycle 3.52.14
 

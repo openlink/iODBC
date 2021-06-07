@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleName = "iODBCinst";
+CFBundleShortVersionString = "iODBCinst version 3.52.15";
+CFBundleGetInfoString = "iODBCinst version 3.52.15, Copyright 1995-2021, OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 1995-2021, OpenLink Software";

@@ -82,16 +82,16 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
-#include <unicode.h>
+#include "unicode.h"
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <herr.h>
-#include <henv.h>
-#include <hdbc.h>
-#include <hstmt.h>
+#include "herr.h"
+#include "henv.h"
+#include "hdbc.h"
+#include "hstmt.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
 SQLRETURN SQL_API
 SQLPrepare_Internal (
@@ -636,7 +636,7 @@ SQLBindParameter_Internal (
 	  free (pstmt->st_pparam);
 	}
       pstmt->st_pparam = newparam;
-      pstmt->st_nparam = (u_short) newsize;
+      pstmt->st_nparam = (SQLUSMALLINT) newsize;
     }
 
   pstmt->st_pparam[ipar-1] = parm;

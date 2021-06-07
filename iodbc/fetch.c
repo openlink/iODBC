@@ -82,15 +82,15 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <unicode.h>
-#include <herr.h>
-#include <henv.h>
-#include <hdbc.h>
-#include <hstmt.h>
+#include "unicode.h"
+#include "herr.h"
+#include "henv.h"
+#include "hdbc.h"
+#include "hstmt.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
 SQLRETURN
 SQLFetch_Internal (SQLHSTMT hstmt)

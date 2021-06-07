@@ -82,19 +82,19 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 
-#include <unicode.h>
+#include "unicode.h"
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <herr.h>
+#include "herr.h"
 #if (ODBCVER >= 0x0300)
-#include <hdesc.h>
+#include "hdesc.h"
 #endif
-#include <henv.h>
-#include <hdbc.h>
-#include <hstmt.h>
+#include "henv.h"
+#include "hdbc.h"
+#include "hstmt.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
 #include "herr.ci"
 #include "misc.h"

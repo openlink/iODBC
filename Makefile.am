@@ -95,69 +95,84 @@ EXTRA_DIST		= \
 	$(srcdir)/mac/drvproxy.exp \
 	$(srcdir)/mac/framework-include.sh \
 	$(srcdir)/mac/GNUmakefile \
-	$(srcdir)/mac/iodbc-config.macosx \
+	$(srcdir)/mac/iodbc-config.macos \
 	$(srcdir)/mac/iodbc.exp \
-	$(srcdir)/mac/iODBC/English.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBC/en.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBC/Info-iODBC.plist \
 	$(srcdir)/mac/iODBC/iODBC.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBC/iODBC.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBC/iODBC.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBC/iODBC.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iodbcadm.exp \
-	$(srcdir)/mac/iODBCadm/English.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCadm/en.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBCadm/Info-iODBCadm.plist \
 	$(srcdir)/mac/iODBCadm/iODBCadm.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBCadm/iODBCadm.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCadm/iODBCadm.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCadm/iODBCadm.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iODBCadministrator/*.h \
-	$(srcdir)/mac/iODBCadministrator/AppDelegate.m \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/InfoPlist.strings \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/iODBCAdministrator.icns \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/MainMenu.xib \
-	$(srcdir)/mac/iODBCadministrator/English.lproj/odbcman.tiff \
+	$(srcdir)/mac/iODBCadministrator/*.m \
+	$(srcdir)/mac/iODBCadministrator/Base.lproj/MainMenu.xib \
+	$(srcdir)/mac/iODBCadministrator/en.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCadministrator/en.lproj/iODBCAdministrator.icns \
+	$(srcdir)/mac/iODBCadministrator/en.lproj/odbcman.tiff \
 	$(srcdir)/mac/iODBCadministrator/Info-iODBC_Administrator.plist \
 	$(srcdir)/mac/iODBCadministrator/iODBCadministrator.xcodeproj/project.pbxproj \
-	$(srcdir)/mac/iODBCadministrator/main.m \
+	$(srcdir)/mac/iODBCadministrator/iODBCadministrator.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCadministrator/iODBCadministrator.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCadministrator/iODBCadministrator.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iODBCadministrator64/*.h \
-	$(srcdir)/mac/iODBCadministrator64/AppDelegate.m \
-	$(srcdir)/mac/iODBCadministrator64/English.lproj/InfoPlist.strings \
-	$(srcdir)/mac/iODBCadministrator64/English.lproj/iODBCAdministrator.icns \
-	$(srcdir)/mac/iODBCadministrator64/English.lproj/MainMenu.xib \
-	$(srcdir)/mac/iODBCadministrator64/English.lproj/odbcman.tiff \
+	$(srcdir)/mac/iODBCadministrator64/*.m \
+	$(srcdir)/mac/iODBCadministrator64/Base.lproj/MainMenu.xib \
+	$(srcdir)/mac/iODBCadministrator64/en.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCadministrator64/en.lproj/iODBCAdministrator.icns \
+	$(srcdir)/mac/iODBCadministrator64/en.lproj/odbcman.tiff \
 	$(srcdir)/mac/iODBCadministrator64/Info-iODBC_Administrator.plist \
 	$(srcdir)/mac/iODBCadministrator64/iODBCadministrator64.xcodeproj/project.pbxproj \
-	$(srcdir)/mac/iODBCadministrator64/main.m \
-	$(srcdir)/mac/iODBCcfmbridge/*.c \
-	$(srcdir)/mac/iODBCcfmbridge/*.h \
-	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.exp \
-	$(srcdir)/mac/iODBCcfmbridge/iodbccfm.r \
-	$(srcdir)/mac/iODBCcfmbridge/iODBC_CFM_Bridge \
-	$(srcdir)/mac/iODBCcfmbridge/iODBC_CFM_Bridge.res \
+	$(srcdir)/mac/iODBCadministrator64/iODBCadministrator64.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCadministrator64/iODBCadministrator64.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCadministrator64/iODBCadministrator64.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iODBCdemo/*.h \
+	$(srcdir)/mac/iODBCdemo/*.m \
+	$(srcdir)/mac/iODBCdemo/Base.lproj/ExecSQL.xib \
+	$(srcdir)/mac/iODBCdemo/Base.lproj/MainMenu.xib \
 	$(srcdir)/mac/iODBCdemo/DemoAnsi/DemoAnsi.xcodeproj/project.pbxproj \
-	$(srcdir)/mac/iODBCdemo/DemoAnsi/English.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCdemo/DemoAnsi/DemoAnsi.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCdemo/DemoAnsi/DemoAnsi.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCdemo/DemoAnsi/DemoAnsi.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
+	$(srcdir)/mac/iODBCdemo/DemoAnsi/en.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBCdemo/DemoAnsi/InfoAnsi.plist \
 	$(srcdir)/mac/iODBCdemo/DemoUnicode/DemoUnicode.xcodeproj/project.pbxproj \
-	$(srcdir)/mac/iODBCdemo/DemoUnicode/English.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCdemo/DemoUnicode/DemoUnicode.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCdemo/DemoUnicode/DemoUnicode.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCdemo/DemoUnicode/DemoUnicode.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
+	$(srcdir)/mac/iODBCdemo/DemoUnicode/en.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBCdemo/DemoUnicode/InfoUnicode.plist \
-	$(srcdir)/mac/iODBCdemo/DSNchooserController.m \
 	$(srcdir)/mac/iODBCdemo/DSNchooserController.xib \
-	$(srcdir)/mac/iODBCdemo/English.lproj/Credits.rtf \
-	$(srcdir)/mac/iODBCdemo/English.lproj/ExecSQL.xib \
-	$(srcdir)/mac/iODBCdemo/English.lproj/iODBCdemo.icns \
-	$(srcdir)/mac/iODBCdemo/English.lproj/MainMenu.xib \
-	$(srcdir)/mac/iODBCdemo/ExecController.m \
-	$(srcdir)/mac/iODBCdemo/Helpers.m \
+	$(srcdir)/mac/iODBCdemo/en.lproj/Credits.rtf \
+	$(srcdir)/mac/iODBCdemo/en.lproj/iODBCdemo.icns \
 	$(srcdir)/mac/iODBCdemo/iodbcdemo_Prefix.pch \
-	$(srcdir)/mac/iODBCdemo/LinkTextFieldCell.m \
-	$(srcdir)/mac/iODBCdemo/main.m \
-	$(srcdir)/mac/iODBCdemo/NSAttributedStringAdditions.m \
-	$(srcdir)/mac/iODBCdemo/NSResWindow.m \
-	$(srcdir)/mac/iODBCdemo/TestController.m \
-	$(srcdir)/mac/iODBCdrvproxy/English.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCdrvproxy/en.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBCdrvproxy/Info-iODBCdrvproxy.plist \
 	$(srcdir)/mac/iODBCdrvproxy/iODBCdrvproxy.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBCdrvproxy/iODBCdrvproxy.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCdrvproxy/iODBCdrvproxy.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCdrvproxy/iODBCdrvproxy.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iodbcinst.exp \
-	$(srcdir)/mac/iODBCinst/English.lproj/InfoPlist.strings \
+	$(srcdir)/mac/iODBCinst/en.lproj/InfoPlist.strings \
 	$(srcdir)/mac/iODBCinst/Info-iODBCinst.plist \
 	$(srcdir)/mac/iODBCinst/iODBCinst.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBCinst/iODBCinst.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCinst/iODBCinst.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCinst/iODBCinst.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iODBCtest/iODBCtest.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBCtest/iODBCtest.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCtest/iODBCtest.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCtest/iODBCtest.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/iODBCtestw/iODBCtestw.xcodeproj/project.pbxproj \
+	$(srcdir)/mac/iODBCtestw/iODBCtestw.xcodeproj/project.xcworkspace/contents.xcworkspacedata \
+	$(srcdir)/mac/iODBCtestw/iODBCtestw.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist \
+	$(srcdir)/mac/iODBCtestw/iODBCtestw.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings \
 	$(srcdir)/mac/link-inclibs.sh \
 	$(srcdir)/debian/changelog \
 	$(srcdir)/debian/compat \

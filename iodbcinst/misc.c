@@ -237,7 +237,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	  else if (doCreate)
 	    {
 	      int f = open ((char *) buf, O_CREAT,
-		  S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+		  S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 	      if (f != -1)
 		{
 		  close (f);
@@ -279,7 +279,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	  else if (doCreate)
 	    {
 	      int f = open ((char *) buf, O_CREAT,
-		  S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+		  S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 	      if (f != -1)
 		{
 		  close (f);
@@ -318,7 +318,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
 	  else if (doCreate)
 	    {
 	      int f = open ((char *) buf, O_CREAT,
-		  S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+		  S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 	      if (f != -1)
 		{
 		  close (f);
@@ -338,7 +338,7 @@ _iodbcadm_getinifile (char *buf, int size, int bIsInst, int doCreate)
       else if (doCreate)
 	{
 	  int f = open ((char *) buf, O_CREAT,
-	      S_IREAD | S_IWRITE | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 	  if (f != -1)
 	    {
 	      close (f);
