@@ -1,6 +1,6 @@
-# Using the iODBC GIT Tree
+# Using the iODBC git tree
 
-    Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
 
 ## Introduction
 
@@ -53,7 +53,7 @@ To generate the `configure` script and all other build files necessary, please m
 sure the following packages (and any GNU packages required by them) and recommended
 versions are installed on your system.
 
-*Note -- these are minimum versions; later versions should work just fine. Older 
+*Note -- these are minimum versions; later versions should work just fine. Older
 versions of these packages can sometimes be used, but could cause build problems.*
 
 | Package  | Minimum Version  | Source                             |
