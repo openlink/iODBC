@@ -79,7 +79,7 @@
 #define	_HDBC_H
 
 #if (ODBCVER >= 0x0300)
-#include <hdesc.h>
+#include "hdesc.h"
 #endif
 
 typedef struct _drvopt

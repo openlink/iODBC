@@ -84,17 +84,17 @@
 #include <iodbcext.h>
 #include <odbcinst.h>
 
-#include <dlproc.h>
+#include "dlproc.h"
 
-#include <unicode.h>
-#include <herr.h>
-#include <henv.h>
-#include <hdbc.h>
-#include <hstmt.h>
+#include "unicode.h"
+#include "herr.h"
+#include "henv.h"
+#include "hdbc.h"
+#include "hstmt.h"
 
-#include <itrace.h>
+#include "itrace.h"
 
-#include <unicode.h>
+#include "unicode.h"
 
 #if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
 #include <Carbon/Carbon.h>
@@ -2689,21 +2689,23 @@ SQLDriverConnect_Internal (
           if (szConnStrOut != NULL)
 	    {
 	      if (waMode == 'W')
-	        {
+		{
 		  DM_WCSNCPY (conv, szConnStrOut, szConnStrIn, cbConnStrOutMax);
 
-		  if (conv && conv->dm_cp == CP_UTF8)
-                    *(SQLSMALLINT *) pcbConnStrOut =
-                        strlen((char*)szConnStrOut);
-		  else
-                    *(SQLSMALLINT *) pcbConnStrOut =
-		        DM_WCSLEN (conv, szConnStrOut);
+		  if (pcbConnStrOut != NULL)
+		    {
+		      if (conv && conv->dm_cp == CP_UTF8)
+			*(SQLSMALLINT *) pcbConnStrOut = strlen ((char *) szConnStrOut);
+		      else
+			*(SQLSMALLINT *) pcbConnStrOut = DM_WCSLEN (conv, szConnStrOut);
+		    }
 		}
 	      else
-	        {
+		{
 		  _iodbcdm_strlcpy (szConnStrOut, szConnStrIn, cbConnStrOutMax);
-                  *(SQLSMALLINT *) pcbConnStrOut = strlen (szConnStrOut);
-	        }
+		  if (pcbConnStrOut != NULL)
+		    *(SQLSMALLINT *) pcbConnStrOut = strlen (szConnStrOut);
+		}
 	    }
 
           /* state transition */
@@ -3250,10 +3252,13 @@ SQLDriverConnect_Internal (
         }
 
       /* fixup pcbConnStrOut */
-      if (waMode == 'W')
-        *(SQLSMALLINT *) pcbConnStrOut = DM_WCSLEN (conv, szConnStrOut);
-      else
-        *(SQLSMALLINT *) pcbConnStrOut = strlen (szConnStrOut);
+      if (pcbConnStrOut != NULL)
+	{
+	  if (waMode == 'W')
+	    *(SQLSMALLINT *) pcbConnStrOut = DM_WCSLEN (conv, szConnStrOut);
+	  else
+	    *(SQLSMALLINT *) pcbConnStrOut = strlen (szConnStrOut);
+	}
     }
 
   if (!SQL_SUCCEEDED (retcode))

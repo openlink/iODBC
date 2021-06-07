@@ -121,13 +121,11 @@ noinst_HEADERS		= gui.h
 EXTRA_DIST		= \
 	$(srcdir)/*.c \
 	$(srcdir)/*.h \
+	$(srcdir)/drvproxy.exp \
 	$(srcdir)/gtk/*.c \
 	$(srcdir)/gtk/*.h \
 	$(srcdir)/mac/*.c \
 	$(srcdir)/mac/*.h \
+	$(srcdir)/mac/*.m \
 	$(srcdir)/mac/*.png \
-	$(srcdir)/mac/English.lproj/IODBCProxy_LoginController.xib \
-	$(srcdir)/mac/English.lproj/IODBCProxy_SetupController.xib \
-	$(srcdir)/mac/IODBCProxy_LoginController.m \
-	$(srcdir)/mac/IODBCProxy_SetupController.m \
-	$(srcdir)/mac/utils.m
+	$(srcdir)/mac/Base.lproj/*.xib

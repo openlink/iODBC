@@ -70,6 +70,11 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+#
+#  iODBC VERSION
+#
+IODBC_VERSION=3.52.15
+
 
 #
 #  Determine build model (Deployment/Development)
@@ -80,149 +85,52 @@ endif
 
 
 #
-#  Determine which version of Mac OS X we are running
+#  Determine which version of macOS we are running
 #
-macosx_version  := $(shell sw_vers -productVersion | cut -d . -f 1-2)
+macos_version  := $(shell sw_vers -productVersion)
+macos_major	:= $(shell sw_vers -productVersion | cut -d . -f 1 )
 
 
 #
-#  Mac OS X 10.2
+#  Determine major version of the Xcode tool
 #
-ifeq (10.2, $(findstring 10.2, $(macosx_version)))
-    PROJBUILD := /usr/bin/pbxbuild -buildstyle $(MODEL)
+xcodebuild_version := $(shell xcodebuild -version | grep -i Xcode | cut -d " " -f 2 | cut -d. -f1)
+
+
+#
+#  Common build settings
+#
+PROJBUILD	:= /usr/bin/xcodebuild -configuration $(MODEL)
+IODBC_32BIT	= "i386"
+
+
+#
+#  macOS 10.15 (Catalina) does not have 32bit support
+#
+ifeq (10.15, $(findstring 10.15, $(macos_version)))
+IODBC_32BIT	:= "x86_64"
 endif
 
 
 #
-#  Mac OS X 10.3
+#  macOS 11.x (BigSur)does not have 32bit support
 #
-ifeq (10.3, $(findstring 10.3, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -buildstyle $(MODEL)
-endif
-
-
-#
-#  Mac OS X 10.4
-#
-ifeq (10.4, $(findstring 10.4, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
-    IODBC_TARGET=10.4
-    IODBC_SDK=/Developer/SDKs/MacOSX10.4u.sdk/
-endif
-
-
-#
-#  Mac OS X 10.5
-#
-ifeq (10.5, $(findstring 10.5, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
-    IODBC_TARGET=10.5
-    IODBC_SDK=/Developer/SDKs/MacOSX10.5.sdk/
-endif
-
-
-#
-#  Mac OS X 10.6
-#
-ifeq (10.6, $(findstring 10.6, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL)
-    IODBC_TARGET=10.6
-    IODBC_SDK=/Developer/SDKs/MacOSX10.6.sdk/
-endif
-
-
-#
-#  Mac OS X 10.7
-#
-ifeq (10.7, $(findstring 10.7, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.7
-    IODBC_TARGET=10.7
-endif
-
-
-#
-#  Mac OS X 10.8
-#
-ifeq (10.8, $(findstring 10.8, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.8
-    IODBC_TARGET=10.8
-endif
-
-
-#
-#  Mac OS X 10.9
-#
-ifeq (10.9, $(findstring 10.9, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) -sdk macosx10.9
-    IODBC_TARGET=10.9
-endif
-
-
-#
-#  Mac OS X 10.10
-#
-ifeq (10.10, $(findstring 10.10, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.10
-    IODBC_TARGET=10.10
-endif
-
-
-#
-#  Mac OS X 10.11
-#
-ifeq (10.11, $(findstring 10.11, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.11
-    IODBC_TARGET=10.11
-endif
-
-
-#
-#  Mac OS X 10.12
-#
-ifeq (10.12, $(findstring 10.12, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.12
-    IODBC_TARGET=10.12
-endif
-
-
-#
-#  Mac OS X 10.13
-#
-ifeq (10.13, $(findstring 10.13, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.13
-    IODBC_TARGET=10.13
-endif
-
-
-#
-#  Mac OS X 10.14
-#
-ifeq (10.14, $(findstring 10.14, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.14
-    IODBC_TARGET=10.14
-endif
-
-
-#
-#  Mac OS X 10.15
-#
-ifeq (10.15, $(findstring 10.15, $(macosx_version)))
-    PROJBUILD := /usr/bin/xcodebuild -configuration $(MODEL) #-sdk macosx10.15
-    IODBC_TARGET=10.15
+ifeq (11, $(findstring 11, $(macos_major)))
+IODBC_32BIT	:= "x86_64"
 endif
 
 
 #
 #  Pass settings to xcodebuild
 #
-export IODBC_TARGET IODBC_SDK
+export IODBC_VERSION IODBC_32BIT
 
 
 #
 #  Build the libraries
 #
-all: include
-	@echo "Building on Mac OS X $(macosx_version)"
+all: check_supported include
+	@echo "Building on macOS $(macos_version)"
 	@echo "Projbuild is [$(PROJBUILD)]"
 	cd iODBCinst;		$(PROJBUILD) build
 	cd iODBC;		$(PROJBUILD) build
@@ -235,6 +143,18 @@ all: include
 	cd iODBCdemo/DemoAnsi;	   $(PROJBUILD) build
 	cd iODBCdemo/DemoUnicode;  $(PROJBUILD) build
 
+
+#
+#  Make sure the version of Xcode is 8.x or newer
+#
+check_supported:
+	@if test 0$(xcodebuild_version) -lt 8 ; then \
+	    echo "You are using Xcode $(xcodebuild_version) on macOS $(macos_version)"; \
+	    echo ""; \
+	    echo "ERROR: iODBC requires a Xcode version 8.x or newer"; \
+	    echo ""; \
+	    exit 1; \
+	fi
 
 #
 #  Generate iODBC framework style include files
@@ -251,7 +171,7 @@ install:
 	#  Install Frameworks
 	#
 	-rm $(DESTDIR)/Library/Frameworks/iODBC.framework/Versions/Current
-	rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
+	-rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
 	cd iODBCinst;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	cd iODBC;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	#
@@ -275,13 +195,6 @@ install:
 	cd iODBCdemo/DemoUnicode; $(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	cd iODBCtest;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
 	cd iODBCtestw;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	#
-	#  Install CFM bridge for Microsoft Office
-	#
-	-mkdir -p "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
-	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge" "$(DESTDIR)/Library/CFMSupport/iODBC CFM Bridge"
-	install -m755 "iODBCcfmbridge/iODBC_CFM_Bridge.res" "$(DESTDIR)/Library/CFMSupport/._iODBC CFM Bridge"
-	-/System/Library/CoreServices/FixupResourceForks /Library/CFMSupport
 
 
 #

@@ -77,7 +77,7 @@
 
 #include <iodbc.h>
 #include <odbcinst.h>
-#include <unicode.h>
+#include "unicode.h"
 
 #include "iodbc_error.h"
 

@@ -66,3 +66,4 @@ mac/iODBCinst/build/
 mac/iODBCtest/build/
 mac/iODBCtestw/build/
 mac/include/
+mac/**/xcuserdata/

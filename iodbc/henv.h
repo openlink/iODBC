@@ -79,11 +79,11 @@
 #define	_HENV_H
 
 #include <iodbc.h>
-#include <dlproc.h>
+#include "dlproc.h"
 
 #include <sql.h>
 #include <sqlext.h>
-#include <ithread.h>
+#include "ithread.h"
 
 
 enum odbcapi_t
