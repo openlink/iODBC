@@ -690,7 +690,9 @@ _WCHARSIZE(IODBC_CHARSET charset)
     {
     case CP_UTF8: return 1;
     case CP_UTF16: return sizeof(ucs2_t);
-    case CP_UCS4: return sizeof(ucs4_t);
+    case CP_UCS4:
+    default:
+    	return sizeof(ucs4_t);
     }
 }
 
@@ -702,7 +704,9 @@ _WCHARSIZE_ALLOC(IODBC_CHARSET charset)
     {
     case CP_UTF8: return UTF8_MAX_CHAR_LEN;
     case CP_UTF16: return sizeof(ucs2_t) * 2;
-    case CP_UCS4: return sizeof(ucs4_t);
+    case CP_UCS4:
+    default:
+    	return sizeof(ucs4_t);
     }
 }
 
@@ -2156,7 +2160,9 @@ DM_GetWCharAt(DM_CONV *conv, void *str, int pos)
         return wc;
       }
     case CP_UTF16: return (SQLWCHAR)u2[pos];
-    case CP_UCS4: return (SQLWCHAR)u4[pos];
+    case CP_UCS4:
+    default:
+    	return (SQLWCHAR)u4[pos];
     }
 }
 
