@@ -88,21 +88,21 @@ a data source are given within this section.  The most important attribute to
 iODBC for each datasource is the `Driver` attribute. This must point to the shared
 library for the ODBC driver associated with the data source.
 
-As example, the OpenLink Enterprise Edition (Multi-Tier) ODBC drivers have a number
+For example, the OpenLink Enterprise Edition (Multi-Tier) ODBC drivers have a number
 of attributes which can be set for a data source. Here is a description:
 
 | `odbc.ini` keyword | ODBC connect string keyword | Description |
-|-----|-----|-----|
-| `Host` | `HOST` | The hostname where the database resides |
-| `ServerType` | `SVT` | The type of Database Agent (see `oplrqb.ini` on the server) | 
-| `ServerOptions` | `SVO` | Server-specific extra options. See Enterprise Edition server-side documentation for Agents which can use this. |
-| `Database` | `DATABASE` | The database to use |
-| `Options` | `OPTIONS` | Connect options for the database |
-| `UserName` | `UID` | The name of the database user |
-| `Password` | `PWD` | The password of the database user |
-| `ReadOnly` |  `READONLY` | A Yes/No value in order to make the connection read-only |
-| `FetchBufferSize` | `FBS` |The number of records that are transferred in a single call to the server.  Default is `5`; maximum is `999`, minimum is `1` |
-| `Protocol` | `PROTO` | The protocol to use. Set to TCP for Release 3.x and later. |
+|--------------------|-----------------------------|-----|
+| `Host`             | `HOST`                      | The hostname where the database resides. |
+| `ServerType`       | `SVT`                       | The type of Database Agent. (See `oplrqb.ini` on the server.) | 
+| `ServerOptions`    | `SVO`                       | Server-specific extra options. See Enterprise Edition server-side documentation for Agents which can use this. |
+| `Database`         | `DATABASE`                  | The database to use. |
+| `Options`          | `OPTIONS`                   | Connect options for the database. |
+| `UserName`         | `UID`                       | The name of the database user. |
+| `Password`         | `PWD`                       | The password of the database user. |
+| `ReadOnly`         | `READONLY`                  | A `Yes`/`No` value in order to make the connection read-only. |
+| `FetchBufferSize`  | `FBS`                       | The number of records that are transferred in a single call to the server.  Default is `5`; maximum is `999`; minimum is `1`. |
+| `Protocol`         | `PROTO`                     | The protocol to use. Set to `TCP` for Release 3.x and later. |
 
 
 Apart from these data source-specific settings, you may add a section called
@@ -110,37 +110,37 @@ Apart from these data source-specific settings, you may add a section called
 (Multi-Tier) driver further:
 
 | `odbc.ini` keyword | Description |
-|-----|-----|
-| `ReceiveTimeout` | The time in seconds that the client application will wait for the Database Agent to start sending results. Default is `60`. |
-| `BrokerTimeout` | The time in seconds that the client application will wait for the Request Broker to accept or reject a database connection request. Default is `30`. |
-| `SendSize` | RPC send buffer size. A value of `0` (the default) will cause the application to use system-dependent defaults. |
-| `ReceiveSize` | RPC receive buffer size. A value of `0` (the default) will cause the application to use system-dependent defaults. |
-| `DebugFile` | If set, the name of a file to which debugging output from the driver should be directed. |
+|--------------------|-------------|
+| `ReceiveTimeout`   | The time in seconds that the client application will wait for the Database Agent to start sending results. Default is `60`. |
+| `BrokerTimeout`    | The time in seconds that the client application will wait for the Request Broker to accept or reject a database connection request. Default is `30`. |
+| `SendSize`         | RPC send buffer size. A value of `0` (the default) will cause the application to use system-dependent defaults. |
+| `ReceiveSize`      | RPC receive buffer size. A value of `0` (the default) will cause the application to use system-dependent defaults. |
+| `DebugFile`        | If set, the name of a file to which debugging output from the driver should be directed. |
 
 ## iODBC driver manager platform availability
 
 The iODBC driver manager has been ported to following platforms:
 
-| OS               | Version       | Processor                   |
-|------------------|---------------|-----------------------------|
-| BSDi BSD/OS      | 2.x           | x86                         |
-| DEC Unix (OSF/1) | 3.x - 5.x     | DEC Alpha                   |
-| DG/UX            | 5.x           | Aviion                      |
-| FreeBSD          | 2.x - 9.x     | x86                         |
-| HP/UX            | 9.x - 11.x    | HP9000 s700/s800            |
-| HP/UX            | 9.x           | HP9000 s300/s400            |
-| IBM AIX          | 3.x - 5.x     | IBM RS6000, PowerPC         |
-| Linux ELF        | 1.x, 2.x      | x86, x86_64, IA_64, PowerPC |
-| Mac OS X         | 10.x          | PowerPC, x86, x86_64        |
-| Max/OS SVR4      | 1.x           | Concurrent Maxion 9200 MP   |
-| NCR SVR4         | 3.x           | NCR 3435                    |
-| OpenVMS          | 6.x           | DEC Alpha                   |
-| SCO OpenServer   | 5.x           | x86                         |
-| SGI Irix SVR4    | 5.x, 6.x      | IP12 MIPS, IP22 MIPS        |
-| SunOS            | 4.1.x         | Sun Sparc                   |
-| Sun Solaris      | 2.x           | Sun Sparc, x86, x86_64      |
-| UnixWare SVR4.2  | 1.x, 2.x      | x86                         |
-| Windows NT       | 4.x           | x86                         |
+| OS               | Version       | Processor                        |
+|------------------|---------------|----------------------------------|
+| BSDi BSD/OS      | 2.x           | x86                              |
+| DEC Unix (OSF/1) | 3.x - 5.x     | DEC Alpha                        |
+| DG/UX            | 5.x           | Aviion                           |
+| FreeBSD          | 2.x - 9.x     | x86                              |
+| HP/UX            | 9.x - 11.x    | HP9000 s700/s800                 |
+| HP/UX            | 9.x           | HP9000 s300/s400                 |
+| IBM AIX          | 3.x - 5.x     | IBM RS6000, ppc32, ppc64         |
+| Linux ELF        | 1.x, 2.x      | x86, x86_64, IA_64, ppc32, ppc64 |
+| macOS            | 10.x – 11.x   | ppc32, ppc64, x86, x86_64, arm64 |
+| Max/OS SVR4      | 1.x           | Concurrent Maxion 9200 MP        |
+| NCR SVR4         | 3.x           | NCR 3435                         |
+| OpenVMS          | 6.x           | DEC Alpha                        |
+| SCO OpenServer   | 5.x           | x86                              |
+| SGI Irix SVR4    | 5.x, 6.x      | IP12 MIPS, IP22 MIPS             |
+| SunOS            | 4.1.x         | Sun Sparc                        |
+| Sun Solaris      | 2.x           | Sun Sparc, x86, x86_64           |
+| UnixWare SVR4.2  | 1.x, 2.x      | x86                              |
+| Windows NT       | 4.x           | x86                              |
 
 As the iODBC driver manager uses `autoconf`/`automake`/`libtool`, it should be
 portable to most modern UNIX-like OS out of the box. However, if you do need to
@@ -156,8 +156,8 @@ to supply a `make`/`build` file and a short `LibMain` for creating the `iodbc.dl
 
 ## How to build iODBC driver manager:
 
-Users of macOS should read the separate [README_MACOSX](./README_MACOSX.md) document for more detail
-of porting to this platform.
+Users of macOS should read the separate [README_MACOSX](./README_MACOSX.md) 
+document for more details of porting to this platform.
 
 Users of all other UNIX-like OS:
 
