@@ -152,18 +152,23 @@ static char* showKeyVal(NSWindow *mainWin, char* attrs, BOOL *verify_conn)
             {
                 for (i = 0; i < dlg.Attrs_list.count; i++)
                 {
+                    int alen = 0;
                     NSDictionary *row = [dlg.Attrs_list objectAtIndex:i];
+
                     key = (char*)conv_NSString_to_char((NSString*)[row valueForKey:@"key"]);
+                    alen += key ? strlen(key) : 0;
+
                     val = (char*)conv_NSString_to_char((NSString*)[row valueForKey:@"val"]);
+                    alen += val ? strlen(val) : 0;
                     
                     cour = connstr;
-                    connstr = (char*) malloc (size + strlen(key) + strlen(val) + 2);
+                    connstr = (char*) malloc (size + alen + 2);
                     if (connstr)
                     {
                         memcpy (connstr, cour, size);
-                        sprintf (connstr + size - 1, "%s=%s", key, val);
+                        sprintf (connstr + size - 1, "%s=%s", key?key:"", val?val:"");
                         free (cour);
-                        size += strlen(key) + strlen(val) + 2;
+                        size += alen + 2;
                     }
                     else
                         connstr = cour;
