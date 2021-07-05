@@ -84,7 +84,7 @@ m4_define(V_iodbc_minor,       [52])           # ODBC Minor version
 m4_define(V_iodbc_patch,       [16])           # Increase every release
 m4_define(V_iodbc_devel,       [-dev])             # -dev, -rc1 or empty for stable
 
-m4_define(V_iodbc_date,        [210607])       # YYMMDD of release
+m4_define(V_iodbc_date,        [210705])       # YYMMDD of release
 m4_define(V_iodbc_shlib,       [30])           # Increase every change
 
 
