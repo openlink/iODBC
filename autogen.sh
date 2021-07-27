@@ -106,7 +106,7 @@ CHECK() {
 	fi
     done
 
-    if test -z "VERSION"
+    if test -z "$VERSION"
     then
 	echo
 	echo "${ERROR} : You must have \`${B}${PROG}${N}' installed on your system."
@@ -128,7 +128,7 @@ CHECK_WARN() {
 	fi
     done
 
-    if test -z "VERSION"
+    if test -z "$VERSION"
     then
 	echo
 	echo "${WARNING} : You may need \`${B}${PROG}${N}' installed on your system."
