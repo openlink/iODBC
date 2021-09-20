@@ -2210,14 +2210,22 @@ _WCSNCPY(IODBC_CHARSET charset, void *dest, void *sour, size_t count)
       strncpy((char*)dest, (char*)sour, count);
       break;
     case CP_UTF16:
-      while (len < count && (*u2dst++ = *u2src++) != 0)
-        len++;
+      while (len < count && *u2src != 0)
+        {
+          *u2dst++ = *u2src++;
+          len++;
+        }
+
       if (len < count)
         *u2dst = 0;
       break;
     case CP_UCS4:
-      while (len < count && (*u4dst++ = *u4src++) != 0)
-        len++;
+      while (len < count && *u4src != 0) 
+        {
+          *u4dst++ = *u4src++;
+          len++;
+        }
+
       if (len < count)
         *u4dst = 0;
       break;
