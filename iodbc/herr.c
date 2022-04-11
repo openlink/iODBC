@@ -151,6 +151,7 @@ _iodbcdm_pushsqlerr (
     /* overwrite the top entry to prevent error stack blow out */
     {
       perr->code = code;
+      MEM_FREE (perr->msg);
       perr->msg = msg?strdup((char *) msg): NULL;
 
       return herr;
