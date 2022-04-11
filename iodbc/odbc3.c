@@ -1868,18 +1868,18 @@ SQLSetConnectAttr_Internal (
         {
           if (retcode == SQL_SUCCESS && Attribute == SQL_ATTR_APP_WCHAR_TYPE)
             {
-              switch((SQLINTEGER)ValuePtr)
+              switch((IODBC_CHARSET)(SQLULEN) ValuePtr)
                 {
                 case CP_UTF16:
-                  penv->conv.drv_cp = (IODBC_CHARSET)ValuePtr;
+                  penv->conv.drv_cp = CP_UTF16;
                   break;
 
                 case CP_UTF8:
-                  penv->conv.drv_cp = (IODBC_CHARSET)ValuePtr;
+                  penv->conv.drv_cp = CP_UTF8;
                   break;
 
                 case CP_UCS4:
-                  penv->conv.drv_cp = (IODBC_CHARSET)ValuePtr;
+                  penv->conv.drv_cp = CP_UCS4;
                   break;
                 }
             }
