@@ -1,6 +1,6 @@
 # How to build iODBC for macOS (formerly known as _OS X_ and _Mac OS X_)
 
-    Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+    Copyright (C) 1996-2022 OpenLink Software <iodbc@openlinksw.com>
 
 ## Method 1: Using Project builder
 

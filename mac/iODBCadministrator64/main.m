@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2022 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -108,7 +108,7 @@ main (int argc, char *argv[])
 
   printf ("OpenLink iODBC Administrator (macOS)\n");
   printf ("iODBC Driver Manager %s\n", VERSION);
-  printf ("Copyright (C) 2000-2021 OpenLink Software\n");
+  printf ("Copyright (C) 2000-2022 OpenLink Software\n");
   printf ("Please report all bugs to <iodbc@openlinksw.com>\n");
 
   /* Check options commands */

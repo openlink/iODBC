@@ -1,6 +1,6 @@
 # Using the iODBC git tree
 
-Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+Copyright (C) 1996-2022 OpenLink Software <iodbc@openlinksw.com>
 
 ## Introduction
 

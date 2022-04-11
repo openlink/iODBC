@@ -1,11 +1,11 @@
 # iODBC Driver Manager
 
 Copyright (C) 1995 Ke Jin <kejin@empress.com>.
-Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>.
+Copyright (C) 1996-2022 OpenLink Software <iodbc@openlinksw.com>.
 All Rights Reserved.
 
 ## License
-Copyright 1996-2021 [OpenLink Software](http://www.openlinksw.com)
+Copyright 1996-2022 [OpenLink Software](http://www.openlinksw.com)
 
 This software is released under either the GNU Library General Public License
 (see [LICENSE.LGPL](./LICENSE.LGPL))
