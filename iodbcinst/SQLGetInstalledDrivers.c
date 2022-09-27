@@ -185,29 +185,29 @@ SQLGetInstalledDrivers_Internal (LPSTR lpszBuf, WORD cbBufMax,
    */
   if (num_entries > 1)
     {
-      int len = cbBufMax;
       qsort (sect, num_entries, sizeof (char **), SectSorter);
+    }
 
-      /* Copy back the result as will fit */
-      for (i = 0; len > 0 && i < num_entries; i++)
+  int len = cbBufMax;
+  /* Copy back the result as will fit */
+  for (i = 0; len > 0 && i < num_entries; i++)
+    {
+      int sect_len = STRLEN (sect[i]) + 1;
+
+      if (sect_len > len)
+	 break;
+
+      if (waMode == 'A')
 	{
-	  int sect_len = STRLEN (sect[i]) + 1;
-
-	  if (sect_len > len)
-	     break;
-
-	  if (waMode == 'A')
-	    {
-	      STRNCPY (lpszBuf, sect[i], sect_len);
-	      len -= sect_len;
-	      lpszBuf += sect_len;
-	    }
-	  else
-	    {
-	      dm_StrCopyOut2_A2W (sect[i], (LPWSTR) lpszBuf, sect_len, NULL);
-	      len -= sect_len;
-	      lpszBuf += sect_len * sizeof (wchar_t);
-	    }
+	  STRNCPY (lpszBuf, sect[i], sect_len);
+	  len -= sect_len;
+	  lpszBuf += sect_len;
+	}
+      else
+	{
+	  dm_StrCopyOut2_A2W (sect[i], (LPWSTR) lpszBuf, sect_len, NULL);
+	  len -= sect_len;
+	  lpszBuf += sect_len * sizeof (wchar_t);
 	}
     }
 
