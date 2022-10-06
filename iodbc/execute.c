@@ -428,7 +428,7 @@ _ConvParam (STMT_t *pstmt, PPARM pparm, SQLULEN row, BOOL bOutput,
         pInd = &((SQLLEN*)((char*)pparm->pm_pInd + bindOffset))[row];
     }
 
-  if (!pInd || (pInd && *pInd == SQL_NULL_DATA ))
+  if (!pInd || (pInd && (*pInd == SQL_NULL_DATA || (*pInd == SQL_DEFAULT_PARAM && !bOutput) )))
     {
       return SQL_SUCCESS;
     }
