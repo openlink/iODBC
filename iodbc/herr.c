@@ -548,7 +548,7 @@ _iodbcdm_sqlerror (
   else
     {
       int len;
-      char msgbuf[256] = {'\0'};
+      char msgbuf[2048] = {'\0'};
 
       /* get sql state message */
       errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
@@ -1015,7 +1015,7 @@ SQLGetDiagRec_Internal (
       else
 	{
 	  int len;
-	  char msgbuf[256] = { '\0' };
+	  char msgbuf[2048] = { '\0' };
 	  char *errmsg;
 
 	  /* get sql state message */
