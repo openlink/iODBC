@@ -184,7 +184,7 @@ trace_set_filename (char *template)
   struct passwd *pwd;
   char *buf;
   size_t buf_len, buf_pos;
-  char tmp[255];
+  char tmp[4096];
 
   /* Make copy of template */
   if (template)
