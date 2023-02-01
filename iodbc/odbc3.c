@@ -77,12 +77,12 @@
 
 #include "iodbc.h"
 
-#include <sql.h>
-#include <sqlext.h>
+#include <isql.h>
+#include <isqlext.h>
 #include <iodbcext.h>
 
 #if (ODBCVER >= 0x300)
-#include <sqlucode.h>
+#include <isqlucode.h>
 
 #include "unicode.h"
 

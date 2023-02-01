@@ -78,11 +78,11 @@
 #include <iodbc.h>
 
 #include <assert.h>
-#include <sql.h>
-#include <sqlext.h>
-#include <sqlucode.h>
+#include <isql.h>
+#include <isqlext.h>
+#include <isqlucode.h>
 #include <iodbcext.h>
-#include <odbcinst.h>
+#include <iodbcinst.h>
 
 #include "dlproc.h"
 

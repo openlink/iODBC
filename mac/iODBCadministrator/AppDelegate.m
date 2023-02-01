@@ -73,11 +73,11 @@
  */
 
 #import "AppDelegate.h"
-#import <iODBC/sql.h>
-#import <iODBC/sqlext.h>
-#import <iODBC/sqltypes.h>
-#import <iODBC/sqlucode.h>
-#import <iODBCinst/odbcinst.h>
+#import <iODBC/isql.h>
+#import <iODBC/isqlext.h>
+#import <iODBC/isqltypes.h>
+#import <iODBC/isqlucode.h>
+#import <iODBCinst/iodbcinst.h>
 
 @interface AppDelegate ()
 

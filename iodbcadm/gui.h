@@ -73,7 +73,7 @@
  */
 
 #include <iodbc.h>
-#include <odbcinst.h>
+#include <iodbcinst.h>
 #include "iodbcadm.h"
 
 #if defined(__BEOS__)

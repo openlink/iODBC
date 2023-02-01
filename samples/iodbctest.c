@@ -80,9 +80,9 @@
 #include <string.h>
 #include <locale.h>
 
-#include <sql.h>
-#include <sqlext.h>
-#include <sqlucode.h>
+#include <isql.h>
+#include <isqlext.h>
+#include <isqlucode.h>
 #include <iodbcext.h>
 
 /*

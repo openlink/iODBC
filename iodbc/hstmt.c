@@ -78,8 +78,8 @@
 
 #include <iodbc.h>
 
-#include <sql.h>
-#include <sqlext.h>
+#include <isql.h>
+#include <isqlext.h>
 
 #include "unicode.h"
 

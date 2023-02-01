@@ -81,8 +81,8 @@
 #include <iodbc.h>
 #include "dlproc.h"
 
-#include <sql.h>
-#include <sqlext.h>
+#include <isql.h>
+#include <isqlext.h>
 #include "ithread.h"
 
 

@@ -109,7 +109,7 @@ then
 	case $lib in
 	libiodbc.so.*)
 	    rm -f libodbc.so
-	    ln -s $lib libodbc.so
+	    ln -s $lib liboidbc.so
 	    ;;
 	libiodbc.sl.*)
 	    rm -f libodbc.sl

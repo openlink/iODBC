@@ -72,10 +72,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import <iODBC/sql.h>
-#import <iODBC/sqlext.h>
-#import <iODBC/sqltypes.h>
-#import <iODBC/sqlucode.h>
+#import <iODBC/isql.h>
+#import <iODBC/isqlext.h>
+#import <iODBC/isqltypes.h>
+#import <iODBC/isqlucode.h>
 #import <iODBC/iodbcext.h>
 
 @interface TestController : NSObject <NSTableViewDelegate, NSTableViewDataSource>

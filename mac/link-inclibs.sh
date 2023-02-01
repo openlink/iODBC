@@ -101,16 +101,12 @@ mkdir -p "$PREFIX/include"
 #
 cp -f "../include/iodbcext.h"	"$PREFIX/include/iodbcext.h"
 cp -f "../include/iodbcunix.h"	"$PREFIX/include/iodbcunix.h"
-cp -f "../include/isql.h"	"$PREFIX/include/isql.h"
 cp -f "../include/isqlext.h"	"$PREFIX/include/isqlext.h"
 cp -f "../include/isqltypes.h"	"$PREFIX/include/isqltypes.h"
-cp -f "../include/sql.h"	"$PREFIX/include/sql.h"
-cp -f "../include/sqlext.h"	"$PREFIX/include/sqlext.h"
-cp -f "../include/sqltypes.h"	"$PREFIX/include/sqltypes.h"
-cp -f "../include/sqlucode.h"	"$PREFIX/include/sqlucode.h"
+cp -f "../include/isql.h"	"$PREFIX/include/isql.h"
+cp -f "../include/isqlucode.h"	"$PREFIX/include/isqlucode.h"
 
 cp -f "../include/iodbcinst.h"	"$PREFIX/include/iodbcinst.h"
-cp -f "../include/odbcinst.h"	"$PREFIX/include/odbcinst.h"
 
 
 #

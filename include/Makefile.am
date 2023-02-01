@@ -74,12 +74,8 @@
 include_HEADERS         = \
 	isql.h \
 	isqlext.h \
+	isqlucode.h \
 	isqltypes.h \
-	sql.h \
-	sqlext.h \
-	sqlucode.h \
-	sqltypes.h \
-	odbcinst.h \
 	iodbcunix.h \
 	iodbcinst.h \
 	iodbcext.h

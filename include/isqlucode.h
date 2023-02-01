@@ -1,5 +1,5 @@
 /*
- *  sqlucode.h
+ *  isqlucode.h
  *
  *  $Id$
  *
@@ -78,7 +78,7 @@
 #define _SQLUCODE_H
 
 #ifndef _SQLEXT_H
-#include <sqlext.h>
+#include <isqlext.h>
 #endif
 
 #ifdef __cplusplus

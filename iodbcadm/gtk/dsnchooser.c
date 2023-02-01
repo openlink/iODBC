@@ -82,7 +82,7 @@
 #include <dirent.h>
 #include <errno.h>
 
-#include <sqltypes.h>
+#include <isqltypes.h>
 #include <dlproc.h>
 
 #include "../gui.h"

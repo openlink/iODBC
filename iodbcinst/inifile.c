@@ -76,7 +76,7 @@
 
 
 #include <iodbc.h>
-#include <odbcinst.h>
+#include <iodbcinst.h>
 
 #include <stdarg.h>
 #include <stdio.h>

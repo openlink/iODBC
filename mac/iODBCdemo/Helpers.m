@@ -71,7 +71,7 @@
  */
 
 #import "Helpers.h"
-#include <iODBC/sql.h>
+#include <iODBC/isql.h>
 #include <iODBCinst/iodbcinst.h>
 
 

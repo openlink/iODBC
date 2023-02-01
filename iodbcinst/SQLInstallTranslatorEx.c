@@ -76,7 +76,6 @@
 
 
 #include <iodbc.h>
-#include <odbcinst.h>
 #include "unicode.h"
 
 #include "misc.h"

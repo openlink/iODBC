@@ -73,7 +73,7 @@
  */
 
 #include <iodbc.h>
-#include <odbcinst.h>
+#include <iodbcinst.h>
 
 #if defined(__BEOS__)
 #include "be/gui.h"

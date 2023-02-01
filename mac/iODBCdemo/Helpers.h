@@ -75,8 +75,8 @@
 #include <stdio.h>
 #include <wchar.h>
 
-#import <iODBC/sql.h>
-#import <iODBC/sqltypes.h>
+#import <iODBC/isql.h>
+#import <iODBC/isqltypes.h>
 
 
 #ifdef UNICODE

@@ -49,15 +49,15 @@
 		CDAE3BEE0987D71D003250F8 /* iodbc.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C9D07D2B8290022E958 /* iodbc.h */; };
 		CDAE3BEF0987D71D003250F8 /* iodbcext.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983C9E07D2B8290022E958 /* iodbcext.h */; };
 		CDAE3BF00987D71D003250F8 /* iodbcunix.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA107D2B85F0022E958 /* iodbcunix.h */; };
-		CDAE3BF10987D71D003250F8 /* sql.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA307D2B8930022E958 /* sql.h */; };
-		CDAE3BF20987D71D003250F8 /* sqltypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA507D2B8930022E958 /* sqltypes.h */; };
-		CDAE3BF30987D71D003250F8 /* sqlucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA607D2B8930022E958 /* sqlucode.h */; };
+		CDAE3BF10987D71D003250F8 /* isql.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA307D2B8930022E958 /* isql.h */; };
+		CDAE3BF20987D71D003250F8 /* isqltypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA507D2B8930022E958 /* isqltypes.h */; };
+		CDAE3BF30987D71D003250F8 /* isqlucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CA607D2B8930022E958 /* isqlucode.h */; };
 		CDAE3BF40987D71D003250F8 /* dlf.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CAB07D2B8CD0022E958 /* dlf.h */; };
 		CDAE3BF50987D71D003250F8 /* dlproc.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CAD07D2B8CD0022E958 /* dlproc.h */; };
 		CDAE3BF60987D71D003250F8 /* herr.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CB507D2B9330022E958 /* herr.h */; };
 		CDAE3BF70987D71D003250F8 /* unicode.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CB807D2B94F0022E958 /* unicode.h */; };
 		CDAE3BF80987D71D003250F8 /* iodbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CBB07D2B98B0022E958 /* iodbcinst.h */; };
-		CDAE3BF90987D71D003250F8 /* odbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CBD07D2B9B30022E958 /* odbcinst.h */; };
+		CDAE3BF90987D71D003250F8 /* iodbcinst.h in Headers */ = {isa = PBXBuildFile; fileRef = 85983CBD07D2B9B30022E958 /* iodbcinst.h */; };
 		CDAE3C060987D71D003250F8 /* drvconn.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5907D2B7000022E958 /* drvconn.c */; };
 		CDAE3C070987D71D003250F8 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5A07D2B7000022E958 /* error.c */; };
 		CDAE3C080987D71D003250F8 /* Info.c in Sources */ = {isa = PBXBuildFile; fileRef = 85983C5E07D2B7260022E958 /* Info.c */; };
@@ -105,9 +105,9 @@
 		85983C9D07D2B8290022E958 /* iodbc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbc.h; path = ../../include/iodbc.h; sourceTree = SOURCE_ROOT; };
 		85983C9E07D2B8290022E958 /* iodbcext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcext.h; path = ../../include/iodbcext.h; sourceTree = SOURCE_ROOT; };
 		85983CA107D2B85F0022E958 /* iodbcunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcunix.h; path = ../../include/iodbcunix.h; sourceTree = SOURCE_ROOT; };
-		85983CA307D2B8930022E958 /* sql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sql.h; path = ../../include/sql.h; sourceTree = SOURCE_ROOT; };
-		85983CA507D2B8930022E958 /* sqltypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sqltypes.h; path = ../../include/sqltypes.h; sourceTree = SOURCE_ROOT; };
-		85983CA607D2B8930022E958 /* sqlucode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sqlucode.h; path = ../../include/sqlucode.h; sourceTree = SOURCE_ROOT; };
+		85983CA307D2B8930022E958 /* isql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = isql.h; path = ../../include/isql.h; sourceTree = SOURCE_ROOT; };
+		85983CA507D2B8930022E958 /* isqltypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = isqltypes.h; path = ../../include/isqltypes.h; sourceTree = SOURCE_ROOT; };
+		85983CA607D2B8930022E958 /* isqlucode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = isqlucode.h; path = ../../include/isqlucode.h; sourceTree = SOURCE_ROOT; };
 		85983CAB07D2B8CD0022E958 /* dlf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dlf.h; path = ../../iodbcinst/dlf.h; sourceTree = SOURCE_ROOT; };
 		85983CAD07D2B8CD0022E958 /* dlproc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dlproc.h; path = ../../iodbc/dlproc.h; sourceTree = SOURCE_ROOT; };
 		85983CB107D2B8F10022E958 /* dlproc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dlproc.c; path = ../../iodbc/dlproc.c; sourceTree = SOURCE_ROOT; };
@@ -116,7 +116,7 @@
 		85983CB707D2B94F0022E958 /* unicode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = unicode.c; path = ../../iodbcinst/unicode.c; sourceTree = SOURCE_ROOT; };
 		85983CB807D2B94F0022E958 /* unicode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = unicode.h; path = ../../iodbcinst/unicode.h; sourceTree = SOURCE_ROOT; };
 		85983CBB07D2B98B0022E958 /* iodbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcinst.h; path = ../../include/iodbcinst.h; sourceTree = SOURCE_ROOT; };
-		85983CBD07D2B9B30022E958 /* odbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = odbcinst.h; path = ../../include/odbcinst.h; sourceTree = SOURCE_ROOT; };
+		85983CBD07D2B9B30022E958 /* iodbcinst.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iodbcinst.h; path = ../../include/iodbcinst.h; sourceTree = SOURCE_ROOT; };
 		85983D8507D2C1870022E958 /* iODBC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBC.framework; path = ../iODBC/build/Development/iODBC.framework; sourceTree = SOURCE_ROOT; };
 		85983D8707D2C1A50022E958 /* iODBCinst.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iODBCinst.framework; path = ../iODBCinst/build/Development/iODBCinst.framework; sourceTree = SOURCE_ROOT; };
 		85983E0E07D2C2080022E958 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
@@ -269,9 +269,9 @@
 				85983CB107D2B8F10022E958 /* dlproc.c */,
 				85983CAB07D2B8CD0022E958 /* dlf.h */,
 				85983CAD07D2B8CD0022E958 /* dlproc.h */,
-				85983CA307D2B8930022E958 /* sql.h */,
-				85983CA507D2B8930022E958 /* sqltypes.h */,
-				85983CA607D2B8930022E958 /* sqlucode.h */,
+				85983CA307D2B8930022E958 /* isql.h */,
+				85983CA507D2B8930022E958 /* isqltypes.h */,
+				85983CA607D2B8930022E958 /* isqlucode.h */,
 				85983CA107D2B85F0022E958 /* iodbcunix.h */,
 				85983C9D07D2B8290022E958 /* iodbc.h */,
 				85983C9E07D2B8290022E958 /* iodbcext.h */,
@@ -282,7 +282,7 @@
 		85983C9B07D2B7960022E958 /* iODBCinst */ = {
 			isa = PBXGroup;
 			children = (
-				85983CBD07D2B9B30022E958 /* odbcinst.h */,
+				85983CBD07D2B9B30022E958 /* iodbcinst.h */,
 				85983CBB07D2B98B0022E958 /* iodbcinst.h */,
 			);
 			name = iODBCinst;
@@ -330,11 +330,11 @@
 				CDAE3BEF0987D71D003250F8 /* iodbcext.h in Headers */,
 				8568A604197907C100738ECF /* IODBCadm_DriverChooseDSNController.h in Headers */,
 				CDAE3BF00987D71D003250F8 /* iodbcunix.h in Headers */,
-				CDAE3BF10987D71D003250F8 /* sql.h in Headers */,
+				CDAE3BF10987D71D003250F8 /* isql.h in Headers */,
 				858A02931B74E7F000C8009C /* IODBCadm_DrvConfigController.h in Headers */,
 				85D4190E197B824300C2C443 /* IODBCadm_KeyValController.h in Headers */,
-				CDAE3BF20987D71D003250F8 /* sqltypes.h in Headers */,
-				CDAE3BF30987D71D003250F8 /* sqlucode.h in Headers */,
+				CDAE3BF20987D71D003250F8 /* isqltypes.h in Headers */,
+				CDAE3BF30987D71D003250F8 /* isqlucode.h in Headers */,
 				8568A5E61977BCFB00738ECF /* IODBCadm_DSNchooserController.h in Headers */,
 				85D41908197B822B00C2C443 /* IODBCadm_DriverChooseFDSNController.h in Headers */,
 				CDAE3BF40987D71D003250F8 /* dlf.h in Headers */,
@@ -344,7 +344,7 @@
 				CDAE3BF70987D71D003250F8 /* unicode.h in Headers */,
 				CDAE3BF80987D71D003250F8 /* iodbcinst.h in Headers */,
 				858A029C1B74E80500C8009C /* IODBCadm_DSNmanageController.h in Headers */,
-				CDAE3BF90987D71D003250F8 /* odbcinst.h in Headers */,
+				CDAE3BF90987D71D003250F8 /* iodbcinst.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

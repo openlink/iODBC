@@ -73,14 +73,14 @@
 
 
 mkdir -p include
-for i in sql.h sqlext.h sqltypes.h sqlucode.h odbcinst.h iodbcinst.h isql.h isqlext.h isqltypes.h iodbcunix.h iodbcext.h iodbcinst.h
+for i in isql.h isqlext.h isqltypes.h isqlucode.h iodbcinst.h iodbcinst.h isql.h isqlext.h isqltypes.h iodbcunix.h iodbcext.h iodbcinst.h
 do
-    sed -e "s/<sql\.h/<iODBC\/sql.h/" \
-	-e "s/<sqlext\.h/<iODBC\/sqlext.h/" \
-	-e "s/<sqltypes\.h/<iODBC\/sqltypes.h/" \
-	-e "s/<sqlucode\.h/<iODBC\/sqlucode.h/" \
+    sed -e "s/<sql\.h/<iODBC\/isql.h/" \
+	-e "s/<sqlext\.h/<iODBC\/isqlext.h/" \
+	-e "s/<sqltypes\.h/<iODBC\/isqltypes.h/" \
+	-e "s/<sqlucode\.h/<iODBC\/isqlucode.h/" \
 	-e "s/<iodbcunix\.h/<iODBC\/iodbcunix.h/" \
 	-e "s/<iodbcext\.h/<iODBC\/iodbcext.h/" \
-	-e "s/<odbcinst\.h/<iODBCinst\/odbcinst.h/" \
+	-e "s/<odbcinst\.h/<iODBCinst\/iodbcinst.h/" \
 	-e "s/<iodbcinst\.h/<iODBCinst\/iodbcinst.h/" < ../include/$i > include/$i
 done

@@ -224,16 +224,12 @@ mkdir -p $RPM_BUILD_ROOT/etc
 %attr(0644, root, root) %doc etc/odbc.ini.sample
 %attr(0644, root, root) %doc etc/odbcinst.ini.sample
 %attr(0644, root, root) %{_includedir}/iodbcext.h
-%attr(0644, root, root) %{_includedir}/iodbcinst.h
 %attr(0644, root, root) %{_includedir}/iodbcunix.h
-%attr(0644, root, root) %{_includedir}/isqlext.h
-%attr(0644, root, root) %{_includedir}/isql.h
 %attr(0644, root, root) %{_includedir}/isqltypes.h
-%attr(0644, root, root) %{_includedir}/sql.h
-%attr(0644, root, root) %{_includedir}/sqltypes.h
-%attr(0644, root, root) %{_includedir}/sqlucode.h
-%attr(0644, root, root) %{_includedir}/sqlext.h
-%attr(0644, root, root) %{_includedir}/odbcinst.h
+%attr(0644, root, root) %{_includedir}/isql.h
+%attr(0644, root, root) %{_includedir}/isqlucode.h
+%attr(0644, root, root) %{_includedir}/isqlext.h
+%attr(0644, root, root) %{_includedir}/iodbcinst.h
 %attr(0755, root, root) %{_bindir}/iodbc-config
 %attr(0644, root, root) %{_libdir}/libiodbc.a
 %attr(0644, root, root) %{_libdir}/libiodbc.la

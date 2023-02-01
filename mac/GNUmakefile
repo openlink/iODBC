@@ -159,7 +159,7 @@ check_supported:
 #
 #  Generate iODBC framework style include files
 #
-include: framework-include.sh ../include/sql.h ../include/sqlext.h ../include/sqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/odbcinst.h
+include: framework-include.sh ../include/isql.h ../include/isqlext.h ../include/isqltypes.h ../include/iodbcext.h ../include/iodbcunix.h ../include/iodbcinst.h
 	sh framework-include.sh
 
 

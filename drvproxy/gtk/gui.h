@@ -73,7 +73,7 @@
  */
 
 #include <iodbc.h>
-#include <odbcinst.h>
+#include <iodbcinst.h>
 #include <gtk/gtk.h>
 
 #ifndef	_GTKGUI_H

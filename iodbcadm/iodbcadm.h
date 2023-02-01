@@ -74,10 +74,10 @@
 
 
 #include <iodbc.h>
-#include <odbcinst.h>
-#include <sql.h>
-#include <sqltypes.h>
-#include <sqlucode.h>
+#include <iodbcinst.h>
+#include <isql.h>
+#include <isqltypes.h>
+#include <isqlucode.h>
 
 #ifndef	_IODBCADM_H
 #define	_IODBCADM_H

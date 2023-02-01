@@ -73,7 +73,7 @@
  */
 
 
-#include <odbcinst.h>
+#include <iodbcinst.h>
 #include <unicode.h>
 #include "gui.h"
 #include "question.xpm"

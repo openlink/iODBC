@@ -75,7 +75,7 @@
  */
 
 #include <iodbc.h>
-#include <odbcinst.h>
+#include <iodbcinst.h>
 
 #include "iodbc_error.h"
 #include "misc.h"
