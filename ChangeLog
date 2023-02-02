@@ -760,7 +760,7 @@
 	* Fail if pthread.h is not found, otherwise the configuration falls into
 	   a state where threading is enabled, but the header is missing
 
-	include/isqltypes.h:
+	include/sqltypes.h:
 	* Need to check whether _MSC_VER is defined before using it in a cpp
 	   conditional, otherwise -Wundef gives a warning
 
@@ -975,7 +975,7 @@
 
 	* Removed space from file name
 
-	* Moved iodbcunix.h from isql.h to isqltypes.h
+	* Moved iodbcunix.h from sql.h to sqltypes.h
 
 	* Fixed description
 
@@ -1373,7 +1373,7 @@
 
 	* Files to ignore (pvk)
 
-	* Added guard against including isqlext.h twice (pvk)
+	* Added guard against including sqlext.h twice (pvk)
 
 	* Fixed include paths building on Mac OS X (pvk)
 
@@ -1579,7 +1579,7 @@
 
 2005-05-13  Patrick van Kleef  <pkleef@openlinksw.com>
 
-	* Renamed iodbcinst.h to iodbcinst.h (pvk)
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
 
 	* Replaced enum bool with int (pvk)
 
@@ -1587,13 +1587,13 @@
 
 	* Fixed frameworkname for iODBCinst (pvk)
 
-	* Added support for isqlucode.h (pvk)
+	* Added support for sqlucode.h (pvk)
 
 2005-05-12  Patrick van Kleef  <pkleef@openlinksw.com>
 
-	* Renamed iodbcinst.h to iodbcinst.h (pvk)
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
 
-	* Renamed iodbcinst.h to iodbcinst.h (pvk)
+	* Renamed iodbcinst.h to odbcinst.h (pvk)
 
 2005-03-22  Patrick van Kleef  <pkleef@openlinksw.com>
 
@@ -2174,7 +2174,7 @@
 
 2002-04-26  Emmanuel Poitier  <epotier@openlinksw.com>
 
-	* Changed includes to <iODBC/isql.h> for framework builds (ep)
+	* Changed includes to <iODBC/sql.h> for framework builds (ep)
 
 2002-04-26  Patrick van Kleef  <pkleef@openlinksw.com>
 
@@ -2548,7 +2548,7 @@
 
 1999-06-25  Patrick van Kleef  <pkleef@openlinksw.com>
 
-	* Added isql.h, isqlext.h, isqltypes.h to the list of installable headers (pvk)
+	* Added sql.h, sqlext.h, sqltypes.h to the list of installable headers (pvk)
 
 	* Set AutoReqProv flag to yes to allow rpm to automatically calculate
 	  dependancies (pvk)
@@ -2561,11 +2561,11 @@
 
 	* Regenerated (pvk)
 
-	* Added isql.h, isqlext.h and isqltypes.h to the list of installable   include files (pvk)
+	* Added sql.h, sqlext.h and sqltypes.h to the list of installable   include files (pvk)
 
-	* Use isql.h and isqlext.h instead of the nonstandard names isql.h and   isqlext.h (pvk)
+	* Use sql.h and sqlext.h instead of the nonstandard names isql.h and   isqlext.h (pvk)
 
-	* Renamed isql.h, isqlext.h and isqltypes.h to isql.h isqlext.h and sqtypes.h   and added dummy files for backward compatibility (pvk)
+	* Renamed isql.h, isqlext.h and isqltypes.h to sql.h sqlext.h and sqtypes.h   and added dummy files for backward compatibility (pvk)
 
 	* Return SQL_SUCCESS on setting SQL_OPT_TRACEFILE (pvk)
 
