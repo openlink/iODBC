@@ -2,5 +2,5 @@
 
 CFBundleName = "iODBCinst";
 CFBundleShortVersionString = "iODBCinst version 3.52.15";
-CFBundleGetInfoString = "iODBCinst version 3.52.15, Copyright 1995-2022, OpenLink Software";
-NSHumanReadableCopyright = "Copyright © 1995-2022, OpenLink Software";
+CFBundleGetInfoString = "iODBCinst version 3.52.15, Copyright 1995-2023, OpenLink Software";
+NSHumanReadableCopyright = "Copyright © 1995-2023, OpenLink Software";

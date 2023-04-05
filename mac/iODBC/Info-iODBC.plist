@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBC</string>
 	<key>CFBundleGetInfoString</key>
-	<string>iODBC version $IODBC_VERSION, Copyright 1995-2022, OpenLink Software</string>
+	<string>iODBC version $IODBC_VERSION, Copyright 1995-2023, OpenLink Software</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>

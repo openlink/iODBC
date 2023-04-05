@@ -2,7 +2,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2022 OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -95,7 +95,7 @@ usage()
 	cat <<EOF
 iODBC Configuration Script (framework build)
 iODBC Driver Manager $version for macOS $MACOS_VERSION
-Copyright (C) 1996-2022 OpenLink Software
+Copyright (C) 1996-2023 OpenLink Software
 Please report all bugs to <iodbc@openlinksw.com>
 
 Usage: 
