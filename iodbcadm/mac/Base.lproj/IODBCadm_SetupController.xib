@@ -90,7 +90,7 @@
                                             <connections>
                                                 <binding destination="460" name="value" keyPath="arrangedObjects.key" id="470">
                                                     <dictionary key="options">
-                                                        <integer key="NSConditionallySetsEditable" value="1"/>
+                                                        <bool key="NSContinuouslyUpdatesValue" value="YES"/>
                                                         <string key="NSNullPlaceholder">...</string>
                                                     </dictionary>
                                                 </binding>
@@ -111,7 +111,7 @@
                                             <connections>
                                                 <binding destination="460" name="value" keyPath="arrangedObjects.val" id="474">
                                                     <dictionary key="options">
-                                                        <integer key="NSConditionallySetsEditable" value="1"/>
+                                                        <bool key="NSContinuouslyUpdatesValue" value="YES"/>
                                                         <string key="NSNullPlaceholder">...</string>
                                                     </dictionary>
                                                 </binding>
