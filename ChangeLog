@@ -1,4 +1,145 @@
+2023-05-02  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated NEWS
+
+	Updated iODBC version to 3.52.16 for release
+
+2023-05-02  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed issue with generic setup dialogs on macOS not saving values
+	Set field attribute to use "Continuously Updates Value"
+
+2023-04-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated build timestamp
+
+	Updated Copyright
+
+2022-10-07  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fixed SQLBindParameter trace when bind offset is in use (fixes #80)
+	Reported by: matthew-wozniczka
+
+	Fixed SQLGetInstalledDrivers single entry error (fixes #79)
+	Modified-by: smalinin
+	Reported-By: paul-aiyedun
+
+2022-10-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2022_10_06_fix_github_78' into develop
+
+2022-10-07  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix for support modern limit for path name size
+
+	Fixed silent truncation of 'long' diagnostic messages in SQLGetDiagRec (fixes #78)
+	Reported by: matthew-wozniczka
+
+	Fixed issue overriding SQL_DEFAULT_PARAM length indicator (fixes #67)
+	Reported by: matthew-wozniczka
+
+2022-10-06  OpenLink Software  <github@openlinksw.com>
+
+	Merge pull request #81 from TallTed/patch-1
+	cleanup and update README_MACOSX and README_MACOSX.md
+
+2022-10-06  Ted Thibodeau Jr  <tthibodeau@openlinksw.com>
+
+	apply README_MACOSX.md changes to README_MACOSX
+
+2022-10-05  Ted Thibodeau Jr  <tthibodeau@openlinksw.com>
+
+	cleanup and update README_MACOSX.md
+
+2022-04-11  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed compiler warning
+
+	Fixed copyright
+
+	Fixed missing comma (fixes #72)
+	Reported by: dcb314
+
+	Fixed potential memory leak (fixes #71)
+	Reported by: matthew-wozniczka
+
+2021-09-20  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix github#68
+
+2021-09-20  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2021_09_17_fix_github' into develop
+
+2021-09-17  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix github#66
+
+	Fix for github#69
+
+2021-07-27  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Fixed version check of build tools
+
+2021-07-05  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated build id to 21.07.05
+
+2021-06-24  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix GitHub issue #63. Crash in create new DSN via drvproxy UI. Also fixed the similar issues in another places.
+
 2021-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Regenerated text versions of markdown documents
+
+2021-06-07  Ted Thibodeau Jr  <tthibodeau@openlinksw.com>
+
+	update README_GIT.md
+
+	update README.md
+	* cleaned up formatting
+	* fixed much language
+	* various corrections
+
+	Various cleanup of README_MACOSX.md
+	Grammar, punctuation, Apple's OS naming scheme, etc.
+
+	minor updates to NEWS
+	Corrected macOS identifications; added missing comma; removed errant blankline,
+
+2021-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Regenerated README from README.md
+
+2021-06-07  Ted Thibodeau  <tthibodeau@openlinksw.com>
+
+	Updates to README.md for 3.52.15
+
+2021-06-07  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix issue with new vertical layout for Alerts on OSX BigSur
+
+2021-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Merge branch 'feature/2021_06_07_fix_github_58' into develop
+
+2021-06-07  Sergey Malinin  <smalinin@openlinksw.com>
+
+	Fix for resolve compilation warnings, that threats as errors
+
+2021-06-07  Patrick van Kleef  <pkleef@openlinksw.com>
+
+	Updated version to 3.52.16-dev at start of new development cycle
+
+	Merge tag 'v3.52.15' into develop
+	Tagged for release
+
+	Merge branch 'release/3.52.15'
+
+	Updated version to 3.52.15 build 21.06.07
+
+	Updated Changelog
 
 	Updated NEWS
 
