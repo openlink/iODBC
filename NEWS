@@ -1,20 +1,36 @@
+May 02 2022, V3.52.16:
+    * Fixed issue with generic setup dialogs on macOS not saving values
+    * Fixed issue when creating new DSN via generic setup dialogs on macOS BigSur
+    * Fixed issue with new vertical layout for Alerts on macOS BigSur
+    * Fixed support for modern limit path name size
+    * Fixed SQLBindParameter trace when bind offset is in use (fixes #80)
+    * Fixed SQLGetInstalledDrivers single entry error (fixes #79)
+    * Fixed silent truncation of 'long' diagnostic messages in SQLGetDiagRec (fixes #78)
+    * Fixed missing comma (fixes #72)
+    * Fixed potential memory leak (fixes #71)
+    * Fixed truncation of SQL_C_WCHAR parameter value when BufferLength=0 and length=SQL_NTS (fixes #68)
+    * Fixed issue overriding SQL_DEFAULT_PARAM length indicator (fixes #67)
+    * Fixed issue with input parameter data when using parameter arrays (fixes #66)
+    * Fixed compiler warnings
+    * Fixed version check of build tools
+    * Updated documents
+
 Jun 07 2021, V3.52.15:
-    * Added support for macOS Big Sur on Apple Silicon using a universal build
+    * Added support for macOS Big Sur (11.x) on Apple Silicon using a universal build
     * Fixed title to show CPU architecture used
     * Fixed length of error message buffer
     * Fixed small portability issues
-    * Removed support for Mac OS X 10.6 and older
+    * Removed support for Mac OS X Snow Leopard (10.6) and older
     * Removed deprecated iODBCcfmbridge for PPC
 
     * Upgraded iODBC build to use recent versions of Xcode
       - Minimum Xcode version is set to Xcode 8.0
-      - Minimum Mac OS deployment target is Mac OS X 10.9
+      - Minimum macOS deployment target is OS X Mavericks (10.9)
       - Migrated dialogs and plist files
       - Migrated translation support
 
-
 Feb 17 2021, V3.52.14:
-    * Added support for transparent conversion between UCS4, UTF-8 and UTF-16 codepages
+    * Added support for transparent conversion between UCS4, UTF-8, and UTF-16 codepages
     * Small documentation fixes
     * Fixed issue with return buffer
     * Fixed compiler warnings
@@ -71,9 +87,8 @@ May 25 2016, V3.52.11 (internal release):
     * Fixed crash when create_dsnsetup fails to load the window
 
 Feb 10 2015, V3.52.10:
-     * Fixed issue with ~/Library/ODBC/odbc[inst].ini on Mac OS X
-     
-	iODBC created ~/.odbc[inst].ini when ~/Library/ODBC/odbc[inst].ini did not exist
+     * Fixed issue with ~/Library/ODBC/odbc[inst].ini on Mac OS X --
+       iODBC created ~/.odbc[inst].ini when ~/Library/ODBC/odbc[inst].ini did not exist
 	* If $HOME/.odbc[inst].ini exists, automatically import it and then replace it 
 	  with symlink to $HOME/Library/ODBC/odbc[inst].ini for backward compatibility 
 	  with third party drivers

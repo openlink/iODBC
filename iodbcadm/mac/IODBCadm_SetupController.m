@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -105,9 +105,9 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
             
             dsn = (char*)conv_NSString_to_char(dlg.d_dsn);
             comment = (char*)conv_NSString_to_char(dlg.d_comment);
-            len = (dsn!=NULL)?strlen(dsn):0;
+            len = (dsn!=NULL) ? strlen(dsn) : 0;
             size += len + strlen("DSN=") + 1;
-            len = (comment!=NULL)?strlen(comment):0;
+            len = (comment!=NULL) ? strlen(comment) : 0;
             size += len + strlen("Description=") + 1;
             
             // Malloc it
@@ -131,20 +131,27 @@ LPSTR create_gensetup (HWND hwnd, LPCSTR dsn,
                 
                 for (i = 0; i < dlg.Attrs_list.count; i++)
                 {
+                    int alen = 0;
                     NSDictionary *row = [dlg.Attrs_list objectAtIndex:i];
                     NSString *nskey = (NSString*)[row valueForKey:@"key"];
+
                     if ([nskey isEqualToString:@"..."] || nskey.length==0)
                         continue;
+
                     key = (char*)conv_NSString_to_char(nskey);
+                    alen += key ? strlen(key) : 0;
+
                     val = (char*)conv_NSString_to_char((NSString*)[row valueForKey:@"val"]);
+                    alen += val ? strlen(val) : 0;
+
                     cour = connstr;
-                    connstr = (char*) malloc (size + strlen(key) + strlen(val) + 2);
+                    connstr = (char*) malloc (size + alen + 2);
                     if (connstr)
                     {
                         memcpy (connstr, cour, size);
-                        sprintf (connstr + size - 1, "%s=%s", key, val);
+                        sprintf (connstr + size - 1, "%s=%s", key?key:"", val?val:"");
                         free (cour);
-                        size += strlen(key) + strlen(val) + 2;
+                        size += alen + 2;
                     }
                     else
                         connstr = cour;

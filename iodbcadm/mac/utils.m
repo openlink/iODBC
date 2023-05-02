@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -255,6 +255,7 @@ static void create_error_Internal (void *hwnd, const void *dsn, const void *text
         NSString *message = conv_to_NSString(errmsg, waMode);
         
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        alert.accessoryView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 450, 0)] autorelease];
         [alert setMessageText:title];
         [alert setInformativeText:message];
         [alert runModal];
@@ -301,6 +302,7 @@ static void __create_message (void* hwnd, const void *dsn, const void *text, cha
         }
 
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        alert.accessoryView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 450, 0)] autorelease];
         [alert setMessageText:title];
         [alert setInformativeText:message];
         [alert runModal];

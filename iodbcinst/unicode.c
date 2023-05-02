@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -690,7 +690,9 @@ _WCHARSIZE(IODBC_CHARSET charset)
     {
     case CP_UTF8: return 1;
     case CP_UTF16: return sizeof(ucs2_t);
-    case CP_UCS4: return sizeof(ucs4_t);
+    case CP_UCS4:
+    default:
+    	return sizeof(ucs4_t);
     }
 }
 
@@ -702,7 +704,9 @@ _WCHARSIZE_ALLOC(IODBC_CHARSET charset)
     {
     case CP_UTF8: return UTF8_MAX_CHAR_LEN;
     case CP_UTF16: return sizeof(ucs2_t) * 2;
-    case CP_UCS4: return sizeof(ucs4_t);
+    case CP_UCS4:
+    default:
+    	return sizeof(ucs4_t);
     }
 }
 
@@ -2156,7 +2160,9 @@ DM_GetWCharAt(DM_CONV *conv, void *str, int pos)
         return wc;
       }
     case CP_UTF16: return (SQLWCHAR)u2[pos];
-    case CP_UCS4: return (SQLWCHAR)u4[pos];
+    case CP_UCS4:
+    default:
+    	return (SQLWCHAR)u4[pos];
     }
 }
 
@@ -2204,14 +2210,22 @@ _WCSNCPY(IODBC_CHARSET charset, void *dest, void *sour, size_t count)
       strncpy((char*)dest, (char*)sour, count);
       break;
     case CP_UTF16:
-      while (len < count && (*u2dst++ = *u2src++) != 0)
-        len++;
+      while (len < count && *u2src != 0)
+        {
+          *u2dst++ = *u2src++;
+          len++;
+        }
+
       if (len < count)
         *u2dst = 0;
       break;
     case CP_UCS4:
-      while (len < count && (*u4dst++ = *u4src++) != 0)
-        len++;
+      while (len < count && *u4src != 0) 
+        {
+          *u4dst++ = *u4src++;
+          len++;
+        }
+
       if (len < count)
         *u4dst = 0;
       break;

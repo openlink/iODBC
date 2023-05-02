@@ -6,7 +6,7 @@ AC_REVISION($Id$)
 #  The iODBC driver manager.
 #
 #  Copyright (C) 1995 Ke Jin <kejin@empress.com>
-#  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -81,11 +81,11 @@ AC_REVISION($Id$)
 ##########################################################################
 m4_define(V_iodbc_major,       [3])            # ODBC Major version
 m4_define(V_iodbc_minor,       [52])           # ODBC Minor version
-m4_define(V_iodbc_patch,       [15])           # Increase every release
+m4_define(V_iodbc_patch,       [16])           # Increase every release
 m4_define(V_iodbc_devel,       [])             # -dev, -rc1 or empty for stable
 
-m4_define(V_iodbc_date,        [210607])       # YYMMDD of release
-m4_define(V_iodbc_shlib,       [30])           # Increase every change
+m4_define(V_iodbc_date,        [230502])       # YYMMDD of release
+m4_define(V_iodbc_shlib,       [31])           # Increase every change
 
 
 ##########################################################################

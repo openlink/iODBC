@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -109,7 +109,7 @@ SQLGetInstalledDrivers_Internal (LPSTR lpszBuf, WORD cbBufMax,
     WORD * pcbBufOut, SQLCHAR waMode)
 {
   char buffer[4096], desc[1024], *ptr, *oldBuf = lpszBuf;
-  int i, j, usernum = 0, num_entries = 0;
+  int len, i, j, usernum = 0, num_entries = 0;
   void **sect = NULL;
   SQLUSMALLINT fDir = SQL_FETCH_FIRST_USER;
 
@@ -185,30 +185,30 @@ SQLGetInstalledDrivers_Internal (LPSTR lpszBuf, WORD cbBufMax,
    */
   if (num_entries > 1)
     {
-      int len = cbBufMax;
       qsort (sect, num_entries, sizeof (char **), SectSorter);
+    }
 
-      /* Copy back the result as will fit */
-      for (i = 0; len > 0 && i < num_entries; i++)
-	{
-	  int sect_len = STRLEN (sect[i]) + 1;
+  len = cbBufMax;
+  /* Copy back the result as will fit */
+  for (i = 0; len > 0 && i < num_entries; i++)
+    {
+      int sect_len = STRLEN (sect[i]) + 1;
 
-	  if (sect_len > len)
-	     break;
+      if (sect_len > len)
+        break;
 
-	  if (waMode == 'A')
-	    {
-	      STRNCPY (lpszBuf, sect[i], sect_len);
-	      len -= sect_len;
-	      lpszBuf += sect_len;
-	    }
-	  else
-	    {
-	      dm_StrCopyOut2_A2W (sect[i], (LPWSTR) lpszBuf, sect_len, NULL);
-	      len -= sect_len;
-	      lpszBuf += sect_len * sizeof (wchar_t);
-	    }
-	}
+      if (waMode == 'A')
+        {
+          STRNCPY (lpszBuf, sect[i], sect_len);
+          len -= sect_len;
+          lpszBuf += sect_len;
+        }
+      else
+        {
+          dm_StrCopyOut2_A2W (sect[i], (LPWSTR) lpszBuf, sect_len, NULL);
+          len -= sect_len;
+          lpszBuf += sect_len * sizeof (wchar_t);
+        }
     }
 
   /* put final \0 */

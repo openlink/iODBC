@@ -5,7 +5,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -161,14 +161,21 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
             for (i = 0; i < dlg.Attrs_list.count; i++)
             {
                 wchar_t *val,*key;
+                int alen = 0;
                 NSDictionary *row = [dlg.Attrs_list objectAtIndex:i];
                 NSString *nskey = (NSString*)[row valueForKey:@"key"];
+
                 if ([nskey isEqualToString:@"..."] || nskey.length==0)
                     continue;
+
                 key = conv_NSString_to_wchar(nskey);
+                alen += key ? wcslen(key) : 0;
+
                 val = conv_NSString_to_wchar((NSString*)[row valueForKey:@"val"]);
+                alen += val ? wcslen(val) : 0;
+
                 cour = connstr;
-                connstr = (wchar_t*) malloc ((size + wcslen(key) + wcslen(val) + 2) * sizeof(wchar_t));
+                connstr = (wchar_t*) malloc ((size + alen + 2) * sizeof(wchar_t));
                 if (connstr)
                 {
                     memcpy (connstr, cour, size*sizeof(wchar_t));
@@ -179,7 +186,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
                             wcscat(connstr + size - 1, val);
                     }
                     free (cour);
-                    size += wcslen(key) + wcslen(val) + 2;
+                    size += alen + 2;
                 }
                 else
                     connstr = cour;
@@ -299,6 +306,7 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
     if (isdir.boolValue==TRUE){
         NSString *cliked_dir = [dict valueForKey:@"name"];
         NSString *new_path = [NSString stringWithFormat:@"%@/%@", _cur_dir, cliked_dir];
+
         self.cur_dir = new_path;
         wchar_t *path = conv_NSString_to_wchar(_cur_dir);
         addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
@@ -377,8 +385,10 @@ static LPWSTR create_driversetupw (LPCWSTR driver, LPCWSTR attrs, BOOL add, BOOL
     }
     else if ([identifier isEqualToString:@"filedsn"]){
         wchar_t *cur_path = conv_NSString_to_wchar(_cur_dir);
+
         addFDSNs_to_list(_cur_dir, FALSE, _FileDSN_ArrController);
         fill_dir_menu(cur_path, _popup_dir_btn);
+
         if (cur_path) free(cur_path);
     }
     else if ([identifier isEqualToString:@"drivers"]){

@@ -7,7 +7,7 @@
  *
  *  The iODBC driver manager.
  *
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -184,7 +184,7 @@ trace_set_filename (char *template)
   struct passwd *pwd;
   char *buf;
   size_t buf_len, buf_pos;
-  char tmp[255];
+  char tmp[4096];
 
   /* Make copy of template */
   if (template)

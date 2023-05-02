@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iODBC Demo Ansi</string>
 	<key>CFBundleGetInfoString</key>
-	<string>iODBC Demo version 1.4, Copyright 2006-2021, OpenLink Software</string>
+	<string>iODBC Demo version 1.4, Copyright 2006-2023, OpenLink Software</string>
 	<key>CFBundleIconFile</key>
 	<string>iODBCdemo.icns</string>
 	<key>CFBundleIdentifier</key>

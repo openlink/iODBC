@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -247,10 +247,17 @@ GetElementSize (PPARM pparm, DM_CONV *conv)
   SQLLEN elementSize;
 
 
-  if (pparm->pm_c_type == SQL_C_CHAR || pparm->pm_c_type == SQL_C_BINARY)
+  if (pparm->pm_c_type == SQL_C_BINARY)
     {
       elementSize = pparm->pm_cbValueMax == 0
 	  ? pparm->pm_precision : pparm->pm_cbValueMax;
+
+      elementSize = (elementSize == 0) ? sizeof(SQLLEN) : elementSize;
+    }
+  else if (pparm->pm_c_type == SQL_C_CHAR)
+    {
+      elementSize = pparm->pm_cbValueMax == 0
+	  ? pparm->pm_precision + 1 : pparm->pm_cbValueMax;
 
       elementSize = (elementSize == 0) ? sizeof(SQLLEN) : elementSize;
     }
@@ -259,9 +266,9 @@ GetElementSize (PPARM pparm, DM_CONV *conv)
       if (pparm->pm_cbValueMax == 0)
         {
           if (conv && conv->dm_cp != conv->drv_cp)
-            elementSize = pparm->pm_precision * DM_WCHARSIZE(conv);
+            elementSize = (pparm->pm_precision + 1) * DM_WCHARSIZE(conv);
           else
-            elementSize = pparm->pm_precision * sizeof(wchar_t);
+            elementSize = (pparm->pm_precision + 1) * sizeof(wchar_t);
         }
       else
         elementSize = pparm->pm_cbValueMax;
@@ -421,7 +428,7 @@ _ConvParam (STMT_t *pstmt, PPARM pparm, SQLULEN row, BOOL bOutput,
         pInd = &((SQLLEN*)((char*)pparm->pm_pInd + bindOffset))[row];
     }
 
-  if (!pInd || (pInd && *pInd == SQL_NULL_DATA ))
+  if (!pInd || (pInd && (*pInd == SQL_NULL_DATA || (*pInd == SQL_DEFAULT_PARAM && !bOutput) )))
     {
       return SQL_SUCCESS;
     }
@@ -712,7 +719,7 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
 
   if (penv->unicode_driver && !bOutput)
     {
-      if (conv==NULL || (conv && conv->dm_cp == conv->drv_cp))
+      if (conv==NULL || (m_charset == d_charset))
         {
           needRebind = FALSE;
         }
@@ -968,7 +975,7 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
         {
           if (bOutput && (pparm->pm_usage == SQL_PARAM_OUTPUT || pparm->pm_usage == SQL_PARAM_INPUT_OUTPUT))
             {
-              if (pparm->pm_c_type_orig != SQL_C_WCHAR)
+              if (pparm->pm_c_type_orig != SQL_C_WCHAR || m_charset == d_charset)
                 continue;
 
               for (j = 0; j < cRows; j++)
@@ -976,7 +983,7 @@ _SQLExecute_ConvParams (SQLHSTMT hstmt, BOOL bOutput)
             }
           else if (!bOutput && (pparm->pm_usage == SQL_PARAM_INPUT || pparm->pm_usage == SQL_PARAM_INPUT_OUTPUT))
             {
-              if (pparm->pm_c_type != SQL_C_WCHAR)
+              if (pparm->pm_c_type != SQL_C_WCHAR || m_charset == d_charset)
                 continue;
 
               for (j = 0; j < cRows; j++)

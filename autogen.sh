@@ -7,7 +7,7 @@
 #
 #  The iODBC driver manager.
 #
-#  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+#  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
 #  All Rights Reserved.
 #
 #  This software is released under the terms of either of the following
@@ -106,7 +106,7 @@ CHECK() {
 	fi
     done
 
-    if test -z "VERSION"
+    if test -z "$VERSION"
     then
 	echo
 	echo "${ERROR} : You must have \`${B}${PROG}${N}' installed on your system."
@@ -128,7 +128,7 @@ CHECK_WARN() {
 	fi
     done
 
-    if test -z "VERSION"
+    if test -z "$VERSION"
     then
 	echo
 	echo "${WARNING} : You may need \`${B}${PROG}${N}' installed on your system."

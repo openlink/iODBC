@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -151,6 +151,7 @@ _iodbcdm_pushsqlerr (
     /* overwrite the top entry to prevent error stack blow out */
     {
       perr->code = code;
+      MEM_FREE (perr->msg);
       perr->msg = msg?strdup((char *) msg): NULL;
 
       return herr;
@@ -547,7 +548,7 @@ _iodbcdm_sqlerror (
   else
     {
       int len;
-      char msgbuf[256] = {'\0'};
+      char msgbuf[2048] = {'\0'};
 
       /* get sql state message */
       errmsg = _iodbcdm_getsqlerrmsg (herr, (void *) sqlerrmsg_tab);
@@ -1014,7 +1015,7 @@ SQLGetDiagRec_Internal (
       else
 	{
 	  int len;
-	  char msgbuf[256] = { '\0' };
+	  char msgbuf[2048] = { '\0' };
 	  char *errmsg;
 
 	  /* get sql state message */

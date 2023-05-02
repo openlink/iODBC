@@ -8,7 +8,7 @@
  *  The iODBC driver manager.
  *
  *  Copyright (C) 1995 Ke Jin <kejin@empress.com>
- *  Copyright (C) 1996-2021 OpenLink Software <iodbc@openlinksw.com>
+ *  Copyright (C) 1996-2023 OpenLink Software <iodbc@openlinksw.com>
  *  All Rights Reserved.
  *
  *  This software is released under the terms of either of the following
@@ -702,26 +702,29 @@ SQLDescribeCol_Internal (
 
   /* call driver */
 
-  if (conv_direct == CD_A2W || conv_direct == CD_W2W)
+  if (szColName != NULL && cbColNameMax > 0)
     {
-      /*ansi<=unicode*/
-      if ((_ColName = _iodbcdm_alloc_var(pstmt, 0,
+      if (conv_direct == CD_A2W || conv_direct == CD_W2W)
+        {
+          /*ansi<=unicode*/
+          if ((_ColName = _iodbcdm_alloc_var(pstmt, 0,
                      cbColNameMax * DRV_WCHARSIZE_ALLOC(conv))) == NULL)
-	{
-          PUSHSQLERR (pstmt->herr, en_HY001);
-          return SQL_ERROR;
+	    {
+              PUSHSQLERR (pstmt->herr, en_HY001);
+              return SQL_ERROR;
+            }
+          colNameOut = _ColName;
         }
-      colNameOut = _ColName;
-    }
-  else if (conv_direct == CD_W2A)
-    {
-      /*unicode<=ansi*/
-      if ((_ColName = _iodbcdm_alloc_var(pstmt, 0, cbColNameMax * MB_CUR_MAX + 1)) == NULL)
-	{
-          PUSHSQLERR (pstmt->herr, en_HY001);
-          return SQL_ERROR;
+      else if (conv_direct == CD_W2A)
+        {
+          /*unicode<=ansi*/
+          if ((_ColName = _iodbcdm_alloc_var(pstmt, 0, cbColNameMax * MB_CUR_MAX + 1)) == NULL)
+	    {
+              PUSHSQLERR (pstmt->herr, en_HY001);
+              return SQL_ERROR;
+            }
+          colNameOut = _ColName;
         }
-      colNameOut = _ColName;
     }
 
   /* call driver */
