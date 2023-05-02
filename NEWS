@@ -1,3 +1,20 @@
+May 02 2022, V3.52.16:
+    * Fixed issue with generic setup dialogs on macOS not saving values
+    * Fixed issue when creating new DSN via generic setup dialogs on macOS BigSur
+    * Fixed issue with new vertical layout for Alerts on macOS BigSur
+    * Fixed support for modern limit path name size
+    * Fixed SQLBindParameter trace when bind offset is in use (fixes #80)
+    * Fixed SQLGetInstalledDrivers single entry error (fixes #79)
+    * Fixed silent truncation of 'long' diagnostic messages in SQLGetDiagRec (fixes #78)
+    * Fixed missing comma (fixes #72)
+    * Fixed potential memory leak (fixes #71)
+    * Fixed truncation of SQL_C_WCHAR parameter value when BufferLength=0 and length=SQL_NTS (fixes #68)
+    * Fixed issue overriding SQL_DEFAULT_PARAM length indicator (fixes #67)
+    * Fixed issue with input parameter data when using parameter arrays (fixes #66)
+    * Fixed compiler warnings
+    * Fixed version check of build tools
+    * Updated documents
+
 Jun 07 2021, V3.52.15:
     * Added support for macOS Big Sur (11.x) on Apple Silicon using a universal build
     * Fixed title to show CPU architecture used
