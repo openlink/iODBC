@@ -1,7 +1,7 @@
-May 02 2022, V3.52.16:
+May 02 2023, V3.52.16:
     * Fixed issue with generic setup dialogs on macOS not saving values
-    * Fixed issue when creating new DSN via generic setup dialogs on macOS BigSur
-    * Fixed issue with new vertical layout for Alerts on macOS BigSur
+    * Fixed issue when creating new DSN via generic setup dialogs on macOS Big Sur (11.x) and later
+    * Fixed issue with new vertical layout for alerts on macOS Big Sur (11.x) and later
     * Fixed support for modern limit path name size
     * Fixed SQLBindParameter trace when bind offset is in use (fixes #80)
     * Fixed SQLGetInstalledDrivers single entry error (fixes #79)
@@ -20,9 +20,8 @@ Jun 07 2021, V3.52.15:
     * Fixed title to show CPU architecture used
     * Fixed length of error message buffer
     * Fixed small portability issues
-    * Removed support for Mac OS X Snow Leopard (10.6) and older
+    * Removed support for Mac OS X Snow Leopard (10.6) and earlier
     * Removed deprecated iODBCcfmbridge for PPC
-
     * Upgraded iODBC build to use recent versions of Xcode
       - Minimum Xcode version is set to Xcode 8.0
       - Minimum macOS deployment target is OS X Mavericks (10.9)
