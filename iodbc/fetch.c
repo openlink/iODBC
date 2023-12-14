@@ -469,6 +469,7 @@ SQLGetData_Internal (
 	case SQL_C_TYPE_TIMESTAMP:
 	case SQL_C_UBIGINT:
 	case SQL_C_WCHAR:
+	case SQL_ARD_TYPE:
 #endif
 	  break;
 
