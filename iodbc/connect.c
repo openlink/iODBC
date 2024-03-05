@@ -490,7 +490,7 @@ _iodbcdm_pool_set_retry_wait (HDBC hdbc)
 }
 
 
-extern SQLRETURN SQLFreeConnect_Internal (SQLHDBC hdbc);
+extern SQLRETURN SQLFreeConnect_Internal (SQLHDBC hdbc, int ver);
 
 /*
  * Drop connection from the pool
@@ -518,7 +518,7 @@ _iodbcdm_pool_drop_conn (HDBC hdbc, HDBC hdbc_prev)
 
   /* finish disconnect and free connection */
   _iodbcdm_finish_disconnect (hdbc, TRUE);
-  SQLFreeConnect_Internal (hdbc);
+  SQLFreeConnect_Internal (hdbc, 3);
   MEM_FREE (hdbc);
 }
 

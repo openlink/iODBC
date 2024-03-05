@@ -84,7 +84,7 @@
 #include "iodbc_error.h"
 
 extern BOOL ValidDSN (LPCSTR);
-extern BOOL ValidDSNW (LPCSTR);
+extern BOOL ValidDSNW (LPCWSTR);
 
 BOOL
 RemoveDSNFromIni (SQLPOINTER lpszDSN, SQLCHAR waMode)
