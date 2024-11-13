@@ -360,7 +360,6 @@
 		CD7C37B50A063F40001A43B7 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
@@ -376,7 +375,6 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoAnsi.plist;
 				INSTALL_PATH = /Applications/iODBC;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-ansi";
 				PRODUCT_NAME = "iODBC Demo Ansi";
 				WRAPPER_EXTENSION = app;
@@ -387,7 +385,6 @@
 		CD7C37B60A063F40001A43B7 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../mac/iODBC/build/Deployment,
@@ -400,7 +397,6 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoAnsi.plist;
 				INSTALL_PATH = /Applications/iODBC;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-ansi";
 				PRODUCT_NAME = "iODBC Demo Ansi";
 				WRAPPER_EXTENSION = app;

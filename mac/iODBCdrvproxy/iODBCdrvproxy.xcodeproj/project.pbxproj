@@ -368,7 +368,11 @@
 		CDAE3BC80987D6B4003250F8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					arm64,
+					$IODBC_32BIT,
+					x86_64,
+				);
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
@@ -398,7 +402,7 @@
 				INSTALL_PATH = /;
 				LIBRARY_SEARCH_PATHS = "";
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				OTHER_LDFLAGS = (
 					"-multiply_defined",
@@ -424,7 +428,11 @@
 		CDAE3BC90987D6B4003250F8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					arm64,
+					$IODBC_32BIT,
+					x86_64,
+				);
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -445,7 +453,7 @@
 				INFOPLIST_FILE = "Info-iODBCdrvproxy.plist";
 				INSTALL_PATH = /;
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				OTHER_LDFLAGS = (
 					"-multiply_defined",

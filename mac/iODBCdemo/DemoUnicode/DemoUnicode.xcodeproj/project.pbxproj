@@ -281,7 +281,11 @@
 		C01FCF4B08A954540054247B /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					arm64,
+					$IODBC_32BIT,
+					x86_64,
+				);
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
@@ -297,7 +301,6 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoUnicode.plist;
 				INSTALL_PATH = /Applications/iODBC;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "-DUNICODE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-unicode";
 				PRODUCT_NAME = "iODBC Demo Unicode";
@@ -309,7 +312,11 @@
 		C01FCF4C08A954540054247B /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					arm64,
+					$IODBC_32BIT,
+					x86_64,
+				);
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../mac/iODBC/build/Deployment,
@@ -322,7 +329,6 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoUnicode.plist;
 				INSTALL_PATH = /Applications/iODBC;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "-DUNICODE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-unicode";
 				PRODUCT_NAME = "iODBC Demo Unicode";
