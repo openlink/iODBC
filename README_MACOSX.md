@@ -18,14 +18,28 @@ Packages, which you can download from <http://developer.apple.com/tools>.
 Then, execute the following commands in a terminal session, to build all the frameworks and demo applications:
 
 ```shell
-$ cd mac 
-$ make
+cd mac 
+make
+```
+
+In case there are errors first try to clean up temporary files:
+
+```shell
+sudo make clean
 ```
 
 After building the iODBC libraries and applications, you have to install them on your system with the command:
 
 ```shell
-$ sudo make install
+sudo make install
+```
+
+For generating and installing a development build with debug symbols run:
+
+```shell
+sudo make realclean
+make MODEL=Development
+sudo make install MODEL=Development
 ```
 
 This installs the `iODBCinst` and `iODBC` frameworks into —
@@ -86,16 +100,16 @@ using the [HomeBrew package manager](http://brew.sh/) to install these tools, ac
 To build the libraries, open up a terminal session in **`Terminal.app`** or similar, and execute the following commands:
 
 ```shell
-$ sh autogen.sh
-$ ./configure
-$ make
+sh autogen.sh
+./configure
+make
 ```
 
 To install the header files and libraries in `/usr/local`, execute the following command as an administrator, 
 and provide that user's password when prompted:
 
 ```shell
-$ sudo make install
+sudo make install
 ```
 
 Note that, by default, this will build components that only run on the CPU type you are building on, so `ppc` 
@@ -112,18 +126,18 @@ The following commands will build a release of iODBC that supports Mac OS X Leop
 Mac OS X Snow Leopard (10.6), on `ppc` (including as emulated by Rosetta), `x86`, and `x86_64`:
 
 ```shell
-$ CFLAGS="-O -arch ppc -arch i386 -arch x86_64"
-$ CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk"
-$ CFLAGS="$CFLAGS -mmacosx-version-min=10.5"
-$ export CFLAGS
+CFLAGS="-O -arch ppc -arch i386 -arch x86_64"
+CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk"
+CFLAGS="$CFLAGS -mmacosx-version-min=10.5"
+export CFLAGS
 
-$ sh autogen.sh
-$ ./configure \
+sh autogen.sh
+./configure \
     --disable-dependency-tracking \
     --prefix=/usr/local/iODBC.universal
 
-$ make
-$ sudo make install
+make
+sudo make install
 ```
 
 ### Mac OS X Lion (10.7) and OS X Mountain Lion (10.8)
@@ -132,17 +146,17 @@ The following commands will build a release of iODBC that works on Mac OS X Lion
 and OS X Mountain Lion (10.8):
 
 ```shell
-$ CFLAGS="-O -arch i386 -arch x86_64"
-$ CFLAGS="$CFLAGS -mmacosx-version-min=10.7"
-$ export CFLAGS
+CFLAGS="-O -arch i386 -arch x86_64"
+CFLAGS="$CFLAGS -mmacosx-version-min=10.7"
+export CFLAGS
 
-$ sh autogen.sh
-$ ./configure \
+sh autogen.sh
+./configure \
     --disable-dependency-tracking \
     --prefix=/usr/local/iODBC.universal
 
-$ make
-$ sudo make install
+make
+sudo make install
 ```
 
 ### OS X Mavericks (10.9) through macOS Big Sur (11.x) on `x86` or `x86_64` (including Rosetta2 emulation)
@@ -152,17 +166,17 @@ supporting other components built for `x86` (through macOS Mojave (10.14), where
 components) or `x86_64` (including Rosetta2 emulation):
 
 ```shell
-$ CFLAGS="-O -arch i386 -arch x86_64"
-$ CFLAGS="$CFLAGS -mmacosx-version-min=10.9"
-$ export CFLAGS
+CFLAGS="-O -arch i386 -arch x86_64"
+CFLAGS="$CFLAGS -mmacosx-version-min=10.9"
+export CFLAGS
 
-$ sh autogen.sh
-$ ./configure \
+sh autogen.sh
+./configure \
     --disable-dependency-tracking \
     --prefix=/usr/local/iODBC.universal
 
-$ make
-$ sudo make install
+$make
+sudo make install
 ```
 
 ### macOS Big Sur (11.x) through macOS Ventura (13.x) on `x86_64` (including Rosetta2 emulation) or `arm64` (Apple Silicon a/k/a M1 or M2)
@@ -171,17 +185,17 @@ The following commands will build a release of iODBC that works on macOS Big Sur
 running on Intel (`x86_64`) or Apple Silicon (`arm64` a/k/a `M1` or `M2`):
 
 ```shell
-$ CFLAGS="-O -arch arm64 -arch x86_64"
-$ CFLAGS="$CFLAGS -mmacosx-version-min=10.9"
-$ export CFLAGS
+CFLAGS="-O -arch arm64 -arch x86_64"
+CFLAGS="$CFLAGS -mmacosx-version-min=10.9"
+export CFLAGS
 
-$ sh autogen.sh
-$ ./configure \
+sh autogen.sh
+./configure \
     --disable-dependency-tracking \
     --prefix=/usr/local/iODBC.universal
 
-$ make
-$ sudo make install
+make
+sudo make install
 ```
 
 ### Test DSN connection

@@ -152,7 +152,7 @@
 			dependencies = (
 			);
 			name = "iODBC Demo Ansi";
-			productInstallPath = /Applications/iODBC;
+			productInstallPath = "."; /* set /Applications/iODBC in makefile to avoid cycle error */
 			productName = "iODBC Demo Ansi";
 			productReference = CD7C37B70A063F40001A43B7 /* iODBC Demo Ansi.app */;
 			productType = "com.apple.product-type.application";
@@ -293,9 +293,9 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					../../mac/iODBC/build/Deployment,
+					../../mac/iODBC/build/Development,
 					../../mac/iODBC/build,
-					../../mac/iODBCinst/build/Deployment,
+					../../mac/iODBCinst/build/Development,
 					../../mac/iODBCinst/build,
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -306,8 +306,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Development;
 		};
@@ -353,7 +353,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 			};
 			name = Deployment;
 		};
@@ -364,9 +364,9 @@
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					../../../mac/iODBC/build/Deployment,
+					../../../mac/iODBC/build/Development,
 					../../../mac/iODBC/build,
-					../../../mac/iODBCinst/build/Deployment,
+					../../../mac/iODBCinst/build/Development,
 					../../../mac/iODBCinst/build,
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -374,7 +374,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoAnsi.plist;
-				INSTALL_PATH = /Applications/iODBC;
+				INSTALL_PATH = "."; /* set /Applications/iODBC in makefile to avoid cycle error */
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-ansi";
 				PRODUCT_NAME = "iODBC Demo Ansi";
 				WRAPPER_EXTENSION = app;
@@ -396,9 +396,10 @@
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = InfoAnsi.plist;
-				INSTALL_PATH = /Applications/iODBC;
+				INSTALL_PATH = "."; /* set /Applications/iODBC in makefile to avoid cycle error */
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openlinksw.iodbcdemo-ansi";
 				PRODUCT_NAME = "iODBC Demo Ansi";
+				SKIP_INSTALL = NO;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Deployment;

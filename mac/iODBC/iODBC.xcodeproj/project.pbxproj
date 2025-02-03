@@ -712,9 +712,10 @@
 					../../iodbc,
 				);
 				INFOPLIST_FILE = "Info-iODBC.plist";
-				INSTALL_PATH = /Library/Frameworks;
+				INSTALL_PATH = "."; /* set /Library/Frameworks makefile to avoid cycle errors */
+				DYLIB_INSTALL_NAME_BASE = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				PRODUCT_BUNDLE_IDENTIFIER = org.iodbc.core;
 				PRODUCT_NAME = iODBC;
@@ -763,7 +764,8 @@
 					../../iodbcinst,
 				);
 				INFOPLIST_FILE = "Info-iODBC.plist";
-				INSTALL_PATH = /Library/Frameworks;
+				INSTALL_PATH = "."; /* set /Library/Frameworks makefile to avoid cycle errors */
+				DYLIB_INSTALL_NAME_BASE = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
