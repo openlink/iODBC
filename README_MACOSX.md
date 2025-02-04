@@ -34,7 +34,7 @@ After building the iODBC libraries and applications, you have to install them on
 sudo make install
 ```
 
-For generating and installing a development build with debug symbols run:
+To generate and install a development build with debug symbols, run:
 
 ```shell
 sudo make realclean
