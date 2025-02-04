@@ -22,7 +22,7 @@ cd mac
 make
 ```
 
-In case there are errors first try to clean up temporary files:
+If there are errors, first try to clean up temporary files:
 
 ```shell
 sudo make clean
