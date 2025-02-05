@@ -135,6 +135,18 @@ PROJBUILD_X64 := $(PROJBUILD) $(XCODE_FLAGS_X64)
 #
 export IODBC_VERSION IODBC_32BIT
 
+#
+# Enable debug symbols for Development builds
+#
+ifeq ($(MODEL), Development)
+    CFLAGS += -g -O0
+    CXXFLAGS += -g -O0
+    LDFLAGS += -g
+else
+    CFLAGS += -O2
+    CXXFLAGS += -O2
+endif
+
 
 #
 #  Build the libraries

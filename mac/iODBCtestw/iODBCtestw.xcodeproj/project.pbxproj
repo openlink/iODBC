@@ -160,6 +160,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
 				DYLIB_CURRENT_VERSION = $IODBC_VERSION;
+				ENABLE_NS_ASSERTIONS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Development,
 					../../mac/iODBC/build,
@@ -168,12 +169,17 @@
 				);
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = UNICODE;
+				GCC_PREPROCESSOR_DEBUGGING = YES;
+                GCC_PREPROCESSOR_DEFINITIONS = (
+                    UNICODE,
+                    "DEBUG=1",
+                );
 				HEADER_SEARCH_PATHS = ../../include;
 				INSTALL_PATH = "."; /* set "/Library/Application Support/iODBC/bin" in makefile to avoid cycle error */
 				LIBRARY_SEARCH_PATHS = "";
+				LLVM_LTO = NO;
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = iodbctestw;
