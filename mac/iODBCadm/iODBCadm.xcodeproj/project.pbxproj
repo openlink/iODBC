@@ -608,8 +608,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.iodbc.adm;
 				PRODUCT_NAME = iODBCadm;
 				SECTORDER_FLAGS = "";
-				SKIP_INSTALL = YES;
-				STRIPFLAGS = "-u -r -s ../../mac/iodbcadm.exp";
+				SKIP_INSTALL = NO;
+				/* STRIPFLAGS = "-u -r -s ../../mac/iodbcadm.exp"; */
+				STRIP_INSTALLED_PRODUCT = NO;
+                STRIP_STYLE = none;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",

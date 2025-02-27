@@ -524,11 +524,15 @@
 				LIBRARY_SEARCH_PATHS = "";
 				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				OTHER_CFLAGS = "-fno-constant-cfstrings";
+                OTHER_CFLAGS = (
+                    "-fno-constant-cfstrings",
+                );
 				PRODUCT_BUNDLE_IDENTIFIER = org.iodbc.inst;
 				PRODUCT_NAME = iODBCinst;
 				RESMERGER_SOURCES_FORK = data;
 				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
+                STRIP_STYLE = none;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
