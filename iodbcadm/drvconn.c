@@ -272,7 +272,7 @@ iodbcdm_drvconn_dialboxw (
   TDSNCHOOSER choose_t;
   wchar_t *string = NULL, *prov, *prov1, *szDSN = NULL, *szDriver = NULL;
   wchar_t *szFILEDSN = NULL, *szSAVEFILE = NULL;
-  wchar_t tokenstr[4096];
+  wchar_t tokenstr[4096]= { L'\0' };
   wchar_t drvbuf[4096] = { L'\0'};
   char *_szdriver_u8 = NULL;
   wchar_t *_szdriver_w = NULL;
@@ -280,6 +280,7 @@ iodbcdm_drvconn_dialboxw (
   pDriverConnFunc pDrvConn;
   pDriverConnWFunc pDrvConnW;
   int i, skip;
+  size_t offset = 0;
 #if defined (__APPLE__) && !defined (NO_FRAMEWORKS)
   CFBundleRef bundle = NULL;
   CFBundleRef bundle_dll = NULL;
@@ -379,8 +380,7 @@ iodbcdm_drvconn_dialboxw (
                 {
                   WCSCPY (string, L"DSN=");
                   WCSCAT (string, choose_t.dsn);
-                  string[WCSLEN (string) + 1] = L'\0';
-                  szDSN = string + WCSLEN (L"DSN=");
+                  szDSN = choose_t.dsn + L'\0';
                   retcode = SQL_SUCCESS;
                 }
               else
@@ -388,6 +388,58 @@ iodbcdm_drvconn_dialboxw (
                   if (sqlStat)
                     *sqlStat = errSqlStat;
                 }
+
+              /* Try to copy the DSN parameters */
+              offset = WCSLEN(string);
+              size_t remaining_space = cbInOutConnStr - offset;
+              BOOL buffer_error = FALSE;
+
+              /* Set configuration mode once before reading parameters */
+              SQLSetConfigMode(choose_t.type_dsn == SYSTEM_DSN ? ODBC_SYSTEM_DSN : ODBC_USER_DSN);
+
+              /* Explicitly read parameters from odbc.ini */
+              if (SQLGetPrivateProfileStringW(szDSN, NULL, L"",
+                tokenstr, sizeof(tokenstr)/sizeof(wchar_t), L"odbc.ini"))
+              {
+                /* Add each parameter to the connection string with semicolons */
+                for (wchar_t *paramName = tokenstr; *paramName != L'\0'; paramName += (WCSLEN(paramName) + 1))
+                {
+                  wchar_t valueBuf[1024] = { L'\0' };
+
+                  /* Skip "Driver" parameter if present in odbc.ini */
+                  if (WCSCASEEQ(paramName, L"Driver"))
+                    continue;
+
+                  /* Get the value for this parameter */
+                  SQLGetPrivateProfileStringW(szDSN, paramName, L"",
+                    valueBuf, sizeof(valueBuf)/sizeof(wchar_t),
+                    L"odbc.ini");
+
+                  size_t param_space = 1 + WCSLEN(paramName) + 1 + WCSLEN(valueBuf);
+
+                  /* Check if enough space remains */
+                  if (remaining_space > param_space) {
+                    string[offset++] = L';';
+                    WCSCPY(string + offset, paramName);
+                    offset += WCSLEN(paramName);
+                    string[offset++] = L'=';
+                    WCSCPY(string + offset, valueBuf);
+                    offset += WCSLEN(valueBuf);
+                    remaining_space -= param_space;
+                  }
+                  else {
+                    if (sqlStat)
+                        *sqlStat = errSqlStat;  /* Use the already defined error state */
+                    retcode = SQL_ERROR;
+                    buffer_error = TRUE;
+                    break;
+                  }
+                }
+                if (!buffer_error)
+                  string[offset] = L'\0';
+
+              }
+
             }
           else if (choose_t.fdsn && choose_t.type_dsn == FILE_DSN)
             {

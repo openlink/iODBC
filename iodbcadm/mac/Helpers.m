@@ -723,7 +723,7 @@ void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver)
     HDBC hdbc;
     SWORD buflen;
     size_t offset = 0;
-    
+
     if (szDSN && szDriver){
         /* Start with basic DSN */
         WCSCPY(connstr, L"DSN=");
@@ -757,7 +757,6 @@ void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver)
                 WCSCPY(connstr + offset, paramName);
                 offset += WCSLEN(paramName);
 
-                /* Add equals sign */
                 connstr[offset++] = L'=';
 
                 /* Copy value */
@@ -797,7 +796,7 @@ void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver)
             SQLFreeEnv (henv);
             goto done;
         }
-        
+
         if (SQLDriverConnectW (hdbc, (void*)1L, connstr, SQL_NTS,
                                outconnstr, sizeof (outconnstr) / sizeof(wchar_t), &buflen,
                                SQL_DRIVER_PROMPT) != SQL_SUCCESS)
