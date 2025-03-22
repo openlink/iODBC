@@ -357,13 +357,14 @@ ODBC_Connect (char *connStr)
       (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
   if (status != SQL_SUCCESS) {
     ODBC_Errors_Ex ("SQLDriverConnectW", 1);
+    printf ("\nTrying SQL_DRIVER_NOPROMPT using parameters from odbc.ini for DSN %S\n", szDSN);
 #else
   status = SQLDriverConnect (hdbc, 0, (SQLCHAR *) dataSource, SQL_NTS,
       (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
   if (status != SQL_SUCCESS) {
       ODBC_Errors_Ex("SQLDriverConnect", 1);
-#endif
       printf ("\nTrying SQL_DRIVER_NOPROMPT using parameters from odbc.ini for DSN %s\n", szDSN);
+#endif
   }
 
     /* If SQL_DRIVER_COMPLETE fails and we have a DSN, try SQL_DRIVER_NOPROMPT with parameters from odbc.ini */
@@ -549,7 +550,7 @@ ODBC_Disconnect (void)
  *  Perform a disconnect/reconnect using the DSN stored from the original
  *  SQLDriverConnect
  */
-int 
+int
 ODBC_Reconnect (void)
 {
   SQLRETURN status;
@@ -925,6 +926,12 @@ ODBC_Test ()
       else if (!TXTCMP (request, TEXT ("quit"))
 	  || !TXTCMP (request, TEXT ("exit")))
 	break;			/* If you want to quit, just say so */
+      else if (!TXTCMP (request, TEXT ("sleep")))
+      {    /* Sleep for a while to allow debugger to connect */
+          fprintf(stderr, "back in 30 seconds...\n");
+          sleep(30);
+          continue;
+      }
       else
 	{
 	  /*
