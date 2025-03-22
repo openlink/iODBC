@@ -155,6 +155,10 @@
 		CDAE3B570987CF60003250F8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+                ARCHS = (
+					arm64,
+					x86_64,
+				);
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
@@ -198,7 +202,11 @@
 		CDAE3B580987CF60003250F8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
+				ARCHS = (
+                    arm64,
+                    x86_64,
+                );
+                CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
 				DYLIB_CURRENT_VERSION = $IODBC_VERSION;
