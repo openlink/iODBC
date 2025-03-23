@@ -1142,6 +1142,14 @@ ODBC_Test ()
 		      goto endCursor;
 		    }
 
+          /*
+           *  Show empty data as empty string
+           */
+          if (sts == SQL_NO_DATA)
+          {
+              fetchBuffer[0] = TEXTC ('\0');
+          }
+
 		  /*
 		   *  Show NULL fields as ****
 		   */
