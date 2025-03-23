@@ -1136,7 +1136,7 @@ ODBC_Test ()
 		  sts = SQLGetData (hstmt, colNum, SQL_C_CHAR, fetchBuffer,
 		      NUMTCHAR (fetchBuffer), &colIndicator);
 #endif
-		  if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS)
+		  if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS && sts != SQL_NO_DATA)
 		    {
 		      ODBC_Errors ("SQLGetData");
 		      goto endCursor;
