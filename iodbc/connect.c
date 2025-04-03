@@ -2967,7 +2967,7 @@ SQLDriverConnect_Internal (
             prov[size/sizeof(SQLWCHAR)] = L'\0';
           }
 
-        retcode = dialproc (hwnd,	/* window or display handle */
+        retcode = ((SQLRETURN (*)(...))dialproc) (hwnd,	/* window or display handle */
           prov,		        /* input/output dsn buf */
           sizeof (prov) / (waMode == 'A' ? 1 : sizeof (SQLWCHAR)), /* buf size */
           &sqlstat,		/* error code */

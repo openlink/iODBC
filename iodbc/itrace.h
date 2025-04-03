@@ -110,7 +110,7 @@ extern int ODBCSharedTraceFlag;
 \
 	if (!t_penv->thread_safe) MUTEX_LOCK (t_penv->drv_lock); \
 \
-	ret = proc plist; \
+	ret = ((SQLRETURN (*)(...))proc) plist; \
 	if (errHandle) ((GENV_t *)(errHandle))->rc = ret; \
 \
 	if (!t_penv->thread_safe) MUTEX_UNLOCK (t_penv->drv_lock); \
