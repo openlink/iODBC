@@ -83,6 +83,7 @@
 #include <sqlucode.h>
 #include <iodbcext.h>
 #include <odbcinst.h>
+#include <time.h>
 
 #include "dlproc.h"
 
