@@ -98,6 +98,11 @@
 #if	!defined(WINDOWS) && !defined(WIN32_SYSTEM)
 #define _UNIX_
 
+#ifndef _POSIX_C_SOURCE
+/* POSIX.1-2008 is required for strdup() */
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
