@@ -101,6 +101,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/types.h>
 
 #define MEM_ALLOC(size)	(malloc((size_t)(size)))
