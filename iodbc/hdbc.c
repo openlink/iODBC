@@ -840,9 +840,9 @@ _iodbcdm_GetConnectOption (
 #endif
     {
       if (ODBCSharedTraceFlag)
-	*((UDWORD *) pvParam) = (UDWORD) SQL_OPT_TRACE_ON;
+	*((SQLUINTEGER *) pvParam) = (SQLUINTEGER) SQL_OPT_TRACE_ON;
       else
-	*((UDWORD *) pvParam) = (UDWORD) SQL_OPT_TRACE_OFF;
+	*((SQLUINTEGER *) pvParam) = (SQLUINTEGER) SQL_OPT_TRACE_OFF;
 
       return SQL_SUCCESS;
     }
