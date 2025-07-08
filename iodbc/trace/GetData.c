@@ -421,6 +421,8 @@ _trace_data (
 	  len = (ssize_t) *pcbValue;
         if (len > cbValueMax)
 	  len = cbValueMax;
+	if (len <= 0)
+	  return;
 	wstr = dm_SQL_W2A ((wchar_t *) rgbValue, len);
 	trace_emit_string (wstr, SQL_NTS, 1);
 	free (wstr);
