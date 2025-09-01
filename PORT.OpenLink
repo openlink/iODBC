@@ -288,13 +288,14 @@ case $OS in
     x86_64-*-linux-gnu)
        CONFLAGS="--enable-gui --enable-maintainer-mode --with-pic"
 
-       CFLAGS="-O3 -m32"
-       export CFLAGS CONFLAGS
-       $BUILD 32
+       #CFLAGS="-O3 -m32"
+       #export CFLAGS CONFLAGS
+       #$BUILD 32
 
        CFLAGS="-O3 -m64"
        export CFLAGS CONFLAGS
-       $BUILD 64
+       #$BUILD 64
+       $BUILD
        ;;
 
     aarch64-apple-darwin20*)
