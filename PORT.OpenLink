@@ -285,6 +285,11 @@ case $OS in
        $BUILD
        ;;
 
+    x86_64-*-linux-musl)
+       CFLAGS="-O3 -m64"
+       $BUILD 64
+       ;;
+
     x86_64-*-linux-gnu)
        CONFLAGS="--enable-gui --enable-maintainer-mode --with-pic"
 
