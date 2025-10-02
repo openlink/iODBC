@@ -2577,8 +2577,8 @@ SQLDriverConnect_Internal (
   SQLCHAR drvbuf[1024];
   SQLCHAR *dsn = NULL;
   SQLCHAR dsnbuf[SQL_MAX_DSN_LENGTH + 1];
-  SQLWCHAR prov[2048];
-  SQLWCHAR StrInTmp[2048];
+  SQLWCHAR prov[16384];
+  SQLWCHAR StrInTmp[16384];
   SWORD thread_safe;
   SWORD unload_safe;
   SQLCHAR buf[1024];
@@ -2588,8 +2588,8 @@ SQLDriverConnect_Internal (
   void *connStrOut = szConnStrOut;
   void *connStrIn = szConnStrIn;
   SQLSMALLINT connStrOutMax = cbConnStrOutMax;
-  SQLWCHAR connStrOut_buf[2048];
-  SQLWCHAR connStrIn_buf[2048];
+  SQLWCHAR connStrOut_buf[16384];
+  SQLWCHAR connStrIn_buf[16384];
   UWORD config;
   PCONFIG pconfig = NULL;
   BOOL bCallDmDlg = FALSE;
