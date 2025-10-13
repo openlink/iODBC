@@ -577,7 +577,7 @@ error:
     }
     
     status = SQLDriverConnect (hdbc, (-1L), TEXT(""), SQL_NTS,
-                               dataSource, sizeof (dataSource), &dsLen, SQL_DRIVER_COMPLETE);
+                               dataSource, sizeof (dataSource)/sizeof(SQLTCHAR), &dsLen, SQL_DRIVER_COMPLETE);
     if (status != SQL_SUCCESS)
     {
         _nativeerrorbox (henv, hdbc, SQL_NULL_HSTMT);

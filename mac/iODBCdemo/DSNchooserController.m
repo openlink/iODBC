@@ -383,8 +383,6 @@ void addFDSNs_to_list(const char* path, BOOL b_reset, NSArrayController* list)
     else
         create_error ("Error during accessing directory information", strerror (errno));
     
-    //??    if (b_reset)
-    //??        SetDataBrowserScrollPosition(widget, 0, 0);
 }
 
 void fill_dir_menu(const char* path, NSPopUpButton* list)
