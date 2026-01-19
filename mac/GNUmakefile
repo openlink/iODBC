@@ -73,7 +73,7 @@
 #
 #  iODBC VERSION
 #
-IODBC_VERSION=3.52.16
+IODBC_VERSION=3.52.17
 
 
 #
@@ -101,6 +101,9 @@ xcodebuild_version := $(shell xcodebuild -version | grep -i Xcode | cut -d " " -
 #  Common build settings
 #
 PROJBUILD	:= /usr/bin/xcodebuild -configuration $(MODEL)
+DEPLOYMENT_TARGET := "10.13"
+IODBC_UNI := "arm64 x86_64"
+IODBC_X64 := "x86_64"
 IODBC_32BIT	= "i386"
 
 
@@ -113,17 +116,36 @@ endif
 
 
 #
-#  macOS 11.x (BigSur)does not have 32bit support
+#  macOS 11.x (BigSur) and later do not have 32bit support
 #
-ifeq (11, $(findstring 11, $(macos_major)))
+ifeq ($(shell test $(macos_version) -ge 11; echo $$?),0)
 IODBC_32BIT	:= "x86_64"
 endif
 
+#
+# Additional build flags for modern macOS
+#
+XCODE_FLAGS_UNI := MACOSX_DEPLOYMENT_TARGET=$(DEPLOYMENT_TARGET) ARCHS=$(IODBC_UNI)
+XCODE_FLAGS_X64 := MACOSX_DEPLOYMENT_TARGET=$(DEPLOYMENT_TARGET) ARCHS=$(IODBC_X64)
+PROJBUILD_UNI := $(PROJBUILD) $(XCODE_FLAGS_UNI)
+PROJBUILD_X64 := $(PROJBUILD) $(XCODE_FLAGS_X64)
 
 #
 #  Pass settings to xcodebuild
 #
 export IODBC_VERSION IODBC_32BIT
+
+#
+# Enable debug symbols for Development builds
+#
+ifeq ($(MODEL), Development)
+    CFLAGS += -g -O0
+    CXXFLAGS += -g -O0
+    LDFLAGS += -g
+else
+    CFLAGS += -O2
+    CXXFLAGS += -O2
+endif
 
 
 #
@@ -131,17 +153,18 @@ export IODBC_VERSION IODBC_32BIT
 #
 all: check_supported include
 	@echo "Building on macOS $(macos_version)"
-	@echo "Projbuild is [$(PROJBUILD)]"
-	cd iODBCinst;		$(PROJBUILD) build
-	cd iODBC;		$(PROJBUILD) build
-	cd iODBCtest;		$(PROJBUILD) build
-	cd iODBCtestw;		$(PROJBUILD) build
-	cd iODBCdrvproxy;	$(PROJBUILD) build
-	cd iODBCadm;		$(PROJBUILD) build
-	cd iODBCadministrator;	$(PROJBUILD) build
-	cd iODBCadministrator64;	$(PROJBUILD) build
-	cd iODBCdemo/DemoAnsi;	   $(PROJBUILD) build
-	cd iODBCdemo/DemoUnicode;  $(PROJBUILD) build
+	@echo "Deployment Target is $(DEPLOYMENT_TARGET)"
+	@echo "Projbuild is [$(PROJBUILD_UNI)]"
+	cd iODBCinst;		$(PROJBUILD_UNI) build
+	cd iODBC;		$(PROJBUILD_UNI) build
+	cd iODBCtest;		$(PROJBUILD_UNI) build
+	cd iODBCtestw;		$(PROJBUILD_UNI) build
+	cd iODBCdrvproxy;	$(PROJBUILD_UNI) build
+	cd iODBCadm;		$(PROJBUILD_UNI) build
+	cd iODBCadministrator;	$(PROJBUILD_UNI) build
+	cd iODBCadministrator64;	$(PROJBUILD_X64) build
+	cd iODBCdemo/DemoAnsi;	   $(PROJBUILD_UNI) build
+	cd iODBCdemo/DemoUnicode;  $(PROJBUILD_UNI) build
 
 
 #
@@ -172,8 +195,8 @@ install:
 	#
 	-rm $(DESTDIR)/Library/Frameworks/iODBC.framework/Versions/Current
 	-rm $(DESTDIR)/Library/Frameworks/iODBCinst.framework/Versions/Current
-	cd iODBCinst;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBC;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBCinst;		$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Frameworks/
+	cd iODBC;		$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Frameworks/
 	#
 	#  Install /usr/local/iODBC
 	#
@@ -181,20 +204,20 @@ install:
 	#
 	#  Install iODBC Administrator
 	#
-	cd iODBCadministrator;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBCadministrator64;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBCadministrator;	$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Applications/iODBC;
+	cd iODBCadministrator64;	$(PROJBUILD_X64) install DSTROOT=$(DESTDIR)/Applications/iODBC;
 	#  Next ones are a bit special as they need to be installed twice
-	cd iODBCadm;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
-	cd iODBCadm;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
-	cd iODBCdrvproxy;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
-	cd iODBCdrvproxy;	$(PROJBUILD) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
+	cd iODBCadm;		$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
+	cd iODBCadm;		$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
+	cd iODBCdrvproxy;	$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBC.framework/Resources/
+	cd iODBCdrvproxy;	$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Frameworks/iODBCinst.framework/Resources/
 	#
 	#  Install application
 	#
-	cd iODBCdemo/DemoAnsi;	  $(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBCdemo/DemoUnicode; $(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBCtest;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
-	cd iODBCtestw;		$(PROJBUILD) install DSTROOT=$(DESTDIR)/
+	cd iODBCdemo/DemoAnsi;	  $(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Applications/iODBC
+	cd iODBCdemo/DemoUnicode; $(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Applications/iODBC
+	cd iODBCtest;		$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Application\ Support/iODBC/bin
+	cd iODBCtestw;		$(PROJBUILD_UNI) install DSTROOT=$(DESTDIR)/Library/Application\ Support/iODBC/bin
 
 
 #
@@ -202,16 +225,16 @@ install:
 #
 clean:
 	rm -rf include
-	cd iODBC;		$(PROJBUILD) clean
-	cd iODBCinst;		$(PROJBUILD) clean
-	cd iODBCtest;		$(PROJBUILD) clean
-	cd iODBCtestw;		$(PROJBUILD) clean
-	cd iODBCdrvproxy;	$(PROJBUILD) clean
-	cd iODBCadm;		$(PROJBUILD) clean
-	cd iODBCadministrator;	$(PROJBUILD) clean
-	cd iODBCadministrator64;	$(PROJBUILD) clean
-	cd iODBCdemo/DemoAnsi;	   $(PROJBUILD) clean
-	cd iODBCdemo/DemoUnicode;  $(PROJBUILD) clean
+	cd iODBC;		$(PROJBUILD_UNI) clean
+	cd iODBCinst;		$(PROJBUILD_UNI) clean
+	cd iODBCtest;		$(PROJBUILD_UNI) clean
+	cd iODBCtestw;		$(PROJBUILD_UNI) clean
+	cd iODBCdrvproxy;	$(PROJBUILD_UNI) clean
+	cd iODBCadm;		$(PROJBUILD_UNI) clean
+	cd iODBCadministrator;	$(PROJBUILD_UNI) clean
+	cd iODBCadministrator64;	$(PROJBUILD_X64) clean
+	cd iODBCdemo/DemoAnsi;	   $(PROJBUILD_UNI) clean
+	cd iODBCdemo/DemoUnicode;  $(PROJBUILD_UNI) clean
 
 
 realclean: clean

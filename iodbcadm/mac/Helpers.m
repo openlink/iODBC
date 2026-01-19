@@ -322,7 +322,7 @@ void addDrivers_to_list(NSArrayController* list)
         _drv_u8 = (char *) conv_NSString_to_char(a_drv);
         if (_drv_u8 == NULL)
             goto skip;
-        
+
         if ((handle = DLL_OPEN(_drv_u8)) != NULL)
         {
             if ((allocHdl = (pSQLAllocHandle)DLL_PROC(handle, "SQLAllocHandle")) != NULL)
@@ -718,12 +718,56 @@ void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver)
     wchar_t *szDSN = conv_NSString_to_wchar(dsn);
     wchar_t *szDriver = conv_NSString_to_wchar(driver);
     wchar_t connstr[4096] = { L'\0' }, outconnstr[4096] = { L'\0' };
+    wchar_t tokenstr[4096] = { L'\0' };
     HENV henv;
     HDBC hdbc;
     SWORD buflen;
-    
-    
+    size_t offset = 0;
+
     if (szDSN && szDriver){
+        /* Start with basic DSN */
+        WCSCPY(connstr, L"DSN=");
+        WCSCAT(connstr, szDSN);
+        offset = WCSLEN(connstr);
+
+        /* Set configuration mode once before reading parameters */
+        SQLSetConfigMode(systemDSN ? ODBC_SYSTEM_DSN : ODBC_USER_DSN);
+
+        /* Explicitly read parameters from odbc.ini */
+        if (SQLGetPrivateProfileStringW(szDSN, NULL, L"",
+                                        tokenstr, sizeof(tokenstr)/sizeof(wchar_t), L"odbc.ini"))
+        {
+            /* Add each parameter to the connection string with semicolons */
+            for (wchar_t *paramName = tokenstr; *paramName != L'\0'; paramName += (WCSLEN(paramName) + 1)) {
+                wchar_t valueBuf[1024] = { L'\0' };
+
+                /* Skip "Driver" parameter if present in odbc.ini */
+                if (WCSCASEEQ(paramName, L"Driver"))
+                    continue;
+
+                /* Get the value for this parameter */
+                SQLGetPrivateProfileStringW(szDSN, paramName, L"",
+                                            valueBuf, sizeof(valueBuf)/sizeof(wchar_t),
+                                            L"odbc.ini");
+
+                /* Add semicolon before next parameter */
+                connstr[offset++] = L';';
+
+                /* Copy parameter name */
+                WCSCPY(connstr + offset, paramName);
+                offset += WCSLEN(paramName);
+
+                connstr[offset++] = L'=';
+
+                /* Copy value */
+                WCSCPY(connstr + offset, valueBuf);
+                offset += WCSLEN(valueBuf);
+            }
+
+            /* Ensure string is properly terminated */
+            connstr[offset] = L'\0';
+        }
+
         /* Make the connection */
 #if (ODBCVER < 0x300)
         if (SQLAllocEnv (&henv) != SQL_SUCCESS)
@@ -752,11 +796,7 @@ void test_dsn(BOOL systemDSN, NSString *dsn, NSString *driver)
             SQLFreeEnv (henv);
             goto done;
         }
-        
-        WCSCPY(connstr, L"DSN=");
-        WCSCAT(connstr, szDSN);
-        
-        SQLSetConfigMode (systemDSN?ODBC_SYSTEM_DSN: ODBC_USER_DSN);
+
         if (SQLDriverConnectW (hdbc, (void*)1L, connstr, SQL_NTS,
                                outconnstr, sizeof (outconnstr) / sizeof(wchar_t), &buflen,
                                SQL_DRIVER_PROMPT) != SQL_SUCCESS)

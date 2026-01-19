@@ -95,7 +95,7 @@
 			dependencies = (
 			);
 			name = iodbctest;
-			productInstallPath = "/Library/Application Support/iODBC/bin";
+			productInstallPath = "."; /* set "/Library/Application Support/iODBC/bin" in makefile to avoid cycle error */
 			productName = iodbctest;
 			productReference = CDAE3B380987CEF4003250F8 /* iodbctest */;
 			productType = "com.apple.product-type.tool";
@@ -160,6 +160,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
 				DYLIB_CURRENT_VERSION = $IODBC_VERSION;
+				ENABLE_NS_ASSERTIONS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBC/build/Development,
 					../../mac/iODBC/build,
@@ -168,12 +169,16 @@
 				);
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEBUGGING = YES;
+                GCC_PREPROCESSOR_DEFINITIONS = (
+                    "DEBUG=1",
+                );
 				HEADER_SEARCH_PATHS = ../../include;
-				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
+				INSTALL_PATH = "."; /* set "/Library/Application Support/iODBC/bin" in makefile to avoid cycle error */
 				LIBRARY_SEARCH_PATHS = "";
+				LLVM_LTO = NO;
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = iodbctest;
@@ -207,7 +212,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				HEADER_SEARCH_PATHS = ../../include;
-				INSTALL_PATH = "/Library/Application Support/iODBC/bin";
+				INSTALL_PATH = "."; /* set "/Library/Application Support/iODBC/bin" in makefile to avoid cycle error */
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -259,8 +264,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Development;
 		};
@@ -298,7 +303,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 			};
 			name = Deployment;
 		};

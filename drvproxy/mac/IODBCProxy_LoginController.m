@@ -97,13 +97,16 @@ BOOL showLogin(const char* title, const char *username, const char *password, TL
         
         NSInteger rc = [app runModalForWindow:dlg.window];
         [dlg.window orderOut:dlg.window];
+
+        BOOL result = FALSE;
         if (log_t && rc == 1){
             log_t->user = (char*)conv_NSString_to_char(dlg.d_uid);
             log_t->pwd = (char*)conv_NSString_to_char(dlg.d_pwd);
             log_t->ok = 1;
+            result = TRUE;
         }
         [dlg release];
-        return rc == 1 ? TRUE : FALSE;
+        return result;
     }
     
 }

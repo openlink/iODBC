@@ -67,3 +67,8 @@ mac/iODBCtest/build/
 mac/iODBCtestw/build/
 mac/include/
 mac/**/xcuserdata/
+
+#
+# IDE configuration files
+#
+.idea/

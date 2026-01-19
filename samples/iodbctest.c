@@ -84,6 +84,7 @@
 #include <sqlext.h>
 #include <sqlucode.h>
 #include <iodbcext.h>
+#include "odbcinst.h"
 
 /*
  *  Prototypes
@@ -91,6 +92,7 @@
 int ODBC_Connect (char *connStr);
 int ODBC_Disconnect (void);
 int ODBC_Errors (char *where);
+int ODBC_Errors_Ex (char *where, int neverExit);
 int ODBC_Test (void);
 
 #define MAXCOLS		32
@@ -190,6 +192,9 @@ ODBC_Connect (char *connStr)
   SQLTCHAR driverInfo[255];
   SQLSMALLINT len1, len2;
   int status;
+  SQLTCHAR *szDSN = NULL;
+  SQLTCHAR tokenstr[4096] = { 0 };
+  char *p;
 #ifdef UNICODE
   SQLWCHAR wdataSource[1024];
 #endif
@@ -311,18 +316,129 @@ ODBC_Connect (char *connStr)
 		desc, NUMTCHAR (desc), &len2) == SQL_SUCCESS);
       }
 
+    /* Extract DSN name for potential later use with odbc.ini */
+    szDSN = NULL;
+    if (!strncmp((char *)dataSource, "DSN=", 4)) {
+        char *dsn_start = (char *)dataSource + 4;
+        char *dsn_end = strchr(dsn_start, ';');
+
+        if (dsn_end) {
+            *dsn_end = '\0';  /* Temporarily terminate the DSN name */
+#ifdef UNICODE
+            OPL_A2W(dsn_start, tokenstr, sizeof(tokenstr)/sizeof(SQLTCHAR));
+#else
+            strcpy((char *)tokenstr, dsn_start);
+#endif
+            szDSN = tokenstr;
+            *dsn_end = ';';  /* Restore the semicolon */
+        } else {
+#ifdef UNICODE
+            OPL_A2W(dsn_start, tokenstr, sizeof(tokenstr)/sizeof(SQLTCHAR));
+#else
+            strcpy((char *)tokenstr, dsn_start);
+#endif
+            szDSN = tokenstr;
+        }
+    } else if (strchr((char *)dataSource, '=') == NULL) {
+    /* If no equals sign is found, use dataSource directly as the DSN name */
+#ifdef UNICODE
+        OPL_A2W((char *)dataSource, tokenstr, sizeof(tokenstr)/sizeof(SQLTCHAR));
+#else
+        strcpy((char *)tokenstr, dataSource);
+#endif
+        szDSN = tokenstr;
+    }
+
+    /* First try SQL_DRIVER_COMPLETE approach */
+    /* only print errors, don't exit yet */
 #ifdef UNICODE
   strcpy_A2W (wdataSource, (char *) dataSource);
   status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
       (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
-  if (status != SQL_SUCCESS)
-    ODBC_Errors ("SQLDriverConnectW");
+  if (status != SQL_SUCCESS) {
+    ODBC_Errors_Ex ("SQLDriverConnectW", 1);
+    printf ("\nTrying SQL_DRIVER_NOPROMPT using parameters from odbc.ini for DSN %S\n", szDSN);
 #else
   status = SQLDriverConnect (hdbc, 0, (SQLCHAR *) dataSource, SQL_NTS,
       (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_COMPLETE);
-  if (status != SQL_SUCCESS)
-    ODBC_Errors ("SQLDriverConnect");
+  if (status != SQL_SUCCESS) {
+      ODBC_Errors_Ex("SQLDriverConnect", 1);
+      printf ("\nTrying SQL_DRIVER_NOPROMPT using parameters from odbc.ini for DSN %s\n", szDSN);
 #endif
+  }
+
+    /* If SQL_DRIVER_COMPLETE fails and we have a DSN, try SQL_DRIVER_NOPROMPT with parameters from odbc.ini */
+    if ((status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO) && szDSN != NULL) {
+        /* Create a new connection string with parameters from odbc.ini */
+        SQLCHAR newConnStr[4096] = {0};
+        SQLTCHAR paramBuf[4096] = {0};
+        SQLTCHAR valueBuf[1024] = {0};
+        SQLSMALLINT paramLen = 0;
+
+        /* Start with original DSN */
+#ifdef UNICODE
+        sprintf((char *)newConnStr, "DSN=%S", szDSN);
+#else
+        sprintf((char *) newConnStr, "DSN=%s", szDSN);
+#endif
+
+        /* Set configuration mode to search in all DSN locations */
+        SQLSetConfigMode(ODBC_BOTH_DSN);
+
+        /* Get all parameter names for this DSN from odbc.ini */
+        if (SQLGetPrivateProfileString(szDSN, NULL, TEXT(""),
+                                       paramBuf, sizeof(paramBuf) / sizeof(SQLTCHAR), TEXT("odbc.ini"))) {
+            SQLTCHAR *paramName = paramBuf;
+
+            /* Loop through each parameter */
+            while (*paramName) {
+                /* Skip "Driver" parameter if it exists in odbc.ini */
+#ifdef UNICODE
+                if (wcscasecmp(paramName, L"Driver") != 0)
+#else
+                if (strcasecmp((char *) paramName, "Driver") != 0)
+#endif
+                {
+                    /* Get value for this parameter */
+                    SQLGetPrivateProfileString(szDSN, paramName, TEXT(""),
+                                               valueBuf, sizeof(valueBuf) / sizeof(SQLTCHAR), TEXT("odbc.ini"));
+
+                    /* Add parameter to connection string */
+                    strcat((char *) newConnStr, ";");
+#ifdef UNICODE
+                    sprintf((char *)newConnStr + strlen((char *)newConnStr), "%S=%S",
+            paramName, valueBuf);
+#else
+                    sprintf((char *) newConnStr + strlen((char *) newConnStr), "%s=%s",
+                            paramName, valueBuf);
+#endif
+                }
+
+                /* Move to next parameter */
+#ifdef UNICODE
+                paramName += wcslen(paramName) + 1;
+#else
+                paramName += strlen((char *) paramName) + 1;
+#endif
+            }
+        }
+
+        /* Now try connecting with the expanded parameters and SQL_DRIVER_NOPROMPT */
+        /* If still failing, show error and exit */
+        printf ("\nConnection string: %s\n", newConnStr);
+#ifdef UNICODE
+        strcpy_A2W (wdataSource, (char *)newConnStr);
+    status = SQLDriverConnectW (hdbc, 0, (SQLWCHAR *) wdataSource, SQL_NTS,
+        (SQLWCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_NOPROMPT);
+    if (status != SQL_SUCCESS)
+        ODBC_Errors ("SQLDriverConnectW");
+#else
+        status = SQLDriverConnect(hdbc, 0, newConnStr, SQL_NTS,
+                                  (SQLCHAR *) outdsn, NUMTCHAR (outdsn), &buflen, SQL_DRIVER_NOPROMPT);
+        if (status != SQL_SUCCESS)
+            ODBC_Errors ("SQLDriverConnect");
+#endif
+    }
 
   if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
     return -1;
@@ -434,7 +550,7 @@ ODBC_Disconnect (void)
  *  Perform a disconnect/reconnect using the DSN stored from the original
  *  SQLDriverConnect
  */
-int 
+int
 ODBC_Reconnect (void)
 {
   SQLRETURN status;
@@ -489,11 +605,23 @@ ODBC_Reconnect (void)
 }
 
 
+
 /*
  *  Show all the error information that is available
+ *  and exits on certain errors
  */
 int
-ODBC_Errors (char *where)
+ODBC_Errors(char *where)
+{
+    return ODBC_Errors_Ex(where, 0);
+}
+
+/*
+ *  Show all the error information that is available.
+ *  If neverExit is set, do not exit.
+ */
+int
+ODBC_Errors_Ex (char *where, int neverExit)
 {
   SQLTCHAR buf[512];
   SQLTCHAR sqlstate[15];
@@ -667,7 +795,7 @@ ODBC_Errors (char *where)
   /*
    *  Force an exit status
    */
-  if (force_exit)
+  if (force_exit && !neverExit)
     exit (-1);
 
   return -1;
@@ -798,6 +926,12 @@ ODBC_Test ()
       else if (!TXTCMP (request, TEXT ("quit"))
 	  || !TXTCMP (request, TEXT ("exit")))
 	break;			/* If you want to quit, just say so */
+      else if (!TXTCMP (request, TEXT ("sleep")))
+      {    /* Sleep for a while to allow debugger to connect */
+          fprintf(stderr, "back in 30 seconds...\n");
+          sleep(30);
+          continue;
+      }
       else
 	{
 	  /*
@@ -1002,11 +1136,19 @@ ODBC_Test ()
 		  sts = SQLGetData (hstmt, colNum, SQL_C_CHAR, fetchBuffer,
 		      NUMTCHAR (fetchBuffer), &colIndicator);
 #endif
-		  if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS)
+		  if (sts != SQL_SUCCESS_WITH_INFO && sts != SQL_SUCCESS && sts != SQL_NO_DATA)
 		    {
 		      ODBC_Errors ("SQLGetData");
 		      goto endCursor;
 		    }
+
+          /*
+           *  Show empty data as empty string
+           */
+          if (sts == SQL_NO_DATA)
+          {
+              fetchBuffer[0] = TEXTC ('\0');
+          }
 
 		  /*
 		   *  Show NULL fields as ****

@@ -691,6 +691,7 @@
 				CURRENT_PROJECT_VERSION = $IODBC_VERSION;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				DYLIB_CURRENT_VERSION = $IODBC_VERSION;
+				ENABLE_NS_ASSERTIONS = YES;
 				EXPORTED_SYMBOLS_FILE = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					../../mac/iODBCinst/build/Development,
@@ -698,13 +699,15 @@
 				);
 				FRAMEWORK_VERSION = 3.52;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEBUGGING = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_REENTRANT,
 					WITH_PTHREADS,
 					_MACX,
 					IODBC_COCOA,
+					"DEBUG=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					../../include,
@@ -712,9 +715,11 @@
 					../../iodbc,
 				);
 				INFOPLIST_FILE = "Info-iODBC.plist";
-				INSTALL_PATH = /Library/Frameworks;
+				INSTALL_PATH = "."; /* set /Library/Frameworks makefile to avoid cycle errors */
+				DYLIB_INSTALL_NAME_BASE = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				LLVM_LTO = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
 				PRODUCT_BUNDLE_IDENTIFIER = org.iodbc.core;
 				PRODUCT_NAME = iODBC;
@@ -763,7 +768,8 @@
 					../../iodbcinst,
 				);
 				INFOPLIST_FILE = "Info-iODBC.plist";
-				INSTALL_PATH = /Library/Frameworks;
+				INSTALL_PATH = "."; /* set /Library/Frameworks makefile to avoid cycle errors */
+				DYLIB_INSTALL_NAME_BASE = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-fno-constant-cfstrings";
